@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Exceptions\" />
+    <Folder Include="Models\" />
+    <Folder Include="Services\" />
+    <Folder Include="Repositories\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
