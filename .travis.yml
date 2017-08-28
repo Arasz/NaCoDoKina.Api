@@ -1,0 +1,9 @@
+laungage: csharp
+solution: NaCoDoKinaApi.sln
+mono: none
+dotnet: 1.0.3
+dist: trusty
+script:
+ - dotnet restore
+ = xbuild /p:Configuration=Release solution-name.sln
+ = dotnet xunit
