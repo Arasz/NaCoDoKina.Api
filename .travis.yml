@@ -1,4 +1,4 @@
-laungage: csharp
+language: csharp
 dist: trusty
 sudo: required
 mono: none
@@ -7,8 +7,6 @@ branches:
   only:
     - master
     - develop
-install:
-  - sudo apt-get install dotnet-sdk-2.0.0
 before_script:
   - chmod a+x ./travis-build.sh
   - chmod a+x ./run-tests.sh
