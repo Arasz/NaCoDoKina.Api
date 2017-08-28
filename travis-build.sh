@@ -1,0 +1,1 @@
+dotned build **/*.csproj
