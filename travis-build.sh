@@ -1,1 +1,1 @@
-dotnet build **/*.csproj
+dotnet build
