@@ -1,9 +1,8 @@
 laungage: csharp
-solution: NaCoDoKinaApi.sln
+dist: trusty
 sudo: required
 mono: none
 dotnet: 2.0.0
-dist: trusty
 branches:
   only:
     - master
