@@ -80,7 +80,7 @@ namespace NaCoDoKina.Api.Tests.Controllers
             var result = await ControllerUnderTest.GetAllShowsAsync(userLocation);
 
             //Assert
-            result.Should().BeOfType<NotFoundResult>();
+            result.Should().BeOfType<NotFoundObjectResult>();
         }
     }
 
@@ -92,6 +92,10 @@ namespace NaCoDoKina.Api.Tests.Controllers
             //Arrange
             var showId = 1;
             var show = new Show();
+
+            ShowServiceMock
+                .Setup(service => service.GetShowAsync(showId))
+                .Returns(() => Task.FromResult(show));
 
             //Act
             var result = await ControllerUnderTest.GetShowAsync(showId);
@@ -108,11 +112,15 @@ namespace NaCoDoKina.Api.Tests.Controllers
             //Arrange
             var unexistingShowId = -5;
 
+            ShowServiceMock
+                .Setup(service => service.GetShowAsync(unexistingShowId))
+                .ThrowsAsync(new ShowNotFoundException());
+
             //Act
             var result = await ControllerUnderTest.GetShowAsync(unexistingShowId);
 
             //Assert
-            result.Should().BeOfType<NotFoundResult>();
+            result.Should().BeOfType<NotFoundObjectResult>();
         }
     }
 
@@ -123,7 +131,15 @@ namespace NaCoDoKina.Api.Tests.Controllers
         {
             //Arrange
             var deletedShowId = 1;
-            var show = new Show();
+
+            ShowServiceMock
+                .Setup(service => service.DeleteShowAsync(deletedShowId))
+                .Returns(() => Task.CompletedTask)
+                .Verifiable();
+
+            ShowServiceMock
+                .Setup(service => service.GetShowAsync(deletedShowId))
+                .ThrowsAsync(new ShowNotFoundException());
 
             //Act
             var result = await ControllerUnderTest.DeleteShowAsync(deletedShowId);
@@ -131,7 +147,8 @@ namespace NaCoDoKina.Api.Tests.Controllers
 
             //Assert
             result.Should().BeOfType<OkResult>();
-            getResult.Should().BeOfType<NotFoundResult>();
+            getResult.Should().BeOfType<NotFoundObjectResult>();
+            ShowServiceMock.Verify();
         }
 
         [Fact]
@@ -140,11 +157,15 @@ namespace NaCoDoKina.Api.Tests.Controllers
             //Arrange
             var unexistingShowId = -5;
 
+            ShowServiceMock
+                .Setup(service => service.DeleteShowAsync(unexistingShowId))
+                .ThrowsAsync(new ShowNotFoundException());
+
             //Act
             var result = await ControllerUnderTest.DeleteShowAsync(unexistingShowId);
 
             //Assert
-            result.Should().BeOfType<NotFoundResult>();
+            result.Should().BeOfType<NotFoundObjectResult>();
         }
     }
 
@@ -156,6 +177,10 @@ namespace NaCoDoKina.Api.Tests.Controllers
             //Arrange
             var showId = 1;
             var showDetails = new ShowDetails();
+
+            ShowServiceMock
+                .Setup(service => service.GetShowDetailsAsync(showId))
+                .Returns(() => Task.FromResult(showDetails));
 
             //Act
             var result = await ControllerUnderTest.GetShowDetailsAsync(showId);
@@ -172,11 +197,15 @@ namespace NaCoDoKina.Api.Tests.Controllers
             //Arrange
             var unexistingShowDetailsId = -5;
 
+            ShowServiceMock
+                .Setup(service => service.GetShowDetailsAsync(unexistingShowDetailsId))
+                .ThrowsAsync(new ShowDetailsNotFoundException());
+
             //Act
             var result = await ControllerUnderTest.GetShowDetailsAsync(unexistingShowDetailsId);
 
             //Assert
-            result.Should().BeOfType<NotFoundResult>();
+            result.Should().BeOfType<NotFoundObjectResult>();
         }
     }
 }

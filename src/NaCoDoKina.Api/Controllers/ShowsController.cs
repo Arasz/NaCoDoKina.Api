@@ -26,7 +26,7 @@ namespace NaCoDoKina.Api.Controllers
         /// Returns all accessible shows for current user. Shows are sorted by predicted user rating. 
         /// </summary>
         /// <returns> Shows ids sorted by estimated user rating </returns>
-        [ProducesResponseType(typeof(IEnumerable<long>), StatusCodes.Status202Accepted)]
+        [ProducesResponseType(typeof(IEnumerable<long>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
@@ -43,7 +43,7 @@ namespace NaCoDoKina.Api.Controllers
             catch (ShowsNotFoundException exception)
             {
                 _logger.LogWarning("Shows not found in @location.", location);
-                return NotFound();
+                return NotFound(exception.Message);
             }
         }
 
@@ -52,12 +52,21 @@ namespace NaCoDoKina.Api.Controllers
         /// </summary>
         /// <param name="id"> Show id </param>
         /// <returns> Basic informations about show </returns>
-        [ProducesResponseType(typeof(Show), StatusCodes.Status202Accepted)]
+        [ProducesResponseType(typeof(Show), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetShowAsync(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var show = await _showService.GetShowAsync(id);
+                return Ok(show);
+            }
+            catch (ShowNotFoundException exception)
+            {
+                _logger.LogWarning("Show with {id} was not found", id);
+                return NotFound(exception.Message);
+            }
         }
 
         /// <summary>
@@ -65,12 +74,21 @@ namespace NaCoDoKina.Api.Controllers
         /// </summary>
         /// <param name="id"> Show id </param>
         /// <returns> Basic informations about show </returns>
-        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShowAsync(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _showService.DeleteShowAsync(id);
+                return Ok();
+            }
+            catch (ShowNotFoundException exception)
+            {
+                _logger.LogWarning("Show with {id} was not found", id);
+                return NotFound(exception.Message);
+            }
         }
 
         /// <summary>
@@ -78,12 +96,21 @@ namespace NaCoDoKina.Api.Controllers
         /// </summary>
         /// <param name="id"> Show id </param>
         /// <returns> Detailed informations about show </returns>
-        [ProducesResponseType(typeof(ShowDetails), StatusCodes.Status202Accepted)]
+        [ProducesResponseType(typeof(ShowDetails), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}/details")]
         public async Task<IActionResult> GetShowDetailsAsync(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var show = await _showService.GetShowDetailsAsync(id);
+                return Ok(show);
+            }
+            catch (ShowDetailsNotFoundException exception)
+            {
+                _logger.LogWarning("Show details for show with {id} were not found", id);
+                return NotFound(exception.Message);
+            }
         }
     }
 }
