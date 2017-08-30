@@ -6,7 +6,19 @@ namespace NaCoDoKina.Api.Data
 {
     public class ApplicationContext : DbContext
     {
-        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+        public DbSet<Movie> Movies { get; set; }
+
+        public DbSet<Cinema> Cinemas { get; set; }
+
+        public DbSet<CinemaNetwork> CinemaNetworks { get; set; }
+
+        public DbSet<MovieShowtime> MovieShowtimes { get; set; }
+
+        public ApplicationContext()
+        {
+        }
+
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
         }
 
