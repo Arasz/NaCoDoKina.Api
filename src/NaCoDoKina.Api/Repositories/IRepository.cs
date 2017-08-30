@@ -18,15 +18,15 @@ namespace NaCoDoKina.Api.Repositories
         /// <summary>
         /// Lists entities that satisfies given specification 
         /// </summary>
-        /// <param name="spec"></param>
+        /// <param name="specification"></param>
         /// <returns></returns>
-        Task<List<T>> ListAsync(ISpecification<T> spec);
+        Task<List<T>> ListAsync(ISpecification<T> specification);
 
-        Task<T> AddAsync(T entity);
+        T Add(T entity);
 
-        Task UpdateAsync(T entity);
+        void Update(T entity);
 
-        Task DeleteAsync(T entity);
+        void Delete(T entity);
 
         /// <summary>
         /// Implementation of unit of work 
