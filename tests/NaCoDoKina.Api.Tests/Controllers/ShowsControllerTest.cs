@@ -47,11 +47,11 @@ namespace NaCoDoKina.Api.Tests.Controllers
             var result = await ControllerUnderTest.GetAllAsync(userLocation);
 
             //Assert
-            result.Should().BeOfType<BadRequestObjectResult>();
+            result.Should().BeOfType<BadRequestResult>();
         }
 
         [Fact]
-        public async void Should_return_NotFoundResult_when_there_are_no_shows_in_the_neighborhood()
+        public async void Should_return_NotFoundResult_when_ShowsNotFoundException_is_thrown()
         {
             //Arrange
             var userLocation = new Location { Longitude = 1, Latitude = 1 };
@@ -60,7 +60,103 @@ namespace NaCoDoKina.Api.Tests.Controllers
             var result = await ControllerUnderTest.GetAllAsync(userLocation);
 
             //Assert
-            result.Should().BeOfType<NotFoundObjectResult>();
+            result.Should().BeOfType<NotFoundResult>();
+        }
+    }
+
+    public class GetShowAsync : ShowsControllerTest
+    {
+        [Fact]
+        public async void Should_return_OkObjectResult_and_Show_for_given_id()
+        {
+            //Arrange
+            var showId = 1;
+            var show = new Show();
+
+            //Act
+            var result = await ControllerUnderTest.GetShowAsync(showId);
+
+            //Assert
+            var okResult = result.Should().BeOfType<OkObjectResult>()
+                .As<OkObjectResult>();
+            okResult.Value.Should().BeSameAs(show);
+        }
+
+        [Fact]
+        public async void Should_return_NotFoundResult_when_ShowNotFoundException_is_thrown()
+        {
+            //Arrange
+            var unexistingShowId = -5;
+
+            //Act
+            var result = await ControllerUnderTest.GetShowAsync(unexistingShowId);
+
+            //Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+    }
+
+    public class DeleteShowAsync : ShowsControllerTest
+    {
+        [Fact]
+        public async void Should_return_OkResult_and_delete_the_show_with_given_id()
+        {
+            //Arrange
+            var deletedShowId = 1;
+            var show = new Show();
+
+            //Act
+            var result = await ControllerUnderTest.DeleteShowAsync(deletedShowId);
+            var getResult = await ControllerUnderTest.GetShowAsync(deletedShowId);
+
+            //Assert
+            result.Should().BeOfType<OkResult>();
+            getResult.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public async void Should_return_NotFoundResult_when_ShowNotFoundException_is_thrown()
+        {
+            //Arrange
+            var unexistingShowId = -5;
+
+            //Act
+            var result = await ControllerUnderTest.DeleteShowAsync(unexistingShowId);
+
+            //Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+    }
+
+    public class GetShowDetailsAsync : ShowsControllerTest
+    {
+        [Fact]
+        public async void Should_return_OkObjectResult_and_ShowDetails_for_given_id()
+        {
+            //Arrange
+            var showId = 1;
+            var showDetails = new ShowDetails();
+
+            //Act
+            var result = await ControllerUnderTest.GetShowDetailsAsync(showId);
+
+            //Assert
+            var okResult = result.Should().BeOfType<OkObjectResult>()
+                .As<OkObjectResult>();
+            okResult.Value.Should().BeSameAs(showDetails);
+        }
+
+        [Fact]
+        public async void Should_return_NotFoundResult_when_ShowDetailsNotFoundException_is_thrown()
+        {
+            //Arrange
+            var unexistingShowDetailsId = -5;
+
+            //Act
+            var result = await ControllerUnderTest.GetShowDetailsAsync(unexistingShowDetailsId);
+
+            //Assert
+            result.Should().BeOfType<NotFoundResult>();
         }
     }
 }
