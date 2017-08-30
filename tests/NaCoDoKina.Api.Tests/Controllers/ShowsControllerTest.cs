@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NaCoDoKina.Api.Controllers;
 using NaCoDoKina.Api.DataContracts;
@@ -16,14 +17,17 @@ namespace NaCoDoKina.Api.Tests.Controllers
     /// </summary>
     public class ShowsControllerTest
     {
+        protected Mock<ILogger<ShowsController>> LoggerMock { get; set; }
+
         protected Mock<IShowService> ShowServiceMock { get; set; }
 
         protected ShowsController ControllerUnderTest { get; set; }
 
         public ShowsControllerTest()
         {
+            LoggerMock = new Mock<ILogger<ShowsController>>();
             ShowServiceMock = new Mock<IShowService>();
-            ControllerUnderTest = new ShowsController(ShowServiceMock.Object);
+            ControllerUnderTest = new ShowsController(ShowServiceMock.Object, LoggerMock.Object);
         }
     }
 
