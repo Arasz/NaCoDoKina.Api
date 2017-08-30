@@ -19,20 +19,20 @@ namespace NaCoDoKina.Api.Services
         /// <summary>
         /// Get show basic information 
         /// </summary>
-        /// <param name="id"> Show id </param>
+        /// <param name="id"> Movie id </param>
         /// <returns> Basic show information </returns>
         Task<Show> GetShowAsync(long id);
 
         /// <summary>
         /// Mark show as deleted 
         /// </summary>
-        /// <param name="id"> Show id </param>
+        /// <param name="id"> Movie id </param>
         Task DeleteShowAsync(long id);
 
         /// <summary>
         /// Get detailed information about show 
         /// </summary>
-        /// <param name="id"> Show id </param>
+        /// <param name="id"> Movie id </param>
         /// <returns> Detailed information about show </returns>
         Task<ShowDetails> GetShowDetailsAsync(long id);
     }
