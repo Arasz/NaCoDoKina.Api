@@ -15,8 +15,10 @@ namespace NaCoDoKina.Api.Controllers
         /// </summary>
         /// <returns> Sorted list of shows ids </returns>
         [ProducesResponseType(typeof(IEnumerable<long>), StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromBody]Location location)
         {
             throw new NotImplementedException();
         }
