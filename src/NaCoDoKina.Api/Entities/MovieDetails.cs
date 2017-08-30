@@ -1,7 +1,9 @@
 ﻿namespace NaCoDoKina.Api.Entities
 {
-    public class ShowDetails : Entity
+    public class MovieDetails : Entity
     {
+        public Movie Movie { get; set; }
+
         public string PosterLink { get; set; }
 
         public string Link { get; set; }

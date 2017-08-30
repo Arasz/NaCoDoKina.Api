@@ -27,5 +27,11 @@ namespace NaCoDoKina.Api.Repositories
         Task UpdateAsync(T entity);
 
         Task DeleteAsync(T entity);
+
+        /// <summary>
+        /// Implementation of unit of work 
+        /// </summary>
+        /// <returns></returns>
+        Task SaveChangesAsync();
     }
 }

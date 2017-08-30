@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NaCoDoKina.Api.Data.Configurations;
+using NaCoDoKina.Api.Entities;
 
 namespace NaCoDoKina.Api.Data
 {
@@ -11,7 +12,11 @@ namespace NaCoDoKina.Api.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new MovieConfiguration());
+            modelBuilder.ApplyConfiguration<Movie>(new MovieConfiguration());
+            modelBuilder.ApplyConfiguration<MovieDetails>(new MovieConfiguration());
+            modelBuilder.ApplyConfiguration(new CinemaConfiguration());
+            modelBuilder.ApplyConfiguration(new CinemaNetworkConfiguration());
+            modelBuilder.ApplyConfiguration(new MovieShowtimeConfiguration());
         }
     }
 }
