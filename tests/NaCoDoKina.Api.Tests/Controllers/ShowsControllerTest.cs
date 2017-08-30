@@ -27,7 +27,7 @@ namespace NaCoDoKina.Api.Tests.Controllers
         }
     }
 
-    public class GetAllAsync : ShowsControllerTest
+    public class GetAllShowsAsync : ShowsControllerTest
     {
         [Fact]
         public async void Should_return_OkObjectResult_with_all_accessible_shows()

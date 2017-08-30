@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.DataContracts;
+using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Services;
 using System;
 using System.Collections.Generic;
@@ -11,11 +13,13 @@ namespace NaCoDoKina.Api.Controllers
     [Route("v1/[controller]")]
     public class ShowsController : Controller
     {
+        private readonly ILogger<ShowsController> _logger;
         private readonly IShowService _showService;
 
-        public ShowsController(IShowService showService)
+        public ShowsController(IShowService showService, ILogger<ShowsController> logger)
         {
-            _showService = showService;
+            _logger = logger;
+            _showService = showService ?? throw new ArgumentNullException(nameof(showService));
         }
 
         /// <summary>
@@ -28,7 +32,19 @@ namespace NaCoDoKina.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllShowsAsync([FromBody]Location location)
         {
-            throw new NotImplementedException();
+            if (location is null)
+                return NotFound();
+
+            try
+            {
+                var shows = await _showService.GetAllShowsAsync(location);
+                return Ok(shows);
+            }
+            catch (ShowsNotFoundException exception)
+            {
+                _logger.LogWarning("Shows not found in @location.", location);
+                return NotFound();
+            }
         }
 
         /// <summary>
