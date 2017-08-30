@@ -37,5 +37,10 @@ namespace NaCoDoKina.Api.Repositories
         {
             throw new System.NotImplementedException();
         }
+
+        public Task SaveChangesAsync()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
