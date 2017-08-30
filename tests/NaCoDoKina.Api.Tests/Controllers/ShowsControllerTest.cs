@@ -4,6 +4,8 @@ using Moq;
 using NaCoDoKina.Api.Controllers;
 using NaCoDoKina.Api.DataContracts;
 using NaCoDoKina.Api.Services;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace NaCoDoKina.Api.Tests.Controllers
@@ -30,8 +32,12 @@ namespace NaCoDoKina.Api.Tests.Controllers
         public async void Should_return_OkObjectResult_with_all_accessible_shows()
         {
             //Arrange
-            var expectedShowsIds = new[] { 1, 2, 3 };
+            var expectedShowsIds = new[] { 1L, 2L, 3L };
             var userLocation = new Location { Longitude = 1, Latitude = 1 };
+
+            ShowServiceMock
+                .Setup(service => service.GetAllShowsAsync(userLocation))
+                .Returns(() => Task.FromResult(expectedShowsIds.AsEnumerable()));
 
             //Act
             var result = await ControllerUnderTest.GetAllShowsAsync(userLocation);
