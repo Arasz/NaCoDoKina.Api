@@ -1,7 +1,9 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using NaCoDoKina.Api.Controllers;
 using NaCoDoKina.Api.DataContracts;
+using NaCoDoKina.Api.Services;
 using Xunit;
 
 namespace NaCoDoKina.Api.Tests.Controllers
@@ -11,11 +13,14 @@ namespace NaCoDoKina.Api.Tests.Controllers
     /// </summary>
     public class ShowsControllerTest
     {
+        protected Mock<IShowService> ShowServiceMock { get; set; }
+
         protected ShowsController ControllerUnderTest { get; set; }
 
         public ShowsControllerTest()
         {
-            ControllerUnderTest = new ShowsController();
+            ShowServiceMock = new Mock<IShowService>();
+            ControllerUnderTest = new ShowsController(ShowServiceMock.Object);
         }
     }
 
@@ -29,7 +34,7 @@ namespace NaCoDoKina.Api.Tests.Controllers
             var userLocation = new Location { Longitude = 1, Latitude = 1 };
 
             //Act
-            var result = await ControllerUnderTest.GetAllAsync(userLocation);
+            var result = await ControllerUnderTest.GetAllShowsAsync(userLocation);
 
             //Assert
             var okResult = result.Should().BeOfType<OkObjectResult>()
@@ -44,7 +49,7 @@ namespace NaCoDoKina.Api.Tests.Controllers
             Location userLocation = null;
 
             //Act
-            var result = await ControllerUnderTest.GetAllAsync(userLocation);
+            var result = await ControllerUnderTest.GetAllShowsAsync(userLocation);
 
             //Assert
             result.Should().BeOfType<BadRequestResult>();
@@ -57,7 +62,7 @@ namespace NaCoDoKina.Api.Tests.Controllers
             var userLocation = new Location { Longitude = 1, Latitude = 1 };
 
             //Act
-            var result = await ControllerUnderTest.GetAllAsync(userLocation);
+            var result = await ControllerUnderTest.GetAllShowsAsync(userLocation);
 
             //Assert
             result.Should().BeOfType<NotFoundResult>();
