@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NaCoDoKina.Api.Controllers;
 using NaCoDoKina.Api.DataContracts;
+using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Services;
 using System.Linq;
 using System.Threading.Tasks;
@@ -66,6 +67,10 @@ namespace NaCoDoKina.Api.Tests.Controllers
         {
             //Arrange
             var userLocation = new Location { Longitude = 1, Latitude = 1 };
+
+            ShowServiceMock
+                .Setup(service => service.GetAllShowsAsync(userLocation))
+                .ThrowsAsync(new ShowsNotFoundException());
 
             //Act
             var result = await ControllerUnderTest.GetAllShowsAsync(userLocation);
