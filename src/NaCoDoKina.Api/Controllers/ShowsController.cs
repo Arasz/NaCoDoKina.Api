@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NaCoDoKina.Api.DataContracts;
+using NaCoDoKina.Api.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,15 +11,22 @@ namespace NaCoDoKina.Api.Controllers
     [Route("v1/[controller]")]
     public class ShowsController : Controller
     {
+        private readonly IShowService _showService;
+
+        public ShowsController(IShowService showService)
+        {
+            _showService = showService;
+        }
+
         /// <summary>
         /// Returns all accessible shows for current user. Shows are sorted by predicted user rating. 
         /// </summary>
-        /// <returns> Sorted list of shows ids </returns>
+        /// <returns> Shows ids sorted by estimated user rating </returns>
         [ProducesResponseType(typeof(IEnumerable<long>), StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromBody]Location location)
+        public async Task<IActionResult> GetAllShowsAsync([FromBody]Location location)
         {
             throw new NotImplementedException();
         }
