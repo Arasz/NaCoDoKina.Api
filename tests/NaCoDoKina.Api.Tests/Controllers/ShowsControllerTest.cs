@@ -48,9 +48,9 @@ namespace NaCoDoKina.Api.Tests.Controllers
             var result = await ControllerUnderTest.GetAllShowsAsync(userLocation);
 
             //Assert
-            var okResult = result.Should().BeOfType<OkObjectResult>()
-                .As<OkObjectResult>();
-            okResult.Value.Should().BeSameAs(expectedShowsIds);
+            result.Should().BeOfType<OkObjectResult>();
+            var okResult = result as OkObjectResult;
+            okResult?.Value.Should().BeSameAs(expectedShowsIds);
         }
 
         [Fact]
@@ -97,8 +97,8 @@ namespace NaCoDoKina.Api.Tests.Controllers
             var result = await ControllerUnderTest.GetShowAsync(showId);
 
             //Assert
-            var okResult = result.Should().BeOfType<OkObjectResult>()
-                .As<OkObjectResult>();
+            result.Should().BeOfType<OkObjectResult>();
+            var okResult = result as OkObjectResult;
             okResult.Value.Should().BeSameAs(show);
         }
 
@@ -161,8 +161,8 @@ namespace NaCoDoKina.Api.Tests.Controllers
             var result = await ControllerUnderTest.GetShowDetailsAsync(showId);
 
             //Assert
-            var okResult = result.Should().BeOfType<OkObjectResult>()
-                .As<OkObjectResult>();
+            result.Should().BeOfType<OkObjectResult>();
+            var okResult = result as OkObjectResult;
             okResult.Value.Should().BeSameAs(showDetails);
         }
 

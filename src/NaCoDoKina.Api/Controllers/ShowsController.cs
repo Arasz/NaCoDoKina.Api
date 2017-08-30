@@ -33,7 +33,7 @@ namespace NaCoDoKina.Api.Controllers
         public async Task<IActionResult> GetAllShowsAsync([FromBody]Location location)
         {
             if (location is null)
-                return NotFound();
+                return BadRequest();
 
             try
             {
