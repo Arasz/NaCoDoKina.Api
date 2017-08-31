@@ -3,7 +3,7 @@
     /// <summary>
     /// Detailed informations about show 
     /// </summary>
-    public class ShowDetails
+    public class MovieDetails
     {
     }
 }

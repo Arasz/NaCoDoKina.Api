@@ -1,6 +1,8 @@
-﻿using NaCoDoKina.Api.DataContracts;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Location = NaCoDoKina.Api.DataContracts.Location;
+using Movie = NaCoDoKina.Api.DataContracts.Movie;
+using MovieDetails = NaCoDoKina.Api.DataContracts.MovieDetails;
 
 namespace NaCoDoKina.Api.Services
 {
@@ -14,26 +16,26 @@ namespace NaCoDoKina.Api.Services
         /// </summary>
         /// <param name="location"> User location </param>
         /// <returns> Shows ids sorted by estimated user rating </returns>
-        Task<IEnumerable<long>> GetAllShowsAsync(Location location);
+        Task<IEnumerable<long>> GetAllMoviesAsync(Location location);
 
         /// <summary>
         /// Get show basic information 
         /// </summary>
         /// <param name="id"> Movie id </param>
         /// <returns> Basic show information </returns>
-        Task<Movie> GetShowAsync(long id);
+        Task<Movie> GetMovieAsync(long id);
 
         /// <summary>
         /// Mark show as deleted 
         /// </summary>
         /// <param name="id"> Movie id </param>
-        Task DeleteShowAsync(long id);
+        Task DeleteMovieAsync(long id);
 
         /// <summary>
         /// Get detailed information about show 
         /// </summary>
         /// <param name="id"> Movie id </param>
         /// <returns> Detailed information about show </returns>
-        Task<ShowDetails> GetShowDetailsAsync(long id);
+        Task<MovieDetails> GetMovieDetailsAsync(long id);
     }
 }
