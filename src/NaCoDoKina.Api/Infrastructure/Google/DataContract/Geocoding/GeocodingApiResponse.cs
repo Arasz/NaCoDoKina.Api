@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NaCoDoKina.Api.Infrastructure.Google.DataContract
+namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding
 {
     public class GeocodingApiResponse
     {

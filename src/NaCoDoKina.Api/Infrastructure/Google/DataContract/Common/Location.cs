@@ -1,4 +1,4 @@
-﻿namespace NaCoDoKina.Api.Infrastructure.Google.DataContract
+﻿namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Common
 {
     public class Location
     {

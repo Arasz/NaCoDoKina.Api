@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace NaCoDoKina.Api.Infrastructure.Google.DataContract
+namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding
 {
     [DataContract]
     public class AddressComponent

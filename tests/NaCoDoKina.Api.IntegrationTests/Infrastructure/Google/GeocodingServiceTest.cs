@@ -1,9 +1,8 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using NaCoDoKina.Api.Infrastructure;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract;
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding;
 using NaCoDoKina.Api.Infrastructure.Google.Services;
-using NaCoDoKina.Api.Infrastructure.Services.Google;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -25,7 +24,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
     public class GeocodeAsync : GeocodingServiceTest
     {
         [Fact]
-        public async Task Return_geolocation_for_given_address()
+        public async Task Should_return_geolocation_for_given_address()
         {
             //arrange
             var testAddress = "Poronińska 3, 60-472 Poznań-Jeżyce, Polska";
@@ -41,6 +40,32 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
 
             geolocation.Lat.Should().Be(testGeolocation.Lat);
             geolocation.Lng.Should().Be(testGeolocation.Lng);
+        }
+
+        [Fact]
+        public async Task Should_return_invalid_request_when_address_not_given()
+        {
+            //arrange
+            var testAddress = "";
+
+            //act
+            var response = await ServiceUnderTest.GeocodeAsync(testAddress);
+
+            //assert
+            response.Status.Should().Be("INVALID_REQUEST");
+        }
+
+        [Fact]
+        public async Task Should_return_zero_results_when_address_is_incorrect()
+        {
+            //arrange
+            var testAddress = "dkfkfdfddfd";
+
+            //act
+            var response = await ServiceUnderTest.GeocodeAsync(testAddress);
+
+            //assert
+            response.Status.Should().Be("ZERO_RESULTS");
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract;
-using NaCoDoKina.Api.Infrastructure.Services.Google;
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;

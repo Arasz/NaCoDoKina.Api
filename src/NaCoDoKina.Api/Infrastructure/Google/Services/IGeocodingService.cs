@@ -1,7 +1,7 @@
-﻿using NaCoDoKina.Api.Infrastructure.Google.DataContract;
+﻿using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding;
 using System.Threading.Tasks;
 
-namespace NaCoDoKina.Api.Infrastructure.Services.Google
+namespace NaCoDoKina.Api.Infrastructure.Google.Services
 {
     /// <summary>
     /// Client for google geocoding service 
