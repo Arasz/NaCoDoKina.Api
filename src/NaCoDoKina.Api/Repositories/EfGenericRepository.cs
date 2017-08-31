@@ -1,6 +1,9 @@
-﻿using NaCoDoKina.Api.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using NaCoDoKina.Api.Data;
+using NaCoDoKina.Api.Entities;
 using NaCoDoKina.Api.Specifications;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Repositories
@@ -8,34 +11,44 @@ namespace NaCoDoKina.Api.Repositories
     public class EfGenericRepository<T> : IRepository<T>
         where T : Entity
     {
-        public Task<T> GetByIdAsync(int id)
+        private readonly ApplicationContext _dbContext;
+
+        public EfGenericRepository(ApplicationContext dbContext)
         {
-            throw new System.NotImplementedException();
+            _dbContext = dbContext;
         }
 
-        public Task<List<T>> ListAsync()
+        public Task<T> GetByIdAsync(int id) => _dbContext.Set<T>()
+            .SingleOrDefaultAsync(e => e.Id == id);
+
+        public Task<List<T>> ListAsync() => _dbContext.Set<T>()
+            .ToListAsync();
+
+        public Task<List<T>> ListAsync(ISpecification<T> specification)
         {
-            throw new System.NotImplementedException();
+            var resultWithIncludes = specification.Includes
+                .Aggregate(_dbContext.Set<T>().AsQueryable(),
+                    (current, include) => current.Include(include));
+
+            return resultWithIncludes
+                .Where(specification.Criteria)
+                .ToListAsync();
         }
 
-        public Task<List<T>> ListAsync(ISpecification<T> spec)
+        public T Add(T entity)
         {
-            throw new System.NotImplementedException();
+            _dbContext.Set<T>().Add(entity);
+            return entity;
         }
 
-        public Task<T> AddAsync(T entity)
+        public void Update(T entity)
         {
-            throw new System.NotImplementedException();
+            var entityEntry = _dbContext.Entry(entity);
+            entityEntry.State = EntityState.Modified;
         }
 
-        public Task UpdateAsync(T entity)
-        {
-            throw new System.NotImplementedException();
-        }
+        public void Delete(T entity) => _dbContext.Set<T>().Remove(entity);
 
-        public Task DeleteAsync(T entity)
-        {
-            throw new System.NotImplementedException();
-        }
+        public Task SaveChangesAsync() => _dbContext.SaveChangesAsync();
     }
 }

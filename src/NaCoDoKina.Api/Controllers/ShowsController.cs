@@ -50,7 +50,7 @@ namespace NaCoDoKina.Api.Controllers
         /// <summary>
         /// Returns basic informations about show 
         /// </summary>
-        /// <param name="id"> Show id </param>
+        /// <param name="id"> Movie id </param>
         /// <returns> Basic informations about show </returns>
         [ProducesResponseType(typeof(Show), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -64,7 +64,7 @@ namespace NaCoDoKina.Api.Controllers
             }
             catch (ShowNotFoundException exception)
             {
-                _logger.LogWarning("Show with {id} was not found", id);
+                _logger.LogWarning("Movie with {id} was not found", id);
                 return NotFound(exception.Message);
             }
         }
@@ -72,7 +72,7 @@ namespace NaCoDoKina.Api.Controllers
         /// <summary>
         /// Deletes (hides) show for current user 
         /// </summary>
-        /// <param name="id"> Show id </param>
+        /// <param name="id"> Movie id </param>
         /// <returns> Basic informations about show </returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -86,7 +86,7 @@ namespace NaCoDoKina.Api.Controllers
             }
             catch (ShowNotFoundException exception)
             {
-                _logger.LogWarning("Show with {id} was not found", id);
+                _logger.LogWarning("Movie with {id} was not found", id);
                 return NotFound(exception.Message);
             }
         }
@@ -94,7 +94,7 @@ namespace NaCoDoKina.Api.Controllers
         /// <summary>
         /// Returns detailed information about show 
         /// </summary>
-        /// <param name="id"> Show id </param>
+        /// <param name="id"> Movie id </param>
         /// <returns> Detailed informations about show </returns>
         [ProducesResponseType(typeof(ShowDetails), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -108,7 +108,7 @@ namespace NaCoDoKina.Api.Controllers
             }
             catch (ShowDetailsNotFoundException exception)
             {
-                _logger.LogWarning("Show details for show with {id} were not found", id);
+                _logger.LogWarning("Movie details for show with {id} were not found", id);
                 return NotFound(exception.Message);
             }
         }
