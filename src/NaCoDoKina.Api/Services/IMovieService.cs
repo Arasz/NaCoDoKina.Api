@@ -7,7 +7,7 @@ namespace NaCoDoKina.Api.Services
     /// <summary>
     /// Business logic contract for shows 
     /// </summary>
-    public interface IShowService
+    public interface IMovieService
     {
         /// <summary>
         /// Get all shows available near given location. 
@@ -21,7 +21,7 @@ namespace NaCoDoKina.Api.Services
         /// </summary>
         /// <param name="id"> Movie id </param>
         /// <returns> Basic show information </returns>
-        Task<Show> GetShowAsync(long id);
+        Task<Movie> GetShowAsync(long id);
 
         /// <summary>
         /// Mark show as deleted 

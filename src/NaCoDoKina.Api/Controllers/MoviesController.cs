@@ -11,15 +11,15 @@ using System.Threading.Tasks;
 namespace NaCoDoKina.Api.Controllers
 {
     [Route("v1/[controller]")]
-    public class ShowsController : Controller
+    public class MoviesController : Controller
     {
-        private readonly ILogger<ShowsController> _logger;
-        private readonly IShowService _showService;
+        private readonly ILogger<MoviesController> _logger;
+        private readonly IMovieService _movieService;
 
-        public ShowsController(IShowService showService, ILogger<ShowsController> logger)
+        public MoviesController(IMovieService movieService, ILogger<MoviesController> logger)
         {
             _logger = logger;
-            _showService = showService ?? throw new ArgumentNullException(nameof(showService));
+            _movieService = movieService ?? throw new ArgumentNullException(nameof(movieService));
         }
 
         /// <summary>
@@ -30,14 +30,14 @@ namespace NaCoDoKina.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
-        public async Task<IActionResult> GetAllShowsAsync([FromBody]Location location)
+        public async Task<IActionResult> GetAllMoviesAsync([FromBody]Location location)
         {
             if (location is null)
                 return BadRequest();
 
             try
             {
-                var shows = await _showService.GetAllShowsAsync(location);
+                var shows = await _movieService.GetAllMoviesAsync(location);
                 return Ok(shows);
             }
             catch (ShowsNotFoundException exception)
@@ -52,14 +52,14 @@ namespace NaCoDoKina.Api.Controllers
         /// </summary>
         /// <param name="id"> Movie id </param>
         /// <returns> Basic informations about show </returns>
-        [ProducesResponseType(typeof(Show), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Movie), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetShowAsync(long id)
+        public async Task<IActionResult> GetMovieAsync(long id)
         {
             try
             {
-                var show = await _showService.GetShowAsync(id);
+                var show = await _movieService.GetMovieAsync(id);
                 return Ok(show);
             }
             catch (ShowNotFoundException exception)
@@ -77,11 +77,11 @@ namespace NaCoDoKina.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteShowAsync(long id)
+        public async Task<IActionResult> DeleteMovieAsync(long id)
         {
             try
             {
-                await _showService.DeleteShowAsync(id);
+                await _movieService.DeleteMovieAsync(id);
                 return Ok();
             }
             catch (ShowNotFoundException exception)
@@ -96,14 +96,14 @@ namespace NaCoDoKina.Api.Controllers
         /// </summary>
         /// <param name="id"> Movie id </param>
         /// <returns> Detailed informations about show </returns>
-        [ProducesResponseType(typeof(ShowDetails), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MovieDetails), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}/details")]
-        public async Task<IActionResult> GetShowDetailsAsync(long id)
+        public async Task<IActionResult> GetMovieDetailsAsync(long id)
         {
             try
             {
-                var show = await _showService.GetShowDetailsAsync(id);
+                var show = await _movieService.GetMovieDetailsAsync(id);
                 return Ok(show);
             }
             catch (ShowDetailsNotFoundException exception)
