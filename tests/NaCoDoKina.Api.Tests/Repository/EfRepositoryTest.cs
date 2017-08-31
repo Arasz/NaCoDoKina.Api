@@ -89,5 +89,25 @@ namespace NaCoDoKina.Api.Repository
                 }
             }
         }
+
+        [Fact]
+        public async Task Should_return_null_when_id_was_not_found()
+        {
+            using (var scope = DatabaseScope)
+            {
+                //Arrange
+                await DatabaseSeed.SeedAsync(scope.DbContext);
+                var repositories = CreateRepositoriesUnderTest(scope.DbContext);
+                var id = 1;
+
+                //Act
+                foreach (var repository in repositories)
+                {
+                    var entity = await repository.GetByIdAsync(id);
+                    //Assert
+                    entity.Should().BeNull();
+                }
+            }
+        }
     }
 }
