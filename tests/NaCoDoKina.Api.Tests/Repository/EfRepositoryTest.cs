@@ -47,6 +47,9 @@ namespace NaCoDoKina.Api.Repository
 
         protected InMemeorySqliteDatabaseScope<ApplicationContext> DatabaseScope => new InMemeorySqliteDatabaseScope<ApplicationContext>();
 
+        protected IRepository<TEntity> RepositoryUnderTest<TEntity>(ApplicationContext applicationContext) where TEntity : Entity
+            => new EfGenericRepository<TEntity>(applicationContext);
+
         protected IEnumerable<IRepository<Entity>> CreateRepositoriesUnderTest(ApplicationContext context)
         {
             if (_repositories != null)
@@ -98,7 +101,7 @@ namespace NaCoDoKina.Api.Repository
                 //Arrange
                 await DatabaseSeed.SeedAsync(scope.DbContext);
                 var repositories = CreateRepositoriesUnderTest(scope.DbContext);
-                var id = 1;
+                var id = 99;
 
                 //Act
                 foreach (var repository in repositories)
@@ -107,6 +110,48 @@ namespace NaCoDoKina.Api.Repository
                     //Assert
                     entity.Should().BeNull();
                 }
+            }
+        }
+    }
+
+    public class Add : EfRepositoryTest
+    {
+        [Fact]
+        public async Task Should_add_entity_to_change_tracker()
+        {
+            using (var scope = DatabaseScope)
+            {
+                //Arrange
+                await DatabaseSeed.SeedAsync(scope.DbContext);
+                var id = 55;
+                var movie = new Movie
+                {
+                    Id = id,
+                    Title = "TestMovie",
+                    Details = new MovieDetails { Id = id },
+                    MovieShowtimes = new List<MovieShowtime>()
+                };
+
+                //Act
+                var repository = RepositoryUnderTest<Movie>(scope.DbContext);
+
+                var entity = repository.Add(movie);
+
+                await repository.SaveChangesAsync();
+
+                var addedEntity = await repository.GetByIdAsync(entity.Id);
+
+                //Assert
+
+                addedEntity.Should().BeSameAs(movie);
+
+                scope.DbContext.ChangeTracker.Entries<Movie>()
+                    .Where(entry => entry.Entity == movie)
+                    .Should()
+                    .NotBeEmpty();
+
+                entity.Should().NotBeNull();
+                entity.Id.Should().Be(id);
             }
         }
     }

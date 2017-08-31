@@ -18,7 +18,7 @@ namespace NaCoDoKina.Api.Repositories
             _dbContext = dbContext;
         }
 
-        public Task<T> GetByIdAsync(int id) => _dbContext.Set<T>()
+        public Task<T> GetByIdAsync(long id) => _dbContext.Set<T>()
             .SingleOrDefaultAsync(e => e.Id == id);
 
         public Task<List<T>> ListAsync() => _dbContext.Set<T>()

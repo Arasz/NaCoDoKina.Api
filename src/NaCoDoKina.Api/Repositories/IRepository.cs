@@ -11,7 +11,7 @@ namespace NaCoDoKina.Api.Repositories
     /// <typeparam name="T"></typeparam>
     public interface IRepository<T> where T : Entity
     {
-        Task<T> GetByIdAsync(int id);
+        Task<T> GetByIdAsync(long id);
 
         Task<List<T>> ListAsync();
 
