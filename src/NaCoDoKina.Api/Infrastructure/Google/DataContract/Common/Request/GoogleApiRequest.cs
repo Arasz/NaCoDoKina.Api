@@ -1,4 +1,4 @@
-﻿namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Common
+﻿namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request
 {
     public abstract class GoogleApiRequest
     {

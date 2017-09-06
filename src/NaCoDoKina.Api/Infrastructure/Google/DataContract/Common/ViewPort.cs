@@ -1,6 +1,4 @@
-﻿using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common;
-
-namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding
+﻿namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Common
 {
     public class ViewPort
     {

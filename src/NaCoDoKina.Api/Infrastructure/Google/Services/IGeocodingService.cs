@@ -1,4 +1,5 @@
-﻿using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding;
+﻿using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Request;
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Response;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.Services
@@ -12,9 +13,9 @@ namespace NaCoDoKina.Api.Infrastructure.Google.Services
         /// <summary>
         /// Makes request to google geocoding api 
         /// </summary>
-        /// <param name="address"> Place address </param>
+        /// <param name="geocodingApiRequest"></param>
         /// <see cref="https://developers.google.com/maps/documentation/geocoding/intro"/>
         /// <returns> Google api response </returns>
-        Task<GeocodingApiResponse> GeocodeAsync(string address);
+        Task<GeocodingApiResponse> GeocodeAsync(GeocodingApiRequest geocodingApiRequest);
     }
 }

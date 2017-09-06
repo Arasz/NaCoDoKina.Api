@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding
+namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Response
 {
     [DataContract]
     public class GeocodingApiResult

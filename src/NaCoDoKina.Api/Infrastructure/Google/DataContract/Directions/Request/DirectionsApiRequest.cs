@@ -1,6 +1,7 @@
-using System;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Response;
+using System;
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request
 {
@@ -93,7 +94,7 @@ namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request
 
         public TransitRoutingPreference TransitRoutingPreference { get; set; }
 
-        public DirectionsApiRequest(string origin, string destination, string key) : base(key)
+        public DirectionsApiRequest(string origin, string destination)
         {
             Origin = origin;
             Destination = destination;

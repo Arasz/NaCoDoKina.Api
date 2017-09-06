@@ -1,41 +1,19 @@
-﻿using Microsoft.Extensions.Logging;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding;
-using System;
-using System.Net.Http;
+﻿using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Request;
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Response;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.Services
 {
-    public class GeocodingService : BaseHttpApiClient, IGeocodingService
+    public class GeocodingService : BaseGoogleService<GeocodingApiRequest, GeocodingApiResponse>, IGeocodingService
     {
-        private readonly string _apiKey;
-
-        private string _baseUrl = @"https://maps.googleapis.com/maps/api/geocode/";
-
-        private string _outputFormat = "json";
-
-        private string CreateRequestUrl(string address) => $"{_baseUrl}{_outputFormat}?address={ToUrlEncoded(address)}&key={_apiKey}";
-
-        public async Task<GeocodingApiResponse> GeocodeAsync(string address)
+        public GeocodingService(GoogleServiceDependencies<GeocodingApiRequest> googleServiceDependencies)
+            : base(googleServiceDependencies)
         {
-            var url = CreateRequestUrl(address);
-            var response = await HttpClient.GetAsync(url);
-
-            try
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                return Deserialize<GeocodingApiResponse>(content);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError("Error during deserialization of google api response: @e", e);
-                throw;
-            }
         }
 
-        public GeocodingService(HttpClient httpClient, ILogger<BaseHttpApiClient> logger, string apiKey) : base(httpClient, logger)
-        {
-            _apiKey = apiKey;
-        }
+        protected override string BaseUrl { get; } = "http://maps.googleapis.com/maps/api/geocode/";
+
+        public Task<GeocodingApiResponse> GeocodeAsync(GeocodingApiRequest geocodingApiRequest)
+            => MakeRequest(geocodingApiRequest);
     }
 }

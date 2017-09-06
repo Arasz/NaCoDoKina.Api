@@ -1,7 +1,9 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using NaCoDoKina.Api.Infrastructure;
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding;
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Request;
 using NaCoDoKina.Api.Infrastructure.Google.Services;
 using System.Linq;
 using System.Net.Http;
@@ -14,10 +16,15 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
     {
         protected IGeocodingService ServiceUnderTest { get; }
 
+        protected const string ApiKey = "AIzaSyB0k9n49t5OXZ9XUfh8n9zUfhmdQ-_Tt5M";
+
         public GeocodingServiceTest()
         {
-            //MOVE THIS API KEY TO SAFE STORAGE
-            ServiceUnderTest = new GeocodingService(new HttpClient(), new NullLogger<BaseHttpApiClient>(), "AIzaSyB0k9n49t5OXZ9XUfh8n9zUfhmdQ-_Tt5M");
+            var httpClient = new HttpClient();
+            var logger = new NullLogger<BaseHttpApiClient>();
+            var requestParser = new SimpleGeocodingRequestParser();
+            var dependencies = new GoogleServiceDependencies<GeocodingApiRequest>(httpClient, requestParser, logger, ApiKey);
+            ServiceUnderTest = new GeocodingService(dependencies);
         }
     }
 
@@ -29,9 +36,10 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
             //arrange
             var testAddress = "Poronińska 3, 60-472 Poznań-Jeżyce, Polska";
             var testGeolocation = new Location { Lat = 52.4531839, Lng = 16.882369 };
+            var apiRequest = new GeocodingApiRequest(testAddress);
 
             //act
-            var response = await ServiceUnderTest.GeocodeAsync(testAddress);
+            var response = await ServiceUnderTest.GeocodeAsync(apiRequest);
 
             //assert
             response.Status.Should().Be("OK");
@@ -47,9 +55,10 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
         {
             //arrange
             var testAddress = "";
+            var apiRequest = new GeocodingApiRequest(testAddress);
 
             //act
-            var response = await ServiceUnderTest.GeocodeAsync(testAddress);
+            var response = await ServiceUnderTest.GeocodeAsync(apiRequest);
 
             //assert
             response.Status.Should().Be("INVALID_REQUEST");
@@ -60,9 +69,10 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
         {
             //arrange
             var testAddress = "dkfkfdfddfd";
+            var apiRequest = new GeocodingApiRequest(testAddress);
 
             //act
-            var response = await ServiceUnderTest.GeocodeAsync(testAddress);
+            var response = await ServiceUnderTest.GeocodeAsync(apiRequest);
 
             //assert
             response.Status.Should().Be("ZERO_RESULTS");

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common;
 
-namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding
+namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Response
 {
     [DataContract]
     public class Geometry

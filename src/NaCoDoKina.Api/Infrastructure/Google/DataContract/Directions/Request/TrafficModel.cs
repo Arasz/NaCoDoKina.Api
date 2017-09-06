@@ -1,4 +1,4 @@
-﻿namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions
+﻿namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request
 {
     /// <summary>
     /// Specifies the assumptions to use when calculating time in traffic. 

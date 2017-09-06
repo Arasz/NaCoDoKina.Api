@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions
+namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Response
 {
     [DataContract]
     public class Leg

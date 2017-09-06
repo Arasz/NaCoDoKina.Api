@@ -17,4 +17,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\NaCoDoKina.Api\NaCoDoKina.Api.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Infrastructure\" />
+  </ItemGroup>
 </Project>
