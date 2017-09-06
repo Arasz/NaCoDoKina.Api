@@ -3,11 +3,11 @@ using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Request;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding
 {
-    public class SimpleGeocodingRequestParser : IRequestParser<GeocodingApiRequest>
+    public class SimpleGeocodingRequestParser : GoogleRequestParserBase<GeocodingApiRequest>
     {
-        public string Parse(GeocodingApiRequest request)
+        public override string Parse(GeocodingApiRequest request)
         {
-            return $"{request.Address}";
+            return $"{FormatPropertyName(nameof(request.Address))}={request.Address}";
         }
     }
 }

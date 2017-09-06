@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NaCoDoKina.Api.Controllers;
 using NaCoDoKina.Api.DataContracts;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Services;
@@ -10,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace NaCoDoKina.Api.Tests.Controllers
+namespace NaCoDoKina.Api.Controllers
 {
     /// <summary>
     /// Base class for all show controller tests 
