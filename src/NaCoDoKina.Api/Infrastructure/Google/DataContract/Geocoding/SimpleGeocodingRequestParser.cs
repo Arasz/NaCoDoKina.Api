@@ -7,7 +7,7 @@ namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding
     {
         public string Parse(GeocodingApiRequest request)
         {
-            return $"{request.Address}"
+            return $"{request.Address}";
         }
     }
 }

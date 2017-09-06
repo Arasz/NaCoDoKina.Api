@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request
 {
@@ -10,10 +9,9 @@ namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request
 
         protected string FormatPropertyName(string name)
         {
-            var tokens = _formatRegex.Split(name)
-                .Select(token => token.ToLowerInvariant());
+            var formatted = _formatRegex.Replace(name, match => $"_{match.Value.ToLowerInvariant()}");
 
-            return string.Join('_', tokens);
+            return formatted.TrimStart('_');
         }
 
         public abstract string Parse(TRequest request);

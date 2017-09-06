@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request;
+using System.Collections.Generic;
 using Xunit;
 
 namespace NaCoDoKina.Api.Infrastructure
@@ -29,12 +30,20 @@ namespace NaCoDoKina.Api.Infrastructure
 
     public class FormatPropertyName : GoogleRequestParserBaseTest
     {
-        [Fact]
-        public void Should_return_correctly_formatted_property()
+        public static IEnumerable<object[]> TestData => new List<object[]>
+        {
+            new object[] {"SimpleTestProperty", "simple_test_property"},
+            new object[] {"Simple", "simple"},
+            new object[] {"PrOpErTy", "pr_op_er_ty"},
+            new object[] {"PROpErTy", "p_r_op_er_ty"}
+        };
+
+        [Theory, MemberData(nameof(TestData))]
+        public void Should_return_correctly_formatted_property(string propertyName, string expectedPropertyName)
         {
             //Arrange
-            var fakeRequest = new GoogleApiRequestFake { PropertyNameToFormat = "SimpleTestProperty" };
-            var expected = "simple_test_property";
+            var fakeRequest = new GoogleApiRequestFake { PropertyNameToFormat = propertyName };
+            var expected = expectedPropertyName;
 
             //Act
             var formatted = ParserUnderTest.Parse(fakeRequest);
