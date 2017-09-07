@@ -7,9 +7,9 @@ namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions
     {
         public override string Parse(DirectionsApiRequest request)
         {
-            return $"{FormatPropertyName(nameof(request.Origin))}{request.Origin}&" +
-                   $"{FormatPropertyName(nameof(request.Destination))}{request.Destination}&" +
-                   $"{FormatPropertyName(nameof(request.Key))}{request.Key}";
+            return $"{FormatPropertyName(nameof(request.Origin))}={request.Origin}&" +
+                   $"{FormatPropertyName(nameof(request.Destination))}={request.Destination}&" +
+                   $"{FormatPropertyName(nameof(request.Key))}={request.Key}";
         }
     }
 }
