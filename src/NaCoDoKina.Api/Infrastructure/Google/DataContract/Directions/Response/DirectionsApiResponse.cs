@@ -1,14 +1,12 @@
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Response;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Response
 {
     [DataContract]
-    public class DirectionsApiResponse
+    public class DirectionsApiResponse : GoogleApiResponse
     {
-        [DataMember(Name = "status")]
-        public string Status { get; set; }
-
         [DataMember(Name = "geocoded_waypoints ")]
         public List<GeocodedWaypoint> GeocodedWaypoints { get; set; }
 

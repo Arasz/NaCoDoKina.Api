@@ -11,7 +11,7 @@ namespace NaCoDoKina.Api.Infrastructure.Google.Services
         {
         }
 
-        protected override string BaseUrl { get; } = "http://maps.googleapis.com/maps/api/geocode/";
+        protected override string BaseUrl { get; } = "https://maps.googleapis.com/maps/api/geocode/";
 
         public Task<GeocodingApiResponse> GeocodeAsync(GeocodingApiRequest geocodingApiRequest)
             => MakeRequest(geocodingApiRequest);

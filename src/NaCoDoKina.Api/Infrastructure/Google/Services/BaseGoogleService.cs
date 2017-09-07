@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request;
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Response;
+using System;
+using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.Services
 {
     public abstract class BaseGoogleService<TRequest, TResponse> : BaseHttpApiClient
         where TRequest : GoogleApiRequest
+        where TResponse : GoogleApiResponse
 
     {
         private readonly IRequestParser<TRequest> _requestParser;

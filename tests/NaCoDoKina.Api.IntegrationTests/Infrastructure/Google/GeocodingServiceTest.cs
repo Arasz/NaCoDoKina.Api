@@ -22,7 +22,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
         {
             var httpClient = new HttpClient();
             var logger = new NullLogger<BaseHttpApiClient>();
-            var requestParser = new SimpleGeocodingRequestParser();
+            var requestParser = new OnlyRequiredGeocodingRequestParser();
             var dependencies = new GoogleServiceDependencies<GeocodingApiRequest>(httpClient, requestParser, logger, ApiKey);
             ServiceUnderTest = new GeocodingService(dependencies);
         }
