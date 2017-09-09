@@ -1,25 +1,53 @@
-﻿using NaCoDoKina.Api.Entities;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
+using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request;
+using NaCoDoKina.Api.Infrastructure.Google.Exceptions;
 using NaCoDoKina.Api.Infrastructure.Google.Services;
 using NaCoDoKina.Api.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Services
 {
     public class LocationService : ILocationService
     {
-        private readonly IDirectionsService _directionsService;
-        private readonly IGeocodingService _geocodingService;
+        private readonly IGoogleDirectionsService _googleDirectionsService;
+        private readonly IGoogleGeocodingService _googleGeocodingService;
+        private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public LocationService(IDirectionsService directionsService, IGeocodingService geocodingService)
+        public LocationService(IGoogleDirectionsService googleDirectionsService, IGoogleGeocodingService googleGeocodingService, IMapper mapper, ILogger logger)
         {
-            _directionsService = directionsService;
-            _geocodingService = geocodingService;
+            _googleDirectionsService = googleDirectionsService;
+            _googleGeocodingService = googleGeocodingService;
+            _mapper = mapper;
+            _logger = logger;
         }
 
-        public Task<TimeSpan> CalculateTravelTimeAsync(TravelPlan travelPlan)
+        public async Task<TimeSpan> CalculateTravelTimeAsync(TravelPlan travelPlan)
         {
-            throw new NotImplementedException();
+            var request = _mapper.Map<DirectionsApiRequest>(travelPlan);
+
+            try
+            {
+                var response = await _googleDirectionsService.GetDirections(request);
+
+                return response.Routes
+                    .SelectMany(route => route.Legs)
+                    .Select(leg => TimeSpan.FromSeconds(leg.Duration.Value))
+                    .Max();
+            }
+            catch (GoogleApiException exception) when (exception.Status != GoogleApiStatus.Unspecifed)
+            {
+                _logger.LogError("Error during travel time calculation {@Exception}.", exception);
+                return TimeSpan.MinValue;
+            }
+            catch (GoogleApiException)
+            {
+                return TimeSpan.MinValue;
+            }
         }
 
         public Task<Location> TranslateAddressToLocationAsync(string address)

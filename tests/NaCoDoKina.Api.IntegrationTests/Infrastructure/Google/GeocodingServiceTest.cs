@@ -3,20 +3,23 @@ using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Request;
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Response;
+using NaCoDoKina.Api.Infrastructure.Google.Exceptions;
 using NaCoDoKina.Api.Infrastructure.Google.Services;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
 {
-    public class GeocodingServiceTest : GoogleServiceTestBase<IGeocodingService, GeocodingApiRequest>
+    public class GeocodingServiceTest : GoogleServiceTestBase<IGoogleGeocodingService, GeocodingApiRequest>
     {
         protected override IRequestParser<GeocodingApiRequest> RequestParser
             => new OnlyRequiredGeocodingRequestParser();
 
-        protected override IGeocodingService CreateServiceUnderTest(GoogleServiceDependencies<GeocodingApiRequest> dependencies)
-            => new GeocodingService(dependencies);
+        protected override IGoogleGeocodingService CreateServiceUnderTest(GoogleServiceDependencies<GeocodingApiRequest> dependencies)
+            => new GoogleGeocodingService(dependencies);
 
         public class GeocodeAsync : GeocodingServiceTest
         {
@@ -48,10 +51,11 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
                 var apiRequest = new GeocodingApiRequest(testAddress);
 
                 //act
-                var response = await ServiceUnderTest.GeocodeAsync(apiRequest);
+                Func<Task<GeocodingApiResponse>> action = async () => await ServiceUnderTest.GeocodeAsync(apiRequest);
 
                 //assert
-                response.Status.Should().Be("INVALID_REQUEST");
+                action.ShouldThrow<GoogleApiException>()
+                    .Which.Status.Should().HaveFlag(GoogleApiStatus.InvalidRequest);
             }
 
             [Fact]
@@ -62,10 +66,11 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
                 var apiRequest = new GeocodingApiRequest(testAddress);
 
                 //act
-                var response = await ServiceUnderTest.GeocodeAsync(apiRequest);
+                Func<Task<GeocodingApiResponse>> action = async () => await ServiceUnderTest.GeocodeAsync(apiRequest);
 
                 //assert
-                response.Status.Should().Be("ZERO_RESULTS");
+                action.ShouldThrow<GoogleApiException>()
+                    .Which.Status.Should().HaveFlag(GoogleApiStatus.ZeroResults);
             }
         }
     }

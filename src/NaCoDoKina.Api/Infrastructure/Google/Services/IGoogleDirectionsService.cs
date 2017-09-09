@@ -8,7 +8,7 @@ namespace NaCoDoKina.Api.Infrastructure.Google.Services
     /// Client for google directions service 
     /// </summary>
     /// <see cref="https://developers.google.com/maps/documentation/directions/intro#traffic-model"/>
-    public interface IDirectionsService
+    public interface IGoogleDirectionsService
     {
         /// <summary>
         /// Returns directions for travel described by api request 

@@ -14,7 +14,9 @@ namespace NaCoDoKina.Api.Services
         /// Calculates travel time 
         /// </summary>
         /// <param name="travelPlan"> All data needed for calculation </param>
-        /// <returns> Time needed to reach point B from point A </returns>
+        /// <returns>
+        /// Time needed to reach point B from point A. Returns min value when time couldnt be calculated
+        /// </returns>
         Task<TimeSpan> CalculateTravelTimeAsync(TravelPlan travelPlan);
 
         /// <summary>

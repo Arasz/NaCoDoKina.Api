@@ -8,7 +8,7 @@ namespace NaCoDoKina.Api.Infrastructure.Google.Services
     /// Client for google geocoding service 
     /// </summary>
     /// <see cref="https://developers.google.com/maps/documentation/geocoding/intro"/>
-    public interface IGeocodingService
+    public interface IGoogleGeocodingService
     {
         /// <summary>
         /// Makes request to google geocoding api 

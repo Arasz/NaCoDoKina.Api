@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Response;
+using NaCoDoKina.Api.Infrastructure.Google.Exceptions;
 using System;
 using System.Threading.Tasks;
 
@@ -38,12 +39,21 @@ namespace NaCoDoKina.Api.Infrastructure.Google.Services
             try
             {
                 var content = await response.Content.ReadAsStringAsync();
-                return Deserialize<TResponse>(content);
+                var deserializedResponse = Deserialize<TResponse>(content);
+
+                if (deserializedResponse.Status != "OK")
+                    throw new GoogleApiException(deserializedResponse.Status, deserializedResponse.ErrorMessage);
+
+                return deserializedResponse;
+            }
+            catch (GoogleApiException)
+            {
+                throw;
             }
             catch (Exception exception)
             {
                 Logger.LogError("Error during deserialization of google api response: @e", exception);
-                throw;
+                throw new GoogleApiException(exception);
             }
         }
     }

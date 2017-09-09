@@ -9,13 +9,13 @@ using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
 {
-    public class DirectionsServiceTest : GoogleServiceTestBase<IDirectionsService, DirectionsApiRequest>
+    public class DirectionsServiceTest : GoogleServiceTestBase<IGoogleDirectionsService, DirectionsApiRequest>
     {
         protected override IRequestParser<DirectionsApiRequest> RequestParser
             => new OnlyRequiredDirectionsRequestParser();
 
-        protected override IDirectionsService CreateServiceUnderTest(GoogleServiceDependencies<DirectionsApiRequest> dependencies)
-            => new DirectionsService(dependencies);
+        protected override IGoogleDirectionsService CreateServiceUnderTest(GoogleServiceDependencies<DirectionsApiRequest> dependencies)
+            => new GoogleDirectionsService(dependencies);
 
         public class GetDirections : DirectionsServiceTest
         {
