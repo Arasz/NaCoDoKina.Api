@@ -113,7 +113,7 @@ namespace NaCoDoKina.Api.Migrations
 
                     b.Property<long?>("CinemaId");
 
-                    b.Property<DateTime>("DateTime");
+                    b.Property<DateTime>("Value");
 
                     b.Property<long?>("MovieId");
 

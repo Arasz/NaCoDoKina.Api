@@ -17,5 +17,7 @@
             longitude = Longitude;
             latitude = Latitude;
         }
+
+        public override string ToString() => $"{Longitude},{Latitude}";
     }
 }
