@@ -7,16 +7,16 @@ namespace NaCoDoKina.Api.Models
     /// </summary>
     public class TravelPlan
     {
-        public Location LocationA { get; }
+        public Location Origin { get; }
 
-        public Location LocationB { get; }
+        public Location Destination { get; }
 
         public MeansOfTransport MeansOfTransport { get; }
 
-        public TravelPlan(Location locationA, Location locationB, MeansOfTransport meansOfTransport = MeansOfTransport.Public)
+        public TravelPlan(Location origin, Location destination, MeansOfTransport meansOfTransport = MeansOfTransport.Public)
         {
-            LocationA = locationA;
-            LocationB = locationB;
+            Origin = origin;
+            Destination = destination;
             MeansOfTransport = meansOfTransport;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Infrastructure.Google.Services;
 using NaCoDoKina.Api.Models;
 using System;
 using System.Threading.Tasks;
@@ -7,8 +8,13 @@ namespace NaCoDoKina.Api.Services
 {
     public class LocationService : ILocationService
     {
-        public LocationService()
+        private readonly IDirectionsService _directionsService;
+        private readonly IGeocodingService _geocodingService;
+
+        public LocationService(IDirectionsService directionsService, IGeocodingService geocodingService)
         {
+            _directionsService = directionsService;
+            _geocodingService = geocodingService;
         }
 
         public Task<TimeSpan> CalculateTravelTimeAsync(TravelPlan travelPlan)

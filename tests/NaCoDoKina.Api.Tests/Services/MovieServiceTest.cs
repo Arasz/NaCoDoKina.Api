@@ -8,36 +8,30 @@ using Xunit;
 
 namespace NaCoDoKina.Api.Services
 {
-    public class MovieServiceTest
+    public class MovieServiceTest : ServiceWithRepositoryTestBase<IMovieService, IMovieRepository>
     {
-        protected MovieService ServiceUnderTest { get; }
-
-        protected Mock<IRepository<Movie>> MovieRepositoryMock { get; }
-
         public MovieServiceTest()
         {
-            MovieRepositoryMock = new Mock<IRepository<Movie>>();
-            ServiceUnderTest = new MovieService(MovieRepositoryMock.Object);
+            RepositoryMock = new Mock<IMovieRepository>();
+            ServiceUnderTest = new MovieService(RepositoryMockObject);
         }
-    }
 
-    public class ReadAllMoviesAsync : MovieServiceTest
-    {
-        [Fact]
-        public async Task Should_return_all_movies_available_for_user()
+        public class ReadAllMoviesAsync : MovieServiceTest
         {
-            // Arrange
-            var movies = new ReadOnlyCollection<Movie>(new List<Movie>
+            [Fact]
+            public async Task Should_return_all_movies_available_for_user()
             {
-                new Movie(),
-                new Movie()
-            });
+                // Arrange
+                var movies = new ReadOnlyCollection<Movie>(new List<Movie>
+                {
+                    new Movie(),
+                    new Movie()
+                });
 
-            MovieRepositoryMock.Setup(repository => repository.ListAsync());
+                // Act
 
-            // Act
-
-            // Assert
+                // Assert
+            }
         }
     }
 }

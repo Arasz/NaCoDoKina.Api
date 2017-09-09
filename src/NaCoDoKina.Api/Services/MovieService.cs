@@ -1,5 +1,5 @@
-﻿using NaCoDoKina.Api.Entities;
-using NaCoDoKina.Api.Repositories;
+﻿using NaCoDoKina.Api.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Location = NaCoDoKina.Api.DataContracts.Location;
@@ -9,11 +9,11 @@ namespace NaCoDoKina.Api.Services
 {
     public class MovieService : IMovieService
     {
-        private readonly IRepository<Movie> _repository;
+        private readonly IMovieRepository _repository;
 
-        public MovieService(IRepository<Movie> repository)
+        public MovieService(IMovieRepository repository)
         {
-            _repository = repository;
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
         public Task<IEnumerable<long>> GetAllMoviesAsync(Location location)
