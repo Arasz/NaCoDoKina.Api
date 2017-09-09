@@ -3,6 +3,9 @@ using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Request;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding
 {
+    /// <summary>
+    /// Parses only required request parameters 
+    /// </summary>
     public class OnlyRequiredGeocodingRequestParser : GoogleRequestParserBase<GeocodingApiRequest>
     {
         public override string Parse(GeocodingApiRequest request)
