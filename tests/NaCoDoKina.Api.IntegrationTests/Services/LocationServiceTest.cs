@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using FluentAssertions;
+using NaCoDoKina.Api.Configuration;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Response;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding;
@@ -30,8 +31,10 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             containerBuilder.RegisterType<OnlyRequiredGeocodingRequestParser>()
                 .AsImplementedInterfaces();
 
+            containerBuilder.RegisterType<GoogleApiConfiguration>()
+                .AsSelf();
+
             containerBuilder.RegisterGeneric(typeof(GoogleServiceDependencies<>))
-                .WithParameter("apiKey", "AIzaSyB0k9n49t5OXZ9XUfh8n9zUfhmdQ-_Tt5M")
                 .AsSelf();
 
             containerBuilder.RegisterType<GoogleDirectionsService>()
