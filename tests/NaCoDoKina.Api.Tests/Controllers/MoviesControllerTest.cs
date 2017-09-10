@@ -3,12 +3,16 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NaCoDoKina.Api.DataContracts;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Services;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using Cinema = NaCoDoKina.Api.DataContracts.Cinema;
+using Location = NaCoDoKina.Api.DataContracts.Location;
+using Movie = NaCoDoKina.Api.DataContracts.Movie;
+using MovieDetails = NaCoDoKina.Api.DataContracts.MovieDetails;
 
 namespace NaCoDoKina.Api.Controllers
 {
@@ -35,202 +39,273 @@ namespace NaCoDoKina.Api.Controllers
             MovieServiceMock = new Mock<IMovieService>();
             ControllerUnderTest = new MoviesController(MovieServiceMock.Object, CinemaServiceMock.Object, LoggerMock.Object, MapperMock.Object);
         }
-    }
 
-    public class GetAllMoviesAsync : MoviesControllerTest
-    {
-        [Fact]
-        public async void Should_return_OkObjectResult_with_all_accessible_shows()
+        public class GetAllMoviesAsync : MoviesControllerTest
         {
-            //Arrange
-            var expectedShowsIds = new[] { 1L, 2L, 3L };
-            var modelLocation = new Models.Location(1, 1);
-            var apiLocation = new Location(1, 1);
+            [Fact]
+            public async void Should_return_OkObjectResult_with_all_accessible_shows()
+            {
+                //Arrange
+                var expectedShowsIds = new[] { 1L, 2L, 3L };
+                var modelLocation = new Models.Location(1, 1);
+                var apiLocation = new Location(1, 1);
 
-            MapperMock
-                .Setup(mapper => mapper.Map<Models.Location>(apiLocation))
-                .Returns(modelLocation);
+                MapperMock
+                    .Setup(mapper => mapper.Map<Models.Location>(apiLocation))
+                    .Returns(modelLocation);
 
-            MovieServiceMock
-                .Setup(service => service.GetAllMoviesAsync(modelLocation))
-                .Returns(() => Task.FromResult(expectedShowsIds.AsEnumerable()));
+                MovieServiceMock
+                    .Setup(service => service.GetAllMoviesAsync(modelLocation))
+                    .Returns(() => Task.FromResult(expectedShowsIds.AsEnumerable()));
 
-            //Act
-            var result = await ControllerUnderTest.GetAllMoviesAsync(apiLocation);
+                //Act
+                var result = await ControllerUnderTest.GetAllMoviesAsync(apiLocation);
 
-            //Assert
-            result.Should().BeOfType<OkObjectResult>();
-            var okResult = result as OkObjectResult;
-            okResult?.Value.Should().BeSameAs(expectedShowsIds);
+                //Assert
+                result.Should().BeOfType<OkObjectResult>();
+                var okResult = result as OkObjectResult;
+                okResult?.Value.Should().BeSameAs(expectedShowsIds);
+            }
+
+            [Fact]
+            public async void Should_return_BadRequestResult_when_location_is_null()
+            {
+                //Arrange
+                Location userLocation = null;
+
+                //Act
+                var result = await ControllerUnderTest.GetAllMoviesAsync(userLocation);
+
+                //Assert
+                result.Should().BeOfType<BadRequestResult>();
+            }
+
+            [Fact]
+            public async void Should_return_NotFoundResult_when_ShowsNotFoundException_is_thrown()
+            {
+                //Arrange
+                var expectedShowsIds = new[] { 1L, 2L, 3L };
+                var modelLocation = new Models.Location(1, 1);
+                var apiLocation = new Location(1, 1);
+
+                MapperMock
+                    .Setup(mapper => mapper.Map<Models.Location>(apiLocation))
+                    .Returns(modelLocation);
+
+                MovieServiceMock
+                    .Setup(service => service.GetAllMoviesAsync(modelLocation))
+                    .ThrowsAsync(new MoviesNotFoundException(expectedShowsIds));
+
+                //Act
+                var result = await ControllerUnderTest.GetAllMoviesAsync(apiLocation);
+
+                //Assert
+                result.Should().BeOfType<NotFoundObjectResult>();
+            }
         }
 
-        [Fact]
-        public async void Should_return_BadRequestResult_when_location_is_null()
+        public class GetNearestCinemasForMovie : MoviesControllerTest
         {
-            //Arrange
-            Location userLocation = null;
+            [Fact]
+            public async void Should_return_OkObjectResult_and_Cineamas()
+            {
+                //Arrange
+                var showId = 1;
+                var modelCinemas = new List<Models.Cinema> { new Models.Cinema() };
+                var location = new Models.Location(1, 1);
+                var apiLocation = new Location(1, 1);
 
-            //Act
-            var result = await ControllerUnderTest.GetAllMoviesAsync(userLocation);
+                MapperMock
+                    .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Models.Cinema>()))
+                    .Returns(new Cinema());
 
-            //Assert
-            result.Should().BeOfType<BadRequestResult>();
+                MapperMock
+                    .Setup(mapper => mapper.Map<Models.Location>(apiLocation))
+                    .Returns(location);
+
+                CinemaServiceMock
+                    .Setup(service => service.GetNearestCinemasForMovie(showId, location))
+                    .Returns(() => Task.FromResult(modelCinemas.AsEnumerable()));
+
+                //Act
+                var result = await ControllerUnderTest.GetNearestCinemasForMovie(showId, apiLocation);
+
+                //Assert
+                result.Should().BeOfType<OkObjectResult>();
+                var okResult = result as OkObjectResult;
+                var resultValue = okResult?.Value as IEnumerable<Cinema>;
+                resultValue?.Should()
+                    .NotBeNullOrEmpty().And
+                    .HaveCount(modelCinemas.Count);
+            }
+
+            [Fact]
+            public async void Should_return_BadRequest_when_location_is_null()
+            {
+                //Arrange
+                var movieId = 1;
+                //Act
+                var result = await ControllerUnderTest.GetNearestCinemasForMovie(movieId, null);
+
+                //Assert
+                result.Should().BeOfType<BadRequestResult>();
+            }
+
+            [Fact]
+            public async void Should_return_NotFound_when_cinema_cannot_be_found()
+            {
+                //Arrange
+                var movieId = -5;
+                var location = new Models.Location(1, 1);
+                var apiLocation = new Location(1, 1);
+
+                MapperMock
+                    .Setup(mapper => mapper.Map<Models.Location>(apiLocation))
+                    .Returns(location);
+
+                CinemaServiceMock
+                    .Setup(service => service.GetNearestCinemasForMovie(movieId, location))
+                    .Throws(new CinemasNotFoundException(movieId, location));
+
+                //Act
+                var result = await ControllerUnderTest.GetNearestCinemasForMovie(movieId, apiLocation);
+
+                //Assert
+                result.Should().BeOfType<NotFoundObjectResult>();
+            }
         }
 
-        [Fact]
-        public async void Should_return_NotFoundResult_when_ShowsNotFoundException_is_thrown()
+        public class GetMovieAsync : MoviesControllerTest
         {
-            //Arrange
-            var expectedShowsIds = new[] { 1L, 2L, 3L };
-            var modelLocation = new Models.Location(1, 1);
-            var apiLocation = new Location(1, 1);
+            [Fact]
+            public async void Should_return_OkObjectResult_and_Show_for_given_id()
+            {
+                //Arrange
+                var showId = 1;
+                var movie = new Movie();
 
-            MapperMock
-                .Setup(mapper => mapper.Map<Models.Location>(apiLocation))
-                .Returns(modelLocation);
+                MapperMock
+                    .Setup(mapper => mapper.Map<Movie>(It.IsAny<Models.Movie>()))
+                    .Returns(movie);
 
-            MovieServiceMock
-                .Setup(service => service.GetAllMoviesAsync(modelLocation))
-                .ThrowsAsync(new MoviesNotFoundException(expectedShowsIds));
+                MovieServiceMock
+                    .Setup(service => service.GetMovieAsync(showId))
+                    .Returns(() => Task.FromResult(new Models.Movie()));
 
-            //Act
-            var result = await ControllerUnderTest.GetAllMoviesAsync(apiLocation);
+                //Act
+                var result = await ControllerUnderTest.GetMovieAsync(showId);
 
-            //Assert
-            result.Should().BeOfType<NotFoundObjectResult>();
-        }
-    }
+                //Assert
+                result.Should().BeOfType<OkObjectResult>();
+                var okResult = result as OkObjectResult;
+                okResult.Value.Should().BeSameAs(movie);
+            }
 
-    public class GetMovieAsync : MoviesControllerTest
-    {
-        [Fact]
-        public async void Should_return_OkObjectResult_and_Show_for_given_id()
-        {
-            //Arrange
-            var showId = 1;
-            var movie = new Movie();
+            [Fact]
+            public async void Should_return_NotFoundResult_when_ShowNotFoundException_is_thrown()
+            {
+                //Arrange
+                var unexistingShowId = -5;
 
-            MapperMock
-                .Setup(mapper => mapper.Map<Movie>(It.IsAny<Models.Movie>()))
-                .Returns(movie);
+                MovieServiceMock
+                    .Setup(service => service.GetMovieAsync(unexistingShowId))
+                    .ThrowsAsync(new MovieNotFoundException(unexistingShowId));
 
-            MovieServiceMock
-                .Setup(service => service.GetMovieAsync(showId))
-                .Returns(() => Task.FromResult(new Models.Movie()));
+                //Act
+                var result = await ControllerUnderTest.GetMovieAsync(unexistingShowId);
 
-            //Act
-            var result = await ControllerUnderTest.GetMovieAsync(showId);
-
-            //Assert
-            result.Should().BeOfType<OkObjectResult>();
-            var okResult = result as OkObjectResult;
-            okResult.Value.Should().BeSameAs(movie);
+                //Assert
+                result.Should().BeOfType<NotFoundObjectResult>();
+            }
         }
 
-        [Fact]
-        public async void Should_return_NotFoundResult_when_ShowNotFoundException_is_thrown()
+        public class DeleteMovieAsync : MoviesControllerTest
         {
-            //Arrange
-            var unexistingShowId = -5;
+            [Fact]
+            public async void Should_return_OkResult_and_delete_the_show_with_given_id()
+            {
+                //Arrange
+                var deletedShowId = 1;
 
-            MovieServiceMock
-                .Setup(service => service.GetMovieAsync(unexistingShowId))
-                .ThrowsAsync(new MovieNotFoundException(unexistingShowId));
+                MovieServiceMock
+                    .Setup(service => service.DeleteMovieAsync(deletedShowId))
+                    .Returns(() => Task.CompletedTask)
+                    .Verifiable();
 
-            //Act
-            var result = await ControllerUnderTest.GetMovieAsync(unexistingShowId);
+                MovieServiceMock
+                    .Setup(service => service.GetMovieAsync(deletedShowId))
+                    .ThrowsAsync(new MovieNotFoundException(deletedShowId));
 
-            //Assert
-            result.Should().BeOfType<NotFoundObjectResult>();
-        }
-    }
+                //Act
+                var result = await ControllerUnderTest.DeleteMovieAsync(deletedShowId);
+                var getResult = await ControllerUnderTest.GetMovieAsync(deletedShowId);
 
-    public class DeleteMovieAsync : MoviesControllerTest
-    {
-        [Fact]
-        public async void Should_return_OkResult_and_delete_the_show_with_given_id()
-        {
-            //Arrange
-            var deletedShowId = 1;
+                //Assert
+                result.Should().BeOfType<OkResult>();
+                getResult.Should().BeOfType<NotFoundObjectResult>();
+                MovieServiceMock.Verify();
+            }
 
-            MovieServiceMock
-                .Setup(service => service.DeleteMovieAsync(deletedShowId))
-                .Returns(() => Task.CompletedTask)
-                .Verifiable();
+            [Fact]
+            public async void Should_return_NotFoundResult_when_ShowNotFoundException_is_thrown()
+            {
+                //Arrange
+                var unexistingShowId = -5;
 
-            MovieServiceMock
-                .Setup(service => service.GetMovieAsync(deletedShowId))
-                .ThrowsAsync(new MovieNotFoundException(deletedShowId));
+                MovieServiceMock
+                    .Setup(service => service.DeleteMovieAsync(unexistingShowId))
+                    .ThrowsAsync(new MovieNotFoundException(unexistingShowId));
 
-            //Act
-            var result = await ControllerUnderTest.DeleteMovieAsync(deletedShowId);
-            var getResult = await ControllerUnderTest.GetMovieAsync(deletedShowId);
+                //Act
+                var result = await ControllerUnderTest.DeleteMovieAsync(unexistingShowId);
 
-            //Assert
-            result.Should().BeOfType<OkResult>();
-            getResult.Should().BeOfType<NotFoundObjectResult>();
-            MovieServiceMock.Verify();
-        }
-
-        [Fact]
-        public async void Should_return_NotFoundResult_when_ShowNotFoundException_is_thrown()
-        {
-            //Arrange
-            var unexistingShowId = -5;
-
-            MovieServiceMock
-                .Setup(service => service.DeleteMovieAsync(unexistingShowId))
-                .ThrowsAsync(new MovieNotFoundException(unexistingShowId));
-
-            //Act
-            var result = await ControllerUnderTest.DeleteMovieAsync(unexistingShowId);
-
-            //Assert
-            result.Should().BeOfType<NotFoundObjectResult>();
-        }
-    }
-
-    public class GetMovieDetailsAsync : MoviesControllerTest
-    {
-        [Fact]
-        public async void Should_return_OkObjectResult_and_ShowDetails_for_given_id()
-        {
-            //Arrange
-            var showId = 1;
-            var movieDetails = new MovieDetails();
-
-            MapperMock
-                .Setup(mapper => mapper.Map<MovieDetails>(It.IsAny<Models.MovieDetails>()))
-                .Returns(movieDetails);
-
-            MovieServiceMock
-                .Setup(service => service.GetMovieDetailsAsync(showId))
-                .Returns(() => Task.FromResult(new Models.MovieDetails()));
-
-            //Act
-            var result = await ControllerUnderTest.GetMovieDetailsAsync(showId);
-
-            //Assert
-            result.Should().BeOfType<OkObjectResult>();
-            var okResult = result as OkObjectResult;
-            okResult.Value.Should().BeSameAs(movieDetails);
+                //Assert
+                result.Should().BeOfType<NotFoundObjectResult>();
+            }
         }
 
-        [Fact]
-        public async void Should_return_NotFoundResult_when_ShowDetailsNotFoundException_is_thrown()
+        public class GetMovieDetailsAsync : MoviesControllerTest
         {
-            //Arrange
-            var unexistingShowDetailsId = -5;
+            [Fact]
+            public async void Should_return_OkObjectResult_and_ShowDetails_for_given_id()
+            {
+                //Arrange
+                var showId = 1;
+                var movieDetails = new MovieDetails();
 
-            MovieServiceMock
-                .Setup(service => service.GetMovieDetailsAsync(unexistingShowDetailsId))
-                .ThrowsAsync(new MovieDetailsNotFoundException(unexistingShowDetailsId));
+                MapperMock
+                    .Setup(mapper => mapper.Map<MovieDetails>(It.IsAny<Models.MovieDetails>()))
+                    .Returns(movieDetails);
 
-            //Act
-            var result = await ControllerUnderTest.GetMovieDetailsAsync(unexistingShowDetailsId);
+                MovieServiceMock
+                    .Setup(service => service.GetMovieDetailsAsync(showId))
+                    .Returns(() => Task.FromResult(new Models.MovieDetails()));
 
-            //Assert
-            result.Should().BeOfType<NotFoundObjectResult>();
+                //Act
+                var result = await ControllerUnderTest.GetMovieDetailsAsync(showId);
+
+                //Assert
+                result.Should().BeOfType<OkObjectResult>();
+                var okResult = result as OkObjectResult;
+                okResult.Value.Should().BeSameAs(movieDetails);
+            }
+
+            [Fact]
+            public async void Should_return_NotFoundResult_when_ShowDetailsNotFoundException_is_thrown()
+            {
+                //Arrange
+                var unexistingShowDetailsId = -5;
+
+                MovieServiceMock
+                    .Setup(service => service.GetMovieDetailsAsync(unexistingShowDetailsId))
+                    .ThrowsAsync(new MovieDetailsNotFoundException(unexistingShowDetailsId));
+
+                //Act
+                var result = await ControllerUnderTest.GetMovieDetailsAsync(unexistingShowDetailsId);
+
+                //Assert
+                result.Should().BeOfType<NotFoundObjectResult>();
+            }
         }
     }
 }
