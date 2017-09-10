@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using NaCoDoKina.Api.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Location = NaCoDoKina.Api.DataContracts.Location;
-using Movie = NaCoDoKina.Api.DataContracts.Movie;
-using MovieDetails = NaCoDoKina.Api.DataContracts.MovieDetails;
 
 namespace NaCoDoKina.Api.Services
 {

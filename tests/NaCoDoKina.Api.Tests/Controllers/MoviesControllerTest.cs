@@ -73,7 +73,7 @@ namespace NaCoDoKina.Api.Controllers
 
             ShowServiceMock
                 .Setup(service => service.GetAllMoviesAsync(userLocation))
-                .ThrowsAsync(new ShowsNotFoundException());
+                .ThrowsAsync(new MoviesNotFoundException());
 
             //Act
             var result = await ControllerUnderTest.GetAllMoviesAsync(userLocation);
@@ -198,7 +198,7 @@ namespace NaCoDoKina.Api.Controllers
 
             ShowServiceMock
                 .Setup(service => service.GetMovieDetailsAsync(unexistingShowDetailsId))
-                .ThrowsAsync(new ShowDetailsNotFoundException());
+                .ThrowsAsync(new MovieDetailsNotFoundException());
 
             //Act
             var result = await ControllerUnderTest.GetMovieDetailsAsync(unexistingShowDetailsId);
