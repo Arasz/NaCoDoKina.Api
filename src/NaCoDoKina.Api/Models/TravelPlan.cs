@@ -11,13 +11,13 @@ namespace NaCoDoKina.Api.Models
 
         public Location Destination { get; }
 
-        public MeansOfTransport MeansOfTransport { get; }
+        public TravelMode TravelMode { get; }
 
-        public TravelPlan(Location origin, Location destination, MeansOfTransport meansOfTransport = MeansOfTransport.Public)
+        public TravelPlan(Location origin, Location destination, TravelMode travelMode = TravelMode.Driving)
         {
             Origin = origin;
             Destination = destination;
-            MeansOfTransport = meansOfTransport;
+            TravelMode = travelMode;
         }
     }
 }

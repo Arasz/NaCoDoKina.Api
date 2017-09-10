@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NaCoDoKina.Api.Entities;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Response;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Request;
@@ -14,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
+using Location = NaCoDoKina.Api.Models.Location;
 
 namespace NaCoDoKina.Api.Services
 {
@@ -136,7 +136,7 @@ namespace NaCoDoKina.Api.Services
                 //arrange
                 var destination = new Location(52.44056, 16.919235);
                 var origin = new Location(52.3846579, 16.8519869);
-                var travelPlan = new TravelPlan(origin, destination, MeansOfTransport.Car);
+                var travelPlan = new TravelPlan(origin, destination);
                 var duration = 1000;
                 var apiResponse = new DirectionsApiResponse
                 {
@@ -154,7 +154,6 @@ namespace NaCoDoKina.Api.Services
                 var travelTime = await ServiceUnderTest.CalculateTravelTimeAsync(travelPlan);
 
                 //assert
-
                 travelTime.Should().BeGreaterThan(TimeSpan.Zero);
                 travelTime.Should().Be(TimeSpan.FromSeconds(duration));
             }
@@ -165,7 +164,7 @@ namespace NaCoDoKina.Api.Services
                 //arrange
                 var destination = new Location(52.44056, 16.919235);
                 var origin = new Location(52.3846579, 16.8519869);
-                var travelPlan = new TravelPlan(origin, destination, MeansOfTransport.Car);
+                var travelPlan = new TravelPlan(origin, destination);
                 var maxDuration = 1000;
                 var apiResponse = new DirectionsApiResponse
                 {
@@ -199,7 +198,7 @@ namespace NaCoDoKina.Api.Services
                 //arrange
                 var destination = new Location(52.44056, 16.919235);
                 var origin = new Location(52.3846579, 16.8519869);
-                var travelPlan = new TravelPlan(origin, destination, MeansOfTransport.Car);
+                var travelPlan = new TravelPlan(origin, destination);
 
                 //LoggerMock.Setup(logger => logger.LogError(It.IsAny<string>(), It.IsAny<object[]>()));
 
@@ -224,7 +223,7 @@ namespace NaCoDoKina.Api.Services
                 //arrange
                 var destination = new Location(52.44056, 16.919235);
                 var origin = new Location(52.3846579, 16.8519869);
-                var travelPlan = new TravelPlan(origin, destination, MeansOfTransport.Car);
+                var travelPlan = new TravelPlan(origin, destination);
 
                 MapperMock.Setup(mapper => mapper.Map<DirectionsApiRequest>(It.IsAny<TravelPlan>()))
                     .Returns(() => new DirectionsApiRequest(travelPlan.Origin.ToString(), travelPlan.Destination.ToString()));

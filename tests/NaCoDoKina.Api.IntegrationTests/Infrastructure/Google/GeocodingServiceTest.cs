@@ -28,7 +28,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
             {
                 //arrange
                 var testAddress = "Poronińska 3, 60-472 Poznań-Jeżyce, Polska";
-                var testGeolocation = new Location { Lat = 52.4531839, Lng = 16.882369 };
+                var testGeolocation = new Location { Latitude = 52.4531839, Longitude = 16.882369 };
                 var apiRequest = new GeocodingApiRequest(testAddress);
 
                 //act
@@ -39,12 +39,12 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
                 response.Results.Should().NotBeEmpty();
                 var geolocation = response.Results.First().Geometry.Location;
 
-                geolocation.Lat.Should().Be(testGeolocation.Lat);
-                geolocation.Lng.Should().Be(testGeolocation.Lng);
+                geolocation.Latitude.Should().Be(testGeolocation.Latitude);
+                geolocation.Longitude.Should().Be(testGeolocation.Longitude);
             }
 
             [Fact]
-            public async Task Should_return_invalid_request_when_address_not_given()
+            public void Should_return_invalid_request_when_address_not_given()
             {
                 //arrange
                 var testAddress = "";
@@ -59,7 +59,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
             }
 
             [Fact]
-            public async Task Should_return_zero_results_when_address_is_incorrect()
+            public void Should_return_zero_results_when_address_is_incorrect()
             {
                 //arrange
                 var testAddress = "dkfkfdfddfd";

@@ -37,7 +37,7 @@ namespace NaCoDoKina.Api.Controllers
         {
             //Arrange
             var expectedShowsIds = new[] { 1L, 2L, 3L };
-            var userLocation = new Location { Longitude = 1, Latitude = 1 };
+            var userLocation = new Location(1, 1);
 
             ShowServiceMock
                 .Setup(service => service.GetAllMoviesAsync(userLocation))
@@ -69,7 +69,7 @@ namespace NaCoDoKina.Api.Controllers
         public async void Should_return_NotFoundResult_when_ShowsNotFoundException_is_thrown()
         {
             //Arrange
-            var userLocation = new Location { Longitude = 1, Latitude = 1 };
+            var userLocation = new Location(1, 1);
 
             ShowServiceMock
                 .Setup(service => service.GetAllMoviesAsync(userLocation))

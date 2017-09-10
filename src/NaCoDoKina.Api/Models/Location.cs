@@ -1,8 +1,5 @@
-﻿namespace NaCoDoKina.Api.DataContracts
+﻿namespace NaCoDoKina.Api.Models
 {
-    /// <summary>
-    /// User location 
-    /// </summary>
     public class Location
     {
         public Location(double longitude, double latitude)

@@ -1,19 +1,24 @@
-﻿namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Common
+﻿using System.Runtime.Serialization;
+
+namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Common
 {
+    [DataContract]
     public class Location
     {
         public Location()
         {
         }
 
-        public Location(double lat, double lng)
+        public Location(double latitude, double longitude)
         {
-            Lat = lat;
-            Lng = lng;
+            Latitude = latitude;
+            Longitude = longitude;
         }
 
-        public double Lat { get; set; }
+        [DataMember(Name = "lat")]
+        public double Latitude { get; set; }
 
-        public double Lng { get; set; }
+        [DataMember(Name = "lng")]
+        public double Longitude { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
-using NaCoDoKina.Api.Entities;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Request;
 using NaCoDoKina.Api.Infrastructure.Google.Exceptions;
