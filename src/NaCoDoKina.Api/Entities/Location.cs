@@ -1,4 +1,6 @@
-﻿namespace NaCoDoKina.Api.Entities
+﻿using System.Globalization;
+
+namespace NaCoDoKina.Api.Entities
 {
     public class Location
     {
@@ -17,5 +19,8 @@
             longitude = Longitude;
             latitude = Latitude;
         }
+
+        public override string ToString() => $"{Longitude.ToString(CultureInfo.InvariantCulture)}," +
+                                             $"{Latitude.ToString(CultureInfo.InvariantCulture)}";
     }
 }

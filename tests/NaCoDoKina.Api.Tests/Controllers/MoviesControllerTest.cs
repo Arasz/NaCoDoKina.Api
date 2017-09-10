@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NaCoDoKina.Api.Controllers;
 using NaCoDoKina.Api.DataContracts;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Services;
@@ -10,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace NaCoDoKina.Api.Tests.Controllers
+namespace NaCoDoKina.Api.Controllers
 {
     /// <summary>
     /// Base class for all show controller tests 
@@ -38,7 +37,7 @@ namespace NaCoDoKina.Api.Tests.Controllers
         {
             //Arrange
             var expectedShowsIds = new[] { 1L, 2L, 3L };
-            var userLocation = new Location { Longitude = 1, Latitude = 1 };
+            var userLocation = new Location(1, 1);
 
             ShowServiceMock
                 .Setup(service => service.GetAllMoviesAsync(userLocation))
@@ -70,7 +69,7 @@ namespace NaCoDoKina.Api.Tests.Controllers
         public async void Should_return_NotFoundResult_when_ShowsNotFoundException_is_thrown()
         {
             //Arrange
-            var userLocation = new Location { Longitude = 1, Latitude = 1 };
+            var userLocation = new Location(1, 1);
 
             ShowServiceMock
                 .Setup(service => service.GetAllMoviesAsync(userLocation))

@@ -1,10 +1,9 @@
 ﻿using System.Globalization;
+using System.Runtime.Serialization;
 
-namespace NaCoDoKina.Api.DataContracts
+namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Common
 {
-    /// <summary>
-    /// User location 
-    /// </summary>
+    [DataContract]
     public class Location
     {
         public Location(double longitude, double latitude)
@@ -13,8 +12,14 @@ namespace NaCoDoKina.Api.DataContracts
             Latitude = latitude;
         }
 
+        public Location()
+        {
+        }
+
+        [DataMember(Name = "lng")]
         public double Longitude { get; set; }
 
+        [DataMember(Name = "lat")]
         public double Latitude { get; set; }
 
         public void Deconstruct(out double longitude, out double latitude)
