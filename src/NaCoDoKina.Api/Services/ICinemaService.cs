@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace NaCoDoKina.Api.Services
 {
     /// <summary>
-    /// Bussiness logic for cinemas 
+    /// Business logic for cinemas 
     /// </summary>
     public interface ICinemaService
     {

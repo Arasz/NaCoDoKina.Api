@@ -48,79 +48,194 @@ namespace NaCoDoKina.Api.Services
             }
         }
 
-        public class GetNearestCinemasForMovieAsync : CinemaServiceTest
+        public class AddCinemaAsync : CinemaServiceTest
         {
             [Fact]
-            public async Task Should_return_nearest_cinemas_for_correct_parameters()
+            public async Task Should_return_added_cinema()
             {
                 //Arrange
-                var location = new Location(1, 2);
-                var searchArea = new SearchArea(location, 1000);
-                var movieId = 69;
-                var cinemas = new List<Entities.Cinema>
+                var modelCinema = new Cinema
                 {
-                    new Entities.Cinema
-                    {
-                        Name = "NearCinema",
-                        Location = new Entities.Location(15,32)
-                    },
-                    new Entities.Cinema
-                    {
-                        Name = "FarCinema",
-                        Location = new Entities.Location(1333,4322)
-                    }
+                    Id = 0,
+                    Name = "A",
+                    Address = "Address",
+                };
+                var entityCinema = new Entities.Cinema
+                {
+                    Id = modelCinema.Id,
+                    Name = modelCinema.Name,
+                    Address = modelCinema.Address
                 };
 
                 MapperMock
-                    .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Entities.Cinema>()))
+                    .Setup(mapper => mapper.Map<Entities.Cinema>(modelCinema))
+                    .Returns(entityCinema);
+
+                MapperMock
+                    .Setup(mapper => mapper.Map<Cinema>(entityCinema))
                     .Returns(new Func<Entities.Cinema, Cinema>(cinema => new Cinema
                     {
+                        Id = cinema.Id,
                         Name = cinema.Name,
-                        Location = new Location(cinema.Location.Longitude, cinema.Location.Latitude)
+                        Address = cinema.Address
                     }));
 
                 RepositoryMock
-                    .Setup(repository => repository.GetAllCinemasForMovie(movieId))
-                    .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
+                    .Setup(repository => repository.AddCinema(entityCinema))
+                    .Returns(() =>
+                    {
+                        entityCinema.Id++;
+                        return Task.FromResult(entityCinema);
+                    });
 
                 //Act
-                var result = await ServiceUnderTest.GetNearestCinemasForMovieAsync(movieId, searchArea);
+                var addedCinema = await ServiceUnderTest.AddCinemaAsync(modelCinema);
 
                 //Assert
-                result.Should().HaveCount(cinemas.Count - 1);
-                result.SingleOrDefault(cinema => cinema.Name == "NearCinema")
-                    .Should()
-                    .NotBeNull();
+                addedCinema.Name.Should().Be(entityCinema.Name);
+                addedCinema.Address.Should().Be(entityCinema.Address);
+                addedCinema.Id.Should().BeGreaterThan(0);
             }
 
-            [Fact]
-            public void Should_throw_CinemasNotFound_when_could_not_find_movie()
+            public class GetNearestCinemasForMovieAsync : CinemaServiceTest
             {
-                //Arrange
-                var location = new Location(1, 2);
-                var searchArea = new SearchArea(location, 100);
-                var movieId = -500;
+                [Fact]
+                public async Task Should_return_nearest_cinemas_for_correct_parameters()
+                {
+                    //Arrange
+                    var location = new Location(1, 2);
+                    var searchArea = new SearchArea(location, 1000);
+                    var movieId = 69;
+                    var cinemas = new List<Entities.Cinema>
+                    {
+                        new Entities.Cinema
+                        {
+                            Name = "NearCinema",
+                            Location = new Entities.Location(15, 32)
+                        },
+                        new Entities.Cinema
+                        {
+                            Name = "FarCinema",
+                            Location = new Entities.Location(1333, 4322)
+                        }
+                    };
 
-                //Act
-                Func<Task<IEnumerable<Cinema>>> action = () => ServiceUnderTest.GetNearestCinemasForMovieAsync(movieId, searchArea);
+                    MapperMock
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Entities.Cinema>()))
+                        .Returns(new Func<Entities.Cinema, Cinema>(cinema => new Cinema
+                        {
+                            Name = cinema.Name,
+                            Location = new Location(cinema.Location.Longitude, cinema.Location.Latitude)
+                        }));
 
-                //Assert
-                action.ShouldThrow<CinemasNotFoundException>();
+                    RepositoryMock
+                        .Setup(repository => repository.GetAllCinemasForMovie(movieId))
+                        .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
+
+                    //Act
+                    var result = await ServiceUnderTest.GetNearestCinemasForMovieAsync(movieId, searchArea);
+
+                    //Assert
+                    result.Should().HaveCount(cinemas.Count - 1);
+                    result.SingleOrDefault(cinema => cinema.Name == "NearCinema")
+                        .Should()
+                        .NotBeNull();
+                }
+
+                [Fact]
+                public void Should_throw_CinemasNotFound_when_could_not_find_movie()
+                {
+                    //Arrange
+                    var location = new Location(1, 2);
+                    var searchArea = new SearchArea(location, 100);
+                    var movieId = -500;
+
+                    RepositoryMock
+                        .Setup(repository => repository.GetAllCinemasForMovie(movieId))
+                        .Returns(() => Task.FromResult(new List<Entities.Cinema>().AsEnumerable()));
+
+                    //Act
+                    Func<Task<IEnumerable<Cinema>>> action = () =>
+                        ServiceUnderTest.GetNearestCinemasForMovieAsync(movieId, searchArea);
+
+                    //Assert
+                    action.ShouldThrow<CinemasNotFoundException>();
+                }
+
+                [Fact]
+                public void Should_throw_CinemasNotFound_when_could_not_find_cinema_near_location()
+                {
+                    //Arrange
+                    var location = new Location(33, 33);
+                    var searchArea = new SearchArea(location, 100);
+                    var movieId = 69;
+
+                    //Act
+                    Func<Task<IEnumerable<Cinema>>> action = () =>
+                        ServiceUnderTest.GetNearestCinemasForMovieAsync(movieId, searchArea);
+
+                    //Assert
+                    action.ShouldThrow<CinemasNotFoundException>();
+                }
             }
 
-            [Fact]
-            public void Should_throw_CinemasNotFound_when_could_not_find_cinema_near_location()
+            public class GetNearestCinemasAsync : CinemaServiceTest
             {
-                //Arrange
-                var location = new Location(33, 33);
-                var searchArea = new SearchArea(location, 100);
-                var movieId = 69;
+                [Fact]
+                public async Task Should_return_nearest_cinemas_for_correct_parameters()
+                {
+                    //Arrange
+                    var location = new Location(1, 2);
+                    var searchArea = new SearchArea(location, 1000);
+                    var cinemas = new List<Entities.Cinema>
+                    {
+                        new Entities.Cinema
+                        {
+                            Name = "NearCinema",
+                            Location = new Entities.Location(15, 32)
+                        },
+                        new Entities.Cinema
+                        {
+                            Name = "FarCinema",
+                            Location = new Entities.Location(1333, 4322)
+                        }
+                    };
 
-                //Act
-                Func<Task<IEnumerable<Cinema>>> action = () => ServiceUnderTest.GetNearestCinemasForMovieAsync(movieId, searchArea);
+                    MapperMock
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Entities.Cinema>()))
+                        .Returns(new Func<Entities.Cinema, Cinema>(cinema => new Cinema
+                        {
+                            Name = cinema.Name,
+                            Location = new Location(cinema.Location.Longitude, cinema.Location.Latitude)
+                        }));
 
-                //Assert
-                action.ShouldThrow<CinemasNotFoundException>();
+                    RepositoryMock
+                        .Setup(repository => repository.GetAllCinemas())
+                        .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
+
+                    //Act
+                    var result = await ServiceUnderTest.GetNearestCinemasAsync(searchArea);
+
+                    //Assert
+                    result.Should().HaveCount(cinemas.Count - 1);
+                    result.SingleOrDefault(cinema => cinema.Name == "NearCinema")
+                        .Should()
+                        .NotBeNull();
+                }
+
+                [Fact]
+                public void Should_throw_CinemasNotFound_when_could_not_find_cinema_near_location()
+                {
+                    //Arrange
+                    var location = new Location(33, 33);
+                    var searchArea = new SearchArea(location, 100);
+
+                    //Act
+                    Func<Task<IEnumerable<Cinema>>> action = () => ServiceUnderTest.GetNearestCinemasAsync(searchArea);
+
+                    //Assert
+                    action.ShouldThrow<CinemasNotFoundException>();
+                }
             }
         }
     }

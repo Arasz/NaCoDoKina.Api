@@ -33,15 +33,43 @@ namespace NaCoDoKina.Api.Services
             if (allCinemasForMovie is null || !allCinemasForMovie.Any())
                 throw new CinemasNotFoundException(movieId, searchArea);
 
-            var allCinemaModels = allCinemasForMovie
-                .Select(_mapper.Map<Cinema>)
-                .ToArray();
+            return await FindNearestCinemasAsync(searchArea, allCinemasForMovie);
+        }
 
+        private async Task<TravelInformation[]> GetTravelInformationForCinemas(SearchArea searchArea, IEnumerable<Cinema> allCinemaModels)
+        {
             var travelInformationTasks = allCinemaModels
                 .Select(cinema => new TravelPlan(searchArea.Center, cinema.Location))
                 .Select(plan => _travelService.CalculateInformationForTravelAsync(plan));
 
             var travelInformationForCinemas = await Task.WhenAll(travelInformationTasks);
+            return travelInformationForCinemas;
+        }
+
+        private Cinema[] MapCinemas(IEnumerable<Entities.Cinema> cinemas)
+        {
+            var allCinemaModels = cinemas
+                .Select(_mapper.Map<Cinema>)
+                .ToArray();
+            return allCinemaModels;
+        }
+
+        public async Task<IEnumerable<Cinema>> GetNearestCinemasAsync(SearchArea searchArea)
+        {
+            var allCinemas = (await _cinemaRepository.GetAllCinemas())
+                .ToArray();
+
+            if (allCinemas is null || !allCinemas.Any())
+                throw new CinemasNotFoundException(searchArea);
+
+            return await FindNearestCinemasAsync(searchArea, allCinemas);
+        }
+
+        private async Task<IEnumerable<Cinema>> FindNearestCinemasAsync(SearchArea searchArea, IEnumerable<Entities.Cinema> allCinemas)
+        {
+            var allCinemaModels = MapCinemas(allCinemas);
+
+            var travelInformationForCinemas = await GetTravelInformationForCinemas(searchArea, allCinemaModels);
 
             var nearestCinemas = allCinemaModels
                 .Join(travelInformationForCinemas, cinema => cinema.Location,
@@ -53,14 +81,11 @@ namespace NaCoDoKina.Api.Services
             return nearestCinemas;
         }
 
-        public Task<IEnumerable<Cinema>> GetNearestCinemasAsync(SearchArea searchArea)
+        public async Task<Cinema> AddCinemaAsync(Cinema cinema)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<Cinema> AddCinemaAsync(Cinema cinema)
-        {
-            throw new System.NotImplementedException();
+            var entityCinema = _mapper.Map<Entities.Cinema>(cinema);
+            entityCinema = await _cinemaRepository.AddCinema(entityCinema);
+            return _mapper.Map<Cinema>(entityCinema);
         }
     }
 }
