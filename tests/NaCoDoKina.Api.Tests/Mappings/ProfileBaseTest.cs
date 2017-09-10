@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace NaCoDoKina.Api.Infrastructure.Profiles
+namespace NaCoDoKina.Api.Mappings
 {
     public class ProfileBaseTest<TProfile> where TProfile : Profile, new()
     {

@@ -28,7 +28,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
             {
                 //arrange
                 var testAddress = "Poronińska 3, 60-472 Poznań-Jeżyce, Polska";
-                var testGeolocation = new Location { Latitude = 52.4531839, Longitude = 16.882369 };
+                var testGeolocation = new Location { Longitude = 16.882369, Latitude = 52.4531839 };
                 var apiRequest = new GeocodingApiRequest(testAddress);
 
                 //act

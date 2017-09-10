@@ -23,13 +23,13 @@ namespace NaCoDoKina.Api.Services
 
         protected Mock<IGoogleGeocodingService> GeocodingServiceMock { get; }
 
-        protected Mock<ILogger> LoggerMock { get; }
+        protected Mock<ILogger<LocationService>> LoggerMock { get; }
 
         protected Mock<IMapper> MapperMock { get; }
 
         public LocationServiceTest()
         {
-            LoggerMock = new Mock<ILogger>();
+            LoggerMock = new Mock<ILogger<LocationService>>();
             MapperMock = new Mock<IMapper>();
             DirectionsServiceMock = new Mock<IGoogleDirectionsService>();
             GeocodingServiceMock = new Mock<IGoogleGeocodingService>();

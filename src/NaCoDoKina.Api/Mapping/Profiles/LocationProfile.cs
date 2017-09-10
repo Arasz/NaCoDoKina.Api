@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common;
 
-namespace NaCoDoKina.Api.Infrastructure.Profiles
+namespace NaCoDoKina.Api.Mapping.Profiles
 {
     public class LocationProfile : Profile
     {
@@ -14,6 +14,12 @@ namespace NaCoDoKina.Api.Infrastructure.Profiles
                 .ReverseMap();
 
             CreateMap<Models.Location, DataContracts.Location>()
+                .ReverseMap();
+
+            CreateMap<Models.Location, Location>()
+                .ReverseMap();
+
+            CreateMap<Models.Location, Entities.Location>()
                 .ReverseMap();
         }
     }

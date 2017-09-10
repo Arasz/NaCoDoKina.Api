@@ -1,4 +1,6 @@
-﻿namespace NaCoDoKina.Api.DataContracts
+﻿using System.Globalization;
+
+namespace NaCoDoKina.Api.DataContracts
 {
     /// <summary>
     /// User location 
@@ -21,6 +23,7 @@
             latitude = Latitude;
         }
 
-        public override string ToString() => $"{Longitude},{Latitude}";
+        public override string ToString() => $"{Longitude.ToString(CultureInfo.InvariantCulture)}," +
+                                             $"{Latitude.ToString(CultureInfo.InvariantCulture)}";
     }
 }

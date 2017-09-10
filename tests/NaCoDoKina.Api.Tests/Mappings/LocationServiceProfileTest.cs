@@ -1,16 +1,18 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request;
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Request;
+using NaCoDoKina.Api.Mapping.Profiles;
 using NaCoDoKina.Api.Models;
 using System;
 using Xunit;
 using Location = NaCoDoKina.Api.Models.Location;
 using TravelMode = NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request.TravelMode;
 
-namespace NaCoDoKina.Api.Infrastructure.Profiles
+namespace NaCoDoKina.Api.Mappings
 {
-    public class TravelPlanProfileTest : ProfileBaseTest<TravelPlanProfile>
+    public class LocationServiceProfileTest : ProfileBaseTest<LocationServiceProfile>
     {
-        public class Map : TravelPlanProfileTest
+        public class Map : LocationServiceProfileTest
         {
             private string ParseTuple(ValueTuple<double, double> locationTuple)
             {
@@ -56,6 +58,19 @@ namespace NaCoDoKina.Api.Infrastructure.Profiles
                 result.Origin.Should().Be(orign.ToString());
                 result.Destination.Should().Be(destination.ToString());
                 result.TravelMode.Should().HaveFlag(TravelMode.Bicycling);
+            }
+
+            [Fact]
+            public void Should_return_geocoding_api_request_for_address()
+            {
+                //Arrange
+                var address = "Address";
+
+                //Act
+                var result = Mapper.Map<GeocodingApiRequest>(address);
+
+                //Assert
+                result.Address.Should().BeEquivalentTo(address);
             }
         }
     }

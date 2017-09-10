@@ -16,9 +16,9 @@ namespace NaCoDoKina.Api.Services
         private readonly IGoogleDirectionsService _googleDirectionsService;
         private readonly IGoogleGeocodingService _googleGeocodingService;
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
+        private readonly ILogger<LocationService> _logger;
 
-        public LocationService(IGoogleDirectionsService googleDirectionsService, IGoogleGeocodingService googleGeocodingService, IMapper mapper, ILogger logger)
+        public LocationService(IGoogleDirectionsService googleDirectionsService, IGoogleGeocodingService googleGeocodingService, IMapper mapper, ILogger<LocationService> logger)
         {
             _googleDirectionsService = googleDirectionsService;
             _googleGeocodingService = googleGeocodingService;

@@ -1,9 +1,9 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request;
-using System.Collections.Generic;
 using Xunit;
 
-namespace NaCoDoKina.Api.Infrastructure
+namespace NaCoDoKina.Api.Infrastructure.Google
 {
     public class GoogleRequestParserBaseTest
     {
