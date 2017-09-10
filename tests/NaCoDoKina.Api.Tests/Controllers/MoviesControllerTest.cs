@@ -124,7 +124,7 @@ namespace NaCoDoKina.Api.Controllers
                     .Returns(location);
 
                 CinemaServiceMock
-                    .Setup(service => service.GetNearestCinemasForMovie(showId, location))
+                    .Setup(service => service.GetNearestCinemasForMovieAsync(showId, location))
                     .Returns(() => Task.FromResult(modelCinemas.AsEnumerable()));
 
                 //Act
@@ -164,7 +164,7 @@ namespace NaCoDoKina.Api.Controllers
                     .Returns(location);
 
                 CinemaServiceMock
-                    .Setup(service => service.GetNearestCinemasForMovie(movieId, location))
+                    .Setup(service => service.GetNearestCinemasForMovieAsync(movieId, location))
                     .Throws(new CinemasNotFoundException(movieId, location));
 
                 //Act

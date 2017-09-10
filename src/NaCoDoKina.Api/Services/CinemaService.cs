@@ -6,7 +6,7 @@ namespace NaCoDoKina.Api.Services
 {
     public class CinemaService : ICinemaService
     {
-        public Task<IEnumerable<Cinema>> GetNearestCinemasForMovie(long movieId, Location location)
+        public Task<IEnumerable<Cinema>> GetNearestCinemasForMovieAsync(long movieId, Location location)
         {
             throw new System.NotImplementedException();
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace NaCoDoKina.Api.Exceptions
 {
@@ -9,19 +8,7 @@ namespace NaCoDoKina.Api.Exceptions
     /// </summary>
     public class NaCoDoKinaApiException : Exception
     {
-        public NaCoDoKinaApiException()
-        {
-        }
-
         public NaCoDoKinaApiException(string message) : base(message)
-        {
-        }
-
-        public NaCoDoKinaApiException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected NaCoDoKinaApiException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

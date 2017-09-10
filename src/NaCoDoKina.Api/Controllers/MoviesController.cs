@@ -116,7 +116,7 @@ namespace NaCoDoKina.Api.Controllers
             try
             {
                 var mappedLocation = _mapper.Map<Models.Location>(location);
-                var nearestCinemas = await _cinemaService.GetNearestCinemasForMovie(id, mappedLocation);
+                var nearestCinemas = await _cinemaService.GetNearestCinemasForMovieAsync(id, mappedLocation);
                 return Ok(nearestCinemas.Select(_mapper.Map<Location>));
             }
             catch (CinemasNotFoundException exception)
