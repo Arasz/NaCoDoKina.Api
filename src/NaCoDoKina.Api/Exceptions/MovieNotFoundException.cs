@@ -1,8 +1,8 @@
 ﻿namespace NaCoDoKina.Api.Exceptions
 {
-    public class ShowNotFoundException : NaCoDoKinaApiException
+    public class MovieNotFoundException : NaCoDoKinaApiException
     {
-        public ShowNotFoundException(long movieId)
+        public MovieNotFoundException(long movieId)
             : base($"Movie {movieId} was not found")
         {
         }

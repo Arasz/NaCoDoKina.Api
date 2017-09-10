@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoMapper;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -18,15 +19,19 @@ namespace NaCoDoKina.Api.Controllers
     {
         protected Mock<ILogger<MoviesController>> LoggerMock { get; set; }
 
-        protected Mock<IMovieService> ShowServiceMock { get; set; }
+        protected Mock<IMovieService> MovieServiceMock { get; set; }
+
+        protected Mock<IMapper> MapperMock { get; set; }
+
+        protected Mock<ICinemaService> CinemaServiceMock { get; set; }
 
         protected MoviesController ControllerUnderTest { get; set; }
 
         public MoviesControllerTest()
         {
             LoggerMock = new Mock<ILogger<MoviesController>>();
-            ShowServiceMock = new Mock<IMovieService>();
-            ControllerUnderTest = new MoviesController(ShowServiceMock.Object, LoggerMock.Object);
+            MovieServiceMock = new Mock<IMovieService>();
+            ControllerUnderTest = new MoviesController(MovieServiceMock.Object, CinemaServiceMock.Object, LoggerMock.Object, MapperMock.Object);
         }
     }
 
@@ -37,14 +42,19 @@ namespace NaCoDoKina.Api.Controllers
         {
             //Arrange
             var expectedShowsIds = new[] { 1L, 2L, 3L };
-            var userLocation = new Location(1, 1);
+            var modelLocation = new Models.Location(1, 1);
+            var apiLocation = new Location(1, 1);
 
-            ShowServiceMock
-                .Setup(service => service.GetAllMoviesAsync(userLocation))
+            MapperMock
+                .Setup(mapper => mapper.Map<Models.Location>(apiLocation))
+                .Returns(modelLocation);
+
+            MovieServiceMock
+                .Setup(service => service.GetAllMoviesAsync(modelLocation))
                 .Returns(() => Task.FromResult(expectedShowsIds.AsEnumerable()));
 
             //Act
-            var result = await ControllerUnderTest.GetAllMoviesAsync(userLocation);
+            var result = await ControllerUnderTest.GetAllMoviesAsync(apiLocation);
 
             //Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -69,14 +79,20 @@ namespace NaCoDoKina.Api.Controllers
         public async void Should_return_NotFoundResult_when_ShowsNotFoundException_is_thrown()
         {
             //Arrange
-            var userLocation = new Location(1, 1);
+            var expectedShowsIds = new[] { 1L, 2L, 3L };
+            var modelLocation = new Models.Location(1, 1);
+            var apiLocation = new Location(1, 1);
 
-            ShowServiceMock
-                .Setup(service => service.GetAllMoviesAsync(userLocation))
-                .ThrowsAsync(new MoviesNotFoundException());
+            MapperMock
+                .Setup(mapper => mapper.Map<Models.Location>(apiLocation))
+                .Returns(modelLocation);
+
+            MovieServiceMock
+                .Setup(service => service.GetAllMoviesAsync(modelLocation))
+                .ThrowsAsync(new MoviesNotFoundException(expectedShowsIds));
 
             //Act
-            var result = await ControllerUnderTest.GetAllMoviesAsync(userLocation);
+            var result = await ControllerUnderTest.GetAllMoviesAsync(apiLocation);
 
             //Assert
             result.Should().BeOfType<NotFoundObjectResult>();
@@ -90,11 +106,15 @@ namespace NaCoDoKina.Api.Controllers
         {
             //Arrange
             var showId = 1;
-            var show = new Movie();
+            var movie = new Movie();
 
-            ShowServiceMock
+            MapperMock
+                .Setup(mapper => mapper.Map<Movie>(It.IsAny<Models.Movie>()))
+                .Returns(movie);
+
+            MovieServiceMock
                 .Setup(service => service.GetMovieAsync(showId))
-                .Returns(() => Task.FromResult(show));
+                .Returns(() => Task.FromResult(new Models.Movie()));
 
             //Act
             var result = await ControllerUnderTest.GetMovieAsync(showId);
@@ -102,7 +122,7 @@ namespace NaCoDoKina.Api.Controllers
             //Assert
             result.Should().BeOfType<OkObjectResult>();
             var okResult = result as OkObjectResult;
-            okResult.Value.Should().BeSameAs(show);
+            okResult.Value.Should().BeSameAs(movie);
         }
 
         [Fact]
@@ -111,9 +131,9 @@ namespace NaCoDoKina.Api.Controllers
             //Arrange
             var unexistingShowId = -5;
 
-            ShowServiceMock
+            MovieServiceMock
                 .Setup(service => service.GetMovieAsync(unexistingShowId))
-                .ThrowsAsync(new ShowNotFoundException());
+                .ThrowsAsync(new MovieNotFoundException(unexistingShowId));
 
             //Act
             var result = await ControllerUnderTest.GetMovieAsync(unexistingShowId);
@@ -131,14 +151,14 @@ namespace NaCoDoKina.Api.Controllers
             //Arrange
             var deletedShowId = 1;
 
-            ShowServiceMock
+            MovieServiceMock
                 .Setup(service => service.DeleteMovieAsync(deletedShowId))
                 .Returns(() => Task.CompletedTask)
                 .Verifiable();
 
-            ShowServiceMock
+            MovieServiceMock
                 .Setup(service => service.GetMovieAsync(deletedShowId))
-                .ThrowsAsync(new ShowNotFoundException());
+                .ThrowsAsync(new MovieNotFoundException(deletedShowId));
 
             //Act
             var result = await ControllerUnderTest.DeleteMovieAsync(deletedShowId);
@@ -147,7 +167,7 @@ namespace NaCoDoKina.Api.Controllers
             //Assert
             result.Should().BeOfType<OkResult>();
             getResult.Should().BeOfType<NotFoundObjectResult>();
-            ShowServiceMock.Verify();
+            MovieServiceMock.Verify();
         }
 
         [Fact]
@@ -156,9 +176,9 @@ namespace NaCoDoKina.Api.Controllers
             //Arrange
             var unexistingShowId = -5;
 
-            ShowServiceMock
+            MovieServiceMock
                 .Setup(service => service.DeleteMovieAsync(unexistingShowId))
-                .ThrowsAsync(new ShowNotFoundException());
+                .ThrowsAsync(new MovieNotFoundException(unexistingShowId));
 
             //Act
             var result = await ControllerUnderTest.DeleteMovieAsync(unexistingShowId);
@@ -175,11 +195,15 @@ namespace NaCoDoKina.Api.Controllers
         {
             //Arrange
             var showId = 1;
-            var showDetails = new MovieDetails();
+            var movieDetails = new MovieDetails();
 
-            ShowServiceMock
+            MapperMock
+                .Setup(mapper => mapper.Map<MovieDetails>(It.IsAny<Models.MovieDetails>()))
+                .Returns(movieDetails);
+
+            MovieServiceMock
                 .Setup(service => service.GetMovieDetailsAsync(showId))
-                .Returns(() => Task.FromResult(showDetails));
+                .Returns(() => Task.FromResult(new Models.MovieDetails()));
 
             //Act
             var result = await ControllerUnderTest.GetMovieDetailsAsync(showId);
@@ -187,7 +211,7 @@ namespace NaCoDoKina.Api.Controllers
             //Assert
             result.Should().BeOfType<OkObjectResult>();
             var okResult = result as OkObjectResult;
-            okResult.Value.Should().BeSameAs(showDetails);
+            okResult.Value.Should().BeSameAs(movieDetails);
         }
 
         [Fact]
@@ -196,9 +220,9 @@ namespace NaCoDoKina.Api.Controllers
             //Arrange
             var unexistingShowDetailsId = -5;
 
-            ShowServiceMock
+            MovieServiceMock
                 .Setup(service => service.GetMovieDetailsAsync(unexistingShowDetailsId))
-                .ThrowsAsync(new MovieDetailsNotFoundException());
+                .ThrowsAsync(new MovieDetailsNotFoundException(unexistingShowDetailsId));
 
             //Act
             var result = await ControllerUnderTest.GetMovieDetailsAsync(unexistingShowDetailsId);

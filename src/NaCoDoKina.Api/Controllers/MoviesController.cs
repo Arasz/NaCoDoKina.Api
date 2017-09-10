@@ -69,7 +69,7 @@ namespace NaCoDoKina.Api.Controllers
                 var movie = await _movieService.GetMovieAsync(id);
                 return Ok(Ok(_mapper.Map<Movie>(movie)));
             }
-            catch (ShowNotFoundException exception)
+            catch (MovieNotFoundException exception)
             {
                 _logger.LogWarning("Movie with {id} was not found", id);
                 return NotFound(exception.Message);
@@ -91,7 +91,7 @@ namespace NaCoDoKina.Api.Controllers
                 await _movieService.DeleteMovieAsync(id);
                 return Ok();
             }
-            catch (ShowNotFoundException exception)
+            catch (MovieNotFoundException exception)
             {
                 _logger.LogWarning("Movie with {id} was not found", id);
                 return NotFound(exception.Message);

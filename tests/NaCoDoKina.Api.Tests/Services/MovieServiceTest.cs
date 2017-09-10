@@ -13,7 +13,7 @@ namespace NaCoDoKina.Api.Services
         public MovieServiceTest()
         {
             RepositoryMock = new Mock<IMovieRepository>();
-            ServiceUnderTest = new MovieService(RepositoryMockObject);
+            ServiceUnderTest = new MovieService();
         }
 
         public class ReadAllMoviesAsync : MovieServiceTest
