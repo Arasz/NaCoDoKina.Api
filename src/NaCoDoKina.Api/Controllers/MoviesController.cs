@@ -67,7 +67,7 @@ namespace NaCoDoKina.Api.Controllers
             try
             {
                 var movie = await _movieService.GetMovieAsync(id);
-                return Ok(Ok(_mapper.Map<Movie>(movie)));
+                return Ok(_mapper.Map<Movie>(movie));
             }
             catch (MovieNotFoundException exception)
             {

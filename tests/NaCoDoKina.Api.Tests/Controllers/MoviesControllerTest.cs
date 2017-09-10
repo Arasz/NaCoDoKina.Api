@@ -29,6 +29,8 @@ namespace NaCoDoKina.Api.Controllers
 
         public MoviesControllerTest()
         {
+            CinemaServiceMock = new Mock<ICinemaService>();
+            MapperMock = new Mock<IMapper>();
             LoggerMock = new Mock<ILogger<MoviesController>>();
             MovieServiceMock = new Mock<IMovieService>();
             ControllerUnderTest = new MoviesController(MovieServiceMock.Object, CinemaServiceMock.Object, LoggerMock.Object, MapperMock.Object);
