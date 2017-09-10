@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Web;
 
@@ -8,12 +8,15 @@ namespace NaCoDoKina.Api.Infrastructure
     public abstract class BaseHttpApiClient
     {
         protected readonly HttpClient HttpClient;
-        protected readonly ILogger<BaseHttpApiClient> Logger;
 
-        protected BaseHttpApiClient(HttpClient httpClient, ILogger<BaseHttpApiClient> logger)
+        protected abstract string BaseUrl { get; }
+
+        protected virtual string CreateRequestUrl(string parsedRequest) =>
+            $"{BaseUrl}{parsedRequest}";
+
+        protected BaseHttpApiClient(HttpClient httpClient)
         {
-            HttpClient = httpClient;
-            Logger = logger;
+            HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
         protected string ToUrlEncoded(string str) => HttpUtility.UrlEncode(str);

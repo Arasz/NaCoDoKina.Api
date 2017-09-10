@@ -11,5 +11,9 @@ namespace NaCoDoKina.Api.Exceptions
         public NaCoDoKinaApiException(string message) : base(message)
         {
         }
+
+        public NaCoDoKinaApiException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
 }

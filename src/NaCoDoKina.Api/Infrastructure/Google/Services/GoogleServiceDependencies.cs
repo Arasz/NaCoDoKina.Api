@@ -1,18 +1,17 @@
 using Microsoft.Extensions.Logging;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common;
+using NaCoDoKina.Api.Configuration;
 using System.Net.Http;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.Services
 {
     public class GoogleServiceDependencies<TRequest>
     {
-        public GoogleServiceDependencies(HttpClient httpClient, IRequestParser<TRequest> requestParser, ILogger<BaseHttpApiClient> logger, string apiKey)
+        public GoogleServiceDependencies(HttpClient httpClient, IRequestParser<TRequest> requestParser, ILogger<BaseHttpApiClient> logger, GoogleApiConfiguration configuration)
         {
             HttpClient = httpClient;
             RequestParser = requestParser;
             Logger = logger;
-            ApiKey = apiKey;
+            ApiKey = configuration.ApiKey;
         }
 
         public HttpClient HttpClient { get; }

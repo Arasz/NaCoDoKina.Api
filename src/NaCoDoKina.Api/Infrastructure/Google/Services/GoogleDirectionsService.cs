@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.Services
 {
-    public class GoogleDirectionsService : BaseGoogleService<DirectionsApiRequest, DirectionsApiResponse>, IGoogleDirectionsService
+    public class GoogleDirectionsService : GoogleServiceBase<DirectionsApiRequest, DirectionsApiResponse>, IGoogleDirectionsService
     {
         public GoogleDirectionsService(GoogleServiceDependencies<DirectionsApiRequest> googleServiceDependencies)
             : base(googleServiceDependencies)

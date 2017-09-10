@@ -1,17 +1,15 @@
 ﻿using Autofac;
-using AutoMapper;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Debug;
+using NaCoDoKina.Api.Configuration;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Response;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding;
 using NaCoDoKina.Api.Infrastructure.Google.Services;
+using NaCoDoKina.Api.IntegrationTests.Modules;
 using NaCoDoKina.Api.Models;
 using NaCoDoKina.Api.Services;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using Location = NaCoDoKina.Api.Models.Location;
@@ -20,49 +18,23 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
 {
     public class LocationServiceTest
     {
-        private IContainer container;
-        protected IGoogleDirectionsService DirectionsService { get; }
-
-        protected IGoogleGeocodingService GeocodingService { get; }
-
-        protected ILogger Logger { get; }
-
-        protected IMapper Mapper { get; }
+        private readonly IContainer _container;
 
         public LocationServiceTest()
         {
             var containerBuilder = new ContainerBuilder();
 
-            containerBuilder.RegisterType<HttpClient>()
-                .AsSelf()
-                .SingleInstance();
-
-            containerBuilder.RegisterType<DebugLoggerProvider>()
-                .As<ILoggerProvider>();
-
-            containerBuilder.RegisterType<LoggerFactory>()
-                .As<ILoggerFactory>();
-
-            containerBuilder.RegisterGeneric(typeof(Logger<>))
-                .As(typeof(ILogger<>));
-
-            containerBuilder.Register(context => new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfiles(typeof(ITravelService).Assembly);
-                }))
-                .As<IConfigurationProvider>()
-                .AsSelf();
-
-            containerBuilder.RegisterType<Mapper>()
-                .AsImplementedInterfaces();
+            containerBuilder.RegisterAssemblyModules<BasicServiceDependenciesModule>(typeof(LocationServiceTest).Assembly);
 
             containerBuilder.RegisterType<OnlyRequiredDirectionsRequestParser>()
                 .AsImplementedInterfaces();
             containerBuilder.RegisterType<OnlyRequiredGeocodingRequestParser>()
                 .AsImplementedInterfaces();
 
+            containerBuilder.RegisterType<GoogleApiConfiguration>()
+                .AsSelf();
+
             containerBuilder.RegisterGeneric(typeof(GoogleServiceDependencies<>))
-                .WithParameter("apiKey", "AIzaSyB0k9n49t5OXZ9XUfh8n9zUfhmdQ-_Tt5M")
                 .AsSelf();
 
             containerBuilder.RegisterType<GoogleDirectionsService>()
@@ -74,9 +46,9 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             containerBuilder.RegisterType<TravelService>()
                 .AsImplementedInterfaces();
 
-            container = containerBuilder.Build();
+            _container = containerBuilder.Build();
 
-            ServiceUnderTest = container.Resolve<ITravelService>();
+            ServiceUnderTest = _container.Resolve<ITravelService>();
         }
 
         public ITravelService ServiceUnderTest { get; set; }

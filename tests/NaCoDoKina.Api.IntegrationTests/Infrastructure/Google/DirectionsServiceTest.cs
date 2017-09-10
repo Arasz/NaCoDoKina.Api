@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request;
+using NaCoDoKina.Api.Infrastructure;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request;
 using NaCoDoKina.Api.Infrastructure.Google.Services;

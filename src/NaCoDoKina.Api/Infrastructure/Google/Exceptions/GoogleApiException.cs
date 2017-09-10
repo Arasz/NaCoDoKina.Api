@@ -1,8 +1,9 @@
-﻿using System;
+﻿using NaCoDoKina.Api.Exceptions;
+using System;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.Exceptions
 {
-    public class GoogleApiException : Exception
+    public class GoogleApiException : NaCoDoKinaApiException
     {
         public GoogleApiStatus Status { get; set; }
 
