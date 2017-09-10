@@ -1,4 +1,5 @@
 ﻿using NaCoDoKina.Api.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,6 +10,16 @@ namespace NaCoDoKina.Api.Services
         public Task<IEnumerable<long>> GetAllMoviesAsync(Location location)
         {
             throw new System.NotImplementedException();
+        }
+
+        public Task<IEnumerable<long>> GetAllMoviesAsync(SearchArea searchArea)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<long>> GetMoviesPlayedInCinemas(IEnumerable<Cinema> cinemas, TimeSpan arrivalTime)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<Movie> GetMovieAsync(long id)
@@ -24,6 +35,16 @@ namespace NaCoDoKina.Api.Services
         public Task<MovieDetails> GetMovieDetailsAsync(long id)
         {
             throw new System.NotImplementedException();
+        }
+
+        public Task<long> AddMovieAsync(Movie newMovie)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<long> AddMovieDetails(long movieId, MovieDetails movieDetails)
+        {
+            throw new NotImplementedException();
         }
     }
 }

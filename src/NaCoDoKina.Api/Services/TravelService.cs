@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Services
 {
-    public class LocationService : ILocationService
+    public class TravelService : ITravelService
     {
         private readonly IGoogleDirectionsService _googleDirectionsService;
         private readonly IGoogleGeocodingService _googleGeocodingService;
         private readonly IMapper _mapper;
-        private readonly ILogger<LocationService> _logger;
+        private readonly ILogger<ITravelService> _logger;
 
-        public LocationService(IGoogleDirectionsService googleDirectionsService, IGoogleGeocodingService googleGeocodingService, IMapper mapper, ILogger<LocationService> logger)
+        public TravelService(IGoogleDirectionsService googleDirectionsService, IGoogleGeocodingService googleGeocodingService, IMapper mapper, ILogger<ITravelService> logger)
         {
             _googleDirectionsService = googleDirectionsService;
             _googleGeocodingService = googleGeocodingService;
@@ -26,7 +26,7 @@ namespace NaCoDoKina.Api.Services
             _logger = logger;
         }
 
-        public async Task<TimeSpan> CalculateTravelTimeAsync(TravelPlan travelPlan)
+        public async Task<TravelInformation> CalculateInformationForTravelAsync(TravelPlan travelPlan)
         {
             var request = _mapper.Map<DirectionsApiRequest>(travelPlan);
 
@@ -36,17 +36,17 @@ namespace NaCoDoKina.Api.Services
 
                 return response.Routes
                     .SelectMany(route => route.Legs)
-                    .Select(leg => TimeSpan.FromSeconds(leg.Duration.Value))
+                    .Select(leg => new TravelInformation(travelPlan, leg.Distance.Value, TimeSpan.FromSeconds(leg.Duration.Value)))
                     .Max();
             }
             catch (GoogleApiException exception) when (exception.Status != GoogleApiStatus.Unspecifed)
             {
                 _logger.LogError("Error during travel time calculation {@Exception}.", exception);
-                return TimeSpan.MinValue;
+                return null;
             }
             catch (GoogleApiException)
             {
-                return TimeSpan.MinValue;
+                return null;
             }
         }
 

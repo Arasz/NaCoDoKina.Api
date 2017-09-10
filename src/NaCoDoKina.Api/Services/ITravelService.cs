@@ -7,7 +7,7 @@ namespace NaCoDoKina.Api.Services
     /// <summary>
     /// Contract for location oriented business logic 
     /// </summary>
-    public interface ILocationService
+    public interface ITravelService
     {
         /// <summary>
         /// Calculates travel time 
@@ -16,7 +16,7 @@ namespace NaCoDoKina.Api.Services
         /// <returns>
         /// Time needed to reach point B from point A. Returns min value when time couldnt be calculated
         /// </returns>
-        Task<TimeSpan> CalculateTravelTimeAsync(TravelPlan travelPlan);
+        Task<TravelInformation> CalculateInformationForTravelAsync(TravelPlan travelPlan);
 
         /// <summary>
         /// Translates address to location (geocoding) 

@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NaCoDoKina.Api.DataContracts;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Services;
 using System.Collections.Generic;
@@ -48,18 +49,20 @@ namespace NaCoDoKina.Api.Controllers
                 //Arrange
                 var expectedShowsIds = new[] { 1L, 2L, 3L };
                 var modelLocation = new Models.Location(1, 1);
+                var modelSearchArea = new Models.SearchArea(modelLocation, 500);
                 var apiLocation = new Location(1, 1);
+                var apiSearchArea = new SearchArea(apiLocation, 500);
 
                 MapperMock
-                    .Setup(mapper => mapper.Map<Models.Location>(apiLocation))
-                    .Returns(modelLocation);
+                    .Setup(mapper => mapper.Map<Models.SearchArea>(apiSearchArea))
+                    .Returns(modelSearchArea);
 
                 MovieServiceMock
-                    .Setup(service => service.GetAllMoviesAsync(modelLocation))
+                    .Setup(service => service.GetAllMoviesAsync(modelSearchArea))
                     .Returns(() => Task.FromResult(expectedShowsIds.AsEnumerable()));
 
                 //Act
-                var result = await ControllerUnderTest.GetAllMoviesAsync(apiLocation);
+                var result = await ControllerUnderTest.GetAllMoviesAsync(apiSearchArea);
 
                 //Assert
                 result.Should().BeOfType<OkObjectResult>();
@@ -71,10 +74,10 @@ namespace NaCoDoKina.Api.Controllers
             public async void Should_return_BadRequestResult_when_location_is_null()
             {
                 //Arrange
-                Location userLocation = null;
+                SearchArea searchArea = null;
 
                 //Act
-                var result = await ControllerUnderTest.GetAllMoviesAsync(userLocation);
+                var result = await ControllerUnderTest.GetAllMoviesAsync(searchArea);
 
                 //Assert
                 result.Should().BeOfType<BadRequestResult>();
@@ -86,18 +89,20 @@ namespace NaCoDoKina.Api.Controllers
                 //Arrange
                 var expectedShowsIds = new[] { 1L, 2L, 3L };
                 var modelLocation = new Models.Location(1, 1);
+                var modelSearchArea = new Models.SearchArea(modelLocation, 500);
                 var apiLocation = new Location(1, 1);
+                var apiSearchArea = new SearchArea(apiLocation, 500);
 
                 MapperMock
-                    .Setup(mapper => mapper.Map<Models.Location>(apiLocation))
-                    .Returns(modelLocation);
+                    .Setup(mapper => mapper.Map<Models.SearchArea>(apiSearchArea))
+                    .Returns(modelSearchArea);
 
                 MovieServiceMock
-                    .Setup(service => service.GetAllMoviesAsync(modelLocation))
+                    .Setup(service => service.GetAllMoviesAsync(modelSearchArea))
                     .ThrowsAsync(new MoviesNotFoundException(expectedShowsIds));
 
                 //Act
-                var result = await ControllerUnderTest.GetAllMoviesAsync(apiLocation);
+                var result = await ControllerUnderTest.GetAllMoviesAsync(apiSearchArea);
 
                 //Assert
                 result.Should().BeOfType<NotFoundObjectResult>();
@@ -110,25 +115,27 @@ namespace NaCoDoKina.Api.Controllers
             public async void Should_return_OkObjectResult_and_Cineamas()
             {
                 //Arrange
-                var showId = 1;
+                var movieId = 1;
                 var modelCinemas = new List<Models.Cinema> { new Models.Cinema() };
-                var location = new Models.Location(1, 1);
+                var modelLocation = new Models.Location(1, 1);
+                var modelSearchArea = new Models.SearchArea(modelLocation, 500);
                 var apiLocation = new Location(1, 1);
+                var apiSearchArea = new SearchArea(apiLocation, 500);
 
                 MapperMock
                     .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Models.Cinema>()))
                     .Returns(new Cinema());
 
                 MapperMock
-                    .Setup(mapper => mapper.Map<Models.Location>(apiLocation))
-                    .Returns(location);
+                    .Setup(mapper => mapper.Map<Models.SearchArea>(apiSearchArea))
+                    .Returns(modelSearchArea);
 
                 CinemaServiceMock
-                    .Setup(service => service.GetNearestCinemasForMovieAsync(showId, location))
+                    .Setup(service => service.GetNearestCinemasForMovieAsync(movieId, modelSearchArea))
                     .Returns(() => Task.FromResult(modelCinemas.AsEnumerable()));
 
                 //Act
-                var result = await ControllerUnderTest.GetNearestCinemasForMovie(showId, apiLocation);
+                var result = await ControllerUnderTest.GetNearestCinemasForMovie(movieId, apiSearchArea);
 
                 //Assert
                 result.Should().BeOfType<OkObjectResult>();
@@ -156,19 +163,21 @@ namespace NaCoDoKina.Api.Controllers
             {
                 //Arrange
                 var movieId = -5;
-                var location = new Models.Location(1, 1);
+                var modelLocation = new Models.Location(1, 1);
+                var modelSearchArea = new Models.SearchArea(modelLocation, 500);
                 var apiLocation = new Location(1, 1);
+                var apiSearchArea = new SearchArea(apiLocation, 500);
 
                 MapperMock
-                    .Setup(mapper => mapper.Map<Models.Location>(apiLocation))
-                    .Returns(location);
+                    .Setup(mapper => mapper.Map<Models.SearchArea>(apiSearchArea))
+                    .Returns(modelSearchArea);
 
                 CinemaServiceMock
-                    .Setup(service => service.GetNearestCinemasForMovieAsync(movieId, location))
-                    .Throws(new CinemasNotFoundException(movieId, location));
+                    .Setup(service => service.GetNearestCinemasForMovieAsync(movieId, modelSearchArea))
+                    .Throws(new CinemasNotFoundException(movieId, modelSearchArea));
 
                 //Act
-                var result = await ControllerUnderTest.GetNearestCinemasForMovie(movieId, apiLocation);
+                var result = await ControllerUnderTest.GetNearestCinemasForMovie(movieId, apiSearchArea);
 
                 //Assert
                 result.Should().BeOfType<NotFoundObjectResult>();

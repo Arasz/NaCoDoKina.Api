@@ -36,20 +36,20 @@ namespace NaCoDoKina.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
-        public async Task<IActionResult> GetAllMoviesAsync([FromBody]Location location)
+        public async Task<IActionResult> GetAllMoviesAsync([FromBody]SearchArea searchArea)
         {
-            if (location is null)
+            if (searchArea is null)
                 return BadRequest();
 
             try
             {
-                var mappedLocation = _mapper.Map<Models.Location>(location);
-                var movies = await _movieService.GetAllMoviesAsync(mappedLocation);
+                var modelSearchArea = _mapper.Map<Models.SearchArea>(searchArea);
+                var movies = await _movieService.GetAllMoviesAsync(modelSearchArea);
                 return Ok(movies);
             }
             catch (MoviesNotFoundException exception)
             {
-                _logger.LogWarning("Shows not found in @location.", location);
+                _logger.LogWarning("Shows not found in @searchArea.", searchArea);
                 return NotFound(exception.Message);
             }
         }
@@ -102,27 +102,27 @@ namespace NaCoDoKina.Api.Controllers
         /// Returns list of nearest cinemas which plays movie with given id 
         /// </summary>
         /// <param name="id"> Movie id </param>
-        /// <param name="location"> User location </param>
+        /// <param name="searchArea"> User searchArea </param>
         /// <returns> Detailed informations about show </returns>
         [ProducesResponseType(typeof(IEnumerable<Cinema>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{id}/cinemas")]
-        public async Task<IActionResult> GetNearestCinemasForMovie(long id, [FromBody] Location location)
+        public async Task<IActionResult> GetNearestCinemasForMovie(long id, [FromBody] SearchArea searchArea)
         {
-            if (location is null)
+            if (searchArea is null)
                 return BadRequest();
 
             try
             {
-                var mappedLocation = _mapper.Map<Models.Location>(location);
-                var nearestCinemas = await _cinemaService.GetNearestCinemasForMovieAsync(id, mappedLocation);
+                var modelSearchArea = _mapper.Map<Models.SearchArea>(searchArea);
+                var nearestCinemas = await _cinemaService.GetNearestCinemasForMovieAsync(id, modelSearchArea);
                 return Ok(nearestCinemas.Select(_mapper.Map<Location>));
             }
             catch (CinemasNotFoundException exception)
             {
                 _logger.LogWarning("Cinemas playing movie with id {id} were not " +
-                                   "found near {@location} in given proximity", id, location);
+                                   "found near {@searchArea} in given proximity", id, searchArea);
                 return NotFound(exception.Message);
             }
         }

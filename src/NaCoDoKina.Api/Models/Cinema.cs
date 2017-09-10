@@ -11,5 +11,7 @@
         public string Website { get; set; }
 
         public string NetworkName { get; set; }
+
+        public Location Location { get; set; }
     }
 }

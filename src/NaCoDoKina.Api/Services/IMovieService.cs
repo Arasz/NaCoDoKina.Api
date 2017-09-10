@@ -11,11 +11,11 @@ namespace NaCoDoKina.Api.Services
     public interface IMovieService
     {
         /// <summary>
-        /// Get all movies available near given location. 
+        /// Get all movies available near given inside search area. 
         /// </summary>
-        /// <param name="location"> User location </param>
+        /// <param name="searchArea"> User location and searched distance </param>
         /// <returns> Shows ids sorted by estimated user rating </returns>
-        Task<IEnumerable<long>> GetAllMoviesAsync(Location location);
+        Task<IEnumerable<long>> GetAllMoviesAsync(SearchArea searchArea);
 
         /// <summary>
         /// Get movies played in given cinemas after time needed for arrival 

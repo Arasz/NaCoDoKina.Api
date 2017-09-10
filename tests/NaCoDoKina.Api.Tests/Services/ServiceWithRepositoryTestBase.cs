@@ -1,10 +1,22 @@
-﻿using Moq;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace NaCoDoKina.Api.Services
 {
     public abstract class ServiceTestBase<TService>
     {
         protected TService ServiceUnderTest { get; set; }
+
+        protected Mock<ILogger<TService>> LoggerMock { get; set; }
+
+        protected Mock<IMapper> MapperMock { get; set; }
+
+        protected ServiceTestBase()
+        {
+            LoggerMock = new Mock<ILogger<TService>>();
+            MapperMock = new Mock<IMapper>();
+        }
     }
 
     public abstract class ServiceWithRepositoryTestBase<TService, TRepository> : ServiceTestBase<TService>
@@ -16,6 +28,7 @@ namespace NaCoDoKina.Api.Services
 
         protected ServiceWithRepositoryTestBase()
         {
+            RepositoryMock = new Mock<TRepository>();
         }
     }
 }

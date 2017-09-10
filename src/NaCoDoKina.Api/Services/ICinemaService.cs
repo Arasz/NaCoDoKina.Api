@@ -13,16 +13,16 @@ namespace NaCoDoKina.Api.Services
         /// Returns list of nearest cinemas which plays movie with given id 
         /// </summary>
         /// <param name="movieId"> Movie id </param>
-        /// <param name="location"> User location </param>
-        /// <returns> List of cinemas nearest to user location that play given movie </returns>
-        Task<IEnumerable<Cinema>> GetNearestCinemasForMovieAsync(long movieId, Location location);
+        /// <param name="searchArea"> User searchArea </param>
+        /// <returns> List of cinemas nearest to user searchArea that play given movie </returns>
+        Task<IEnumerable<Cinema>> GetNearestCinemasForMovieAsync(long movieId, SearchArea searchArea);
 
         /// <summary>
         /// Returns list of nearest cinemas 
         /// </summary>
-        /// <param name="location"> User location </param>
+        /// <param name="searchArea"> User searchArea </param>
         /// <returns> List of nearest cinemas </returns>
-        Task<IEnumerable<Cinema>> GetNearestCinemasAsync(Location location);
+        Task<IEnumerable<Cinema>> GetNearestCinemasAsync(SearchArea searchArea);
 
         /// <summary>
         /// Adds new cinema 

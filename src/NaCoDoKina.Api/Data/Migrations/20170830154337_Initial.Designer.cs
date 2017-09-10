@@ -130,7 +130,7 @@ namespace NaCoDoKina.Api.Data.Migrations
                         .WithMany("Cinemas")
                         .HasForeignKey("CinemaNetworkId");
 
-                    b.OwnsOne("NaCoDoKina.Api.Entities.Location", "Location", b1 =>
+                    b.OwnsOne("NaCoDoKina.Api.Entities.Center", "Center", b1 =>
                         {
                             b1.Property<long>("CinemaId");
 
@@ -141,8 +141,8 @@ namespace NaCoDoKina.Api.Data.Migrations
                             b1.ToTable("Cinemas");
 
                             b1.HasOne("NaCoDoKina.Api.Entities.Cinema")
-                                .WithOne("Location")
-                                .HasForeignKey("NaCoDoKina.Api.Entities.Location", "CinemaId")
+                                .WithOne("Center")
+                                .HasForeignKey("NaCoDoKina.Api.Entities.Center", "CinemaId")
                                 .OnDelete(DeleteBehavior.Cascade);
                         });
                 });
