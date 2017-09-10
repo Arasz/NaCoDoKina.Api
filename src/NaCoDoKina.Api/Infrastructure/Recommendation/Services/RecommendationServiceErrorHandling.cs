@@ -21,11 +21,11 @@ namespace NaCoDoKina.Api.Infrastructure.Recommendation.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Task<RecommendationApiResponse> GetMovieRating(RecommendationApiRequest request)
+        public async Task<RecommendationApiResponse> GetMovieRating(RecommendationApiRequest request)
         {
             try
             {
-                return _recommendationService.GetMovieRating(request);
+                return await _recommendationService.GetMovieRating(request);
             }
             catch (RecommendationApiException)
             {
@@ -39,11 +39,11 @@ namespace NaCoDoKina.Api.Infrastructure.Recommendation.Services
             }
         }
 
-        public Task SaveMovieRating(RecommendationApiRequest request, Rating rating)
+        public async Task SaveMovieRating(RecommendationApiRequest request, Rating rating)
         {
             try
             {
-                return _recommendationService.SaveMovieRating(request, rating);
+                await _recommendationService.SaveMovieRating(request, rating);
             }
             catch (RecommendationApiException)
             {
