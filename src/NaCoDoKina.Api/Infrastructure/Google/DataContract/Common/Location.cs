@@ -1,19 +1,34 @@
-﻿namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Common
+﻿using System.Globalization;
+using System.Runtime.Serialization;
+
+namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Common
 {
+    [DataContract]
     public class Location
     {
+        public Location(double longitude, double latitude)
+        {
+            Longitude = longitude;
+            Latitude = latitude;
+        }
+
         public Location()
         {
         }
 
-        public Location(double lat, double lng)
+        [DataMember(Name = "lng")]
+        public double Longitude { get; set; }
+
+        [DataMember(Name = "lat")]
+        public double Latitude { get; set; }
+
+        public void Deconstruct(out double longitude, out double latitude)
         {
-            Lat = lat;
-            Lng = lng;
+            longitude = Longitude;
+            latitude = Latitude;
         }
 
-        public double Lat { get; set; }
-
-        public double Lng { get; set; }
+        public override string ToString() => $"{Longitude.ToString(CultureInfo.InvariantCulture)}," +
+                                             $"{Latitude.ToString(CultureInfo.InvariantCulture)}";
     }
 }

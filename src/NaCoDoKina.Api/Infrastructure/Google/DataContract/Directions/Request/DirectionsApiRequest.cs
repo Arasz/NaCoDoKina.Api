@@ -1,7 +1,6 @@
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common;
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Response;
 using System;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request
 {
@@ -25,8 +24,8 @@ namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request
         /// <summary>
         /// Transportation mode used in direction calculations 
         /// </summary>
-        /// <see cref="https://developers.google.com/maps/documentation/directions/intro#TravelModes"/>
-        public TravelModes TravelMode { get; set; }
+        /// <see cref="https://developers.google.com/maps/documentation/directions/intro#TravelMode"/>
+        public TravelMode TravelMode { get; set; }
 
         /// <summary>
         /// Specifies an array of waypoints. Waypoints alter a route by routing it through the

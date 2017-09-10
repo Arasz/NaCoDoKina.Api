@@ -1,5 +1,4 @@
-﻿using NaCoDoKina.Api.Entities;
-using NaCoDoKina.Api.Models;
+﻿using NaCoDoKina.Api.Models;
 using System;
 using System.Threading.Tasks;
 

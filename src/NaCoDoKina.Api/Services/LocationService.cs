@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
-using NaCoDoKina.Api.Entities;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request;
+using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Request;
 using NaCoDoKina.Api.Infrastructure.Google.Exceptions;
 using NaCoDoKina.Api.Infrastructure.Google.Services;
 using NaCoDoKina.Api.Models;
@@ -16,9 +16,9 @@ namespace NaCoDoKina.Api.Services
         private readonly IGoogleDirectionsService _googleDirectionsService;
         private readonly IGoogleGeocodingService _googleGeocodingService;
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
+        private readonly ILogger<LocationService> _logger;
 
-        public LocationService(IGoogleDirectionsService googleDirectionsService, IGoogleGeocodingService googleGeocodingService, IMapper mapper, ILogger logger)
+        public LocationService(IGoogleDirectionsService googleDirectionsService, IGoogleGeocodingService googleGeocodingService, IMapper mapper, ILogger<LocationService> logger)
         {
             _googleDirectionsService = googleDirectionsService;
             _googleGeocodingService = googleGeocodingService;
@@ -50,9 +50,29 @@ namespace NaCoDoKina.Api.Services
             }
         }
 
-        public Task<Location> TranslateAddressToLocationAsync(string address)
+        public async Task<Location> TranslateAddressToLocationAsync(string address)
         {
-            throw new NotImplementedException();
+            var request = _mapper.Map<GeocodingApiRequest>(address);
+
+            try
+            {
+                var response = await _googleGeocodingService.GeocodeAsync(request);
+
+                var locationFromApi = response.Results.FirstOrDefault()?
+                    .Geometry
+                    .Location;
+
+                return _mapper.Map<Location>(locationFromApi);
+            }
+            catch (GoogleApiException exception) when (exception.Status != GoogleApiStatus.Unspecifed)
+            {
+                _logger.LogError("Error during address location {@Exception}.", exception);
+                return null;
+            }
+            catch (GoogleApiException)
+            {
+                return null;
+            }
         }
     }
 }
