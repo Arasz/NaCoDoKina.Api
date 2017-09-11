@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using NaCoDoKina.Api.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NaCoDoKina.Api.Exceptions
 {
@@ -8,6 +10,13 @@ namespace NaCoDoKina.Api.Exceptions
     /// <inheritdoc/>
     public class MoviesNotFoundException : NaCoDoKinaApiException
     {
+        public MoviesNotFoundException(IEnumerable<Cinema> cinemas, SearchArea searchArea)
+            : base($"There is no movie played in cinemas " +
+                   $"{string.Join(", ", cinemas.Select(cinema => cinema.Name))}" +
+                   $" within search area {searchArea}")
+        {
+        }
+
         public MoviesNotFoundException(IEnumerable<long> moviesIds)
             : base($"Movies with ids {string.Join(",", moviesIds)} where not found")
         {

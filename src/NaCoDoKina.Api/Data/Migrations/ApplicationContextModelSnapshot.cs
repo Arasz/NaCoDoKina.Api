@@ -28,7 +28,7 @@ namespace NaCoDoKina.Api.Data.Migrations
 
                     b.Property<long?>("CinemaNetworkId");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(225);
 
@@ -44,7 +44,7 @@ namespace NaCoDoKina.Api.Data.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255);
 

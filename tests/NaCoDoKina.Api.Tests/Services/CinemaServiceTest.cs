@@ -140,6 +140,8 @@ namespace NaCoDoKina.Api.Services
                     result.SingleOrDefault(cinema => cinema.Name == "NearCinema")
                         .Should()
                         .NotBeNull();
+                    result.Should()
+                        .Match(enumerable => enumerable.All(cinema => cinema.CinemaTravelInformation != null));
                 }
 
                 [Fact]
