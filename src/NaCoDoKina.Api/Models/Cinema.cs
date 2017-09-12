@@ -13,5 +13,10 @@
         public string NetworkName { get; set; }
 
         public Location Location { get; set; }
+
+        /// <summary>
+        /// Information about travel from user location to cinema 
+        /// </summary>
+        public TravelInformation CinemaTravelInformation { get; set; }
     }
 }

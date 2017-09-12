@@ -74,7 +74,11 @@ namespace NaCoDoKina.Api.Services
             var nearestCinemas = allCinemaModels
                 .Join(travelInformationForCinemas, cinema => cinema.Location,
                     information => information.TravelPlan.Destination,
-                    (cinema, information) => (Cinema: cinema, Distance: information.Distance))
+                    (cinema, information) =>
+                    {
+                        cinema.CinemaTravelInformation = information;
+                        return (Cinema: cinema, Distance: information.Distance);
+                    })
                 .Where(tuple => tuple.Distance <= searchArea.Radius)
                 .Select(tuple => tuple.Cinema);
 

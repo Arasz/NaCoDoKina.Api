@@ -7,7 +7,7 @@ namespace NaCoDoKina.Api.Models
     /// </summary>
     public class MovieDetails
     {
-        public string MovieId { get; set; }
+        public long MovieId { get; set; }
 
         public string Link { get; set; }
 
@@ -32,5 +32,10 @@ namespace NaCoDoKina.Api.Models
         public string Production { get; set; }
 
         public List<MovieShowtime> MovieShowtimes { get; set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(MovieId)}: {MovieId}, {nameof(OriginalTitle)}: {OriginalTitle}";
+        }
     }
 }

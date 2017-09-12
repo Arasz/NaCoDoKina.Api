@@ -1,6 +1,4 @@
-﻿using NaCoDoKina.Api.Entities;
-
-namespace NaCoDoKina.Api.Models
+﻿namespace NaCoDoKina.Api.Models
 {
     /// <summary>
     /// All data needed for travel time calculations 
