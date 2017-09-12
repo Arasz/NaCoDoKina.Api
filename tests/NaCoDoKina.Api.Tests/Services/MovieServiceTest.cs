@@ -13,12 +13,57 @@ using Xunit;
 using Cinema = NaCoDoKina.Api.Models.Cinema;
 using Movie = NaCoDoKina.Api.Models.Movie;
 using MovieDetails = NaCoDoKina.Api.Models.MovieDetails;
-using MovieShowtime = NaCoDoKina.Api.Entities.MovieShowtime;
+using SearchArea = NaCoDoKina.Api.Models.SearchArea;
 
 namespace NaCoDoKina.Api.Services
 {
     public class MovieServiceTest : ServiceWithRepositoryTestBase<IMovieService, IMovieRepository>
     {
+        protected class MovieRepositoryFake : IMovieRepository
+        {
+            private List<Entities.MovieShowtime> _movieShowtimes = new List<Entities.MovieShowtime>();
+
+            public void SetTestData(IEnumerable<Entities.MovieShowtime> data)
+            {
+                _movieShowtimes = data as List<Entities.MovieShowtime> ?? data.ToList();
+            }
+
+            public Task<bool> DeleteMovieAsync(long movieId, long userId)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task<Entities.Movie> GetMovieAsync(long id)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task<IEnumerable<long>> GetMoviesPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
+            {
+                var moviesIds = _movieShowtimes
+                    .Where(showtime => showtime.Cinema.Id == cinemaId)
+                    .Where(showtime => showtime.DateTime > laterThan)
+                    .Select(showtime => showtime.Movie.Id);
+
+                return Task.FromResult(moviesIds);
+            }
+
+            public Task<Entities.MovieDetails> GetMovieDetailsAsync(long id)
+            {
+                return Task.FromResult(new Entities.MovieDetails { Id = id });
+            }
+
+            public Task<long> AddMovieAsync(Entities.Movie newMovie)
+            {
+                return Task.FromResult(newMovie.Id);
+            }
+
+            public Task<long> AddMovieDetailsAsync(Entities.MovieDetails movieDetails)
+            {
+                return Task.FromResult(movieDetails.Id);
+            }
+        }
+
         protected Mock<ICinemaService> CinemaServiceMock { get; set; }
 
         protected Mock<IRecommendationService> RecommendationServiceMock { get; set; }
@@ -79,56 +124,125 @@ namespace NaCoDoKina.Api.Services
 
         public class GetAllMoviesAsync : MovieServiceTest
         {
+            private readonly MovieRepositoryFake _movieRepositoryFake;
+
+            public GetAllMoviesAsync()
+            {
+                _movieRepositoryFake = new MovieRepositoryFake();
+
+                ServiceUnderTest = new MovieService(_movieRepositoryFake, CinemaServiceMock.Object,
+                    RecommendationServiceMock.Object, UserServiceMock.Object, MapperMock.Object);
+
+                PreConfigureMocks();
+            }
+
+            [Fact]
+            public async Task Should_get_all_movies_played_in_area_ordered_by_ratings()
+            {
+                //Arrange
+                var moviesIds = new long[] { 1, 2, 3, 4, 404 };
+                var cinemasIdsWithDuration = new(long, long)[] { (1, 10), (2, 15), (3, 18), (4, 9), (69, 44) };
+                var now = DateTime.Now;
+
+                var searchArea = new SearchArea(new Location(1, 1), 30);
+
+                var movies = moviesIds
+                    .Select(id => new Entities.Movie() { Id = id });
+
+                var cinemas = cinemasIdsWithDuration
+                    .Select(tuple => new Cinema
+                    {
+                        Id = tuple.Item1,
+                        CinemaTravelInformation = new TravelInformation(null, 0, TimeSpan.FromMinutes(tuple.Item2))
+                    }).ToArray();
+
+                var showTimes = movies.Zip(cinemas, (movie, cinema) => new Entities.MovieShowtime
+                {
+                    Movie = movie,
+                    Cinema = new Entities.Cinema
+                    {
+                        Id = cinema.Id,
+                    },
+                    DateTime = now.AddMinutes(20),
+                });
+
+                _movieRepositoryFake.SetTestData(showTimes);
+
+                RecommendationServiceMock
+                    .Setup(service => service.GetMovieRating(It.IsAny<RecommendationApiRequest>()))
+                    .Returns(new Func<RecommendationApiRequest, Task<RecommendationApiResponse>>((request) => Task.FromResult(new RecommendationApiResponse
+                    {
+                        MovieId = request.MovieId,
+                        Rating = request.MovieId
+                    })));
+
+                CinemaServiceMock
+                    .Setup(service => service.GetNearestCinemasAsync(searchArea))
+                    .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
+
+                //Act
+                var allMoviesId = await ServiceUnderTest.GetAllMoviesAsync(searchArea);
+
+                //Assert
+                allMoviesId.Should().Contain(moviesIds.TakeWhile(id => id < 100));
+                allMoviesId.Should().BeInDescendingOrder();
+            }
+
+            [Fact]
+            public void Should_throw_movies_not_found_exception_when_no_movies_are_played()
+            {
+                //Arrange
+                var moviesIds = new long[] { 1, 2, 3, 4, 404 };
+                var cinemasIdsWithDuration = new(long, long)[] { (1, 10), (2, 15), (3, 18), (4, 9), (69, 44) };
+                var moviesShowtime = DateTime.Now.AddMinutes(2);
+
+                var searchArea = new SearchArea(new Location(1, 1), 30);
+
+                var movies = moviesIds
+                    .Select(id => new Entities.Movie() { Id = id });
+
+                var cinemas = cinemasIdsWithDuration
+                    .Select(tuple => new Cinema
+                    {
+                        Id = tuple.Item1,
+                        CinemaTravelInformation = new TravelInformation(null, 0, TimeSpan.FromMinutes(tuple.Item2))
+                    }).ToArray();
+
+                var showTimes = movies.Zip(cinemas, (movie, cinema) => new Entities.MovieShowtime
+                {
+                    Movie = movie,
+                    Cinema = new Entities.Cinema
+                    {
+                        Id = cinema.Id,
+                    },
+                    DateTime = moviesShowtime,
+                });
+
+                _movieRepositoryFake.SetTestData(showTimes);
+
+                RecommendationServiceMock
+                    .Setup(service => service.GetMovieRating(It.IsAny<RecommendationApiRequest>()))
+                    .Returns(new Func<RecommendationApiRequest, Task<RecommendationApiResponse>>((request) => Task.FromResult(new RecommendationApiResponse
+                    {
+                        MovieId = request.MovieId,
+                        Rating = request.MovieId
+                    })));
+
+                CinemaServiceMock
+                    .Setup(service => service.GetNearestCinemasAsync(searchArea))
+                    .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
+
+                //Act
+                Func<Task<IEnumerable<long>>> action = () => ServiceUnderTest.GetAllMoviesAsync(searchArea);
+
+                //Assert
+                action.ShouldThrow<MoviesNotFoundException>();
+            }
         }
 
         public class GetMoviesPlayedInCinemas : MovieServiceTest
         {
-            private class MovieRepositoryFake : IMovieRepository
-            {
-                private List<Entities.MovieShowtime> _movieShowtimes = new List<MovieShowtime>();
-
-                public void SetTestData(IEnumerable<Entities.MovieShowtime> data)
-                {
-                    _movieShowtimes = data as List<Entities.MovieShowtime> ?? data.ToList();
-                }
-
-                public Task<bool> DeleteMovieAsync(long movieId, long userId)
-                {
-                    throw new NotImplementedException();
-                }
-
-                public Task<Entities.Movie> GetMovieAsync(long id)
-                {
-                    throw new NotImplementedException();
-                }
-
-                public Task<IEnumerable<long>> GetMoviesPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
-                {
-                    var moviesIds = _movieShowtimes
-                        .Where(showtime => showtime.Cinema.Id == cinemaId)
-                        .Where(showtime => showtime.DateTime > laterThan)
-                        .Select(showtime => showtime.Movie.Id);
-
-                    return Task.FromResult(moviesIds);
-                }
-
-                public Task<Entities.MovieDetails> GetMovieDetailsAsync(long id)
-                {
-                    return Task.FromResult(new Entities.MovieDetails { Id = id });
-                }
-
-                public Task<long> AddMovieAsync(Entities.Movie newMovie)
-                {
-                    return Task.FromResult(newMovie.Id);
-                }
-
-                public Task<long> AddMovieDetailsAsync(Entities.MovieDetails movieDetails)
-                {
-                    return Task.FromResult(movieDetails.Id);
-                }
-            }
-
-            private MovieRepositoryFake _movieRepositoryFake;
+            private readonly MovieRepositoryFake _movieRepositoryFake;
 
             public GetMoviesPlayedInCinemas()
             {
@@ -141,7 +255,7 @@ namespace NaCoDoKina.Api.Services
             }
 
             [Fact]
-            public async Task Should_get_all_movies_played_in_cinema()
+            public async Task Should_get_all_movies_played_in_cinema_ordered_by_ratings()
             {
                 //Arrange
                 var moviesIds = new long[] { 1, 2, 3, 4, 404 };
@@ -175,7 +289,7 @@ namespace NaCoDoKina.Api.Services
                     .Returns(new Func<RecommendationApiRequest, Task<RecommendationApiResponse>>((request) => Task.FromResult(new RecommendationApiResponse
                     {
                         MovieId = request.MovieId,
-                        Rating = 5
+                        Rating = request.MovieId
                     })));
 
                 //Act
@@ -183,6 +297,7 @@ namespace NaCoDoKina.Api.Services
 
                 //Assert
                 playedMoviesIds.Should().Contain(moviesIds.TakeWhile(id => id < 100));
+                playedMoviesIds.Should().BeInDescendingOrder();
             }
         }
 

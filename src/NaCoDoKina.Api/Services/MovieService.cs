@@ -71,7 +71,7 @@ namespace NaCoDoKina.Api.Services
             var movieRatings = await Task.WhenAll(getMovieRatingsForMoviesTasks);
 
             return movieRatings
-                .OrderBy(tuple => tuple.Rating)
+                .OrderByDescending(tuple => tuple.Rating)
                 .Select(tuple => tuple.MovieId);
         }
 
