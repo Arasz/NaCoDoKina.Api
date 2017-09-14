@@ -15,13 +15,15 @@ namespace NaCoDoKina.Api.Controllers
     [Route("v1/[controller]")]
     public class MoviesController : Controller
     {
+        private readonly IRatingService _ratingService;
         private readonly IMapper _mapper;
         private readonly ICinemaService _cinemaService;
         private readonly ILogger<MoviesController> _logger;
         private readonly IMovieService _movieService;
 
-        public MoviesController(IMovieService movieService, ICinemaService cinemaService, ILogger<MoviesController> logger, IMapper mapper)
+        public MoviesController(IMovieService movieService, ICinemaService cinemaService, IRatingService ratingService, ILogger<MoviesController> logger, IMapper mapper)
         {
+            _ratingService = ratingService ?? throw new ArgumentNullException(nameof(ratingService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _cinemaService = cinemaService ?? throw new ArgumentNullException(nameof(cinemaService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -146,6 +148,28 @@ namespace NaCoDoKina.Api.Controllers
             {
                 _logger.LogWarning("Movie details for show with {id} were not found", id);
                 return NotFound(exception.Message);
+            }
+        }
+
+        /// <summary>
+        /// Sets user rating for movie 
+        /// </summary>
+        /// <param name="id"> Movie id </param>
+        /// <param name="rating"> Movie rating </param>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpPost("{id}/rating/{rating}")]
+        public async Task<IActionResult> SetRatingForMovie(long id, double rating)
+        {
+            try
+            {
+                await _ratingService.SetMovieRating(id, rating);
+                return Ok();
+            }
+            catch (MovieRatingNotFoundException movieRatingNotFoundException)
+            {
+                _logger.LogWarning("Movie with id {id} not found by rating service", id);
+                return NotFound(movieRatingNotFoundException.Message);
             }
         }
     }

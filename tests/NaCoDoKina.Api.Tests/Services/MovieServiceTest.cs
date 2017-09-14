@@ -386,7 +386,7 @@ namespace NaCoDoKina.Api.Services
             {
                 //Arrange
                 var movieId = 404L;
-                var movie = new Movie { Id = movieId, Name = "A", EstimatedRating = 1 };
+                var movie = new Movie { Id = movieId, Name = "A", Rating = 1 };
 
                 RepositoryMock
                     .Setup(repository => repository.AddMovieAsync(It.IsAny<Entities.Movie>()))
@@ -403,7 +403,7 @@ namespace NaCoDoKina.Api.Services
             {
                 //Arrange
                 var movieId = 404L;
-                var movie = new Movie { Id = movieId, Name = "A", EstimatedRating = 1 };
+                var movie = new Movie { Id = movieId, Name = "A", Rating = 1 };
 
                 RepositoryMock
                     .Setup(repository => repository.AddMovieAsync(It.IsAny<Entities.Movie>()))

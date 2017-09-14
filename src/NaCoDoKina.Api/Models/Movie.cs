@@ -1,7 +1,7 @@
 namespace NaCoDoKina.Api.Models
 {
     /// <summary>
-    /// Basic show information 
+    /// Basic movie information 
     /// </summary>
     public class Movie
     {
@@ -11,11 +11,11 @@ namespace NaCoDoKina.Api.Models
 
         public string PosterUrl { get; set; }
 
-        public int EstimatedRating { get; set; }
+        public double Rating { get; set; }
 
         public override string ToString()
         {
-            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}";
+            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(Rating)}: {Rating}";
         }
     }
 }
