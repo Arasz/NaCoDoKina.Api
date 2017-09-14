@@ -40,7 +40,7 @@ namespace NaCoDoKina.Api.Services
 
         protected void PreConfigureMocks()
         {
-            UserServiceMock.Setup(service => service.GetCurrentUserId())
+            UserServiceMock.Setup(service => service.GetCurrentUserIdAsync())
                 .Returns(Task.FromResult(DefaultUserId));
 
             MapperMock

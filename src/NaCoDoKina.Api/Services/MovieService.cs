@@ -81,7 +81,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task DeleteMovieAsync(long id)
         {
-            var userId = await _userService.GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserIdAsync();
 
             var deleted = await _movieRepository.DeleteMovieAsync(id, userId);
 

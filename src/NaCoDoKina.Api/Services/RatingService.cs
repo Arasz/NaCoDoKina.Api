@@ -17,7 +17,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<double> GetMovieRating(long movieId)
         {
-            var userId = await _userService.GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserIdAsync();
             var request = new RecommendationApiRequest(movieId, userId);
             var response = await _recommendationService.GetMovieRating(request);
             return response.Rating;
@@ -25,7 +25,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task SetMovieRating(long movieId, double movieRating)
         {
-            var userId = await _userService.GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserIdAsync();
             var request = new RecommendationApiRequest(movieId, userId);
             var rating = new Rating(movieRating);
             await _recommendationService.SaveMovieRating(request, rating);
