@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using NaCoDoKina.Api.Exceptions;
-using NaCoDoKina.Api.Infrastructure.Recommendation.DataContract;
-using NaCoDoKina.Api.Infrastructure.Recommendation.Services;
 using NaCoDoKina.Api.Models;
 using NaCoDoKina.Api.Repositories;
 using System;
@@ -14,15 +12,15 @@ namespace NaCoDoKina.Api.Services
     public class MovieService : IMovieService
     {
         private readonly IUserService _userService;
-        private readonly IRecommendationService _recommendationService;
+        private readonly IRatingService _ratingService;
         private readonly IMapper _mapper;
         private readonly IMovieRepository _movieRepository;
         private readonly ICinemaService _cinemaService;
 
-        public MovieService(IMovieRepository movieRepository, ICinemaService cinemaService, IRecommendationService recommendationService, IUserService userService, IMapper mapper)
+        public MovieService(IMovieRepository movieRepository, ICinemaService cinemaService, IRatingService ratingService, IUserService userService, IMapper mapper)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _recommendationService = recommendationService ?? throw new ArgumentNullException(nameof(recommendationService));
+            _ratingService = ratingService ?? throw new ArgumentNullException(nameof(ratingService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _movieRepository = movieRepository ?? throw new ArgumentNullException(nameof(movieRepository));
             _cinemaService = cinemaService ?? throw new ArgumentNullException(nameof(cinemaService));
@@ -40,7 +38,7 @@ namespace NaCoDoKina.Api.Services
             return moviesPlayedInCinemas;
         }
 
-        public async Task<IEnumerable<long>> GetMoviesPlayedInCinemas(IEnumerable<Cinema> cinemas)
+        private async Task<IEnumerable<long>> GetMoviesPlayedInCinemas(IEnumerable<Cinema> cinemas)
         {
             var currentDate = DateTime.Now;
 
@@ -56,13 +54,9 @@ namespace NaCoDoKina.Api.Services
                 .SelectMany(movieId => movieId)
                 .Distinct();
 
-            var userId = await _userService.GetCurrentUserId();
-
             async Task<(long MovieId, double Rating)> GetMovieRating(long movieId)
             {
-                var apiRequest = new RecommendationApiRequest(userId, movieId);
-                var apiResponse = await _recommendationService.GetMovieRating(apiRequest);
-                return (apiResponse.MovieId, apiResponse.Rating);
+                return (movieId, await _ratingService.GetMovieRating(movieId));
             }
 
             var getMovieRatingsForMoviesTasks = availableMovies
