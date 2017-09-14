@@ -33,7 +33,7 @@ namespace NaCoDoKina.Api.Infrastructure.Recommendation.Services
             {
                 _logger.LogError("Not found movie or user in recommendation service" +
                                  " with request {@request}, exception {@e}", request, e);
-                throw new MovieNotFoundException(request.MovieId);
+                throw new RatingNotFoundException(request.MovieId, request.UserId);
             }
             catch (Exception unknownException)
             {
@@ -48,12 +48,6 @@ namespace NaCoDoKina.Api.Infrastructure.Recommendation.Services
             try
             {
                 await _recommendationService.SaveMovieRating(request, rating);
-            }
-            catch (RecommendationApiException e) when (e.StatusCode == HttpStatusCode.NotFound)
-            {
-                _logger.LogError("Not found movie or user in recommendation service" +
-                                 " with request {@request}, exception {@e}", request, e);
-                throw new MovieNotFoundException(request.MovieId);
             }
             catch (Exception unknownException)
             {

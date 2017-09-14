@@ -6,7 +6,7 @@
 
         public RecommendationApiConfiguration()
         {
-            BaseUrl = "http://localhost:9000/";
+            BaseUrl = "https://movie-recommender-service.herokuapp.com";
         }
     }
 }
