@@ -71,7 +71,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Recommendation
             public void Should_throw_rating_not_found_exception_when_movie_data_not_available()
             {
                 //Arrange
-                var request = new RecommendationApiRequest(-1, 1);
+                var request = new RecommendationApiRequest(-55, 1);
 
                 //Act
                 Func<Task> action = () => ServiceUnderTest.GetMovieRating(request);
