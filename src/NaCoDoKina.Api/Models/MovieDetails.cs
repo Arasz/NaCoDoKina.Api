@@ -3,7 +3,7 @@
 namespace NaCoDoKina.Api.Models
 {
     /// <summary>
-    /// Detailed informations about show 
+    /// Detailed information about show 
     /// </summary>
     public class MovieDetails
     {
@@ -32,6 +32,8 @@ namespace NaCoDoKina.Api.Models
         public string Production { get; set; }
 
         public List<MovieShowtime> MovieShowtimes { get; set; }
+
+        public double Rating { get; set; }
 
         public override string ToString()
         {

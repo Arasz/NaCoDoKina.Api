@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Models;
 using NaCoDoKina.Api.Repositories;
@@ -11,14 +12,16 @@ namespace NaCoDoKina.Api.Services
 {
     public class MovieService : IMovieService
     {
+        private readonly ILogger<IMovieService> _logger;
         private readonly IUserService _userService;
         private readonly IRatingService _ratingService;
         private readonly IMapper _mapper;
         private readonly IMovieRepository _movieRepository;
         private readonly ICinemaService _cinemaService;
 
-        public MovieService(IMovieRepository movieRepository, ICinemaService cinemaService, IRatingService ratingService, IUserService userService, IMapper mapper)
+        public MovieService(IMovieRepository movieRepository, ICinemaService cinemaService, IRatingService ratingService, IUserService userService, IMapper mapper, ILogger<IMovieService> logger)
         {
+            _logger = logger;
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _ratingService = ratingService ?? throw new ArgumentNullException(nameof(ratingService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -76,7 +79,9 @@ namespace NaCoDoKina.Api.Services
             if (movie is null)
                 throw new MovieNotFoundException(id);
 
-            return _mapper.Map<Movie>(movie);
+            var mappedMovie = _mapper.Map<Movie>(movie);
+
+            return mappedMovie;
         }
 
         public async Task DeleteMovieAsync(long id)
@@ -96,7 +101,19 @@ namespace NaCoDoKina.Api.Services
             if (movieDetails is null)
                 throw new MovieDetailsNotFoundException(id);
 
-            return _mapper.Map<MovieDetails>(movieDetails);
+            var mappedDetails = _mapper.Map<MovieDetails>(movieDetails);
+
+            try
+            {
+                var rating = await _ratingService.GetMovieRating(id);
+                mappedDetails.Rating = rating;
+            }
+            catch (RatingNotFoundException e)
+            {
+                _logger.LogWarning("Rating for movie {id} not found when getting a movie details. {@e}", id, e);
+            }
+
+            return mappedDetails;
         }
 
         public async Task<long> AddMovieAsync(Movie newMovie)

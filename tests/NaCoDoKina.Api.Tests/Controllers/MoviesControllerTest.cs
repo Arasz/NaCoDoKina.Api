@@ -320,7 +320,7 @@ namespace NaCoDoKina.Api.Controllers
         public class SetMovieRating : MoviesControllerTest
         {
             [Fact]
-            public async void Should_return_CreatedResult()
+            public async void Should_return_CreatedAtActionResult()
             {
                 //Arrange
                 var movieId = 1;
@@ -334,7 +334,7 @@ namespace NaCoDoKina.Api.Controllers
                 var result = await ControllerUnderTest.SetRatingForMovie(movieId, rating);
 
                 //Assert
-                result.Should().BeOfType<CreatedResult>();
+                result.Should().BeOfType<CreatedAtActionResult>();
             }
 
             [Fact]
@@ -352,7 +352,7 @@ namespace NaCoDoKina.Api.Controllers
                 var result = await ControllerUnderTest.SetRatingForMovie(movieId, rating);
 
                 //Assert
-                result.Should().BeOfType<NotFoundResult>();
+                result.Should().BeOfType<NotFoundObjectResult>();
             }
         }
     }

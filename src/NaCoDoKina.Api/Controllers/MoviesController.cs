@@ -152,7 +152,7 @@ namespace NaCoDoKina.Api.Controllers
         }
 
         /// <summary>
-        /// Sets user rating for movie 
+        /// Sets user rating for movie, redirects to movie detail action 
         /// </summary>
         /// <param name="id"> Movie id </param>
         /// <param name="rating"> Movie rating </param>
@@ -164,12 +164,12 @@ namespace NaCoDoKina.Api.Controllers
             try
             {
                 await _ratingService.SetMovieRating(id, rating);
-                return Ok();
+                return CreatedAtAction(nameof(GetMovieDetailsAsync), id, rating);
             }
-            catch (MovieRatingNotFoundException movieRatingNotFoundException)
+            catch (MovieNotFoundException movieNotFoundException)
             {
                 _logger.LogWarning("Movie with id {id} not found by rating service", id);
-                return NotFound(movieRatingNotFoundException.Message);
+                return NotFound(movieNotFoundException.Message);
             }
         }
     }

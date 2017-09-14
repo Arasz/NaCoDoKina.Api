@@ -31,7 +31,7 @@ namespace NaCoDoKina.Api.Services
             CinemaServiceMock = new Mock<ICinemaService>();
             RepositoryMock = new Mock<IMovieRepository>();
             ServiceUnderTest = new MovieService(RepositoryMockObject, CinemaServiceMock.Object,
-                RatingServiceMock.Object, UserServiceMock.Object, MapperMock.Object);
+                RatingServiceMock.Object, UserServiceMock.Object, MapperMock.Object, LoggerMock.Object);
 
             PreConfigureMocks();
         }
@@ -141,7 +141,7 @@ namespace NaCoDoKina.Api.Services
                 _movieRepositoryFake = new MovieRepositoryFake();
 
                 ServiceUnderTest = new MovieService(_movieRepositoryFake, CinemaServiceMock.Object,
-                    RatingServiceMock.Object, UserServiceMock.Object, MapperMock.Object);
+                    RatingServiceMock.Object, UserServiceMock.Object, MapperMock.Object, LoggerMock.Object);
 
                 PreConfigureMocks();
             }
@@ -343,7 +343,7 @@ namespace NaCoDoKina.Api.Services
         public class GetMovieDetailsAsync : MovieServiceTest
         {
             [Fact]
-            public async Task Should_get_movie_details_with_the_same_id()
+            public async Task Should_get_movie_details_with_the_same_id_and_rating()
             {
                 //Arrange
                 var movieId = 404L;
@@ -352,13 +352,38 @@ namespace NaCoDoKina.Api.Services
                     .Setup(repository => repository.GetMovieDetailsAsync(movieId))
                     .Returns(new Func<long, Task<Entities.MovieDetails>>(id => Task.FromResult(new Entities.MovieDetails()
                     {
-                        Id = id
+                        Id = id,
                     })));
 
                 //Act
                 var movieDetails = await ServiceUnderTest.GetMovieDetailsAsync(movieId);
 
                 movieDetails.MovieId.Should().Be(movieId);
+                movieDetails.Rating.Should().Be(movieId);
+            }
+
+            [Fact]
+            public async Task When_movie_rating_not_found_should_return_movie_details_and_0_rating()
+            {
+                //Arrange
+                var movieId = 404L;
+
+                RatingServiceMock
+                    .Setup(service => service.GetMovieRating(movieId))
+                    .Throws(new RatingNotFoundException(movieId, 0));
+
+                RepositoryMock
+                    .Setup(repository => repository.GetMovieDetailsAsync(movieId))
+                    .Returns(new Func<long, Task<Entities.MovieDetails>>(id => Task.FromResult(new Entities.MovieDetails()
+                    {
+                        Id = id,
+                    })));
+
+                //Act
+                var movieDetails = await ServiceUnderTest.GetMovieDetailsAsync(movieId);
+
+                movieDetails.MovieId.Should().Be(movieId);
+                movieDetails.Rating.Should().Be(0);
             }
 
             [Fact]
@@ -386,8 +411,7 @@ namespace NaCoDoKina.Api.Services
             {
                 //Arrange
                 var movieId = 404L;
-                var movie = new Movie { Id = movieId, Name = "A", Rating = 1 };
-
+                var movie = new Movie { Id = movieId, Name = "A" };
                 RepositoryMock
                     .Setup(repository => repository.AddMovieAsync(It.IsAny<Entities.Movie>()))
                     .Returns(new Func<Entities.Movie, Task<long>>(m => Task.FromResult(m.Id)));
@@ -403,7 +427,7 @@ namespace NaCoDoKina.Api.Services
             {
                 //Arrange
                 var movieId = 404L;
-                var movie = new Movie { Id = movieId, Name = "A", Rating = 1 };
+                var movie = new Movie { Id = movieId, Name = "A" };
 
                 RepositoryMock
                     .Setup(repository => repository.AddMovieAsync(It.IsAny<Entities.Movie>()))
