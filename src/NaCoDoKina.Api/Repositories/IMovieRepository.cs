@@ -12,7 +12,15 @@ namespace NaCoDoKina.Api.Repositories
         /// </summary>
         /// <param name="movieId"> Movie id </param>
         /// <param name="userId"> User id </param>
+        /// <returns> True if movie was marked as deleted </returns>
         Task<bool> SoftDeleteMovieAsync(long movieId, long userId);
+
+        /// <summary>
+        /// Deletes movie 
+        /// </summary>
+        /// <param name="movieId"> Movie id </param>
+        /// <returns> True if movie was deleted </returns>
+        Task<bool> DeleteMovieAsync(long movieId);
 
         /// <summary>
         /// Gets basic movie information 

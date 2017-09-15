@@ -22,13 +22,17 @@ namespace NaCoDoKina.Api.Repositories
 
         public async Task<bool> DeleteMovieAsync(long movieId)
         {
-            var toDelete = await _applicationContext.Movies.FindAsync(movieId);
+            var movieToDelete = await _applicationContext.Movies.FindAsync(movieId);
 
-            if (toDelete is null)
+            if (movieToDelete is null)
                 return false;
 
-            _applicationContext.Movies.Remove(toDelete);
+            var detailsToDelete = await _applicationContext.MovieDetails.FindAsync(movieId);
 
+            _applicationContext.Movies.Remove(movieToDelete);
+            _applicationContext.MovieDetails.Remove(detailsToDelete);
+
+            await _applicationContext.SaveChangesAsync();
             return true;
         }
 

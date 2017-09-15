@@ -96,6 +96,11 @@ namespace NaCoDoKina.Api.Services
                     throw new NotImplementedException();
                 }
 
+                public Task<bool> DeleteMovieAsync(long movieId)
+                {
+                    throw new NotImplementedException();
+                }
+
                 public Task<Entities.Movie> GetMovieAsync(long id)
                 {
                     throw new NotImplementedException();
