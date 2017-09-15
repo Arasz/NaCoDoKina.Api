@@ -88,7 +88,7 @@ namespace NaCoDoKina.Api.Services
         {
             var userId = await _userService.GetCurrentUserIdAsync();
 
-            var deleted = await _movieRepository.DeleteMovieAsync(id, userId);
+            var deleted = await _movieRepository.SoftDeleteMovieAsync(id, userId);
 
             if (!deleted)
                 throw new MovieNotFoundException(id);

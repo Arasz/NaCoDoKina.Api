@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.Internal;
 using NaCoDoKina.Api.Data;
 using System;
 
-namespace NaCoDoKina.Api.Migrations
+namespace NaCoDoKina.Api.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20170915141701_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20170915213257_InitialCreate")]
+    partial class InitialCreate 
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -67,6 +67,17 @@ namespace NaCoDoKina.Api.Migrations
                     b.HasIndex("UrlName", "Url1");
 
                     b.ToTable("CinemaNetworks");
+                });
+
+            modelBuilder.Entity("NaCoDoKina.Api.Entities.DeletedMovieMark", b =>
+                {
+                    b.Property<long>("MovieId");
+
+                    b.Property<long>("UserId");
+
+                    b.HasKey("MovieId", "UserId");
+
+                    b.ToTable("DeletedMovieMarks");
                 });
 
             modelBuilder.Entity("NaCoDoKina.Api.Entities.Movie", b =>

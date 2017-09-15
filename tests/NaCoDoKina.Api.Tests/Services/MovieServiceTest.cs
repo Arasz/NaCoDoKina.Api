@@ -91,7 +91,7 @@ namespace NaCoDoKina.Api.Services
                     _movieShowtimes = data as List<Entities.MovieShowtime> ?? data.ToList();
                 }
 
-                public Task<bool> DeleteMovieAsync(long movieId, long userId)
+                public Task<bool> SoftDeleteMovieAsync(long movieId, long userId)
                 {
                     throw new NotImplementedException();
                 }
@@ -307,7 +307,7 @@ namespace NaCoDoKina.Api.Services
                 var movieId = 404L;
 
                 RepositoryMock
-                    .Setup(repository => repository.DeleteMovieAsync(movieId, DefaultUserId))
+                    .Setup(repository => repository.SoftDeleteMovieAsync(movieId, DefaultUserId))
                     .Returns(() => Task.FromResult(true));
 
                 RepositoryMock
@@ -329,7 +329,7 @@ namespace NaCoDoKina.Api.Services
                 var movieId = 404L;
 
                 RepositoryMock
-                    .Setup(repository => repository.DeleteMovieAsync(movieId, DefaultUserId))
+                    .Setup(repository => repository.SoftDeleteMovieAsync(movieId, DefaultUserId))
                     .Returns(() => Task.FromResult(false));
 
                 //Act
