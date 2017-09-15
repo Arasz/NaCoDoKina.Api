@@ -49,6 +49,7 @@ namespace NaCoDoKina.Api.Repository
             public TestDatabaseContextScope(InMemoryDatabaseScope databaseScope)
             {
                 var options = new DbContextOptionsBuilder<ApplicationContext>()
+                    .EnableSensitiveDataLogging()
                     .UseSqlite(databaseScope.Connection)
                     .Options;
                 ApplicationContext = new ApplicationContext(options);

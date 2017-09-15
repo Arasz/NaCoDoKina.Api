@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Data;
 using NaCoDoKina.Api.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Repositories
@@ -23,9 +25,12 @@ namespace NaCoDoKina.Api.Repositories
             throw new System.NotImplementedException();
         }
 
-        public Task<IEnumerable<Cinema>> GetAllCinemas()
+        public async Task<IEnumerable<Cinema>> GetAllCinemas()
         {
-            throw new System.NotImplementedException();
+            var allCinemas = await _applicationContext.Cinemas
+                .Include(cinema => cinema.CinemaNetwork)
+                .ToListAsync();
+            return allCinemas.AsEnumerable();
         }
 
         public async Task<Cinema> AddCinema(Cinema cinema)
