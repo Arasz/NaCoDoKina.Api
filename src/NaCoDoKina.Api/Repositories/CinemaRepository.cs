@@ -28,9 +28,11 @@ namespace NaCoDoKina.Api.Repositories
             throw new System.NotImplementedException();
         }
 
-        public Task<Cinema> AddCinema(Cinema cinema)
+        public async Task<Cinema> AddCinema(Cinema cinema)
         {
-            throw new System.NotImplementedException();
+            var entry = _applicationContext.Cinemas.Add(cinema);
+            await _applicationContext.SaveChangesAsync();
+            return entry.Entity;
         }
     }
 }
