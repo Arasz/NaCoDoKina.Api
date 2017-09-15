@@ -2,17 +2,35 @@
 
 namespace NaCoDoKina.Api.Entities
 {
+    /// <inheritdoc/>
+    /// <summary>
+    /// Movie showtime 
+    /// </summary>
     public class MovieShowtime : Entity
     {
-        public DateTime DateTime { get; set; }
-
-        public Cinema Cinema { get; set; }
-
-        public Movie Movie { get; set; }
+        /// <summary>
+        /// Movie show language and presentation type 
+        /// </summary>
+        public string Language { get; set; }
 
         /// <summary>
-        /// If false, movie show time is before current date time. 
+        /// Type of the show, for example 2D, 3D, etc. 
         /// </summary>
-        public bool CanBeWatched { get; set; }
+        public string ShowType { get; set; }
+
+        /// <summary>
+        /// Show date and time 
+        /// </summary>
+        public DateTime ShowTime { get; set; }
+
+        /// <summary>
+        /// Cinema in which a movie is played 
+        /// </summary>
+        public Cinema Cinema { get; set; }
+
+        /// <summary>
+        /// Played movie 
+        /// </summary>
+        public Movie Movie { get; set; }
     }
 }

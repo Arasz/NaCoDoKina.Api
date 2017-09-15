@@ -129,7 +129,7 @@ namespace NaCoDoKina.Api.Services
                         }));
 
                     RepositoryMock
-                        .Setup(repository => repository.GetAllCinemasForMovie(movieId))
+                        .Setup(repository => repository.GetAllCinemasForMovieAsync(movieId))
                         .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
 
                     //Act
@@ -153,7 +153,7 @@ namespace NaCoDoKina.Api.Services
                     var movieId = -500;
 
                     RepositoryMock
-                        .Setup(repository => repository.GetAllCinemasForMovie(movieId))
+                        .Setup(repository => repository.GetAllCinemasForMovieAsync(movieId))
                         .Returns(() => Task.FromResult(new List<Entities.Cinema>().AsEnumerable()));
 
                     //Act

@@ -27,7 +27,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<IEnumerable<Cinema>> GetNearestCinemasForMovieAsync(long movieId, SearchArea searchArea)
         {
-            var allCinemasForMovie = (await _cinemaRepository.GetAllCinemasForMovie(movieId))
+            var allCinemasForMovie = (await _cinemaRepository.GetAllCinemasForMovieAsync(movieId))
                 .ToArray();
 
             if (allCinemasForMovie is null || !allCinemasForMovie.Any())
