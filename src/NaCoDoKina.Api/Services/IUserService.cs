@@ -11,6 +11,6 @@ namespace NaCoDoKina.Api.Services
         /// Gets current user id 
         /// </summary>
         /// <returns> User id </returns>
-        Task<long> GetCurrentUserId();
+        Task<long> GetCurrentUserIdAsync();
     }
 }

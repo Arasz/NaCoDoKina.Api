@@ -17,13 +17,6 @@ namespace NaCoDoKina.Api.Services
         Task<IEnumerable<long>> GetAllMoviesAsync(SearchArea searchArea);
 
         /// <summary>
-        /// Get movies played in given cinemas after time needed for arrival 
-        /// </summary>
-        /// <param name="cinemas"> Cinema list </param>
-        /// <returns> Movies ids </returns>
-        Task<IEnumerable<long>> GetMoviesPlayedInCinemas(IEnumerable<Cinema> cinemas);
-
-        /// <summary>
         /// Get movies basic information 
         /// </summary>
         /// <param name="id"> Movie id </param>
