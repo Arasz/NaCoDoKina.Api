@@ -12,10 +12,10 @@ namespace NaCoDoKina.Api.Data.Configurations
         {
             builder
                 .HasOne(movie => movie.Details)
-                .WithOne(details => details.Movie)
+                .WithOne()
                 .HasForeignKey<MovieDetails>(details => details.Id);
 
-            builder.Property(movie => movie.Title)
+            builder.Property(movie => movie.Name)
                 .IsRequired()
                 .HasMaxLength(255);
 

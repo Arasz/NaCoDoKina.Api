@@ -20,9 +20,18 @@ namespace NaCoDoKina.Api.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Task<IEnumerable<Cinema>> GetAllCinemasForMovie(long movieId)
+        public async Task<IEnumerable<Cinema>> GetAllCinemasForMovieAsync(long movieId)
         {
-            throw new System.NotImplementedException();
+            var cinemasForMovie = await _applicationContext.MovieShowtimes
+                .Where(showtime => showtime.ShowTime > DateTime.Now)
+                .Where(showtime => showtime.Movie.Id == movieId)
+                .Select(showtime => showtime.Cinema)
+                .Include(cinema => cinema.CinemaNetwork)
+                .Distinct()
+                .Cast<Cinema>()
+                .ToListAsync();
+
+            return cinemasForMovie.AsEnumerable();
         }
 
         public async Task<IEnumerable<Cinema>> GetAllCinemas()

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NaCoDoKina.Api.Entities;
 using NaCoDoKina.Api.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,8 +11,111 @@ namespace NaCoDoKina.Api.Repository
 {
     public class CinemaRepositoryTest : RepositoryTestBase<ICinemaRepository>
     {
-        public CinemaRepositoryTest()
+        public class GetAllCinemasForMovie : RepositoryTestBase<ICinemaRepository>
         {
+            [Fact]
+            public async Task Should_return_all_cinemas_for_movie()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    //Arrange
+                    EnsureCreated(databaseScope);
+                    var cinema1 = new Cinema
+                    {
+                        Address = nameof(Cinema.Address),
+                        Location = new Location(1, 1),
+                        Name = $"{nameof(Cinema)}1",
+                    };
+                    var cinema2 = new Cinema
+                    {
+                        Address = nameof(Cinema.Address),
+                        Location = new Location(1, 2),
+                        Name = $"{nameof(Cinema)}2",
+                    };
+
+                    var cinemas = new[] { cinema1, cinema2 };
+
+                    var cinemaNetwork = new CinemaNetwork
+                    {
+                        Name = nameof(CinemaNetwork),
+                        Cinemas = cinemas,
+                    };
+
+                    foreach (var cinema in cinemas)
+                        cinema.CinemaNetwork = cinemaNetwork;
+
+                    var movie1 = new Movie
+                    {
+                        Name = $"{nameof(Movie)}1",
+                        Details = new MovieDetails
+                        {
+                            Description = nameof(MovieDetails),
+                        },
+                    };
+                    var movie2 = new Movie
+                    {
+                        Name = $"{nameof(Movie)}2",
+                        Details = new MovieDetails
+                        {
+                            Description = nameof(MovieDetails),
+                        },
+                    };
+
+                    var movies = new List<Movie> { movie1, movie2 };
+
+                    var movieShowtimes = new List<MovieShowtime>
+                    {
+                        new MovieShowtime
+                        {
+                            Cinema = cinema1,
+                            ShowTime = DateTime.Now.AddHours(1),
+                            Movie = movie1,
+                        },
+                        new MovieShowtime
+                        {
+                            Cinema = cinema1,
+                            ShowTime = DateTime.Now,
+                            Movie = movie1,
+                        },
+                        new MovieShowtime
+                        {
+                            Cinema = cinema2,
+                            Movie = movie2,
+                            ShowTime = DateTime.Now.AddHours(1),
+                        }
+                    };
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Cinemas.AddRange(cinemas);
+                        contextScope.ApplicationContext.MovieShowtimes.AddRange(movieShowtimes);
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+
+                        foreach (var movie in contextScope.ApplicationContext.Movies)
+                        {
+                            movies.Single(m => m.Name == movie.Name).Id = movie.Id;
+                        }
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new CinemaRepository(contextScope.ApplicationContext, LoggerMock.Object);
+
+                        //Act
+                        var returnedCinemas = await RepositoryUnderTest.GetAllCinemasForMovieAsync(movie1.Id);
+
+                        //Assert
+                        returnedCinemas.Should().HaveCount(1);
+                        returnedCinemas.Single().Name.Should().Be(cinema1.Name);
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Cinemas.Should().HaveSameCount(cinemas);
+                        contextScope.ApplicationContext.Movies.Should().HaveSameCount(movies);
+                    }
+                }
+            }
         }
 
         public class AddCinema : CinemaRepositoryTest
@@ -24,7 +128,7 @@ namespace NaCoDoKina.Api.Repository
                     //Arrange
                     EnsureCreated(databaseScope);
                     var location = new Location(1, 1);
-                    var cinema = new Cinema()
+                    var cinema = new Cinema
                     {
                         Address = nameof(Cinema.Address),
                         Location = location,

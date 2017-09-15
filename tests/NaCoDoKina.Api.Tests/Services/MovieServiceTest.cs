@@ -48,7 +48,7 @@ namespace NaCoDoKina.Api.Services
                 .Returns(new Func<Entities.Movie, Movie>(movie => new Movie
                 {
                     Id = movie.Id,
-                    Name = movie.Title,
+                    Name = movie.Name,
                 }));
 
             MapperMock
@@ -56,7 +56,7 @@ namespace NaCoDoKina.Api.Services
                 .Returns(new Func<Movie, Entities.Movie>(movie => new Entities.Movie
                 {
                     Id = movie.Id,
-                    Title = movie.Name,
+                    Name = movie.Name,
                 }));
 
             MapperMock
@@ -105,7 +105,7 @@ namespace NaCoDoKina.Api.Services
                 {
                     var moviesIds = _movieShowtimes
                         .Where(showtime => showtime.Cinema.Id == cinemaId)
-                        .Where(showtime => showtime.DateTime > laterThan)
+                        .Where(showtime => showtime.ShowTime > laterThan)
                         .Select(showtime => showtime.Movie.Id);
 
                     return Task.FromResult(moviesIds);
@@ -171,7 +171,7 @@ namespace NaCoDoKina.Api.Services
                     {
                         Id = cinema.Id,
                     },
-                    DateTime = Now.AddMinutes(20),
+                    ShowTime = Now.AddMinutes(20),
                 });
 
                 _movieRepositoryFake.SetTestData(ShowTimes);

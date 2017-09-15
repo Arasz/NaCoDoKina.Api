@@ -29,6 +29,7 @@ namespace NaCoDoKina.Api.Data
             modelBuilder.ApplyConfiguration(new CinemaConfiguration());
             modelBuilder.ApplyConfiguration(new CinemaNetworkConfiguration());
             modelBuilder.ApplyConfiguration(new MovieShowtimeConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceUrlConfiguration());
         }
     }
 }
