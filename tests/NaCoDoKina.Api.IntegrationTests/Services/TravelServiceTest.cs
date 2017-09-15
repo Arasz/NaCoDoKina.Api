@@ -1,68 +1,40 @@
 ﻿using Autofac;
-using AutoMapper;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Debug;
+using NaCoDoKina.Api.Configuration;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Response;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding;
 using NaCoDoKina.Api.Infrastructure.Google.Services;
+using NaCoDoKina.Api.IntegrationTests.Modules;
 using NaCoDoKina.Api.Models;
 using NaCoDoKina.Api.Services;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using Location = NaCoDoKina.Api.Models.Location;
 
 namespace NaCoDoKina.Api.IntegrationTests.Services
 {
-    public class LocationServiceTest
+    public class TravelServiceTest
     {
-        private IContainer container;
-        protected IGoogleDirectionsService DirectionsService { get; }
+        private readonly IContainer _container;
 
-        protected IGoogleGeocodingService GeocodingService { get; }
-
-        protected ILogger Logger { get; }
-
-        protected IMapper Mapper { get; }
-
-        public LocationServiceTest()
+        public TravelServiceTest()
         {
             var containerBuilder = new ContainerBuilder();
 
-            containerBuilder.RegisterType<HttpClient>()
-                .AsSelf()
-                .SingleInstance();
-
-            containerBuilder.RegisterType<DebugLoggerProvider>()
-                .As<ILoggerProvider>();
-
-            containerBuilder.RegisterType<LoggerFactory>()
-                .As<ILoggerFactory>();
-
-            containerBuilder.RegisterGeneric(typeof(Logger<>))
-                .As(typeof(ILogger<>));
-
-            containerBuilder.Register(context => new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfiles(typeof(ILocationService).Assembly);
-                }))
-                .As<IConfigurationProvider>()
-                .AsSelf();
-
-            containerBuilder.RegisterType<Mapper>()
-                .AsImplementedInterfaces();
+            containerBuilder.RegisterAssemblyModules<BasicServiceDependenciesModule>(typeof(TravelServiceTest).Assembly);
 
             containerBuilder.RegisterType<OnlyRequiredDirectionsRequestParser>()
                 .AsImplementedInterfaces();
             containerBuilder.RegisterType<OnlyRequiredGeocodingRequestParser>()
                 .AsImplementedInterfaces();
 
+            containerBuilder.RegisterType<GoogleApiConfiguration>()
+                .AsSelf();
+
             containerBuilder.RegisterGeneric(typeof(GoogleServiceDependencies<>))
-                .WithParameter("apiKey", "AIzaSyB0k9n49t5OXZ9XUfh8n9zUfhmdQ-_Tt5M")
                 .AsSelf();
 
             containerBuilder.RegisterType<GoogleDirectionsService>()
@@ -71,17 +43,17 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             containerBuilder.RegisterType<GoogleGeocodingService>()
                 .AsImplementedInterfaces();
 
-            containerBuilder.RegisterType<LocationService>()
+            containerBuilder.RegisterType<TravelService>()
                 .AsImplementedInterfaces();
 
-            container = containerBuilder.Build();
+            _container = containerBuilder.Build();
 
-            ServiceUnderTest = container.Resolve<ILocationService>();
+            ServiceUnderTest = _container.Resolve<ITravelService>();
         }
 
-        public ILocationService ServiceUnderTest { get; set; }
+        public ITravelService ServiceUnderTest { get; set; }
 
-        public class TranslateAddressToLocationAsync : LocationServiceTest
+        public class TranslateAddressToTravelAsync : TravelServiceTest
         {
             [Fact]
             public async Task Should_return_correct_location_when_given_correct_address()
@@ -113,10 +85,10 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             }
         }
 
-        public class CalculateTravelTimeAsync : LocationServiceTest
+        public class CalculateInformationForTravelAsync : TravelServiceTest
         {
             [Fact]
-            public async Task Should_return_correct_time_for_car_transport()
+            public async Task Should_return_correct_travel_information()
             {
                 //arrange
                 var destination = new Location(52.44056, 16.919235);
@@ -124,10 +96,12 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
-                var travelTime = await ServiceUnderTest.CalculateTravelTimeAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
 
                 //assert
-                travelTime.Should().BeGreaterThan(TimeSpan.Zero);
+                travelInformation.TravelPlan.Should().Be(travelPlan);
+                travelInformation.Duration.Should().BeGreaterThan(TimeSpan.Zero);
+                travelInformation.Distance.Should().BeGreaterThan(0);
             }
 
             [Fact]
@@ -139,15 +113,16 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
-                var travelTime = await ServiceUnderTest.CalculateTravelTimeAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
 
                 //assert
-
-                travelTime.Should().BeGreaterThan(TimeSpan.Zero);
+                travelInformation.TravelPlan.Should().Be(travelPlan);
+                travelInformation.Duration.Should().BeGreaterThan(TimeSpan.Zero);
+                travelInformation.Distance.Should().BeGreaterThan(0);
             }
 
             [Fact]
-            public async Task Should_return_min_time_and_log_when_api_returns_error()
+            public async Task Should_return_null_and_log_when_api_returns_error()
             {
                 //arrange
                 var destination = new Location(-99999, -99999);
@@ -155,11 +130,10 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
-                var result = await ServiceUnderTest.CalculateTravelTimeAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
 
                 //assert
-                //Logger.Verify();
-                result.Should().Be(TimeSpan.MinValue);
+                travelInformation.Should().BeNull();
             }
         }
 

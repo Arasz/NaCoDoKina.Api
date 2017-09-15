@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
+﻿using FluentAssertions;
 using Moq;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request;
 using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Response;
@@ -17,23 +15,17 @@ using Location = NaCoDoKina.Api.Models.Location;
 
 namespace NaCoDoKina.Api.Services
 {
-    public class LocationServiceTest : ServiceTestBase<ILocationService>
+    public class LocationServiceTest : ServiceTestBase<ITravelService>
     {
         protected Mock<IGoogleDirectionsService> DirectionsServiceMock { get; }
 
         protected Mock<IGoogleGeocodingService> GeocodingServiceMock { get; }
 
-        protected Mock<ILogger<LocationService>> LoggerMock { get; }
-
-        protected Mock<IMapper> MapperMock { get; }
-
         public LocationServiceTest()
         {
-            LoggerMock = new Mock<ILogger<LocationService>>();
-            MapperMock = new Mock<IMapper>();
             DirectionsServiceMock = new Mock<IGoogleDirectionsService>();
             GeocodingServiceMock = new Mock<IGoogleGeocodingService>();
-            ServiceUnderTest = new LocationService(DirectionsServiceMock.Object, GeocodingServiceMock.Object, MapperMock.Object, LoggerMock.Object);
+            ServiceUnderTest = new TravelService(DirectionsServiceMock.Object, GeocodingServiceMock.Object, MapperMock.Object, LoggerMock.Object);
         }
 
         public class TranslateAddressToLocationAsync : LocationServiceTest
@@ -128,19 +120,20 @@ namespace NaCoDoKina.Api.Services
             }
         }
 
-        public class CalculateTravelTimeAsync : LocationServiceTest
+        public class CalculateInformationForTravelAsync : LocationServiceTest
         {
             [Fact]
-            public async Task Should_return_correct_time_for_car_transport()
+            public async Task Should_return_correct_travel_information()
             {
                 //arrange
                 var destination = new Location(52.44056, 16.919235);
                 var origin = new Location(52.3846579, 16.8519869);
                 var travelPlan = new TravelPlan(origin, destination);
                 var duration = 1000;
+                var distance = 1000;
                 var apiResponse = new DirectionsApiResponse
                 {
-                    Routes = new List<Route> { CreateRouteWithOneLeg(duration) }
+                    Routes = new List<Route> { CreateRouteWithOneLeg(duration, distance) }
                 };
 
                 MapperMock.Setup(mapper => mapper.Map<DirectionsApiRequest>(It.IsAny<TravelPlan>()))
@@ -151,28 +144,31 @@ namespace NaCoDoKina.Api.Services
                     .Returns(() => Task.FromResult(apiResponse));
 
                 //act
-                var travelTime = await ServiceUnderTest.CalculateTravelTimeAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
 
                 //assert
-                travelTime.Should().BeGreaterThan(TimeSpan.Zero);
-                travelTime.Should().Be(TimeSpan.FromSeconds(duration));
+                travelInformation.TravelPlan.Should().Be(travelPlan);
+                travelInformation.Duration.Should().Be(TimeSpan.FromSeconds(duration));
+                travelInformation.Distance.Should().Be(distance);
             }
 
             [Fact]
-            public async Task Should_return_longest_route_time_when_returns_multiple_routes()
+            public async Task Should_return_longest_route_travel_information_when_returns_multiple_routes()
             {
                 //arrange
                 var destination = new Location(52.44056, 16.919235);
                 var origin = new Location(52.3846579, 16.8519869);
                 var travelPlan = new TravelPlan(origin, destination);
                 var maxDuration = 1000;
+                var distance = 1000f;
                 var apiResponse = new DirectionsApiResponse
                 {
                     Routes = new List<Route>
                     {
-                        CreateRouteWithOneLeg(maxDuration/10),
-                        CreateRouteWithOneLeg(maxDuration/2),
-                        CreateRouteWithOneLeg(maxDuration)
+                        CreateRouteWithOneLeg(maxDuration/10, distance/2),
+                        CreateRouteWithOneLeg(maxDuration/2, distance/2),
+                        CreateRouteWithOneLeg(maxDuration, distance/2),
+                        CreateRouteWithOneLeg(maxDuration, distance)
                     }
                 };
 
@@ -184,12 +180,12 @@ namespace NaCoDoKina.Api.Services
                     .Returns(() => Task.FromResult(apiResponse));
 
                 //act
-                var travelTime = await ServiceUnderTest.CalculateTravelTimeAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
 
                 //assert
-
-                travelTime.Should().BeGreaterThan(TimeSpan.Zero);
-                travelTime.Should().Be(TimeSpan.FromSeconds(maxDuration));
+                travelInformation.TravelPlan.Should().Be(travelPlan);
+                travelInformation.Distance.Should().Be(distance);
+                travelInformation.Duration.Should().Be(TimeSpan.FromSeconds(maxDuration));
             }
 
             [Fact]
@@ -210,11 +206,10 @@ namespace NaCoDoKina.Api.Services
                     .Throws(new GoogleApiException("INVALID_REQUEST", String.Empty));
 
                 //act
-                var result = await ServiceUnderTest.CalculateTravelTimeAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
 
                 //assert
-                //LoggerMock.Verify();
-                result.Should().Be(TimeSpan.MinValue);
+                travelInformation.Should().BeNull();
             }
 
             [Fact]
@@ -233,14 +228,14 @@ namespace NaCoDoKina.Api.Services
                     .Throws(new GoogleApiException(new Exception()));
 
                 //act
-                var result = await ServiceUnderTest.CalculateTravelTimeAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
 
                 //assert
-                result.Should().Be(TimeSpan.MinValue);
+                travelInformation.Should().BeNull();
             }
         }
 
-        protected Route CreateRouteWithOneLeg(int duration) => new Route
+        protected Route CreateRouteWithOneLeg(int duration, double distance = 500) => new Route
         {
             Legs = new List<Leg>
             {
@@ -249,6 +244,10 @@ namespace NaCoDoKina.Api.Services
                     Duration = new TextValue
                     {
                         Value = duration
+                    },
+                    Distance = new TextValue
+                    {
+                        Value = distance
                     }
                 }
             }

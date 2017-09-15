@@ -9,6 +9,7 @@ using NaCoDoKina.Api.Infrastructure.Google.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Infrastructure;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google

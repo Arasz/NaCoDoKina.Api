@@ -7,24 +7,24 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.Services
 {
-    public abstract class BaseGoogleService<TRequest, TResponse> : BaseHttpApiClient
+    public abstract class GoogleServiceBase<TRequest, TResponse> : BaseHttpApiClient
         where TRequest : GoogleApiRequest
         where TResponse : GoogleApiResponse
 
     {
         private readonly IRequestParser<TRequest> _requestParser;
         protected readonly string ApiKey;
-
-        protected abstract string BaseUrl { get; }
+        protected ILogger<BaseHttpApiClient> Logger { get; }
 
         private string _outputFormat = "json";
 
-        protected string CreateRequestUrl(string parsedRequest) =>
+        protected override string CreateRequestUrl(string parsedRequest) =>
             $"{BaseUrl}{_outputFormat}?{parsedRequest}";
 
-        protected BaseGoogleService(GoogleServiceDependencies<TRequest> googleServiceDependencies)
-            : base(googleServiceDependencies.HttpClient, googleServiceDependencies.Logger)
+        protected GoogleServiceBase(GoogleServiceDependencies<TRequest> googleServiceDependencies)
+            : base(googleServiceDependencies.HttpClient)
         {
+            Logger = googleServiceDependencies.Logger;
             _requestParser = googleServiceDependencies.RequestParser;
             ApiKey = googleServiceDependencies.ApiKey;
         }
@@ -34,10 +34,10 @@ namespace NaCoDoKina.Api.Infrastructure.Google.Services
             apiRequest.Key = ApiKey;
             var parsedRequest = _requestParser.Parse(apiRequest);
             var url = CreateRequestUrl(parsedRequest);
-            var response = await HttpClient.GetAsync(url);
 
             try
             {
+                var response = await HttpClient.GetAsync(url);
                 var content = await response.Content.ReadAsStringAsync();
                 var deserializedResponse = Deserialize<TResponse>(content);
 
@@ -50,10 +50,10 @@ namespace NaCoDoKina.Api.Infrastructure.Google.Services
             {
                 throw;
             }
-            catch (Exception exception)
+            catch (Exception unknownException)
             {
-                Logger.LogError("Error during deserialization of google api response: @e", exception);
-                throw new GoogleApiException(exception);
+                Logger.LogError("Unknown error during google api interaction: {@unknownException}", unknownException);
+                throw new GoogleApiException(unknownException);
             }
         }
     }

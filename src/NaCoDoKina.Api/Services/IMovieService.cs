@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using NaCoDoKina.Api.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Location = NaCoDoKina.Api.DataContracts.Location;
-using Movie = NaCoDoKina.Api.DataContracts.Movie;
-using MovieDetails = NaCoDoKina.Api.DataContracts.MovieDetails;
 
 namespace NaCoDoKina.Api.Services
 {
@@ -12,30 +10,44 @@ namespace NaCoDoKina.Api.Services
     public interface IMovieService
     {
         /// <summary>
-        /// Get all shows available near given location. 
+        /// Get all movies available near given inside search area. 
         /// </summary>
-        /// <param name="location"> User location </param>
+        /// <param name="searchArea"> User location and searched distance </param>
         /// <returns> Shows ids sorted by estimated user rating </returns>
-        Task<IEnumerable<long>> GetAllMoviesAsync(Location location);
+        Task<IEnumerable<long>> GetAllMoviesAsync(SearchArea searchArea);
 
         /// <summary>
-        /// Get show basic information 
+        /// Get movies basic information 
         /// </summary>
         /// <param name="id"> Movie id </param>
         /// <returns> Basic show information </returns>
         Task<Movie> GetMovieAsync(long id);
 
         /// <summary>
-        /// Mark show as deleted 
+        /// Mark movies as deleted 
         /// </summary>
         /// <param name="id"> Movie id </param>
         Task DeleteMovieAsync(long id);
 
         /// <summary>
-        /// Get detailed information about show 
+        /// Get detailed information about movie 
         /// </summary>
         /// <param name="id"> Movie id </param>
         /// <returns> Detailed information about show </returns>
         Task<MovieDetails> GetMovieDetailsAsync(long id);
+
+        /// <summary>
+        /// Adds new movie 
+        /// </summary>
+        /// <param name="newMovie"> New movie </param>
+        /// <returns> Movie id </returns>
+        Task<long> AddMovieAsync(Movie newMovie);
+
+        /// <summary>
+        /// Add details for movie 
+        /// </summary>
+        /// <param name="movieDetails"> Details </param>
+        /// <returns> Movie id </returns>
+        Task<long> AddMovieDetailsAsync(MovieDetails movieDetails);
     }
 }

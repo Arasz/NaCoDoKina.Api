@@ -1,4 +1,4 @@
-namespace NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request
+namespace NaCoDoKina.Api.Infrastructure
 {
     /// <summary>
     /// Request parsing strategy 

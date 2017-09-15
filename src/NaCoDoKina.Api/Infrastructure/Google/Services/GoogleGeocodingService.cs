@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Infrastructure.Google.Services
 {
-    public class GoogleGeocodingService : BaseGoogleService<GeocodingApiRequest, GeocodingApiResponse>, IGoogleGeocodingService
+    public class GoogleGeocodingService : GoogleServiceBase<GeocodingApiRequest, GeocodingApiResponse>, IGoogleGeocodingService
     {
         public GoogleGeocodingService(GoogleServiceDependencies<GeocodingApiRequest> googleServiceDependencies)
             : base(googleServiceDependencies)
