@@ -13,16 +13,14 @@ namespace NaCoDoKina.Api.Services
     public class MovieService : IMovieService
     {
         private readonly ILogger<IMovieService> _logger;
-        private readonly IUserService _userService;
         private readonly IRatingService _ratingService;
         private readonly IMapper _mapper;
         private readonly IMovieRepository _movieRepository;
         private readonly ICinemaService _cinemaService;
 
-        public MovieService(IMovieRepository movieRepository, ICinemaService cinemaService, IRatingService ratingService, IUserService userService, IMapper mapper, ILogger<IMovieService> logger)
+        public MovieService(IMovieRepository movieRepository, ICinemaService cinemaService, IRatingService ratingService, IMapper mapper, ILogger<IMovieService> logger)
         {
             _logger = logger;
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _ratingService = ratingService ?? throw new ArgumentNullException(nameof(ratingService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _movieRepository = movieRepository ?? throw new ArgumentNullException(nameof(movieRepository));
@@ -86,9 +84,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task DeleteMovieAsync(long id)
         {
-            var userId = await _userService.GetCurrentUserIdAsync();
-
-            var deleted = await _movieRepository.SoftDeleteMovieAsync(id, userId);
+            var deleted = await _movieRepository.SoftDeleteMovieAsync(id);
 
             if (!deleted)
                 throw new MovieNotFoundException(id);

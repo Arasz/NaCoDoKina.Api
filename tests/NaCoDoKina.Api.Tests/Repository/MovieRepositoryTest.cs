@@ -1,6 +1,9 @@
 ﻿using FluentAssertions;
+using Moq;
 using NaCoDoKina.Api.Entities;
 using NaCoDoKina.Api.Repositories;
+using NaCoDoKina.Api.Services;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -9,6 +12,179 @@ namespace NaCoDoKina.Api.Repository
 {
     public class MovieRepositoryTest : RepositoryTestBase<IMovieRepository>
     {
+        public Mock<IUserService> UserServiceMock { get; }
+
+        public long DefaultUserId { get; } = 55;
+
+        public MovieRepositoryTest()
+        {
+            UserServiceMock = new Mock<IUserService>();
+
+            UserServiceMock
+                .Setup(service => service.GetCurrentUserIdAsync())
+                .Returns(() => Task.FromResult(DefaultUserId));
+        }
+
+        public class AddMovieAsync : MovieRepositoryTest
+        {
+            [Fact]
+            public async Task Should_add_movie_and_return_id()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    EnsureCreated(databaseScope);
+
+                    //Arrange
+                    var movieId = 1;
+
+                    var movie = new Movie
+                    {
+                        Name = nameof(Movie),
+                        Details = new MovieDetails(),
+                        PosterUrl = nameof(Movie.PosterUrl),
+                    };
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
+
+                        //Act
+                        var addedMovieId = await RepositoryUnderTest.AddMovieAsync(movie);
+
+                        //Assert
+                        addedMovieId.Should().Be(movieId);
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Movies
+                            .Any(m => m.Id == movieId)
+                            .Should().BeTrue();
+                    }
+                }
+            }
+        }
+
+        public class AddMovieDetailsAsync : MovieRepositoryTest
+        {
+            [Fact]
+            public async Task Should_add_movie_details_and_return_id()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    EnsureCreated(databaseScope);
+
+                    //Arrange
+                    var movieId = 1;
+
+                    var movie = new Movie
+                    {
+                        Name = nameof(Movie),
+                        Details = new MovieDetails
+                        {
+                            Description = nameof(MovieDetails)
+                        },
+                        PosterUrl = nameof(Movie.PosterUrl),
+                    };
+
+                    var movieDetails = new MovieDetails
+                    {
+                        Id = 0,
+                        MovieId = movieId,
+                        Description = nameof(MovieDetails.Description),
+                    };
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Movies.Add(movie);
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
+
+                        //Act
+                        var addedDetailsId = await RepositoryUnderTest.AddMovieDetailsAsync(movieDetails);
+
+                        //Assert
+                        addedDetailsId.Should().Be(movieId);
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Movies
+                            .Any(m => m.Id == movieId)
+                            .Should().BeTrue();
+
+                        contextScope.ApplicationContext.MovieDetails
+                            .Any(details => details.Id == movieId)
+                            .Should().BeTrue();
+
+                        contextScope.ApplicationContext.MovieDetails
+                            .Single().Description.Should().Be(nameof(MovieDetails.Description));
+                    }
+                }
+            }
+
+            [Fact]
+            public async Task Should_return_0_id_when_movie_can_not_be_found()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    EnsureCreated(databaseScope);
+
+                    //Arrange
+                    var movieId = 1;
+                    var notExistingMovieId = 404L;
+
+                    var movie = new Movie
+                    {
+                        Name = nameof(Movie),
+                        Details = new MovieDetails
+                        {
+                            Description = nameof(MovieDetails)
+                        },
+                        PosterUrl = nameof(Movie.PosterUrl),
+                    };
+
+                    var movieDetails = new MovieDetails
+                    {
+                        Id = 0,
+                        MovieId = notExistingMovieId,
+                        Description = nameof(MovieDetails.Description),
+                    };
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Movies.Add(movie);
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
+
+                        //Act
+                        var addedDetailsId = await RepositoryUnderTest.AddMovieDetailsAsync(movieDetails);
+
+                        //Assert
+                        addedDetailsId.Should().Be(0);
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Movies
+                            .Any(m => m.Id == movieId)
+                            .Should().BeTrue();
+
+                        contextScope.ApplicationContext.MovieDetails
+                            .Should().OnlyContain(details => details.Description == nameof(MovieDetails));
+                    }
+                }
+            }
+        }
+
         public class SoftDeleteMovieAsync : MovieRepositoryTest
         {
             [Fact]
@@ -20,7 +196,6 @@ namespace NaCoDoKina.Api.Repository
 
                     //Arrange
                     var movieId = 1;
-                    var userId = 55;
 
                     var movie = new Movie
                     {
@@ -37,10 +212,10 @@ namespace NaCoDoKina.Api.Repository
 
                     using (var contextScope = new TestDatabaseContextScope(databaseScope))
                     {
-                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
 
                         //Act
-                        var deleted = await RepositoryUnderTest.SoftDeleteMovieAsync(movieId, userId);
+                        var deleted = await RepositoryUnderTest.SoftDeleteMovieAsync(movieId);
 
                         //Assert
                         deleted.Should().BeTrue();
@@ -54,7 +229,7 @@ namespace NaCoDoKina.Api.Repository
                         contextScope.ApplicationContext.DeletedMovieMarks
                             .Should().HaveCount(1);
                         contextScope.ApplicationContext.DeletedMovieMarks
-                            .Should().ContainSingle(mark => mark.MovieId == movieId && mark.UserId == userId);
+                            .Should().ContainSingle(mark => mark.MovieId == movieId && mark.UserId == DefaultUserId);
                     }
                 }
             }
@@ -69,7 +244,6 @@ namespace NaCoDoKina.Api.Repository
                     //Arrange
                     var movieId = 1;
                     var nonExistingId = 53;
-                    var userId = 55;
 
                     var movie = new Movie
                     {
@@ -86,10 +260,10 @@ namespace NaCoDoKina.Api.Repository
 
                     using (var contextScope = new TestDatabaseContextScope(databaseScope))
                     {
-                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
 
                         //Act
-                        var deleted = await RepositoryUnderTest.SoftDeleteMovieAsync(nonExistingId, userId);
+                        var deleted = await RepositoryUnderTest.SoftDeleteMovieAsync(nonExistingId);
 
                         //Assert
                         deleted.Should().BeFalse();
@@ -115,7 +289,6 @@ namespace NaCoDoKina.Api.Repository
 
                     //Arrange
                     var movieId = 1;
-                    var userId = 55;
 
                     var movie = new Movie
                     {
@@ -124,7 +297,7 @@ namespace NaCoDoKina.Api.Repository
                         PosterUrl = nameof(Movie.PosterUrl),
                     };
 
-                    var deletedMovieMark = new DeletedMovieMark(movieId, userId);
+                    var deletedMovieMark = new DeletedMovieMark(movieId, DefaultUserId);
 
                     using (var contextScope = new TestDatabaseContextScope(databaseScope))
                     {
@@ -135,10 +308,10 @@ namespace NaCoDoKina.Api.Repository
 
                     using (var contextScope = new TestDatabaseContextScope(databaseScope))
                     {
-                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
 
                         //Act
-                        var deleted = await RepositoryUnderTest.SoftDeleteMovieAsync(movieId, userId);
+                        var deleted = await RepositoryUnderTest.SoftDeleteMovieAsync(movieId);
 
                         //Assert
                         deleted.Should().BeTrue();
@@ -153,7 +326,246 @@ namespace NaCoDoKina.Api.Repository
                             .Should().HaveCount(1);
                         contextScope.ApplicationContext.DeletedMovieMarks
                             .Should()
-                            .ContainSingle(mark => mark.MovieId == deletedMovieMark.MovieId && mark.UserId == userId);
+                            .ContainSingle(mark => mark.MovieId == deletedMovieMark.MovieId && mark.UserId == DefaultUserId);
+                    }
+                }
+            }
+        }
+
+        public class GetMovieAsync : MovieRepositoryTest
+        {
+            [Fact]
+            public async Task Should_return_movie_when_exist_and_is_not_marked_as_deleted()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    EnsureCreated(databaseScope);
+
+                    //Arrange
+                    var movieId = 1;
+
+                    var movie = new Movie
+                    {
+                        Name = nameof(Movie),
+                        Details = new MovieDetails(),
+                        PosterUrl = nameof(Movie.PosterUrl),
+                    };
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Movies.Add(movie);
+
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
+
+                        //Act
+                        var movieFromDb = await RepositoryUnderTest.GetMovieAsync(movieId);
+
+                        //Assert
+                        movieFromDb.Id.Should().BePositive();
+                        movieFromDb.Details.Should().BeNull("We only get necessary data");
+                        movieFromDb.Name.Should().Be(movie.Name);
+                    }
+                }
+            }
+
+            [Fact]
+            public async Task Should_return_null_when_movie_do_not_exist()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    EnsureCreated(databaseScope);
+
+                    //Arrange
+                    var nonExistingMovieId = 52;
+
+                    var movie = new Movie
+                    {
+                        Name = nameof(Movie),
+                        Details = new MovieDetails(),
+                        PosterUrl = nameof(Movie.PosterUrl),
+                    };
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Movies.Add(movie);
+
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
+
+                        //Act
+                        var movieFromDb = await RepositoryUnderTest.GetMovieAsync(nonExistingMovieId);
+
+                        //Assert
+                        movieFromDb.Should().BeNull();
+                    }
+                }
+            }
+
+            [Fact]
+            public async Task Should_return_null_when_movie_is_soft_deleted()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    EnsureCreated(databaseScope);
+
+                    //Arrange
+                    var movieId = 1;
+
+                    var movie = new Movie
+                    {
+                        Name = nameof(Movie),
+                        Details = new MovieDetails(),
+                        PosterUrl = nameof(Movie.PosterUrl),
+                    };
+
+                    var deletedMovieMark = new DeletedMovieMark(movieId, DefaultUserId);
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Movies.Add(movie);
+                        contextScope.ApplicationContext.DeletedMovieMarks.Add(deletedMovieMark);
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
+
+                        //Act
+                        var movieFromDb = await RepositoryUnderTest.GetMovieAsync(movieId);
+
+                        //Assert
+                        movieFromDb.Should().BeNull();
+                    }
+                }
+            }
+        }
+
+        public class GetMovieDetailsAsync : MovieRepositoryTest
+        {
+            [Fact]
+            public async Task Should_return_movie_details_when_exist_and_is_not_marked_as_deleted()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    EnsureCreated(databaseScope);
+
+                    //Arrange
+                    var movieId = 1;
+
+                    var movie = new Movie
+                    {
+                        Name = nameof(Movie),
+                        Details = new MovieDetails
+                        {
+                            ReleaseDate = DateTime.MinValue,
+                            Description = nameof(MovieDetails)
+                        },
+                        PosterUrl = nameof(Movie.PosterUrl),
+                    };
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Movies.Add(movie);
+
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
+
+                        //Act
+                        var movieFromDb = await RepositoryUnderTest.GetMovieDetailsAsync(movieId);
+
+                        //Assert
+                        movieFromDb.Id.Should().BePositive();
+                        movieFromDb.ReleaseDate.Should().Be(DateTime.MinValue);
+                    }
+                }
+            }
+
+            [Fact]
+            public async Task Should_return_null_when_movie_details_do_not_exist()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    EnsureCreated(databaseScope);
+
+                    //Arrange
+                    var nonExistingMovieId = 52;
+
+                    var movie = new Movie
+                    {
+                        Name = nameof(Movie),
+                        Details = new MovieDetails(),
+                        PosterUrl = nameof(Movie.PosterUrl),
+                    };
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Movies.Add(movie);
+
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
+
+                        //Act
+                        var movieFromDb = await RepositoryUnderTest.GetMovieDetailsAsync(nonExistingMovieId);
+
+                        //Assert
+                        movieFromDb.Should().BeNull();
+                    }
+                }
+            }
+
+            [Fact]
+            public async Task Should_return_null_when_movie_is_soft_deleted()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    EnsureCreated(databaseScope);
+
+                    //Arrange
+                    var movieId = 1;
+
+                    var movie = new Movie
+                    {
+                        Name = nameof(Movie),
+                        Details = new MovieDetails(),
+                        PosterUrl = nameof(Movie.PosterUrl),
+                    };
+
+                    var deletedMovieMark = new DeletedMovieMark(movieId, DefaultUserId);
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Movies.Add(movie);
+                        contextScope.ApplicationContext.DeletedMovieMarks.Add(deletedMovieMark);
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
+
+                        //Act
+                        var movieFromDb = await RepositoryUnderTest.GetMovieDetailsAsync(movieId);
+
+                        //Assert
+                        movieFromDb.Should().BeNull();
                     }
                 }
             }
@@ -186,16 +598,19 @@ namespace NaCoDoKina.Api.Repository
                         PosterUrl = nameof(Movie.PosterUrl),
                     };
 
+                    var movieDeletedMark = new DeletedMovieMark(movieId, DefaultUserId);
+
                     using (var contextScope = new TestDatabaseContextScope(databaseScope))
                     {
                         contextScope.ApplicationContext.Movies.Add(movie);
+                        contextScope.ApplicationContext.DeletedMovieMarks.Add(movieDeletedMark);
 
                         await contextScope.ApplicationContext.SaveChangesAsync();
                     }
 
                     using (var contextScope = new TestDatabaseContextScope(databaseScope))
                     {
-                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
 
                         //Act
                         var deleted = await RepositoryUnderTest.DeleteMovieAsync(movieId);
@@ -209,6 +624,8 @@ namespace NaCoDoKina.Api.Repository
                         contextScope.ApplicationContext.Movies
                             .Should().BeEmpty();
                         contextScope.ApplicationContext.MovieDetails
+                            .Should().BeEmpty();
+                        contextScope.ApplicationContext.DeletedMovieMarks
                             .Should().BeEmpty();
                     }
                 }
@@ -240,7 +657,7 @@ namespace NaCoDoKina.Api.Repository
 
                     using (var contextScope = new TestDatabaseContextScope(databaseScope))
                     {
-                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
 
                         //Act
                         var deleted = await RepositoryUnderTest.DeleteMovieAsync(movieId);

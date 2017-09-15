@@ -11,9 +11,8 @@ namespace NaCoDoKina.Api.Repositories
         /// Marks movie as deleted for current user 
         /// </summary>
         /// <param name="movieId"> Movie id </param>
-        /// <param name="userId"> User id </param>
         /// <returns> True if movie was marked as deleted </returns>
-        Task<bool> SoftDeleteMovieAsync(long movieId, long userId);
+        Task<bool> SoftDeleteMovieAsync(long movieId);
 
         /// <summary>
         /// Deletes movie 

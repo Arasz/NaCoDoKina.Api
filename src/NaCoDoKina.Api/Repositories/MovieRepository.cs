@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Data;
 using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,13 @@ namespace NaCoDoKina.Api.Repositories
 {
     public class MovieRepository : IMovieRepository
     {
+        private readonly IUserService _userService;
         private readonly ApplicationContext _applicationContext;
         private readonly ILogger<IMovieRepository> _logger;
 
-        public MovieRepository(ApplicationContext applicationContext, ILogger<IMovieRepository> logger)
+        public MovieRepository(ApplicationContext applicationContext, IUserService userService, ILogger<IMovieRepository> logger)
         {
+            _userService = userService;
             _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -32,12 +35,19 @@ namespace NaCoDoKina.Api.Repositories
             _applicationContext.Movies.Remove(movieToDelete);
             _applicationContext.MovieDetails.Remove(detailsToDelete);
 
+            var softDeletesForMovie = _applicationContext.DeletedMovieMarks
+                .Where(mark => mark.MovieId == movieId);
+
+            _applicationContext.DeletedMovieMarks.RemoveRange(softDeletesForMovie);
+
             await _applicationContext.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> SoftDeleteMovieAsync(long movieId, long userId)
+        public async Task<bool> SoftDeleteMovieAsync(long movieId)
         {
+            var userId = await _userService.GetCurrentUserIdAsync();
+
             var movieExist = await _applicationContext.Movies.AnyAsync(movie => movie.Id == movieId);
 
             if (!movieExist)
@@ -56,29 +66,67 @@ namespace NaCoDoKina.Api.Repositories
             return true;
         }
 
-        public Task<Movie> GetMovieAsync(long id)
+        private async Task<bool> IsMovieSoftDeleted(long id)
         {
+            var userId = await _userService.GetCurrentUserIdAsync();
+
+            return await _applicationContext.DeletedMovieMarks
+                .Where(mark => mark.MovieId == id)
+                .Where(mark => mark.UserId == userId)
+                .AnyAsync();
+        }
+
+        public async Task<Movie> GetMovieAsync(long id)
+        {
+            var isMovieSoftDeleted = await IsMovieSoftDeleted(id);
+            if (isMovieSoftDeleted)
+                return default(Movie);
+
+            return await _applicationContext.Movies
+                .FindAsync(id);
+        }
+
+        public async Task<IEnumerable<long>> GetMoviesPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
+        {
+            var userId = await _userService.GetCurrentUserIdAsync();
+
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<long>> GetMoviesPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
+        public async Task<MovieDetails> GetMovieDetailsAsync(long id)
         {
-            throw new NotImplementedException();
+            var isMovieSoftDeleted = await IsMovieSoftDeleted(id);
+            if (isMovieSoftDeleted)
+                return default(MovieDetails);
+
+            return await _applicationContext.MovieDetails.FindAsync(id);
         }
 
-        public Task<MovieDetails> GetMovieDetailsAsync(long id)
+        public async Task<long> AddMovieAsync(Movie newMovie)
         {
-            throw new NotImplementedException();
+            var entityEntry = _applicationContext.Movies.Add(newMovie);
+            await _applicationContext.SaveChangesAsync();
+            return entityEntry.Entity.Id;
         }
 
-        public Task<long> AddMovieAsync(Movie newMovie)
+        public async Task<long> AddMovieDetailsAsync(MovieDetails movieDetails)
         {
-            throw new NotImplementedException();
-        }
+            var movie = await _applicationContext.Movies.FindAsync(movieDetails.MovieId);
 
-        public Task<long> AddMovieDetailsAsync(MovieDetails movieDetails)
-        {
-            throw new NotImplementedException();
+            if (movie is null)
+                return default(long);
+
+            movieDetails.Id = movie.Id;
+
+            _applicationContext.MovieDetails.Update(movieDetails);
+
+            movie.Details = movieDetails;
+
+            _applicationContext.Movies.Update(movie);
+
+            await _applicationContext.SaveChangesAsync();
+
+            return movie.Id;
         }
     }
 }
