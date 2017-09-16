@@ -49,7 +49,7 @@ namespace NaCoDoKina.Api.Services
             }
 
             var getPlayedMoviesTasks = cinemas
-                .Select(cinema => _movieRepository.GetMoviesPlayedInCinemaAsync(cinema.Id, DateAfterTravel(cinema)));
+                .Select(cinema => _movieRepository.GetMoviesIdsPlayedInCinemaAsync(cinema.Id, DateAfterTravel(cinema)));
 
             var availableMovies = (await Task.WhenAll(getPlayedMoviesTasks))
                 .SelectMany(movieId => movieId)

@@ -34,7 +34,7 @@ namespace NaCoDoKina.Api.Repositories
         /// <param name="cinemaId"> Cinema movieId </param>
         /// <param name="laterThan"> Earlier show time </param>
         /// <returns> Movies ids </returns>
-        Task<IEnumerable<long>> GetMoviesPlayedInCinemaAsync(long cinemaId, DateTime laterThan);
+        Task<IEnumerable<long>> GetMoviesIdsPlayedInCinemaAsync(long cinemaId, DateTime laterThan);
 
         /// <summary>
         /// Gets movie details 

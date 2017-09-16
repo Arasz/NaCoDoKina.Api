@@ -66,7 +66,7 @@ namespace NaCoDoKina.Api.Repositories
             return true;
         }
 
-        private async Task<bool> IsMovieSoftDeleted(long id)
+        private async Task<bool> IsMovieSoftDeletedAsync(long id)
         {
             var userId = await _userService.GetCurrentUserIdAsync();
 
@@ -78,7 +78,7 @@ namespace NaCoDoKina.Api.Repositories
 
         public async Task<Movie> GetMovieAsync(long id)
         {
-            var isMovieSoftDeleted = await IsMovieSoftDeleted(id);
+            var isMovieSoftDeleted = await IsMovieSoftDeletedAsync(id);
             if (isMovieSoftDeleted)
                 return default(Movie);
 
@@ -86,16 +86,29 @@ namespace NaCoDoKina.Api.Repositories
                 .FindAsync(id);
         }
 
-        public async Task<IEnumerable<long>> GetMoviesPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
+        public async Task<IEnumerable<long>> GetMoviesIdsPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
         {
             var userId = await _userService.GetCurrentUserIdAsync();
 
-            throw new NotImplementedException();
+            var markedAsDeletedMoviesIds = _applicationContext.DeletedMovieMarks
+                .Where(mark => mark.UserId == userId)
+                .Select(mark => mark.MovieId)
+                .Distinct()
+                .ToHashSet();
+
+            var allMoviesPlayedInCinema = await _applicationContext.MovieShowtimes
+                 .Where(showtime => showtime.ShowTime > laterThan)
+                 .Where(showtime => showtime.Cinema.Id == cinemaId)
+                 .Select(showtime => showtime.Movie.Id)
+                 .Except(markedAsDeletedMoviesIds)
+                 .ToArrayAsync();
+
+            return allMoviesPlayedInCinema;
         }
 
         public async Task<MovieDetails> GetMovieDetailsAsync(long id)
         {
-            var isMovieSoftDeleted = await IsMovieSoftDeleted(id);
+            var isMovieSoftDeleted = await IsMovieSoftDeletedAsync(id);
             if (isMovieSoftDeleted)
                 return default(MovieDetails);
 

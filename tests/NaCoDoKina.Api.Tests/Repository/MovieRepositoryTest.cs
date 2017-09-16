@@ -574,8 +574,76 @@ namespace NaCoDoKina.Api.Repository
         public class GetMoviesPlayedInCinemaAsync : MovieRepositoryTest
         {
             [Fact]
-            public void Should_return_all_not_deleted_movies_played_in_cinema()
+            public async Task Should_return_all_not_deleted_movies_ids_played_in_cinema()
             {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    EnsureCreated(databaseScope);
+
+                    //Arrange
+                    var movieId = 1;
+                    var deletedMovieId = 2;
+                    var cinemaId = 1;
+
+                    var movie = new Movie
+                    {
+                        Name = nameof(Movie),
+                        Details = new MovieDetails(),
+                        PosterUrl = nameof(Movie.PosterUrl),
+                    };
+
+                    var deletedMovie = new Movie
+                    {
+                        Name = "Deleted" + nameof(Movie),
+                        Details = new MovieDetails(),
+                        PosterUrl = nameof(Movie.PosterUrl),
+                    };
+
+                    var deleteMovieMark = new DeletedMovieMark(deletedMovieId, DefaultUserId);
+
+                    var cinema = new Cinema
+                    {
+                        Name = nameof(Cinema),
+                        Address = nameof(Cinema.Address),
+                        Location = new Location(1, 1)
+                    };
+
+                    var movieShowtime = new MovieShowtime
+                    {
+                        Cinema = cinema,
+                        Movie = movie,
+                        ShowTime = DateTime.Now.AddHours(2)
+                    };
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Cinemas.Add(cinema);
+                        contextScope.ApplicationContext.MovieShowtimes.Add(movieShowtime);
+                        contextScope.ApplicationContext.Movies.Add(movie);
+                        contextScope.ApplicationContext.Movies.Add(deletedMovie);
+                        contextScope.ApplicationContext.DeletedMovieMarks.Add(deleteMovieMark);
+
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new MovieRepository(contextScope.ApplicationContext, UserServiceMock.Object, LoggerMock.Object);
+
+                        //Act
+                        var playedMoviesIds = await RepositoryUnderTest.GetMoviesIdsPlayedInCinemaAsync(cinemaId, DateTime.Now);
+
+                        //Assert
+                        playedMoviesIds.Should().HaveCount(1);
+                        playedMoviesIds.Single().Should().Be(movieId);
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Movies
+                            .Should().HaveCount(2);
+                    }
+                }
             }
         }
 

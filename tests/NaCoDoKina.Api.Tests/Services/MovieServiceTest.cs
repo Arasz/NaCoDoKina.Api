@@ -106,7 +106,7 @@ namespace NaCoDoKina.Api.Services
                     throw new NotImplementedException();
                 }
 
-                public Task<IEnumerable<long>> GetMoviesPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
+                public Task<IEnumerable<long>> GetMoviesIdsPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
                 {
                     var moviesIds = _movieShowtimes
                         .Where(showtime => showtime.Cinema.Id == cinemaId)
