@@ -8,6 +8,10 @@ namespace NaCoDoKina.Api.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Cinema> builder)
         {
+            builder
+                .HasIndex(cinema => cinema.Name)
+                .IsUnique();
+
             builder.Property(cinema => cinema.Name)
                 .IsRequired()
                 .HasMaxLength(225);

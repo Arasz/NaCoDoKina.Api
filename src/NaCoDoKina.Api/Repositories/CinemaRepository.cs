@@ -48,5 +48,16 @@ namespace NaCoDoKina.Api.Repositories
             await _applicationContext.SaveChangesAsync();
             return entry.Entity;
         }
+
+        public Task<Cinema> GetCinemaAsync(long id)
+        {
+            return _applicationContext.Cinemas.FindAsync(id);
+        }
+
+        public Task<Cinema> GetCinemaAsync(string name)
+        {
+            return _applicationContext.Cinemas
+                .SingleOrDefaultAsync(c => c.Name == name);
+        }
     }
 }

@@ -14,6 +14,10 @@ namespace NaCoDoKina.Api.Data
 
         public DbSet<MovieShowtime> MovieShowtimes { get; set; }
 
+        public DbSet<DeletedMovieMark> DeletedMovieMarks { get; set; }
+
+        public DbSet<MovieDetails> MovieDetails { get; set; }
+
         public ApplicationContext()
         {
         }
@@ -30,6 +34,7 @@ namespace NaCoDoKina.Api.Data
             modelBuilder.ApplyConfiguration(new CinemaNetworkConfiguration());
             modelBuilder.ApplyConfiguration(new MovieShowtimeConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceUrlConfiguration());
+            modelBuilder.ApplyConfiguration(new DeletedMovieMarkConfiguration());
         }
     }
 }

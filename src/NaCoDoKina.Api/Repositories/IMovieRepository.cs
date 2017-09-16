@@ -11,8 +11,15 @@ namespace NaCoDoKina.Api.Repositories
         /// Marks movie as deleted for current user 
         /// </summary>
         /// <param name="movieId"> Movie id </param>
-        /// <param name="userId"> User id </param>
-        Task<bool> DeleteMovieAsync(long movieId, long userId);
+        /// <returns> True if movie was marked as deleted </returns>
+        Task<bool> SoftDeleteMovieAsync(long movieId);
+
+        /// <summary>
+        /// Deletes movie 
+        /// </summary>
+        /// <param name="movieId"> Movie id </param>
+        /// <returns> True if movie was deleted </returns>
+        Task<bool> DeleteMovieAsync(long movieId);
 
         /// <summary>
         /// Gets basic movie information 
@@ -27,7 +34,7 @@ namespace NaCoDoKina.Api.Repositories
         /// <param name="cinemaId"> Cinema movieId </param>
         /// <param name="laterThan"> Earlier show time </param>
         /// <returns> Movies ids </returns>
-        Task<IEnumerable<long>> GetMoviesPlayedInCinemaAsync(long cinemaId, DateTime laterThan);
+        Task<IEnumerable<long>> GetMoviesIdsPlayedInCinemaAsync(long cinemaId, DateTime laterThan);
 
         /// <summary>
         /// Gets movie details 
