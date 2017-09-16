@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.PlatformAbstractions;
 using NaCoDoKina.Api.Data;
 using Swashbuckle.AspNetCore.Swagger;
+using System.IO;
 
 namespace NaCoDoKina.Api
 {
@@ -31,13 +33,18 @@ namespace NaCoDoKina.Api
                 {
                     Title = "NaCoDoKina.Api",
                     Version = "v1",
+                    Description = "Web api for NaCoDoKina project",
                     Contact = new Contact
                     {
                         Email = "araszkiewiczrafal@gmail.com",
                         Name = "Rafał Araszkiewicz",
-                        Url = "arasz.me"
+                        Url = "https://github.com/Arasz"
                     },
                 });
+
+                var applicationBasePath = PlatformServices.Default.Application.ApplicationBasePath;
+
+                options.IncludeXmlComments(Path.Combine(applicationBasePath, "NaCoDoKina.Api.xml"));
             });
         }
 
@@ -56,6 +63,8 @@ namespace NaCoDoKina.Api
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
+                options.ShowRequestHeaders();
+                options.RoutePrefix = "documentation";
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "NaCoDoKina.APi V1");
             });
 
