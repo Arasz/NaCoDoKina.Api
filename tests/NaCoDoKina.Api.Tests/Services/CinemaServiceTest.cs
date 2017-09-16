@@ -239,6 +239,146 @@ namespace NaCoDoKina.Api.Services
                     action.ShouldThrow<CinemasNotFoundException>();
                 }
             }
+
+            public class GetCinemaAsync : CinemaServiceTest
+            {
+                [Fact]
+                public async Task Should_return_cinema_with_given_id()
+                {
+                    //Arrange
+                    var cinemaId = 1;
+                    var cinema = new Entities.Cinema
+                    {
+                        Id = cinemaId,
+                        Name = "NearCinema",
+                        Location = new Entities.Location(15, 32)
+                    };
+
+                    MapperMock
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Entities.Cinema>()))
+                        .Returns(new Func<Entities.Cinema, Cinema>(c => new Cinema
+                        {
+                            Id = c.Id,
+                            Name = c.Name,
+                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                        }));
+
+                    RepositoryMock
+                        .Setup(repository => repository.GetCinemaAsync(cinemaId))
+                        .Returns(() => Task.FromResult(cinema));
+
+                    //Act
+                    var result = await ServiceUnderTest.GetCinemaAsync(cinemaId);
+
+                    //Assert
+                    result.Should().NotBeNull();
+                    result.Name.Should().Be(cinema.Name);
+                    result.Id.Should().Be(cinemaId);
+                }
+
+                [Fact]
+                public async Task Should_return_cinema_with_given_name()
+                {
+                    //Arrange
+                    var cinemaId = 1;
+                    var cinemaName = "NearCinema";
+                    var cinema = new Entities.Cinema
+                    {
+                        Id = cinemaId,
+                        Name = cinemaName,
+                        Location = new Entities.Location(15, 32)
+                    };
+
+                    MapperMock
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Entities.Cinema>()))
+                        .Returns(new Func<Entities.Cinema, Cinema>(c => new Cinema
+                        {
+                            Id = c.Id,
+                            Name = c.Name,
+                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                        }));
+
+                    RepositoryMock
+                        .Setup(repository => repository.GetCinemaAsync(cinemaName))
+                        .Returns(() => Task.FromResult(cinema));
+
+                    //Act
+                    var result = await ServiceUnderTest.GetCinemaAsync(cinemaName);
+
+                    //Assert
+                    result.Should().NotBeNull();
+                    result.Name.Should().Be(cinema.Name);
+                    result.Id.Should().Be(cinemaId);
+                }
+
+                [Fact]
+                public void Should_throw_cinema_not_found_exception_when_cinema_with_id_not_found()
+                {
+                    //Arrange
+                    var cinemaId = 1;
+                    var cinemaName = "NearCinema";
+                    var nonExistingId = 404;
+                    var cinema = new Entities.Cinema
+                    {
+                        Id = cinemaId,
+                        Name = cinemaName,
+                        Location = new Entities.Location(15, 32)
+                    };
+
+                    MapperMock
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Entities.Cinema>()))
+                        .Returns(new Func<Entities.Cinema, Cinema>(c => new Cinema
+                        {
+                            Id = c.Id,
+                            Name = c.Name,
+                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                        }));
+
+                    RepositoryMock
+                        .Setup(repository => repository.GetCinemaAsync(cinemaId))
+                        .Returns(() => Task.FromResult(cinema));
+
+                    //Act
+                    Func<Task<Cinema>> action = () => ServiceUnderTest.GetCinemaAsync(nonExistingId);
+
+                    //Assert
+                    action.ShouldThrow<CinemaNotFoundException>();
+                }
+
+                [Fact]
+                public void Should_throw_cinema_not_found_exception_when_cinema_with_name_not_found()
+                {
+                    //Arrange
+                    var cinemaId = 1;
+                    var cinemaName = "NearCinema";
+                    var nonExistingName = "wololo";
+                    var cinema = new Entities.Cinema
+                    {
+                        Id = cinemaId,
+                        Name = cinemaName,
+                        Location = new Entities.Location(15, 32)
+                    };
+
+                    MapperMock
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Entities.Cinema>()))
+                        .Returns(new Func<Entities.Cinema, Cinema>(c => new Cinema
+                        {
+                            Id = c.Id,
+                            Name = c.Name,
+                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                        }));
+
+                    RepositoryMock
+                        .Setup(repository => repository.GetCinemaAsync(cinemaId))
+                        .Returns(() => Task.FromResult(cinema));
+
+                    //Act
+                    Func<Task<Cinema>> action = () => ServiceUnderTest.GetCinemaAsync(nonExistingName);
+
+                    //Assert
+                    action.ShouldThrow<CinemaNotFoundException>();
+                }
+            }
         }
     }
 }

@@ -31,7 +31,7 @@ namespace NaCoDoKina.Api.Services
             CinemaServiceMock = new Mock<ICinemaService>();
             RepositoryMock = new Mock<IMovieRepository>();
             ServiceUnderTest = new MovieService(RepositoryMockObject, CinemaServiceMock.Object,
-                RatingServiceMock.Object, UserServiceMock.Object, MapperMock.Object, LoggerMock.Object);
+                RatingServiceMock.Object, MapperMock.Object, LoggerMock.Object);
 
             PreConfigureMocks();
         }
@@ -91,7 +91,12 @@ namespace NaCoDoKina.Api.Services
                     _movieShowtimes = data as List<Entities.MovieShowtime> ?? data.ToList();
                 }
 
-                public Task<bool> DeleteMovieAsync(long movieId, long userId)
+                public Task<bool> SoftDeleteMovieAsync(long movieId)
+                {
+                    throw new NotImplementedException();
+                }
+
+                public Task<bool> DeleteMovieAsync(long movieId)
                 {
                     throw new NotImplementedException();
                 }
@@ -101,7 +106,7 @@ namespace NaCoDoKina.Api.Services
                     throw new NotImplementedException();
                 }
 
-                public Task<IEnumerable<long>> GetMoviesPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
+                public Task<IEnumerable<long>> GetMoviesIdsPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
                 {
                     var moviesIds = _movieShowtimes
                         .Where(showtime => showtime.Cinema.Id == cinemaId)
@@ -141,7 +146,7 @@ namespace NaCoDoKina.Api.Services
                 _movieRepositoryFake = new MovieRepositoryFake();
 
                 ServiceUnderTest = new MovieService(_movieRepositoryFake, CinemaServiceMock.Object,
-                    RatingServiceMock.Object, UserServiceMock.Object, MapperMock.Object, LoggerMock.Object);
+                    RatingServiceMock.Object, MapperMock.Object, LoggerMock.Object);
 
                 PreConfigureMocks();
             }
@@ -307,7 +312,7 @@ namespace NaCoDoKina.Api.Services
                 var movieId = 404L;
 
                 RepositoryMock
-                    .Setup(repository => repository.DeleteMovieAsync(movieId, DefaultUserId))
+                    .Setup(repository => repository.SoftDeleteMovieAsync(movieId))
                     .Returns(() => Task.FromResult(true));
 
                 RepositoryMock
@@ -329,7 +334,7 @@ namespace NaCoDoKina.Api.Services
                 var movieId = 404L;
 
                 RepositoryMock
-                    .Setup(repository => repository.DeleteMovieAsync(movieId, DefaultUserId))
+                    .Setup(repository => repository.SoftDeleteMovieAsync(movieId))
                     .Returns(() => Task.FromResult(false));
 
                 //Act
