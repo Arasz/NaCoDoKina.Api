@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NaCoDoKina.Api.Data;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace NaCoDoKina.Api
 {
@@ -20,8 +21,24 @@ namespace NaCoDoKina.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
             services.AddDbContext<ApplicationContext>(builder =>
             builder.UseNpgsql(ConnectionString));
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new Info
+                {
+                    Title = "NaCoDoKina.Api",
+                    Version = "v1",
+                    Contact = new Contact
+                    {
+                        Email = "araszkiewiczrafal@gmail.com",
+                        Name = "Rafał Araszkiewicz",
+                        Url = "arasz.me"
+                    },
+                });
+            });
         }
 
         private string ConnectionString =>
@@ -35,6 +52,12 @@ namespace NaCoDoKina.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "NaCoDoKina.APi V1");
+            });
 
             app.UseMvc();
         }
