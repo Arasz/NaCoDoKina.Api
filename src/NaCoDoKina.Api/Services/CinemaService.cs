@@ -27,7 +27,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<IEnumerable<Cinema>> GetNearestCinemasForMovieAsync(long movieId, SearchArea searchArea)
         {
-            var allCinemasForMovie = (await _cinemaRepository.GetAllCinemasForMovie(movieId))
+            var allCinemasForMovie = (await _cinemaRepository.GetAllCinemasForMovieAsync(movieId))
                 .ToArray();
 
             if (allCinemasForMovie is null || !allCinemasForMovie.Any())
@@ -74,7 +74,11 @@ namespace NaCoDoKina.Api.Services
             var nearestCinemas = allCinemaModels
                 .Join(travelInformationForCinemas, cinema => cinema.Location,
                     information => information.TravelPlan.Destination,
-                    (cinema, information) => (Cinema: cinema, Distance: information.Distance))
+                    (cinema, information) =>
+                    {
+                        cinema.CinemaTravelInformation = information;
+                        return (Cinema: cinema, Distance: information.Distance);
+                    })
                 .Where(tuple => tuple.Distance <= searchArea.Radius)
                 .Select(tuple => tuple.Cinema);
 
@@ -86,6 +90,26 @@ namespace NaCoDoKina.Api.Services
             var entityCinema = _mapper.Map<Entities.Cinema>(cinema);
             entityCinema = await _cinemaRepository.AddCinema(entityCinema);
             return _mapper.Map<Cinema>(entityCinema);
+        }
+
+        public async Task<Cinema> GetCinemaAsync(long id)
+        {
+            var cinema = await _cinemaRepository.GetCinemaAsync(id);
+
+            if (cinema is null)
+                throw new CinemaNotFoundException(id);
+
+            return _mapper.Map<Cinema>(cinema);
+        }
+
+        public async Task<Cinema> GetCinemaAsync(string name)
+        {
+            var cinema = await _cinemaRepository.GetCinemaAsync(name);
+
+            if (cinema is null)
+                throw new CinemaNotFoundException(name);
+
+            return _mapper.Map<Cinema>(cinema);
         }
     }
 }

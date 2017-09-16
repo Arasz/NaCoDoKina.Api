@@ -4,6 +4,7 @@ using NaCoDoKina.Api.Infrastructure.Recommendation.Exceptions;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Infrastructure.Recommendation.Services
@@ -41,7 +42,7 @@ namespace NaCoDoKina.Api.Infrastructure.Recommendation.Services
 
             var url = CreateRequestUrl(parsedRequest);
 
-            var response = await HttpClient.PostAsync(url, new StringContent(Serialize(rating)));
+            var response = await HttpClient.PostAsync(url, new StringContent(Serialize(rating), Encoding.UTF8, "application/json"));
             var content = await response.Content.ReadAsStringAsync();
 
             if (response.StatusCode != HttpStatusCode.OK)

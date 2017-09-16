@@ -1,5 +1,4 @@
 ﻿using NaCoDoKina.Api.Models;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,14 +15,6 @@ namespace NaCoDoKina.Api.Services
         /// <param name="searchArea"> User location and searched distance </param>
         /// <returns> Shows ids sorted by estimated user rating </returns>
         Task<IEnumerable<long>> GetAllMoviesAsync(SearchArea searchArea);
-
-        /// <summary>
-        /// Get movies played in given cinemas after time needed for arrival 
-        /// </summary>
-        /// <param name="cinemas"> Cinema list </param>
-        /// <param name="arrivalTime"> Time needed for arrival </param>
-        /// <returns> Movies ids </returns>
-        Task<IEnumerable<long>> GetMoviesPlayedInCinemas(IEnumerable<Cinema> cinemas, TimeSpan arrivalTime);
 
         /// <summary>
         /// Get movies basic information 
@@ -55,9 +46,8 @@ namespace NaCoDoKina.Api.Services
         /// <summary>
         /// Add details for movie 
         /// </summary>
-        /// <param name="movieId"> Movie id </param>
         /// <param name="movieDetails"> Details </param>
         /// <returns> Movie id </returns>
-        Task<long> AddMovieDetails(long movieId, MovieDetails movieDetails);
+        Task<long> AddMovieDetailsAsync(MovieDetails movieDetails);
     }
 }

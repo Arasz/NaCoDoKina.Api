@@ -17,9 +17,6 @@ using MovieDetails = NaCoDoKina.Api.DataContracts.MovieDetails;
 
 namespace NaCoDoKina.Api.Controllers
 {
-    /// <summary>
-    /// Base class for all show controller tests 
-    /// </summary>
     public class MoviesControllerTest
     {
         protected Mock<ILogger<MoviesController>> LoggerMock { get; set; }
@@ -30,15 +27,18 @@ namespace NaCoDoKina.Api.Controllers
 
         protected Mock<ICinemaService> CinemaServiceMock { get; set; }
 
+        protected Mock<IRatingService> RatingServiceMock { get; set; }
+
         protected MoviesController ControllerUnderTest { get; set; }
 
         public MoviesControllerTest()
         {
+            RatingServiceMock = new Mock<IRatingService>();
             CinemaServiceMock = new Mock<ICinemaService>();
             MapperMock = new Mock<IMapper>();
             LoggerMock = new Mock<ILogger<MoviesController>>();
             MovieServiceMock = new Mock<IMovieService>();
-            ControllerUnderTest = new MoviesController(MovieServiceMock.Object, CinemaServiceMock.Object, LoggerMock.Object, MapperMock.Object);
+            ControllerUnderTest = new MoviesController(MovieServiceMock.Object, CinemaServiceMock.Object, RatingServiceMock.Object, LoggerMock.Object, MapperMock.Object);
         }
 
         public class GetAllMoviesAsync : MoviesControllerTest
@@ -311,6 +311,45 @@ namespace NaCoDoKina.Api.Controllers
 
                 //Act
                 var result = await ControllerUnderTest.GetMovieDetailsAsync(unexistingShowDetailsId);
+
+                //Assert
+                result.Should().BeOfType<NotFoundObjectResult>();
+            }
+        }
+
+        public class SetMovieRating : MoviesControllerTest
+        {
+            [Fact]
+            public async void Should_return_CreatedAtActionResult()
+            {
+                //Arrange
+                var movieId = 1;
+                var rating = 4.5;
+
+                RatingServiceMock
+                    .Setup(service => service.SetMovieRating(movieId, rating))
+                    .Returns(() => Task.CompletedTask);
+
+                //Act
+                var result = await ControllerUnderTest.SetRatingForMovie(movieId, rating);
+
+                //Assert
+                result.Should().BeOfType<CreatedAtActionResult>();
+            }
+
+            [Fact]
+            public async void Should_return_NotFoundResult_when_ShowDetailsNotFoundException_is_thrown()
+            {
+                //Arrange
+                var movieId = 1;
+                var rating = 4.5;
+
+                RatingServiceMock
+                    .Setup(service => service.SetMovieRating(movieId, rating))
+                    .Throws(new MovieNotFoundException(movieId));
+
+                //Act
+                var result = await ControllerUnderTest.SetRatingForMovie(movieId, rating);
 
                 //Assert
                 result.Should().BeOfType<NotFoundObjectResult>();

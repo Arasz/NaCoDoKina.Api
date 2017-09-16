@@ -16,15 +16,15 @@ using Location = NaCoDoKina.Api.Models.Location;
 
 namespace NaCoDoKina.Api.IntegrationTests.Services
 {
-    public class LocationServiceTest
+    public class TravelServiceTest
     {
         private readonly IContainer _container;
 
-        public LocationServiceTest()
+        public TravelServiceTest()
         {
             var containerBuilder = new ContainerBuilder();
 
-            containerBuilder.RegisterAssemblyModules<BasicServiceDependenciesModule>(typeof(LocationServiceTest).Assembly);
+            containerBuilder.RegisterAssemblyModules<BasicServiceDependenciesModule>(typeof(TravelServiceTest).Assembly);
 
             containerBuilder.RegisterType<OnlyRequiredDirectionsRequestParser>()
                 .AsImplementedInterfaces();
@@ -53,7 +53,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
 
         public ITravelService ServiceUnderTest { get; set; }
 
-        public class TranslateAddressToLocationAsync : LocationServiceTest
+        public class TranslateAddressToTravelAsync : TravelServiceTest
         {
             [Fact]
             public async Task Should_return_correct_location_when_given_correct_address()
@@ -85,7 +85,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             }
         }
 
-        public class CalculateInformationForTravelAsync : LocationServiceTest
+        public class CalculateInformationForTravelAsync : TravelServiceTest
         {
             [Fact]
             public async Task Should_return_correct_travel_information()

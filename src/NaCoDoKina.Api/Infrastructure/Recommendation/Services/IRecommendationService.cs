@@ -9,14 +9,14 @@ namespace NaCoDoKina.Api.Infrastructure.Recommendation.Services
     public interface IRecommendationService
     {
         /// <summary>
-        /// Getting predicted rating of the movie for the user 
+        /// Getting predicted or actual rating of the movie for the user 
         /// </summary>
         /// <param name="request"> Api request </param>
         /// <returns> Movie rating </returns>
         Task<RecommendationApiResponse> GetMovieRating(RecommendationApiRequest request);
 
         /// <summary>
-        /// Saves user rating 
+        /// Crates or updates rating for user and movie 
         /// </summary>
         /// <param name="request"> Api request </param>
         /// <param name="rating"> Movie ratting </param>

@@ -1,31 +1,67 @@
-﻿namespace NaCoDoKina.Api.Entities
+﻿using System;
+using System.Collections.Generic;
+
+namespace NaCoDoKina.Api.Entities
 {
+    /// <inheritdoc/>
+    /// <summary>
+    /// Movie details entity 
+    /// </summary>
     public class MovieDetails : Entity
     {
-        public Movie Movie { get; set; }
+        /// <summary>
+        /// Movie id 
+        /// </summary>
+        public long MovieId { get; set; }
 
-        public string PosterLink { get; set; }
+        /// <summary>
+        /// Sites with movie descriptions 
+        /// </summary>
+        public IEnumerable<ServiceUrl> DescriptionSites { get; set; }
 
-        public string Link { get; set; }
-
+        /// <summary>
+        /// Movie description 
+        /// </summary>
         public string Description { get; set; }
 
+        /// <summary>
+        /// Original movie title 
+        /// </summary>
         public string OriginalTitle { get; set; }
 
+        /// <summary>
+        /// Movie genre 
+        /// </summary>
         public string Genre { get; set; }
 
-        public string Length { get; set; }
+        /// <summary>
+        /// Movie length 
+        /// </summary>
+        public TimeSpan Length { get; set; }
 
+        /// <summary>
+        /// Movie original language 
+        /// </summary>
         public string Language { get; set; }
 
-        public string ReleaseDate { get; set; }
-
+        /// <summary>
+        /// Movie age limit 
+        /// </summary>
         public string AgeLimit { get; set; }
 
+        /// <summary>
+        /// Movie release date 
+        /// </summary>
+        public DateTime ReleaseDate { get; set; }
+
+        /// <summary>
+        /// Movie director 
+        /// </summary>
         public string Director { get; set; }
 
-        public string Crew { get; set; }
-
-        public string Production { get; set; }
+        /// <summary>
+        /// Movie crew description 
+        /// </summary>
+        public string CrewDescription { get; set; }
     }
 }

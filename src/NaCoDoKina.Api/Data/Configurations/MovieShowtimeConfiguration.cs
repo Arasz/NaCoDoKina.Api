@@ -8,7 +8,7 @@ namespace NaCoDoKina.Api.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<MovieShowtime> builder)
         {
-            builder.Property(showtime => showtime.DateTime)
+            builder.Property(showtime => showtime.ShowTime)
                 .IsRequired();
         }
     }
