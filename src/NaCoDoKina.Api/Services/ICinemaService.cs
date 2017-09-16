@@ -30,5 +30,19 @@ namespace NaCoDoKina.Api.Services
         /// <param name="cinema"></param>
         /// <returns></returns>
         Task<Cinema> AddCinemaAsync(Cinema cinema);
+
+        /// <summary>
+        /// Returns cinema with given id 
+        /// </summary>
+        /// <param name="id"> Cinema id </param>
+        /// <returns> Cinema </returns>
+        Task<Cinema> GetCinemaAsync(long id);
+
+        /// <summary>
+        /// Returns cinema with given name 
+        /// </summary>
+        /// <param name="name"> Cinema name </param>
+        /// <returns> Cinema </returns>
+        Task<Cinema> GetCinemaAsync(string name);
     }
 }

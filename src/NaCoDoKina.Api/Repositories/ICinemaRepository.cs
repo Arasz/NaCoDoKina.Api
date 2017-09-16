@@ -28,5 +28,19 @@ namespace NaCoDoKina.Api.Repositories
         /// <param name="cinema"> New cinema </param>
         /// <returns> Added cinema </returns>
         Task<Cinema> AddCinema(Cinema cinema);
+
+        /// <summary>
+        /// Gets cinema by id 
+        /// </summary>
+        /// <param name="id"> Cinema name </param>
+        /// <returns> Cinema </returns>
+        Task<Cinema> GetCinemaAsync(long id);
+
+        /// <summary>
+        /// Gets cinema by name 
+        /// </summary>
+        /// <param name="name"> Cinema name </param>
+        /// <returns> Cinema </returns>
+        Task<Cinema> GetCinemaAsync(string name);
     }
 }

@@ -162,6 +162,62 @@ namespace NaCoDoKina.Api.Repository
                     }
                 }
             }
+
+            [Fact]
+            public async Task Should_throw_when_adding_cinema_with_duplicate_name()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    //Arrange
+                    EnsureCreated(databaseScope);
+                    var location = new Location(1, 1);
+                    var cinema = new Cinema
+                    {
+                        Address = nameof(Cinema.Address),
+                        Location = location,
+                        Name = nameof(Cinema),
+                    };
+
+                    var cinema1 = new Cinema
+                    {
+                        Address = nameof(Cinema.Address),
+                        Location = new Location(2, 2),
+                        Name = nameof(Cinema),
+                    };
+
+                    var cinemaNetwork = new CinemaNetwork
+                    {
+                        Name = nameof(CinemaNetwork),
+                        Cinemas = new[] { cinema1 },
+                    };
+
+                    cinema.CinemaNetwork = cinemaNetwork;
+                    cinema1.CinemaNetwork = cinemaNetwork;
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Cinemas.Add(cinema1);
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new CinemaRepository(contextScope.ApplicationContext, LoggerMock.Object);
+
+                        //Act
+                        Func<Task<Cinema>> action = () => RepositoryUnderTest.AddCinema(cinema);
+
+                        //Assert
+                        action.ShouldThrow<Exception>();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Cinemas.Count().Should().Be(1);
+                        contextScope.ApplicationContext.CinemaNetworks.Count().Should().Be(1);
+                    }
+                }
+            }
         }
 
         public class GetAllCinemas : CinemaRepositoryTest
@@ -225,6 +281,169 @@ namespace NaCoDoKina.Api.Repository
 
                         contextScope.ApplicationContext.Cinemas.Should().HaveCount(cinemas.Length);
                         contextScope.ApplicationContext.CinemaNetworks.Should().HaveCount(1);
+                    }
+                }
+            }
+        }
+
+        public class GetCinemaAsync : CinemaRepositoryTest
+        {
+            [Fact]
+            public async Task Should_return_cinema_with_given_id()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    //Arrange
+                    EnsureCreated(databaseScope);
+
+                    var cinema1Id = 1;
+
+                    var cinema1 = new Cinema
+                    {
+                        Address = nameof(Cinema.Address),
+                        Location = new Location(1, 1),
+                        Name = $"{nameof(Cinema)}1",
+                    };
+                    var cinema2 = new Cinema
+                    {
+                        Address = nameof(Cinema.Address),
+                        Location = new Location(1, 2),
+                        Name = $"{nameof(Cinema)}2",
+                    };
+
+                    var cinemas = new[] { cinema1, cinema2 };
+
+                    var cinemaNetwork = new CinemaNetwork
+                    {
+                        Name = nameof(CinemaNetwork),
+                        Cinemas = cinemas,
+                    };
+
+                    foreach (var cinema in cinemas)
+                        cinema.CinemaNetwork = cinemaNetwork;
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Cinemas.AddRange(cinemas);
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new CinemaRepository(contextScope.ApplicationContext, LoggerMock.Object);
+
+                        //Act
+                        var returnedCinema = await RepositoryUnderTest.GetCinemaAsync(cinema1Id);
+
+                        returnedCinema.Should().NotBeNull();
+                        returnedCinema.Name.Should().Be(cinema1.Name);
+                        returnedCinema.Id.Should().Be(cinema1Id);
+                    }
+                }
+            }
+
+            [Fact]
+            public async Task Should_return_cinema_with_given_name()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    //Arrange
+                    EnsureCreated(databaseScope);
+
+                    var cinema1Id = 1;
+
+                    var cinema1 = new Cinema
+                    {
+                        Address = nameof(Cinema.Address),
+                        Location = new Location(1, 1),
+                        Name = $"{nameof(Cinema)}1",
+                    };
+                    var cinema2 = new Cinema
+                    {
+                        Address = nameof(Cinema.Address),
+                        Location = new Location(1, 2),
+                        Name = $"{nameof(Cinema)}2",
+                    };
+
+                    var cinemas = new[] { cinema1, cinema2 };
+
+                    var cinemaNetwork = new CinemaNetwork
+                    {
+                        Name = nameof(CinemaNetwork),
+                        Cinemas = cinemas,
+                    };
+
+                    foreach (var cinema in cinemas)
+                        cinema.CinemaNetwork = cinemaNetwork;
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Cinemas.AddRange(cinemas);
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new CinemaRepository(contextScope.ApplicationContext, LoggerMock.Object);
+
+                        //Act
+                        var returnedCinema = await RepositoryUnderTest.GetCinemaAsync(cinema1.Name);
+
+                        returnedCinema.Should().NotBeNull();
+                        returnedCinema.Name.Should().Be(cinema1.Name);
+                        returnedCinema.Id.Should().Be(cinema1Id);
+                    }
+                }
+            }
+
+            [Fact]
+            public async Task Should_null_when_cant_find_cinema()
+            {
+                using (var databaseScope = new InMemoryDatabaseScope())
+                {
+                    //Arrange
+                    EnsureCreated(databaseScope);
+
+                    var nonExistingId = 22;
+
+                    var cinema1 = new Cinema
+                    {
+                        Address = nameof(Cinema.Address),
+                        Location = new Location(1, 1),
+                        Name = $"{nameof(Cinema)}1",
+                    };
+                    var cinema2 = new Cinema
+                    {
+                        Address = nameof(Cinema.Address),
+                        Location = new Location(1, 2),
+                        Name = $"{nameof(Cinema)}2",
+                    };
+
+                    var cinemas = new[] { cinema1, cinema2 };
+
+                    var cinemaNetwork = new CinemaNetwork
+                    {
+                        Name = nameof(CinemaNetwork),
+                        Cinemas = cinemas,
+                    };
+
+                    foreach (var cinema in cinemas)
+                        cinema.CinemaNetwork = cinemaNetwork;
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        contextScope.ApplicationContext.Cinemas.AddRange(cinemas);
+                        await contextScope.ApplicationContext.SaveChangesAsync();
+                    }
+
+                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
+                    {
+                        RepositoryUnderTest = new CinemaRepository(contextScope.ApplicationContext, LoggerMock.Object);
+
+                        //Act
+                        var returnedCinema = await RepositoryUnderTest.GetCinemaAsync(nonExistingId);
+
+                        returnedCinema.Should().BeNull();
                     }
                 }
             }
