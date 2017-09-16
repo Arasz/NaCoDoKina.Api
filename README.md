@@ -11,7 +11,7 @@ Api for NaCoDoKina project. Contains all bussines logic. In first version create
 # Documentation
 
 ## Api documentation created with swagger:
-http://nacodokinaapi.azurewebsites.net/swagger/
+http://nacodokinaapi.azurewebsites.net/documentation
 
 ## Staging enviroment url:
 http://nacodokinaapi.azurewebsites.net
