@@ -5,7 +5,8 @@ mono: none
 dotnet: 2.0.0
 branches:
   only:
-    - master
+    - production
+    - staging
     - develop
 before_script:
   - chmod a+x ./travis-build.sh
