@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
-using NaCoDoKina.Api.Configuration;
 using NaCoDoKina.Api.Infrastructure;
 using System.Net.Http;
 using NaCoDoKina.Api.Infrastructure.Services;
 using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
+using NaCoDoKina.Api.Infrastructure.Settings;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
 {
@@ -11,7 +11,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
     {
         protected TService ServiceUnderTest { get; }
 
-        protected GoogleApiConfiguration ApiConfiguration { get; }
+        protected GoogleApiSettings ApiSettings { get; }
 
         protected abstract IRequestParser<TRequest> RequestParser { get; }
 
@@ -19,10 +19,10 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
 
         protected GoogleServiceTestBase()
         {
-            ApiConfiguration = new GoogleApiConfiguration();
+            ApiSettings = new GoogleApiSettings();
             var httpClient = new HttpClient();
             var logger = new NullLogger<BaseHttpApiClient>();
-            var dependencies = new GoogleServiceDependencies<TRequest>(httpClient, RequestParser, logger, ApiConfiguration);
+            var dependencies = new GoogleServiceDependencies<TRequest>(httpClient, RequestParser, logger, ApiSettings);
             ServiceUnderTest = CreateServiceUnderTest(dependencies);
         }
     }

@@ -1,10 +1,10 @@
-﻿namespace NaCoDoKina.Api.Configuration
+﻿namespace NaCoDoKina.Api.Infrastructure.Settings
 {
-    public class RecommendationApiConfiguration
+    public class RecommendationSettings
     {
         public string BaseUrl { get; set; }
 
-        public RecommendationApiConfiguration()
+        public RecommendationSettings()
         {
             BaseUrl = "https://movie-recommender-service.herokuapp.com";
         }

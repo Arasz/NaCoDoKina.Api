@@ -3,18 +3,18 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using NaCoDoKina.Api.Configuration;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Exceptions;
+using NaCoDoKina.Api.Infrastructure.Settings;
 
 namespace NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services
 {
     public class RecommendationService : BaseHttpApiClient, IRecommendationService
     {
-        private readonly RecommendationApiConfiguration _configuration;
+        private readonly RecommendationSettings _configuration;
         private readonly IRequestParser<RecommendationApiRequest> _requestParser;
 
-        public RecommendationService(HttpClient httpClient, IRequestParser<RecommendationApiRequest> requestParser, RecommendationApiConfiguration configuration)
+        public RecommendationService(HttpClient httpClient, IRequestParser<RecommendationApiRequest> requestParser, RecommendationSettings configuration)
             : base(httpClient)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));

@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using NaCoDoKina.Api.Configuration;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.IntegrationTests.Modules;
 using System;
@@ -9,6 +8,7 @@ using System.Threading.Tasks;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services;
+using NaCoDoKina.Api.Infrastructure.Settings;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Recommendation
@@ -26,7 +26,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Recommendation
                 .RegisterAssemblyModules<BasicServiceDependenciesModule>(typeof(RecommendationServiceTest).Assembly);
 
             builder
-                .RegisterType<RecommendationApiConfiguration>()
+                .RegisterType<RecommendationSettings>()
                 .AsSelf();
 
             builder
