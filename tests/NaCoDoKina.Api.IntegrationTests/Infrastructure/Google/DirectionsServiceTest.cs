@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
 using NaCoDoKina.Api.Infrastructure;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request;
-using NaCoDoKina.Api.Infrastructure.Google.Services;
 using System.Linq;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request;
+using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google

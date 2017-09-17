@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Common.Request;
 using Xunit;
 
 namespace NaCoDoKina.Api.Infrastructure.Google

@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Common;
 using NaCoDoKina.Api.Mapping.Profiles;
 using Xunit;
 

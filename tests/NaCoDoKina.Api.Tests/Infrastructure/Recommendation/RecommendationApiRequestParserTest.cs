@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
-using NaCoDoKina.Api.Infrastructure.Recommendation.DataContract;
+using NaCoDoKina.Api.Infrastructure.Services.Recommendation;
+using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
 using Xunit;
 
 namespace NaCoDoKina.Api.Infrastructure.Recommendation

@@ -1,15 +1,14 @@
 ﻿using FluentAssertions;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common.Request;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Request;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Response;
-using NaCoDoKina.Api.Infrastructure.Google.Exceptions;
-using NaCoDoKina.Api.Infrastructure.Google.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using NaCoDoKina.Api.Infrastructure;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Common;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Response;
+using NaCoDoKina.Api.Infrastructure.Services.Google.Exceptions;
+using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google

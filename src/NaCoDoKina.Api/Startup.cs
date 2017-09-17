@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using NaCoDoKina.Api.Data;
+using NaCoDoKina.Api.Infrastructure.Identity;
 using Swashbuckle.AspNetCore.Swagger;
 using System.IO;
 
@@ -24,9 +27,34 @@ namespace NaCoDoKina.Api
         {
             services.AddMvc();
 
-            services.AddDbContext<ApplicationContext>(builder =>
-            builder.UseNpgsql(ConnectionString));
+            ConfigureIdentity(services);
 
+            ConfigureApplicationDataAccess(services);
+
+            ConfigureSwaggerServices(services);
+        }
+
+        private void ConfigureIdentity(IServiceCollection services)
+        {
+            services.AddDbContext<IdentityDbContext>(builder =>
+            {
+                builder.UseNpgsql(ConnectionString);
+            });
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+        }
+
+        private void ConfigureApplicationDataAccess(IServiceCollection services)
+        {
+            services.AddDbContext<ApplicationContext>(builder =>
+            {
+                builder.UseNpgsql(ConnectionString);
+            });
+        }
+
+        private static void ConfigureSwaggerServices(IServiceCollection services)
+        {
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Info

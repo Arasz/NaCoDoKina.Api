@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Common;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Common;
 
 namespace NaCoDoKina.Api.Mapping.Profiles
 {

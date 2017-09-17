@@ -3,12 +3,12 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Configuration;
 using NaCoDoKina.Api.Exceptions;
-using NaCoDoKina.Api.Infrastructure.Recommendation;
-using NaCoDoKina.Api.Infrastructure.Recommendation.DataContract;
-using NaCoDoKina.Api.Infrastructure.Recommendation.Services;
 using NaCoDoKina.Api.IntegrationTests.Modules;
 using System;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Infrastructure.Services.Recommendation;
+using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
+using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Recommendation
