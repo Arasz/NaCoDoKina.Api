@@ -2,8 +2,6 @@
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,13 +53,13 @@ namespace NaCoDoKina.Api
         {
             var connectionString = ConnectionString("IdentityConnection");
 
-            services.AddDbContext<IdentityDbContext>(builder =>
+            services.AddDbContext<ApplicationIdentityContext>(builder =>
             {
                 builder.UseNpgsql(connectionString);
             });
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddEntityFrameworkStores<ApplicationIdentityContext>();
 
             var jwtSettings = Configuration.GetSettings<JwtSettings>();
             services.AddAuthentication()

@@ -20,6 +20,7 @@ namespace NaCoDoKina.Api.Infrastructure.IoC.Modules
         protected override void Load(ContainerBuilder builder)
         {
             var settingsTypes = ThisAssembly.DefinedTypes
+                .Where(info => info.Namespace != null)
                 .Where(info => info.Namespace.Contains("Settings"))
                 .Where(info => info.Name.Contains("Settings"))
                 .ToArray();
