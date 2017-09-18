@@ -1,4 +1,4 @@
-﻿namespace NaCoDoKina.Api.DataContracts.Accounts
+namespace NaCoDoKina.Api.DataContracts.Authentication
 {
     public class LoginUser
     {

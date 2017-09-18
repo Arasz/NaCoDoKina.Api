@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace NaCoDoKina.Api.Infrastructure.Identity
 {
-    public class ApplicationIdentityDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationIdentityDbContext : IdentityDbContext<ApplicationUser, IdentityRole<long>, long>
     {
         public ApplicationIdentityDbContext(DbContextOptions options) : base(options)
         {

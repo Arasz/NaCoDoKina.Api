@@ -9,7 +9,7 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services
 {
     /// <inheritdoc/>
     /// <summary>
-    /// Error handling decorator for recommendation service 
+    /// FailReason handling decorator for recommendation service 
     /// </summary>
     public class RecommendationServiceErrorHandling : IRecommendationService
     {

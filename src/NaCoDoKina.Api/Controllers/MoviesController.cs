@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NaCoDoKina.Api.DataContracts;
+using NaCoDoKina.Api.DataContracts.Movies;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Services;
 using System;

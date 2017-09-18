@@ -1,4 +1,6 @@
 ﻿using FluentAssertions;
+using Moq;
+using NaCoDoKina.Api.Infrastructure.Services.Identity;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -6,9 +8,12 @@ namespace NaCoDoKina.Api.Services
 {
     public class UserServiceTest : ServiceTestBase<IUserService>
     {
+        protected Mock<IIdentityService> IdentityServiceMock { get; }
+
         public UserServiceTest()
         {
-            ServiceUnderTest = new UserService();
+            IdentityServiceMock = new Mock<IIdentityService>();
+            ServiceUnderTest = new UserService(IdentityServiceMock.Object);
         }
 
         public class GetCurrentUserIdAsync : UserServiceTest
@@ -18,6 +23,10 @@ namespace NaCoDoKina.Api.Services
             {
                 //Arrange
                 var expectedId = 1;
+
+                IdentityServiceMock
+                    .Setup(service => service.GetCurrentUserId())
+                    .Returns(expectedId);
 
                 //Act
                 var userId = await ServiceUnderTest.GetCurrentUserIdAsync();

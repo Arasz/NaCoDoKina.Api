@@ -1,4 +1,4 @@
-﻿namespace NaCoDoKina.Api.DataContracts.Accounts
+namespace NaCoDoKina.Api.DataContracts.Authentication
 {
     /// <summary>
     /// Minimum amount of user data needed to registration 

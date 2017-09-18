@@ -41,7 +41,7 @@ namespace NaCoDoKina.Api.Services
             }
             catch (GoogleApiException exception) when (exception.Status != GoogleApiStatus.Unspecifed)
             {
-                _logger.LogError("Error during travel time calculation {@Exception}.", exception);
+                _logger.LogError("FailReason during travel time calculation {@Exception}.", exception);
                 return null;
             }
             catch (GoogleApiException)
@@ -66,7 +66,7 @@ namespace NaCoDoKina.Api.Services
             }
             catch (GoogleApiException exception) when (exception.Status != GoogleApiStatus.Unspecifed)
             {
-                _logger.LogError("Error during address location {@Exception}.", exception);
+                _logger.LogError("FailReason during address location {@Exception}.", exception);
                 return null;
             }
             catch (GoogleApiException)

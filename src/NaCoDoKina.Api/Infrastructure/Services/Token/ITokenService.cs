@@ -8,8 +8,8 @@
         /// <summary>
         /// Creates authentication token for user 
         /// </summary>
-        /// <param name="userId"> User id </param>
+        /// <param name="userInformation"> User information from a token is generated </param>
         /// <returns> Authentication token </returns>
-        AuthenticationToken CreateToken(string userId);
+        AuthenticationToken CreateToken(UserInformation userInformation);
     }
 }

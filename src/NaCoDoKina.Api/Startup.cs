@@ -8,12 +8,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.IdentityModel.Tokens;
 using NaCoDoKina.Api.Data;
+using NaCoDoKina.Api.Infrastructure.Extensions;
 using NaCoDoKina.Api.Infrastructure.Identity;
 using NaCoDoKina.Api.Infrastructure.IoC;
+using NaCoDoKina.Api.Infrastructure.Settings;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
+using System.Text;
 
 namespace NaCoDoKina.Api
 {
@@ -58,6 +62,18 @@ namespace NaCoDoKina.Api
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+
+            var jwtSettings = Configuration.GetSettings<JwtSettings>();
+            services.AddAuthentication()
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = jwtSettings.Issuer,
+                        ValidateAudience = false,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
+                    };
+                });
         }
 
         private void ConfigureApplicationDataAccess(IServiceCollection services)
@@ -113,6 +129,7 @@ namespace NaCoDoKina.Api
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "NaCoDoKina.APi V1");
             });
 
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

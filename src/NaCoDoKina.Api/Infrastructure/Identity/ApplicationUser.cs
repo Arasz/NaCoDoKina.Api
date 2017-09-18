@@ -2,8 +2,7 @@
 
 namespace NaCoDoKina.Api.Infrastructure.Identity
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser<long>
     {
-        public bool CanChangePassword { get; set; }
     }
 }

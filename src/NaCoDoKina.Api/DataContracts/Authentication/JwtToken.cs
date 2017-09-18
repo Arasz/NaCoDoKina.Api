@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace NaCoDoKina.Api.Models.Authentication
+namespace NaCoDoKina.Api.DataContracts.Authentication
 {
     /// <summary>
-    /// Authentication token 
+    /// Jwt token 
     /// </summary>
-    public class AuthenticationToken
+    public class JwtToken
     {
         /// <summary>
         /// Token 
