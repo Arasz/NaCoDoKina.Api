@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace NaCoDoKina.Api.Controllers
 {
     [Authorize]
-    [Route("[controller]")]
+    [Route("v1/[controller]")]
     public class AccountController : Controller
     {
         private readonly ILogger<AccountController> _logger;

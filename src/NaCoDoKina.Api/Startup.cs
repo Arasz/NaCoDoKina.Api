@@ -84,20 +84,21 @@ namespace NaCoDoKina.Api
             });
         }
 
-        private static void ConfigureSwaggerServices(IServiceCollection services)
+        private void ConfigureSwaggerServices(IServiceCollection services)
         {
+            var settings = Configuration.GetSettings<SwaggerSettings>();
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new Info
+                options.SwaggerDoc(settings.Version, new Info
                 {
-                    Title = "NaCoDoKina.Api",
-                    Version = "v1",
-                    Description = "Web api for NaCoDoKina project",
+                    Title = settings.Title,
+                    Version = settings.Version,
+                    Description = settings.Description,
                     Contact = new Contact
                     {
-                        Email = "araszkiewiczrafal@gmail.com",
-                        Name = "Rafał Araszkiewicz",
-                        Url = "https://github.com/Arasz"
+                        Email = settings.Contact.Email,
+                        Name = settings.Contact.Name,
+                        Url = settings.Contact.Url
                     },
                 });
 
