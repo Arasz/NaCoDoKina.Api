@@ -38,7 +38,7 @@ namespace NaCoDoKina.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
-        public async Task<IActionResult> GetAllMoviesAsync([FromBody]SearchArea searchArea)
+        public async Task<IActionResult> GetAllMoviesAsync(SearchArea searchArea)
         {
             if (searchArea is null)
                 return BadRequest();
@@ -158,8 +158,8 @@ namespace NaCoDoKina.Api.Controllers
         /// <param name="rating"> Movie rating </param>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpPost("{id}/rating/{rating}")]
-        public async Task<IActionResult> SetRatingForMovie(long id, double rating)
+        [HttpPost("{id}/rating")]
+        public async Task<IActionResult> SetRatingForMovie(long id, [FromBody]double rating)
         {
             try
             {
