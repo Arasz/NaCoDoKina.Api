@@ -26,13 +26,17 @@ namespace NaCoDoKina.Api.Controllers
             _identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
         }
 
+        /// <summary>
+        /// Login user and return authentication token 
+        /// </summary>
+        /// <param name="user"> User login data </param>
+        /// <returns> Authentication token </returns>
         [HttpPost("token")]
         [ProducesResponseType(typeof(JwtToken), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginUser user)
+        public async Task<IActionResult> Login([FromBody]LoginUser user)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -46,10 +50,16 @@ namespace NaCoDoKina.Api.Controllers
             return Ok(_mapper.Map<JwtToken>(token));
         }
 
+        /// <summary>
+        /// Register new user 
+        /// </summary>
+        /// <param name="registerUser"> Register user data </param>
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterUser registerUser)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Register([FromBody] RegisterUser registerUser)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
