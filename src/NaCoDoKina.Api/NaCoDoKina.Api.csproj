@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
+    <Folder Include="Infrastructure\Services\Email\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

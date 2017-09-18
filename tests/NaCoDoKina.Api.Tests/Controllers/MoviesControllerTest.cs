@@ -9,11 +9,12 @@ using NaCoDoKina.Api.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.DataContracts.Movies;
 using Xunit;
-using Cinema = NaCoDoKina.Api.DataContracts.Cinema;
-using Location = NaCoDoKina.Api.DataContracts.Location;
-using Movie = NaCoDoKina.Api.DataContracts.Movie;
-using MovieDetails = NaCoDoKina.Api.DataContracts.MovieDetails;
+using Cinema = NaCoDoKina.Api.DataContracts.Movies.Cinema;
+using Location = NaCoDoKina.Api.DataContracts.Movies.Location;
+using Movie = NaCoDoKina.Api.DataContracts.Movies.Movie;
+using MovieDetails = NaCoDoKina.Api.DataContracts.Movies.MovieDetails;
 
 namespace NaCoDoKina.Api.Controllers
 {

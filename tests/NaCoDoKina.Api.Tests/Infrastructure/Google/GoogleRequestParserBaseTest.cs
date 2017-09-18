@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
+using NaCoDoKina.Api.Infrastructure.Services;
 using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Common.Request;
 using Xunit;
 

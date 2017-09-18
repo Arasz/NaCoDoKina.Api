@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NaCoDoKina.Api.DataContracts
+namespace NaCoDoKina.Api.DataContracts.Movies
 {
     /// <summary>
     /// Movie show times for cinema 

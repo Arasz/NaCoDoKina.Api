@@ -43,7 +43,7 @@ namespace NaCoDoKina.Api.Mappings
             public void Should_return_entity_location_given_data_contract_location()
             {
                 //Arrange
-                var location = new DataContracts.Location(1, 9);
+                var location = new DataContracts.Movies.Location(1, 9);
 
                 //Act
                 var result = Mapper.Map<Entities.Location>(location);
@@ -73,7 +73,7 @@ namespace NaCoDoKina.Api.Mappings
             public void Should_return_model_location_given_data_contract_location()
             {
                 //Arrange
-                var location = new DataContracts.Location(1, 9);
+                var location = new DataContracts.Movies.Location(1, 9);
 
                 //Act
                 var result = Mapper.Map<Models.Location>(location);
@@ -106,10 +106,10 @@ namespace NaCoDoKina.Api.Mappings
                 var googleLocation = new Entities.Location(1, 3);
 
                 //Act
-                var result = Mapper.Map<DataContracts.Location>(googleLocation);
+                var result = Mapper.Map<DataContracts.Movies.Location>(googleLocation);
 
                 //Assert
-                result.Should().BeOfType<DataContracts.Location>();
+                result.Should().BeOfType<DataContracts.Movies.Location>();
                 result.Longitude.Should().Be(googleLocation.Longitude);
                 result.Latitude.Should().Be(googleLocation.Latitude);
             }
@@ -121,10 +121,10 @@ namespace NaCoDoKina.Api.Mappings
                 var googleLocation = new Models.Location(1, 3);
 
                 //Act
-                var result = Mapper.Map<DataContracts.Location>(googleLocation);
+                var result = Mapper.Map<DataContracts.Movies.Location>(googleLocation);
 
                 //Assert
-                result.Should().BeOfType<DataContracts.Location>();
+                result.Should().BeOfType<DataContracts.Movies.Location>();
                 result.Longitude.Should().Be(googleLocation.Longitude);
                 result.Latitude.Should().Be(googleLocation.Latitude);
             }

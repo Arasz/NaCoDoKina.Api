@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace NaCoDoKina.Api.DataContracts
+namespace NaCoDoKina.Api.DataContracts.Movies
 {
     /// <summary>
     /// User location 

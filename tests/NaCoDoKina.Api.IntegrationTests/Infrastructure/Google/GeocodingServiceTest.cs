@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using NaCoDoKina.Api.Infrastructure;
+using NaCoDoKina.Api.Infrastructure.Services;
 using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Common;
 using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding;
 using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;

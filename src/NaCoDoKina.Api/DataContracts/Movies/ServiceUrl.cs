@@ -1,4 +1,4 @@
-﻿namespace NaCoDoKina.Api.DataContracts
+﻿namespace NaCoDoKina.Api.DataContracts.Movies
 {
     /// <summary>
     /// Web service url 

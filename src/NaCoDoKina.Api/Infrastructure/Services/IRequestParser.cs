@@ -1,4 +1,4 @@
-namespace NaCoDoKina.Api.Infrastructure
+namespace NaCoDoKina.Api.Infrastructure.Services
 {
     /// <summary>
     /// Request parsing strategy 

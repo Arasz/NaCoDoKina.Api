@@ -2,6 +2,7 @@
 using NaCoDoKina.Api.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Infrastructure.Services;
 using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions;
 using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request;
 using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
