@@ -21,8 +21,15 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
         /// <summary>
         /// Returns id of user represented as principal object 
         /// </summary>
-        /// <param name="principal"> User representation </param>
+        /// <param username="principal"> User representation </param>
         /// <returns> User id </returns>
         string GetUserId(ClaimsPrincipal principal);
+
+        /// <summary>
+        /// Returns user with given username 
+        /// </summary>
+        /// <param name="username"> User name </param>
+        /// <returns> User representation object </returns>
+        Task<ApplicationUser> GetUserByNameAsync(string username);
     }
 }

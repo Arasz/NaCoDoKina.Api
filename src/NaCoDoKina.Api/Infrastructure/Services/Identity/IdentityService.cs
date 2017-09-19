@@ -71,7 +71,10 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
             return result == PasswordVerificationResult.Success;
         }
 
-        public Task<ApplicationUser> GetUserByNameAsync(string username) => GetUserByNameAsync(username);
+        public Task<ApplicationUser> GetUserByNameAsync(string username)
+        {
+            return _userManager.GetUserByNameAsync(username);
+        }
 
         public long GetCurrentUserId()
         {
