@@ -10,13 +10,15 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
 {
     public class IdentityService : IIdentityService
     {
+        private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
         private readonly ILogger<IIdentityService> _logger;
         private readonly ITokenService _tokenService;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ISignInManager _signInManager;
+        private readonly IUserManager _userManager;
 
-        public IdentityService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, ILogger<IIdentityService> logger)
+        public IdentityService(IUserManager userManager, ISignInManager signInManager, ITokenService tokenService, IPasswordHasher<ApplicationUser> passwordHasher, ILogger<IIdentityService> logger)
         {
+            _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
@@ -25,7 +27,7 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
 
         public async Task<Result<AuthenticationToken>> LoginAsync(string userName, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(userName, password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(userName, password);
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in.");
@@ -53,7 +55,7 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
             {
                 _logger.LogInformation("User created a new account with password.");
 
-                await _signInManager.SignInAsync(user, false);
+                await _signInManager.SignInAsync(user);
                 _logger.LogInformation("User created a new account with password.");
 
                 return Result.CreateSucceeded();
@@ -65,7 +67,7 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
 
         public bool VerifyPassword(ApplicationUser user, string password)
         {
-            var result = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
             return result == PasswordVerificationResult.Success;
         }
 
@@ -73,7 +75,7 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
 
         public long GetCurrentUserId()
         {
-            var currentUser = _signInManager.Context.User;
+            var currentUser = _signInManager.CurrentContextUser;
             var userIdString = _userManager.GetUserId(currentUser);
             return long.Parse(userIdString);
         }
