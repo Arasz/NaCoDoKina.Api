@@ -1,12 +1,17 @@
-﻿using System.Threading.Tasks;
+﻿using NaCoDoKina.Api.Infrastructure.Services.Identity;
+using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Services
 {
     public class UserService : IUserService
     {
-        public Task<long> GetCurrentUserIdAsync()
+        private readonly IIdentityService _identityService;
+
+        public UserService(IIdentityService identityService)
         {
-            throw new System.NotImplementedException();
+            _identityService = identityService;
         }
+
+        public Task<long> GetCurrentUserIdAsync() => Task.FromResult(_identityService.GetCurrentUserId());
     }
 }

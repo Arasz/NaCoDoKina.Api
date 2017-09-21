@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Request;
 using NaCoDoKina.Api.Models;
 using System.Linq;
-using TravelMode = NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request.TravelMode;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;
+using TravelMode = NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request.TravelMode;
 
 namespace NaCoDoKina.Api.Mapping.Profiles
 {
