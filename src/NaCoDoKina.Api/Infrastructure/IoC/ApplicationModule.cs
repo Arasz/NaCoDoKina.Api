@@ -20,6 +20,11 @@ namespace NaCoDoKina.Api.Infrastructure.IoC
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterModule(new SettingsModule(_applicationConfiguration));
+            builder.RegisterModule<RepositoriesModule>();
+            builder.RegisterModule<ServicesModule>();
+            builder.RegisterModule<RequestParsersModule>();
+            builder.RegisterModule<MapperModule>();
+            builder.RegisterModule<GoogleServiceDependenciesModule>();
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.IO;
 using System.Net.Http;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api
@@ -37,8 +39,9 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
         protected HttpTestBase()
         {
-            var builder = new WebHostBuilder()
+            var builder = WebHost.CreateDefaultBuilder()
                 .UseEnvironment(Environment)
+                .UseContentRoot(GetContentRoot())
                 .ConfigureServices(ConfigureServices)
                 .UseStartup<Startup>();
 
@@ -46,6 +49,18 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
             Client = Server.CreateClient();
             Client.BaseAddress = BaseAddress;
+        }
+
+        private string GetContentRoot()
+        {
+            var baseDirectory = new DirectoryInfo(AppContext.BaseDirectory);
+
+            while (baseDirectory.Name != "NaCoDoKinaApi")
+            {
+                baseDirectory = baseDirectory.Parent;
+            }
+
+            return Path.Combine(baseDirectory.FullName, "src", "NaCoDoKina.Api");
         }
 
         protected virtual void ConfigureServices(WebHostBuilderContext webHostBuilderContext, IServiceCollection serviceCollection)

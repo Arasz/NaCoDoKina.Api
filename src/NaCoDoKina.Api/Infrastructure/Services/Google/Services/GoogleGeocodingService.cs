@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;
+﻿using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;
 using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Response;
+using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Infrastructure.Services.Google.Services
 {
