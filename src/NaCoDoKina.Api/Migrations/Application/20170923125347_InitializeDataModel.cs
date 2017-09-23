@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
+using System.Collections.Generic;
 
-namespace NaCoDoKina.Api.Data.Migrations
+namespace NaCoDoKina.Api.Migrations.Application
 {
-    public partial class InitialCreate : Migration
+    public partial class InitializeDataModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -48,13 +49,15 @@ namespace NaCoDoKina.Api.Data.Migrations
                 name: "ServiceUrl",
                 columns: table => new
                 {
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Url = table.Column<string>(type: "text", nullable: false),
-                    MovieDetailsId = table.Column<long>(type: "int8", nullable: true)
+                    Id = table.Column<long>(type: "int8", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    MovieDetailsId = table.Column<long>(type: "int8", nullable: true),
+                    Name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
+                    Url = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ServiceUrl", x => new { x.Name, x.Url });
+                    table.PrimaryKey("PK_ServiceUrl", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ServiceUrl_Movies_MovieDetailsId",
                         column: x => x.MovieDetailsId,
@@ -70,17 +73,16 @@ namespace NaCoDoKina.Api.Data.Migrations
                     Id = table.Column<long>(type: "int8", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
-                    Url1 = table.Column<string>(type: "text", nullable: true),
-                    UrlName = table.Column<string>(type: "text", nullable: true)
+                    UrlId = table.Column<long>(type: "int8", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CinemaNetworks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CinemaNetworks_ServiceUrl_UrlName_Url1",
-                        columns: x => new { x.UrlName, x.Url1 },
+                        name: "FK_CinemaNetworks_ServiceUrl_UrlId",
+                        column: x => x.UrlId,
                         principalTable: "ServiceUrl",
-                        principalColumns: new[] { "Name", "Url" },
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -93,8 +95,7 @@ namespace NaCoDoKina.Api.Data.Migrations
                     Address = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
                     CinemaNetworkId = table.Column<long>(type: "int8", nullable: true),
                     Name = table.Column<string>(type: "varchar(225)", maxLength: 225, nullable: false),
-                    Url1 = table.Column<string>(type: "text", nullable: true),
-                    UrlName = table.Column<string>(type: "text", nullable: true),
+                    UrlId = table.Column<long>(type: "int8", nullable: true),
                     Location_Latitude = table.Column<double>(type: "float8", nullable: false),
                     Location_Longitude = table.Column<double>(type: "float8", nullable: false)
                 },
@@ -108,10 +109,10 @@ namespace NaCoDoKina.Api.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Cinemas_ServiceUrl_UrlName_Url1",
-                        columns: x => new { x.UrlName, x.Url1 },
+                        name: "FK_Cinemas_ServiceUrl_UrlId",
+                        column: x => x.UrlId,
                         principalTable: "ServiceUrl",
-                        principalColumns: new[] { "Name", "Url" },
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -145,9 +146,9 @@ namespace NaCoDoKina.Api.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CinemaNetworks_UrlName_Url1",
+                name: "IX_CinemaNetworks_UrlId",
                 table: "CinemaNetworks",
-                columns: new[] { "UrlName", "Url1" });
+                column: "UrlId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cinemas_CinemaNetworkId",
@@ -155,9 +156,15 @@ namespace NaCoDoKina.Api.Data.Migrations
                 column: "CinemaNetworkId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cinemas_UrlName_Url1",
+                name: "IX_Cinemas_Name",
                 table: "Cinemas",
-                columns: new[] { "UrlName", "Url1" });
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cinemas_UrlId",
+                table: "Cinemas",
+                column: "UrlId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MovieShowtimes_CinemaId",
@@ -173,6 +180,12 @@ namespace NaCoDoKina.Api.Data.Migrations
                 name: "IX_ServiceUrl_MovieDetailsId",
                 table: "ServiceUrl",
                 column: "MovieDetailsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServiceUrl_Name",
+                table: "ServiceUrl",
+                column: "Name",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

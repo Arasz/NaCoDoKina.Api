@@ -3,15 +3,15 @@
     /// <summary>
     /// Marks movie as deleted for user 
     /// </summary>
-    public class DeletedMovieMark
+    public class DeletedMovies
     {
-        public DeletedMovieMark(long movieId, long userId)
+        public DeletedMovies(long movieId, long userId)
         {
             MovieId = movieId;
             UserId = userId;
         }
 
-        public DeletedMovieMark()
+        public DeletedMovies()
         {
         }
 

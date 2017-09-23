@@ -5,7 +5,7 @@ using Xunit;
 
 namespace NaCoDoKina.Api.Mappings
 {
-    public class LocationProfileTest : ProfileBaseTest<LocationProfile>
+    public class LocationProfileTest : ProfileTestBase<LocationProfile>
     {
         public class Map : LocationProfileTest
         {

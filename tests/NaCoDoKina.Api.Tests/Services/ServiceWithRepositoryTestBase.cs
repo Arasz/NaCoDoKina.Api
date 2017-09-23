@@ -4,7 +4,7 @@ using Moq;
 
 namespace NaCoDoKina.Api.Services
 {
-    public abstract class ServiceTestBase<TService>
+    public abstract class ServiceTestBase<TService> : UnitTestBase
     {
         protected TService ServiceUnderTest { get; set; }
 

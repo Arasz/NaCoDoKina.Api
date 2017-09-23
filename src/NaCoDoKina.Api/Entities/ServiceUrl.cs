@@ -1,9 +1,10 @@
 ﻿namespace NaCoDoKina.Api.Entities
 {
+    /// <inheritdoc/>
     /// <summary>
     /// Url to service 
     /// </summary>
-    public class ServiceUrl
+    public class ServiceUrl : Entity
     {
         public ServiceUrl()
         {

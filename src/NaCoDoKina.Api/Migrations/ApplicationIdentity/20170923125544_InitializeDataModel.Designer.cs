@@ -11,8 +11,8 @@ using System;
 namespace NaCoDoKina.Api.Migrations
 {
     [DbContext(typeof(ApplicationIdentityContext))]
-    [Migration("20170918222836_UpdateUserId")]
-    partial class UpdateUserId
+    [Migration("20170923125544_InitializeDataModel")]
+    partial class InitializeDataModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

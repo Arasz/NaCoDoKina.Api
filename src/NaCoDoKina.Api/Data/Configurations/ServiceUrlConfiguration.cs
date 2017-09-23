@@ -8,7 +8,18 @@ namespace NaCoDoKina.Api.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<ServiceUrl> builder)
         {
-            builder.HasKey(url => new { url.Name, url.Url });
+            builder
+                .HasIndex(url => url.Name)
+                .IsUnique();
+
+            builder
+                .Property(url => url.Name)
+                .HasMaxLength(255)
+                .IsRequired();
+
+            builder
+                .Property(url => url.Url)
+                .IsRequired();
         }
     }
 }

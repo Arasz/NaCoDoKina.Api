@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace NaCoDoKina.Api.Entities
+﻿namespace NaCoDoKina.Api.Entities
 {
     /// <inheritdoc/>
     /// <summary>
@@ -17,10 +15,5 @@ namespace NaCoDoKina.Api.Entities
         /// Url to cinema network site 
         /// </summary>
         public ServiceUrl Url { get; set; }
-
-        /// <summary>
-        /// Cinemas which belongs to this network 
-        /// </summary>
-        public IEnumerable<Cinema> Cinemas { get; set; }
     }
 }
