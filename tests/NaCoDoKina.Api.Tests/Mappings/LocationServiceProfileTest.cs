@@ -10,7 +10,7 @@ using TravelMode = NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Di
 
 namespace NaCoDoKina.Api.Mappings
 {
-    public class LocationServiceProfileTest : ProfileTestBase<LocationServiceProfile>
+    public class LocationServiceProfileTest : ProfileTestBase<TravelServiceProfile>
     {
         public class Map : LocationServiceProfileTest
         {
