@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
+using System.Text;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api
 {
@@ -53,6 +55,18 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
             Client = Server.CreateClient();
             Client.BaseAddress = BaseAddress;
+        }
+
+        /// <summary>
+        /// Serializes object and returns http message content 
+        /// </summary>
+        /// <param name="payload"> Object to serialize </param>
+        /// <returns> Http message content as json </returns>
+        protected StringContent GetPayload(object payload)
+        {
+            var serialized = JsonConvert.SerializeObject(payload);
+
+            return new StringContent(serialized, Encoding.UTF8, "application/json");
         }
 
         /// <summary>
