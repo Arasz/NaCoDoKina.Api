@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
+using Ploeh.AutoFixture;
+using Serilog;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -37,11 +39,15 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
         protected HttpClient Client { get; }
 
+        protected virtual string Version { get; } = "v1";
+
         protected virtual Uri BaseAddress => new Uri(@"http://localhost:5000");
 
         protected virtual string Environment => "Development";
 
         public IServiceProvider Services { get; }
+
+        public IFixture Fixture { get; }
 
         protected HttpTestBase()
         {
@@ -51,6 +57,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 .UseEnvironment(Environment)
                 .UseContentRoot(contentRoot)
                 .ConfigureServices(ConfigureServices)
+                .UseSerilog()
                 .UseStartup<Startup>();
 
             Server = new TestServer(builder);
@@ -59,6 +66,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             Client.BaseAddress = BaseAddress;
 
             Services = Server.Host.Services;
+            Fixture = Services.GetService<IFixture>();
         }
 
         /// <summary>
@@ -107,8 +115,9 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             throw new Exception($"Solution root could not be located using application root {applicationBasePath}.");
         }
 
-        protected virtual void ConfigureServices(WebHostBuilderContext webHostBuilderContext, IServiceCollection serviceCollection)
+        protected virtual void ConfigureServices(IServiceCollection serviceCollection)
         {
+            serviceCollection.AddSingleton<IFixture, Fixture>();
         }
     }
 }

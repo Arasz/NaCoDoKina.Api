@@ -5,6 +5,10 @@ namespace NaCoDoKina.Api.DataContracts.Movies
     /// </summary>
     public class SearchArea
     {
+        public SearchArea()
+        {
+        }
+
         public SearchArea(Location center, double radius)
         {
             Center = center;

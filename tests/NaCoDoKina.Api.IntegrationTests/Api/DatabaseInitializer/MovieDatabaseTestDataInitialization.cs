@@ -14,9 +14,9 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
         private readonly ILogger<MovieDatabaseTestDataInitialization> _logger;
         public ApplicationContext DbContext { get; }
 
-        private readonly Fixture _fixture;
+        private readonly IFixture _fixture;
 
-        public MovieDatabaseTestDataInitialization(ApplicationContext applicationContext, ILogger<MovieDatabaseTestDataInitialization> logger, Fixture fixture)
+        public MovieDatabaseTestDataInitialization(ApplicationContext applicationContext, ILogger<MovieDatabaseTestDataInitialization> logger, IFixture fixture)
         {
             _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
