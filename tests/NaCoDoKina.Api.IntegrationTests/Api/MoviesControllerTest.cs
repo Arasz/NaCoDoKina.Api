@@ -4,7 +4,7 @@ using NaCoDoKina.Api.Data;
 using NaCoDoKina.Api.DataContracts.Movies;
 using NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer;
 using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
-using Ploeh.AutoFixture;
+using System;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -47,9 +47,8 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Arrange
                 await _dbInitialize.InitializeAsync();
 
-                var searchArea = Fixture
-                    .Customize(new MovieDatabaseFixtureCustomization())
-                    .Create<SearchArea>();
+                var testLocation = new Location(52.44056, 16.919235);
+                var searchArea = new SearchArea(testLocation, 100);
 
                 // Act
                 var url = $"{Version}/movies/{ParseSearchAreaToQuery(searchArea)}";
@@ -57,7 +56,9 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 // Assert
 
-                response.EnsureSuccessStatusCode();
+                Action action = () => response.EnsureSuccessStatusCode();
+                action.ShouldNotThrow();
+
                 var responseContent = await response.Content.ReadAsJsonObjectAsync<long[]>();
                 responseContent
                     .Should()
