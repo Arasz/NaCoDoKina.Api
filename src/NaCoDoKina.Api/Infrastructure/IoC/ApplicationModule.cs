@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Microsoft.Extensions.Configuration;
 using NaCoDoKina.Api.Infrastructure.IoC.Modules;
+using System.Net.Http;
 
 namespace NaCoDoKina.Api.Infrastructure.IoC
 {
@@ -19,6 +20,10 @@ namespace NaCoDoKina.Api.Infrastructure.IoC
 
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<HttpClient>()
+                .AsSelf()
+                .SingleInstance();
+
             builder.RegisterModule(new SettingsModule(_applicationConfiguration));
             builder.RegisterModule<RepositoriesModule>();
             builder.RegisterModule<ServicesModule>();
