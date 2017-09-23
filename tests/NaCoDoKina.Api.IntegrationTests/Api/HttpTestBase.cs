@@ -41,6 +41,8 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
         protected virtual string Environment => "Development";
 
+        public IServiceProvider Services { get; }
+
         protected HttpTestBase()
         {
             var contentRoot = GetProjectPath("src", typeof(Startup).Assembly);
@@ -55,6 +57,8 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
             Client = Server.CreateClient();
             Client.BaseAddress = BaseAddress;
+
+            Services = Server.Host.Services;
         }
 
         /// <summary>

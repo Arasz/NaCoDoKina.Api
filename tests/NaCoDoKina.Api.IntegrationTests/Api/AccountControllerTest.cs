@@ -1,6 +1,6 @@
 ﻿namespace NaCoDoKina.Api.IntegrationTests.Api
 {
-    public class MovieControllerTest : HttpTestBase
+    public class AccountControllerTest : HttpTestBase
     {
     }
 }
