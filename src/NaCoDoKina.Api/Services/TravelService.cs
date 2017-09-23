@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Directions.Request;
-using NaCoDoKina.Api.Infrastructure.Google.DataContract.Geocoding.Request;
-using NaCoDoKina.Api.Infrastructure.Google.Exceptions;
-using NaCoDoKina.Api.Infrastructure.Google.Services;
 using NaCoDoKina.Api.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;
+using NaCoDoKina.Api.Infrastructure.Services.Google.Exceptions;
+using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
 
 namespace NaCoDoKina.Api.Services
 {
@@ -41,7 +41,7 @@ namespace NaCoDoKina.Api.Services
             }
             catch (GoogleApiException exception) when (exception.Status != GoogleApiStatus.Unspecifed)
             {
-                _logger.LogError("Error during travel time calculation {@Exception}.", exception);
+                _logger.LogError("FailReason during travel time calculation {@Exception}.", exception);
                 return null;
             }
             catch (GoogleApiException)
@@ -66,7 +66,7 @@ namespace NaCoDoKina.Api.Services
             }
             catch (GoogleApiException exception) when (exception.Status != GoogleApiStatus.Unspecifed)
             {
-                _logger.LogError("Error during address location {@Exception}.", exception);
+                _logger.LogError("FailReason during address location {@Exception}.", exception);
                 return null;
             }
             catch (GoogleApiException)

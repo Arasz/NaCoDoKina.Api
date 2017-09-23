@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
 using Moq;
-using NaCoDoKina.Api.Infrastructure.Recommendation.DataContract;
-using NaCoDoKina.Api.Infrastructure.Recommendation.Services;
 using System;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
+using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services;
 using Xunit;
 
 namespace NaCoDoKina.Api.Services

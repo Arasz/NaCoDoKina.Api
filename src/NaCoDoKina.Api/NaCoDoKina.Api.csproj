@@ -16,12 +16,15 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
+    <Folder Include="Infrastructure\Services\Email\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
 
     <PackageReference Include="Autofac" Version="4.6.1" />
+
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
 
     <PackageReference Include="AutoMapper" Version="6.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
