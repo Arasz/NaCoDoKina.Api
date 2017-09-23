@@ -101,7 +101,7 @@ namespace NaCoDoKina.Api.Mappings
                 result.CinemaName.Should().Be(movieShowtime.CinemaName);
                 result.Language.Should().Be(movieShowtime.Language);
                 result.ShowType.Should().Be(movieShowtime.ShowType);
-                result.ShowTimes.Should().Contain(movieShowtime.ShowTimes);
+                result.ShowTime.Should().Be(movieShowtime.ShowTime);
             }
 
             [Fact]
@@ -118,7 +118,7 @@ namespace NaCoDoKina.Api.Mappings
                 result.CinemaName.Should().Be(movieShowtime.CinemaName);
                 result.Language.Should().Be(movieShowtime.Language);
                 result.ShowType.Should().Be(movieShowtime.ShowType);
-                result.ShowTimes.Should().Contain(movieShowtime.ShowTimes);
+                result.ShowTime.Should().Be(movieShowtime.ShowTime);
             }
         }
 

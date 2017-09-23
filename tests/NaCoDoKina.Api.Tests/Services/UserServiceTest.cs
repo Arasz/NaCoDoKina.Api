@@ -12,7 +12,7 @@ namespace NaCoDoKina.Api.Services
 
         public UserServiceTest()
         {
-            IdentityServiceMock = new Mock<IIdentityService>();
+            IdentityServiceMock = Mock.Mock<IIdentityService>();
             ServiceUnderTest = new UserService(IdentityServiceMock.Object);
         }
 

@@ -8,27 +8,16 @@ namespace NaCoDoKina.Api.Services
     {
         protected TService ServiceUnderTest { get; set; }
 
-        protected Mock<ILogger<TService>> LoggerMock { get; set; }
+        protected Mock<ILogger<TService>> LoggerMock => Mock.Mock<ILogger<TService>>();
 
-        protected Mock<IMapper> MapperMock { get; set; }
-
-        protected ServiceTestBase()
-        {
-            LoggerMock = new Mock<ILogger<TService>>();
-            MapperMock = new Mock<IMapper>();
-        }
+        protected Mock<IMapper> MapperMock => Mock.Mock<IMapper>();
     }
 
     public abstract class ServiceWithRepositoryTestBase<TService, TRepository> : ServiceTestBase<TService>
         where TRepository : class
     {
-        protected Mock<TRepository> RepositoryMock { get; set; }
+        protected Mock<TRepository> RepositoryMock => Mock.Mock<TRepository>();
 
         protected TRepository RepositoryMockObject => RepositoryMock.Object;
-
-        protected ServiceWithRepositoryTestBase()
-        {
-            RepositoryMock = new Mock<TRepository>();
-        }
     }
 }

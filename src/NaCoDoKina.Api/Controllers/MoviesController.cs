@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.DataContracts.Movies;
 using NaCoDoKina.Api.Exceptions;
+using NaCoDoKina.Api.Infrastructure.Extensions;
 using NaCoDoKina.Api.Services;
 using System;
 using System.Collections.Generic;
@@ -15,14 +16,18 @@ namespace NaCoDoKina.Api.Controllers
     [Route("v1/[controller]")]
     public class MoviesController : Controller
     {
+        private readonly IMovieShowtimeService _movieShowtimeService;
         private readonly IRatingService _ratingService;
         private readonly IMapper _mapper;
         private readonly ICinemaService _cinemaService;
         private readonly ILogger<MoviesController> _logger;
         private readonly IMovieService _movieService;
 
-        public MoviesController(IMovieService movieService, ICinemaService cinemaService, IRatingService ratingService, ILogger<MoviesController> logger, IMapper mapper)
+        public MoviesController(IMovieService movieService, ICinemaService cinemaService,
+            IRatingService ratingService, ILogger<MoviesController> logger, IMapper mapper,
+            IMovieShowtimeService movieShowtimeService)
         {
+            _movieShowtimeService = movieShowtimeService ?? throw new ArgumentNullException(nameof(movieShowtimeService));
             _ratingService = ratingService ?? throw new ArgumentNullException(nameof(ratingService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _cinemaService = cinemaService ?? throw new ArgumentNullException(nameof(cinemaService));
@@ -110,7 +115,7 @@ namespace NaCoDoKina.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{id}/cinemas")]
-        public async Task<IActionResult> GetNearestCinemasForMovie(long id, [FromBody] SearchArea searchArea)
+        public async Task<IActionResult> GetNearestCinemasForMovie(long id, SearchArea searchArea)
         {
             if (searchArea is null)
                 return BadRequest();
@@ -125,6 +130,45 @@ namespace NaCoDoKina.Api.Controllers
             {
                 _logger.LogWarning("Cinemas playing movie with id {id} were not " +
                                    "found near {@searchArea} in given proximity", id, searchArea);
+                return NotFound(exception.Message);
+            }
+        }
+
+        /// <summary>
+        /// Returns movie showtimes for given cinema. If no cinema is given, all showtimes for movie
+        /// are returned.
+        /// </summary>
+        /// <param name="movieId"> Movie id </param>
+        /// <param name="cinemaId"> Cinema id. Optional. </param>
+        /// <param name="laterThan">
+        /// Minimal movie show time. When not provided current time is used
+        /// </param>
+        /// <returns> Movie showtimes </returns>
+        [ProducesResponseType(typeof(IEnumerable<MovieShowtime>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("{movieId}/cinemas/{cinemaId?}")]
+        public async Task<IActionResult> GetMovieShowtimesAsync(long movieId, long? cinemaId = null, [FromQuery]DateTime? laterThan = null)
+        {
+            try
+            {
+                var minimalShowTime = laterThan ?? DateTime.Now;
+
+                if (cinemaId is null)
+                {
+                    var showtimes = await _movieShowtimeService.GetMovieShowtimesAsync(movieId, minimalShowTime);
+
+                    return Ok(showtimes.Map<Models.MovieShowtime, MovieShowtime>(_mapper));
+                }
+                else
+                {
+                    var showtimes = await _movieShowtimeService.GetMovieShowtimesForCinemaAsync(movieId, cinemaId.Value, minimalShowTime);
+
+                    return Ok(showtimes.Map<Models.MovieShowtime, MovieShowtime>(_mapper));
+                }
+            }
+            catch (MovieShowtimeNotFoundException exception)
+            {
+                _logger.LogWarning("Showtime for movie {movieId} was not found", movieId);
                 return NotFound(exception.Message);
             }
         }
@@ -151,11 +195,6 @@ namespace NaCoDoKina.Api.Controllers
             }
         }
 
-        /// <summary>
-        /// Sets user rating for movie, redirects to movie detail action 
-        /// </summary>
-        /// <param name="id"> Movie id </param>
-        /// <param name="rating"> Movie rating </param>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost("{id}/rating")]

@@ -1,30 +1,21 @@
-﻿using NaCoDoKina.Api.Entities;
+﻿using NaCoDoKina.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace NaCoDoKina.Api.Repositories
+namespace NaCoDoKina.Api.Services
 {
-    public interface IMovieShowtimeRepository
+    /// <summary>
+    /// Movie showtime business logic 
+    /// </summary>
+    public interface IMovieShowtimeService
     {
-        /// <summary>
-        /// Adds movie showtime 
-        /// </summary>
-        /// <param name="showtime"> Movie showtime </param>
-        /// <returns> Movie showtime id </returns>
-        Task<long> AddMovieShowtimeAsync(MovieShowtime showtime);
-
-        /// <summary>
-        /// Deletes all showtimes before date given in parameter 
-        /// </summary>
-        /// <param name="limitDateTime"> Date to which showtimes are deleted </param>
-        Task DeleteAllBeforeDateAsync(DateTime limitDateTime);
-
         /// <summary>
         /// Returns all show times for movie 
         /// </summary>
         /// <param name="movieId"> Movie id </param>
-        /// <param name="laterThan"> Minimal show time </param>
+        /// <param name="laterThan"></param>
+        /// <param name="laterThan"> Minimum movie show time date time </param>
         /// <returns> List of movie show times played in all cinemas </returns>
         Task<IEnumerable<MovieShowtime>> GetMovieShowtimesAsync(long movieId, DateTime laterThan);
 
@@ -33,7 +24,7 @@ namespace NaCoDoKina.Api.Repositories
         /// </summary>
         /// <param name="movieId"> Movie id </param>
         /// <param name="cinemaId"> Cinema id </param>
-        /// <param name="laterThan"> Minimal show time </param>
+        /// <param name="laterThan"> Minimum movie show time date time </param>
         /// <returns> List of movie show times played in given cinema </returns>
         Task<IEnumerable<MovieShowtime>> GetMovieShowtimesForCinemaAsync(long movieId, long cinemaId, DateTime laterThan);
     }

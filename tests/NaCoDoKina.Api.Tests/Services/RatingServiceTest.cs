@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
 using Moq;
-using System;
-using System.Threading.Tasks;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace NaCoDoKina.Api.Services
@@ -16,8 +16,8 @@ namespace NaCoDoKina.Api.Services
 
         public RatingServiceTest()
         {
-            UserServiceMock = new Mock<IUserService>();
-            RecommendationServiceMock = new Mock<IRecommendationService>();
+            UserServiceMock = Mock.Mock<IUserService>();
+            RecommendationServiceMock = Mock.Mock<IRecommendationService>();
             ServiceUnderTest = new RatingService(RecommendationServiceMock.Object, UserServiceMock.Object);
         }
 
