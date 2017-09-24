@@ -11,15 +11,14 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Controllers
 {
-    [Authorize]
     [Route("v1/[controller]")]
-    public class AccountController : Controller
+    public class UsersController : Controller
     {
-        private readonly ILogger<AccountController> _logger;
+        private readonly ILogger<UsersController> _logger;
         private readonly IMapper _mapper;
         private readonly IIdentityService _identityService;
 
-        public AccountController(IIdentityService identityService, IMapper mapper, ILogger<AccountController> logger)
+        public UsersController(IIdentityService identityService, IMapper mapper, ILogger<UsersController> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -27,21 +26,21 @@ namespace NaCoDoKina.Api.Controllers
         }
 
         /// <summary>
-        /// Login user and return authentication token 
+        /// Authenticates user and returns token 
         /// </summary>
-        /// <param name="user"> User login data </param>
+        /// <param name="creditentials"> User login data </param>
         /// <returns> Authentication token </returns>
         [HttpPost("token")]
         [ProducesResponseType(typeof(JwtToken), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody]LoginUser user)
+        public async Task<IActionResult> GetTokenForUser([FromBody]Creditentials creditentials)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var result = await _identityService.LoginAsync(user.Email, user.Password);
+            var result = await _identityService.LoginAsync(creditentials.Email, creditentials.Password);
 
             if (!result.Succeeded)
                 return Unauthorized();
@@ -51,26 +50,26 @@ namespace NaCoDoKina.Api.Controllers
         }
 
         /// <summary>
-        /// Register new user 
+        /// Creates new user 
         /// </summary>
-        /// <param name="registerUser"> Register user data </param>
+        /// <param name="createUser"> New user data </param>
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Register([FromBody] RegisterUser registerUser)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUser createUser)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
             var user = new ApplicationUser
             {
-                UserName = registerUser.Email,
-                Email = registerUser.Email
+                UserName = createUser.Email,
+                Email = createUser.Email
             };
 
-            var result = await _identityService.CreateUserAsync(user, registerUser.Password);
+            var result = await _identityService.CreateUserAsync(user, createUser.Password);
 
             return result.Succeeded ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
         }

@@ -1,6 +1,9 @@
 namespace NaCoDoKina.Api.DataContracts.Authentication
 {
-    public class LoginUser
+    /// <summary>
+    /// Minimum amount of user data needed to registration 
+    /// </summary>
+    public class CreateUser
     {
         public string Email { get; set; }
 

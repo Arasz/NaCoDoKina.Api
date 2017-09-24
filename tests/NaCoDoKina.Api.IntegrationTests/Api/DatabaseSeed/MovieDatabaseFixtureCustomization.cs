@@ -1,7 +1,7 @@
 ﻿using NaCoDoKina.Api.Entities;
 using Ploeh.AutoFixture;
 
-namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
+namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
 {
     public class MovieDatabaseFixtureCustomization : ICustomization
     {
