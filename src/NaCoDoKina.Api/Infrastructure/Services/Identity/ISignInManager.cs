@@ -29,5 +29,11 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
         /// User for current http context 
         /// </summary>
         ClaimsPrincipal CurrentContextUser { get; }
+
+        /// <summary>
+        /// Creates user claims for current context 
+        /// </summary>
+        /// <param name="user"> Signed user </param>
+        Task CreateUserClaims(ApplicationUser user);
     }
 }

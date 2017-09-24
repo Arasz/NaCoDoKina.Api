@@ -26,10 +26,10 @@ namespace NaCoDoKina.Api.Services
 
         public MovieServiceTest()
         {
-            UserServiceMock = new Mock<IUserService>();
-            RatingServiceMock = new Mock<IRatingService>();
-            CinemaServiceMock = new Mock<ICinemaService>();
-            RepositoryMock = new Mock<IMovieRepository>();
+            UserServiceMock = Mock.Mock<IUserService>();
+            RatingServiceMock = Mock.Mock<IRatingService>();
+            CinemaServiceMock = Mock.Mock<ICinemaService>();
+
             ServiceUnderTest = new MovieService(RepositoryMockObject, CinemaServiceMock.Object,
                 RatingServiceMock.Object, MapperMock.Object, LoggerMock.Object);
 

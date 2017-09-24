@@ -32,6 +32,9 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
             {
                 _logger.LogInformation("User logged in.");
 
+                var loggedUser = await _userManager.GetUserByNameAsync(userName);
+                await _signInManager.CreateUserClaims(loggedUser);
+
                 var userId = GetCurrentUserId();
 
                 var userInformation = new UserInformation
@@ -53,9 +56,6 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
             var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)
             {
-                _logger.LogInformation("User created a new account with password.");
-
-                await _signInManager.SignInAsync(user);
                 _logger.LogInformation("User created a new account with password.");
 
                 return Result.CreateSucceeded();

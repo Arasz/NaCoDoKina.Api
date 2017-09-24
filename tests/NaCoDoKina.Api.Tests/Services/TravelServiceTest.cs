@@ -1,15 +1,15 @@
 ﻿using FluentAssertions;
 using Moq;
-using NaCoDoKina.Api.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request;
 using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Response;
 using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;
 using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Response;
 using NaCoDoKina.Api.Infrastructure.Services.Google.Exceptions;
 using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
+using NaCoDoKina.Api.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 using Location = NaCoDoKina.Api.Models.Location;
 
@@ -23,8 +23,8 @@ namespace NaCoDoKina.Api.Services
 
         public TravelServiceTest()
         {
-            DirectionsServiceMock = new Mock<IGoogleDirectionsService>();
-            GeocodingServiceMock = new Mock<IGoogleGeocodingService>();
+            DirectionsServiceMock = Mock.Mock<IGoogleDirectionsService>();
+            GeocodingServiceMock = Mock.Mock<IGoogleGeocodingService>();
             ServiceUnderTest = new TravelService(DirectionsServiceMock.Object, GeocodingServiceMock.Object, MapperMock.Object, LoggerMock.Object);
         }
 

@@ -3,12 +3,18 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
+using NaCoDoKina.Api.Data;
+using NaCoDoKina.Api.Infrastructure.Identity;
+using NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer;
 using Newtonsoft.Json;
+using Ploeh.AutoFixture;
+using Serilog;
 using System;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api
 {
@@ -37,9 +43,15 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
         protected HttpClient Client { get; }
 
+        protected virtual string Version { get; } = "v1";
+
         protected virtual Uri BaseAddress => new Uri(@"http://localhost:5000");
 
         protected virtual string Environment => "Development";
+
+        public IServiceProvider Services { get; }
+
+        public IFixture Fixture { get; }
 
         protected HttpTestBase()
         {
@@ -49,12 +61,16 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 .UseEnvironment(Environment)
                 .UseContentRoot(contentRoot)
                 .ConfigureServices(ConfigureServices)
+                .UseSerilog()
                 .UseStartup<Startup>();
 
             Server = new TestServer(builder);
 
             Client = Server.CreateClient();
             Client.BaseAddress = BaseAddress;
+
+            Services = Server.Host.Services;
+            Fixture = Services.GetService<IFixture>();
         }
 
         /// <summary>
@@ -103,8 +119,20 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             throw new Exception($"Solution root could not be located using application root {applicationBasePath}.");
         }
 
-        protected virtual void ConfigureServices(WebHostBuilderContext webHostBuilderContext, IServiceCollection serviceCollection)
+        protected virtual void ConfigureServices(IServiceCollection serviceCollection)
         {
+            serviceCollection.AddSingleton<IFixture, Fixture>();
+            serviceCollection.AddTransient<IDatabaseSeed<ApplicationContext>, ApplicationDataSeed>();
+            serviceCollection.AddTransient<IDatabaseSeed<ApplicationIdentityContext>, IdentityDataSeed>();
+        }
+
+        /// <summary>
+        /// Seeds database with data 
+        /// </summary>
+        protected virtual async Task SeedDatabaseAsync()
+        {
+            await Services.GetService<IDatabaseSeed<ApplicationContext>>().SeedAsync();
+            await Services.GetService<IDatabaseSeed<ApplicationIdentityContext>>().SeedAsync();
         }
     }
 }

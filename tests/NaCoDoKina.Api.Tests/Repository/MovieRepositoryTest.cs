@@ -297,7 +297,7 @@ namespace NaCoDoKina.Api.Repository
                         PosterUrl = nameof(Movie.PosterUrl),
                     };
 
-                    var deletedMovieMark = new DeletedMovieMark(movieId, DefaultUserId);
+                    var deletedMovieMark = new DeletedMovies(movieId, DefaultUserId);
 
                     using (var contextScope = new TestDatabaseContextScope(databaseScope))
                     {
@@ -427,7 +427,7 @@ namespace NaCoDoKina.Api.Repository
                         PosterUrl = nameof(Movie.PosterUrl),
                     };
 
-                    var deletedMovieMark = new DeletedMovieMark(movieId, DefaultUserId);
+                    var deletedMovieMark = new DeletedMovies(movieId, DefaultUserId);
 
                     using (var contextScope = new TestDatabaseContextScope(databaseScope))
                     {
@@ -548,7 +548,7 @@ namespace NaCoDoKina.Api.Repository
                         PosterUrl = nameof(Movie.PosterUrl),
                     };
 
-                    var deletedMovieMark = new DeletedMovieMark(movieId, DefaultUserId);
+                    var deletedMovieMark = new DeletedMovies(movieId, DefaultUserId);
 
                     using (var contextScope = new TestDatabaseContextScope(databaseScope))
                     {
@@ -599,7 +599,7 @@ namespace NaCoDoKina.Api.Repository
                         PosterUrl = nameof(Movie.PosterUrl),
                     };
 
-                    var deleteMovieMark = new DeletedMovieMark(deletedMovieId, DefaultUserId);
+                    var deleteMovieMark = new DeletedMovies(deletedMovieId, DefaultUserId);
 
                     var cinema = new Cinema
                     {
@@ -666,7 +666,7 @@ namespace NaCoDoKina.Api.Repository
                         PosterUrl = nameof(Movie.PosterUrl),
                     };
 
-                    var movieDeletedMark = new DeletedMovieMark(movieId, DefaultUserId);
+                    var movieDeletedMark = new DeletedMovies(movieId, DefaultUserId);
 
                     using (var contextScope = new TestDatabaseContextScope(databaseScope))
                     {

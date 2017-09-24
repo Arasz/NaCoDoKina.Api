@@ -1,16 +1,16 @@
 using FluentAssertions;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request;
+using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;
 using NaCoDoKina.Api.Mapping.Profiles;
 using NaCoDoKina.Api.Models;
 using System;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;
 using Xunit;
 using Location = NaCoDoKina.Api.Models.Location;
 using TravelMode = NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request.TravelMode;
 
 namespace NaCoDoKina.Api.Mappings
 {
-    public class LocationServiceProfileTest : ProfileBaseTest<LocationServiceProfile>
+    public class LocationServiceProfileTest : ProfileTestBase<TravelServiceProfile>
     {
         public class Map : LocationServiceProfileTest
         {

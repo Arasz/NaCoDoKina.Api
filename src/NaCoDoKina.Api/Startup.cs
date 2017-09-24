@@ -12,6 +12,7 @@ using NaCoDoKina.Api.Infrastructure.Extensions;
 using NaCoDoKina.Api.Infrastructure.Identity;
 using NaCoDoKina.Api.Infrastructure.IoC;
 using NaCoDoKina.Api.Infrastructure.Settings;
+using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
@@ -26,6 +27,7 @@ namespace NaCoDoKina.Api
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            ConfigureLogger(configuration);
         }
 
         public IConfiguration Configuration { get; }
@@ -49,6 +51,10 @@ namespace NaCoDoKina.Api
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
+        /// <summary>
+        /// Configuration of user authentication 
+        /// </summary>
+        /// <param name="services"></param>
         private void ConfigureIdentity(IServiceCollection services)
         {
             var connectionString = ConnectionString("IdentityConnection");
@@ -74,6 +80,21 @@ namespace NaCoDoKina.Api
                 });
         }
 
+        /// <summary>
+        /// Configure logger 
+        /// </summary>
+        /// <param name="configuration"> App configuration with logger config section </param>
+        private static void ConfigureLogger(IConfiguration configuration)
+        {
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
+        }
+
+        /// <summary>
+        /// Configure data access 
+        /// </summary>
+        /// <param name="services"></param>
         private void ConfigureApplicationDataAccess(IServiceCollection services)
         {
             var connectionString = ConnectionString("DataConnection");
@@ -84,6 +105,10 @@ namespace NaCoDoKina.Api
             });
         }
 
+        /// <summary>
+        /// Configure swagger (web api documentation) 
+        /// </summary>
+        /// <param name="services"></param>
         private void ConfigureSwaggerServices(IServiceCollection services)
         {
             var settings = Configuration.GetSettings<SwaggerSettings>();
@@ -108,6 +133,11 @@ namespace NaCoDoKina.Api
             });
         }
 
+        /// <summary>
+        /// Creates connection string with password 
+        /// </summary>
+        /// <param name="name"> Connection string name </param>
+        /// <returns></returns>
         private string ConnectionString(string name) =>
             $"{Configuration.GetConnectionString(name)}" +
             $"{Configuration["DatabasePassword"]};";

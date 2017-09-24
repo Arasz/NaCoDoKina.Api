@@ -165,11 +165,6 @@ namespace NaCoDoKina.Api.Infrastructure.Identity
                         .ReturnsAsync(() => IdentityResult.Success)
                         .Verifiable();
 
-                    mock.Mock<ISignInManager>()
-                        .Setup(manager => manager.SignInAsync(applicationUser))
-                        .Returns(Task.CompletedTask)
-                        .Verifiable();
-
                     //Act
                     var returnedUser = await mock.Create<IdentityService>()
                         .CreateUserAsync(applicationUser, password);
@@ -178,7 +173,6 @@ namespace NaCoDoKina.Api.Infrastructure.Identity
                     returnedUser.Succeeded.Should().BeTrue();
 
                     mock.Mock<IUserManager>().Verify();
-                    mock.Mock<ISignInManager>().Verify();
                 }
             }
 
