@@ -39,7 +39,9 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Token
                 expires: expires,
                 signingCredentials: signingCredentials
             );
-            var token = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.WriteToken(jwt);
 
             return new AuthenticationToken
             {
