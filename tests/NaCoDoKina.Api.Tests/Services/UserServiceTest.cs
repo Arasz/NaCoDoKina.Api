@@ -1,35 +1,30 @@
 ﻿using FluentAssertions;
-using Moq;
 using NaCoDoKina.Api.Infrastructure.Services.Identity;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace NaCoDoKina.Api.Services
 {
     public class UserServiceTest : ServiceTestBase<IUserService>
     {
-        protected Mock<IIdentityService> IdentityServiceMock { get; }
-
         public UserServiceTest()
         {
-            IdentityServiceMock = Mock.Mock<IIdentityService>();
-            ServiceUnderTest = new UserService(IdentityServiceMock.Object);
+            ServiceUnderTest = Mock.Create<UserService>();
         }
 
         public class GetCurrentUserIdAsync : UserServiceTest
         {
             [Fact]
-            public async Task Should_return_current_user_id()
+            public void Should_return_current_user_id()
             {
                 //Arrange
                 var expectedId = 1;
 
-                IdentityServiceMock
-                    .Setup(service => service.GetCurrentUserId())
+                Mock.Mock<IAuthenticatedUserId>()
+                    .Setup(authenticatedUserId => authenticatedUserId.Id)
                     .Returns(expectedId);
 
                 //Act
-                var userId = await ServiceUnderTest.GetCurrentUserIdAsync();
+                var userId = ServiceUnderTest.GetCurrentUserId();
 
                 //Assert
                 userId.Should().Be(expectedId);

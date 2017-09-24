@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
+﻿using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services;
+using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.Services
 {
@@ -17,16 +17,16 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<double> GetMovieRating(long movieId)
         {
-            var userId = await _userService.GetCurrentUserIdAsync();
-            var request = new RecommendationApiRequest(movieId, userId);
+            var userId = _userService.GetCurrentUserId();
+            var request = new RecommendationApiRequest(userId, movieId);
             var response = await _recommendationService.GetMovieRating(request);
             return response.Rating;
         }
 
         public async Task SetMovieRating(long movieId, double movieRating)
         {
-            var userId = await _userService.GetCurrentUserIdAsync();
-            var request = new RecommendationApiRequest(movieId, userId);
+            var userId = _userService.GetCurrentUserId();
+            var request = new RecommendationApiRequest(userId, movieId);
             var rating = new Rating(movieRating);
             await _recommendationService.SaveMovieRating(request, rating);
         }

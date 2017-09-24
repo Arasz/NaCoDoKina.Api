@@ -10,9 +10,9 @@ using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api
 {
-    public class UsersTest : HttpTestWithDatabase
+    public class UsersControllerTest : HttpTestWithDatabase
     {
-        public class CreateUser : UsersTest
+        public class CreateUser : UsersControllerTest
         {
             [Fact]
             public async Task Should_create_new_user_and_login()
@@ -23,15 +23,15 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 var loginUrl = $"{ApiSettings.Version}/users/token";
                 var email = "test@kmail.com";
 
-                var registerPayload = new DataContracts.Authentication.CreateUser
+                var registerPayload = new DataContracts.Authentication.RegisterUser
                 {
                     Email = email,
                     Password = ApiSettings.DefaultUserPassword,
                 };
 
-                var loginPayload = new Creditentials
+                var loginPayload = new Credentials
                 {
-                    Email = user.Email,
+                    UserName = ApiSettings.DefaultUserName,
                     Password = ApiSettings.DefaultUserPassword
                 };
 
@@ -59,7 +59,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             }
         }
 
-        public class GetUserToken : UsersTest
+        public class GetUserToken : UsersControllerTest
         {
             [Fact]
             public async Task Should_return_token_when_registered_user_tries_to_log_in()
@@ -67,9 +67,9 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Arrange
                 var user = await GetDbContext<ApplicationIdentityContext>().Users.FirstAsync();
                 var url = $"{ApiSettings.Version}/users/token";
-                var payload = new Creditentials
+                var payload = new Credentials
                 {
-                    Email = user.Email,
+                    UserName = user.UserName,
                     Password = ApiSettings.DefaultUserPassword
                 };
                 var tokenHandler = new JwtSecurityTokenHandler();

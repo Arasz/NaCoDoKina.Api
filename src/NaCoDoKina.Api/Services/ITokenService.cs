@@ -1,4 +1,6 @@
-﻿namespace NaCoDoKina.Api.Infrastructure.Services.Token
+﻿using NaCoDoKina.Api.Models;
+
+namespace NaCoDoKina.Api.Services
 {
     /// <summary>
     /// Logic for creation of authentication token for user 
@@ -8,8 +10,8 @@
         /// <summary>
         /// Creates authentication token for user 
         /// </summary>
-        /// <param name="userInformation"> User information from a token is generated </param>
+        /// <param name="user"> RegisterUser for which token is generated </param>
         /// <returns> Authentication token </returns>
-        AuthenticationToken CreateToken(UserInformation userInformation);
+        AuthToken CreateToken(User user);
     }
 }

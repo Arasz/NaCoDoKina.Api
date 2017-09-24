@@ -18,61 +18,56 @@ namespace NaCoDoKina.Api.Repository
             [Fact]
             public async Task Should_add_showtime_and_return_id()
             {
-                using (var databaseScope = new InMemoryDatabaseScope())
+                //Arrange
+                var showtimeId = 1;
+
+                var movie = new Movie
                 {
-                    EnsureCreated(databaseScope);
+                    Name = nameof(Movie),
+                    Details = new MovieDetails(),
+                    PosterUrl = nameof(Movie.PosterUrl),
+                };
 
-                    //Arrange
-                    var showtimeId = 1;
+                var cinema = new Cinema
+                {
+                    Name = nameof(Cinema),
+                    Address = nameof(Cinema.Address),
+                    Location = new Location(1, 1)
+                };
 
-                    var movie = new Movie
-                    {
-                        Name = nameof(Movie),
-                        Details = new MovieDetails(),
-                        PosterUrl = nameof(Movie.PosterUrl),
-                    };
+                var movieShowtime = new MovieShowtime
+                {
+                    Cinema = cinema,
+                    Movie = movie,
+                    ShowTime = DateTime.Now.AddHours(2)
+                };
 
-                    var cinema = new Cinema
-                    {
-                        Name = nameof(Cinema),
-                        Address = nameof(Cinema.Address),
-                        Location = new Location(1, 1)
-                    };
+                using (var contextScope = CreateContextScope())
+                {
+                    cinema.Id = contextScope.ApplicationContext.Cinemas.Add(cinema).Entity.Id;
+                    movie.Id = contextScope.ApplicationContext.Movies.Add(movie).Entity.Id;
 
-                    var movieShowtime = new MovieShowtime
-                    {
-                        Cinema = cinema,
-                        Movie = movie,
-                        ShowTime = DateTime.Now.AddHours(2)
-                    };
+                    await contextScope.ApplicationContext.SaveChangesAsync();
+                }
 
-                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
-                    {
-                        cinema.Id = contextScope.ApplicationContext.Cinemas.Add(cinema).Entity.Id;
-                        movie.Id = contextScope.ApplicationContext.Movies.Add(movie).Entity.Id;
+                using (var contextScope = CreateContextScope())
+                {
+                    RepositoryUnderTest = new MovieShowtimeRepository(contextScope.ApplicationContext, LoggerMock.Object);
 
-                        await contextScope.ApplicationContext.SaveChangesAsync();
-                    }
+                    //Act
+                    var movieShowtimeId = await RepositoryUnderTest.AddMovieShowtimeAsync(movieShowtime);
 
-                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
-                    {
-                        RepositoryUnderTest = new MovieShowtimeRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                    //Assert
+                    movieShowtimeId.Should().BePositive();
+                }
 
-                        //Act
-                        var movieShowtimeId = await RepositoryUnderTest.AddMovieShowtimeAsync(movieShowtime);
+                using (var contextScope = CreateContextScope())
+                {
+                    contextScope.ApplicationContext.MovieShowtimes
+                        .Should().HaveCount(1);
 
-                        //Assert
-                        movieShowtimeId.Should().BePositive();
-                    }
-
-                    using (var contextScope = new TestDatabaseContextScope(databaseScope))
-                    {
-                        contextScope.ApplicationContext.MovieShowtimes
-                            .Should().HaveCount(1);
-
-                        contextScope.ApplicationContext.MovieShowtimes
-                            .Should().ContainSingle(showtime => showtime.Id == showtimeId);
-                    }
+                    contextScope.ApplicationContext.MovieShowtimes
+                        .Should().ContainSingle(showtime => showtime.Id == showtimeId);
                 }
             }
         }

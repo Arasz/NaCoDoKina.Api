@@ -41,13 +41,13 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             }
 
             [Fact]
-            public void Should_return_user_manager()
+            public void Should_return_user_authenticated_user_id_provider()
             {
                 // Arrange
                 var serviceProvider = Server.Host.Services;
 
                 // Act
-                var userManager = serviceProvider.GetService<IUserManager>();
+                var userManager = serviceProvider.GetService<IAuthenticatedUserId>();
 
                 // Assert
                 userManager.Should().NotBeNull();
