@@ -89,7 +89,7 @@ namespace NaCoDoKina.Api.Mappings
             }
         }
 
-        public class MovieShowtimeTest : DataContractServiceModelProfileTest
+        public class MovieShowtimeTest : DataModelServiceModelProfileTest
         {
             [Fact]
             public void Should_return_model_movie_showtime_given_data_model_movie_showtime()
@@ -125,7 +125,7 @@ namespace NaCoDoKina.Api.Mappings
             }
         }
 
-        public class MovieTest : DataContractServiceModelProfileTest
+        public class MovieTest : DataModelServiceModelProfileTest
         {
             [Fact]
             public void Should_return_model_movie_given_data_model_movie()
@@ -160,7 +160,7 @@ namespace NaCoDoKina.Api.Mappings
             }
         }
 
-        public class ServiceUrlTest : DataContractServiceModelProfileTest
+        public class ServiceUrlTest : DataModelServiceModelProfileTest
         {
             [Fact]
             public void Should_return_model_service_url_given_data_service_url()
@@ -193,7 +193,7 @@ namespace NaCoDoKina.Api.Mappings
             }
         }
 
-        public class CinemaTest : DataContractServiceModelProfileTest
+        public class CinemaTest : DataModelServiceModelProfileTest
         {
             [Fact]
             public void Should_return_model_cinema_given_data_model_cinema()
@@ -214,7 +214,7 @@ namespace NaCoDoKina.Api.Mappings
                 //result.Website.Should()
                 //    .Match<ServiceUrl>(url => url.Name == cinema.Website.Name)
                 //    .And
-                //    .Match<ServiceUrl>(url => url.Url == cinema.Website.Url);
+                //    .Match<ServiceUrl>(url => url.Website == cinema.Website.Website);
             }
 
             [Fact]

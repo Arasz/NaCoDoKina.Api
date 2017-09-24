@@ -5,6 +5,7 @@ using NaCoDoKina.Api.DataContracts.Movies;
 using NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer;
 using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
 using System;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -32,11 +33,14 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             {
                 var queryString = new StringBuilder("?");
 
-                queryString.Append($"{nameof(SearchArea.Center)}.{nameof(Location.Longitude)}=" +
-                                   $"{searchArea.Center.Longitude}&");
-                queryString.Append($"{nameof(SearchArea.Center)}.{nameof(Location.Latitude)}=" +
-                                   $"{searchArea.Center.Latitude}&");
-                queryString.Append($"{nameof(SearchArea.Radius)}={searchArea.Radius}");
+                queryString.Append($"{nameof(SearchArea.Center)}." +
+                                   $"{nameof(Location.Longitude)}=" +
+                                   $"{searchArea.Center.Longitude.ToString(CultureInfo.InvariantCulture)}&");
+                queryString.Append($"{nameof(SearchArea.Center)}." +
+                                   $"{nameof(Location.Latitude)}=" +
+                                   $"{searchArea.Center.Latitude.ToString(CultureInfo.InvariantCulture)}&");
+                queryString.Append($"{nameof(SearchArea.Radius)}" +
+                                   $"={searchArea.Radius.ToString(CultureInfo.InvariantCulture)}");
 
                 return queryString.ToString();
             }
@@ -45,13 +49,14 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             public async Task Should_return_all_movies_inside_search_area()
             {
                 // Arrange
-                await _dbInitialize.InitializeAsync();
+                //await _dbInitialize.InitializeAsync();
 
                 var testLocation = new Location(52.44056, 16.919235);
                 var searchArea = new SearchArea(testLocation, 100);
+                var queryString = ParseSearchAreaToQuery(searchArea);
 
                 // Act
-                var url = $"{Version}/movies/{ParseSearchAreaToQuery(searchArea)}";
+                var url = $"{Version}/movies/{queryString}";
                 var response = await Client.GetAsync(url);
 
                 // Assert

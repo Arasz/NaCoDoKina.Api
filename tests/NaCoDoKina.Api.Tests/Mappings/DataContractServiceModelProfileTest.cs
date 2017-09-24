@@ -209,9 +209,9 @@ namespace NaCoDoKina.Api.Mappings
                 result.Website.Should().NotBeNull();
                 result.NetworkName.Should().Be(cinema.NetworkName);
                 result.Website.Should()
-                    .Match<ServiceUrl>(url => url.Name == cinema.Website.Name)
+                    .Match<Models.ServiceUrl>(url => url.Name == cinema.Website.Name)
                     .And
-                    .Match<ServiceUrl>(url => url.Url == cinema.Website.Url);
+                    .Match<Models.ServiceUrl>(url => url.Url == cinema.Website.Url);
             }
 
             [Fact]

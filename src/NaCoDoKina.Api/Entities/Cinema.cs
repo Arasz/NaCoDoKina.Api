@@ -19,7 +19,7 @@
         /// <summary>
         /// Cinema site url 
         /// </summary>
-        public ServiceUrl Url { get; set; }
+        public ServiceUrl Website { get; set; }
 
         /// <summary>
         /// Cinema location 

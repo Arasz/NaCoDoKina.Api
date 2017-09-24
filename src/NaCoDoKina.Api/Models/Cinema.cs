@@ -23,7 +23,7 @@
         /// <summary>
         /// Cinema website 
         /// </summary>
-        public DataContracts.Movies.ServiceUrl Website { get; set; }
+        public ServiceUrl Website { get; set; }
 
         /// <summary>
         /// Network name to which cinema belongs 

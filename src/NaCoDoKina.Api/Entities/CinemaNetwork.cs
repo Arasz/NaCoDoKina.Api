@@ -12,7 +12,7 @@
         public string Name { get; set; }
 
         /// <summary>
-        /// Url to cinema network site 
+        /// Website to cinema network site 
         /// </summary>
         public ServiceUrl Url { get; set; }
     }

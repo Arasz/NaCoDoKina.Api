@@ -11,7 +11,7 @@ using System;
 namespace NaCoDoKina.Api.Migrations.Application
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20170923125347_InitializeDataModel")]
+    [Migration("20170924065002_InitializeDataModel")]
     partial class InitializeDataModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,7 +36,7 @@ namespace NaCoDoKina.Api.Migrations.Application
                         .IsRequired()
                         .HasMaxLength(225);
 
-                    b.Property<long?>("UrlId");
+                    b.Property<long?>("WebsiteId");
 
                     b.HasKey("Id");
 
@@ -45,7 +45,7 @@ namespace NaCoDoKina.Api.Migrations.Application
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.HasIndex("UrlId");
+                    b.HasIndex("WebsiteId");
 
                     b.ToTable("Cinemas");
                 });
@@ -178,9 +178,9 @@ namespace NaCoDoKina.Api.Migrations.Application
                         .WithMany()
                         .HasForeignKey("CinemaNetworkId");
 
-                    b.HasOne("NaCoDoKina.Api.Entities.ServiceUrl", "Url")
+                    b.HasOne("NaCoDoKina.Api.Entities.ServiceUrl", "Website")
                         .WithMany()
-                        .HasForeignKey("UrlId");
+                        .HasForeignKey("WebsiteId");
 
                     b.OwnsOne("NaCoDoKina.Api.Entities.Location", "Location", b1 =>
                         {

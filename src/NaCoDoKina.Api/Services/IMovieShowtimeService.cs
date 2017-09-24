@@ -15,7 +15,6 @@ namespace NaCoDoKina.Api.Services
         /// </summary>
         /// <param name="movieId"> Movie id </param>
         /// <param name="laterThan"></param>
-        /// <param name="laterThan"> Minimum movie show time date time </param>
         /// <returns> List of movie show times played in all cinemas </returns>
         Task<IEnumerable<MovieShowtime>> GetMovieShowtimesAsync(long movieId, DateTime laterThan);
 

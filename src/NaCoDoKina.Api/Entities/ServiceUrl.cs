@@ -2,7 +2,7 @@
 {
     /// <inheritdoc/>
     /// <summary>
-    /// Url to service 
+    /// Website to service 
     /// </summary>
     public class ServiceUrl : Entity
     {

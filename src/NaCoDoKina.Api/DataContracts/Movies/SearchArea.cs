@@ -18,13 +18,16 @@ namespace NaCoDoKina.Api.DataContracts.Movies
         /// <summary>
         /// User location, search area center 
         /// </summary>
-        public Location Center { get; }
+        public Location Center { get; set; }
 
         /// <summary>
         /// Search radius 
         /// </summary>
-        public double Radius { get; }
+        public double Radius { get; set; }
 
-        public override string ToString() => $"C: {Center}, R: {Radius}";
+        public override string ToString()
+        {
+            return $"{nameof(Center)}: {Center}, {nameof(Radius)}: {Radius}";
+        }
     }
 }

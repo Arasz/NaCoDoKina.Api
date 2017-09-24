@@ -43,9 +43,9 @@ namespace NaCoDoKina.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
-        public async Task<IActionResult> GetAllMoviesAsync(SearchArea searchArea)
+        public async Task<IActionResult> GetAllMoviesAsync([FromQuery]SearchArea searchArea)
         {
-            if (searchArea is null)
+            if (searchArea is null || searchArea.Center is null)
                 return BadRequest();
 
             try

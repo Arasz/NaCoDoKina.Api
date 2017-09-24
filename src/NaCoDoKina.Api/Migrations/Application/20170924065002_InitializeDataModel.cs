@@ -95,7 +95,7 @@ namespace NaCoDoKina.Api.Migrations.Application
                     Address = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
                     CinemaNetworkId = table.Column<long>(type: "int8", nullable: true),
                     Name = table.Column<string>(type: "varchar(225)", maxLength: 225, nullable: false),
-                    UrlId = table.Column<long>(type: "int8", nullable: true),
+                    WebsiteId = table.Column<long>(type: "int8", nullable: true),
                     Location_Latitude = table.Column<double>(type: "float8", nullable: false),
                     Location_Longitude = table.Column<double>(type: "float8", nullable: false)
                 },
@@ -109,8 +109,8 @@ namespace NaCoDoKina.Api.Migrations.Application
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Cinemas_ServiceUrl_UrlId",
-                        column: x => x.UrlId,
+                        name: "FK_Cinemas_ServiceUrl_WebsiteId",
+                        column: x => x.WebsiteId,
                         principalTable: "ServiceUrl",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -162,9 +162,9 @@ namespace NaCoDoKina.Api.Migrations.Application
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cinemas_UrlId",
+                name: "IX_Cinemas_WebsiteId",
                 table: "Cinemas",
-                column: "UrlId");
+                column: "WebsiteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MovieShowtimes_CinemaId",
