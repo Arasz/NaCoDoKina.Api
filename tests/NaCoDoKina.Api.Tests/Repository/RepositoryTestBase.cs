@@ -7,15 +7,17 @@ namespace NaCoDoKina.Api.Repository
     {
         protected TRepository RepositoryUnderTest { get; set; }
 
-        protected Mock<ILogger<TRepository>> LoggerMock { get; }
+        protected Mock<ILogger<TRepository>> LoggerMock => Mock.Mock<ILogger<TRepository>>();
 
         protected InMemoryDatabaseScope DatabaseScope { get; }
 
-        protected TestDatabaseContextScope CreateContextScope() => new TestDatabaseContextScope(DatabaseScope);
+        protected TestDatabaseContextScope CreateContextScope()
+        {
+            return new TestDatabaseContextScope(DatabaseScope);
+        }
 
         protected RepositoryTestBase()
         {
-            LoggerMock = new Mock<ILogger<TRepository>>();
             DatabaseScope = new InMemoryDatabaseScope();
             EnsureCreated();
         }
@@ -35,7 +37,7 @@ namespace NaCoDoKina.Api.Repository
         /// </summary>
         private void EnsureCreated()
         {
-            using (var contextScope = new TestDatabaseContextScope(DatabaseScope))
+            using (var contextScope = CreateContextScope())
             {
                 contextScope.ApplicationContext.Database.EnsureCreated();
             }

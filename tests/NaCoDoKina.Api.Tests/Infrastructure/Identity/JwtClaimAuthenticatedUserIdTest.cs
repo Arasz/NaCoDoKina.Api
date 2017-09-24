@@ -33,8 +33,7 @@ namespace NaCoDoKina.Api.Infrastructure.Identity
                     new Claim(JwtRegisteredClaimNames.UniqueName, id.ToString())
                 }));
 
-                var context = new DefaultHttpContext();
-                context.User = principal;
+                var context = new DefaultHttpContext { User = principal };
 
                 Mock.Mock<IHttpContextAccessor>()
                     .Setup(accessor => accessor.HttpContext)
