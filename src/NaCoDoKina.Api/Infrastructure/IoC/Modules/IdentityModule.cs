@@ -9,11 +9,11 @@ namespace NaCoDoKina.Api.Infrastructure.IoC.Modules
         {
             builder.RegisterType<SignInManagerAdapter>()
                 .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
 
             builder.RegisterType<UserManagerAdapter>()
                 .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
         }
     }
 }

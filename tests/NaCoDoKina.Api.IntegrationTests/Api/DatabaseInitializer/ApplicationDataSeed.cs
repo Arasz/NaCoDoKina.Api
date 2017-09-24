@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
 {
-    public class MovieDatabaseTestDataInitialization : IDbInitialize<ApplicationContext>
+    public class ApplicationDataSeed : IDatabaseSeed<ApplicationContext>
     {
-        private readonly ILogger<MovieDatabaseTestDataInitialization> _logger;
+        private readonly ILogger<ApplicationDataSeed> _logger;
         public ApplicationContext DbContext { get; }
 
         private readonly IFixture _fixture;
 
-        public MovieDatabaseTestDataInitialization(ApplicationContext applicationContext, ILogger<MovieDatabaseTestDataInitialization> logger, IFixture fixture)
+        public ApplicationDataSeed(ApplicationContext applicationContext, ILogger<ApplicationDataSeed> logger, IFixture fixture)
         {
             _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -25,7 +25,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
             CustomizeFixture();
         }
 
-        public async Task InitializeAsync()
+        public async Task SeedAsync()
         {
             if (DbContext.Database.EnsureDeleted())
                 _logger.LogInformation("Database was deleted");

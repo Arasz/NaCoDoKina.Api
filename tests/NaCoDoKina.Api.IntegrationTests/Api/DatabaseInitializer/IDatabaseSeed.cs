@@ -6,10 +6,10 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
     /// Responsible for database initialization 
     /// </summary>
     /// <typeparam name="TDbContext"></typeparam>
-    public interface IDbInitialize<out TDbContext>
+    public interface IDatabaseSeed<out TDbContext>
     {
         TDbContext DbContext { get; }
 
-        Task InitializeAsync();
+        Task SeedAsync();
     }
 }

@@ -62,10 +62,10 @@ namespace NaCoDoKina.Api.Controllers
         }
 
         /// <summary>
-        /// Returns basic informations about show 
+        /// Returns basic information about show 
         /// </summary>
         /// <param name="id"> Movie id </param>
-        /// <returns> Basic informations about show </returns>
+        /// <returns> Basic information about show </returns>
         [ProducesResponseType(typeof(Movie), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
