@@ -38,7 +38,6 @@ namespace NaCoDoKina.Api.Repository
                     var cinemaNetwork = new CinemaNetwork
                     {
                         Name = nameof(CinemaNetwork),
-                        Cinemas = cinemas,
                     };
 
                     foreach (var cinema in cinemas)
@@ -138,7 +137,6 @@ namespace NaCoDoKina.Api.Repository
                     var cinemaNetwork = new CinemaNetwork
                     {
                         Name = nameof(CinemaNetwork),
-                        Cinemas = new[] { cinema },
                     };
 
                     cinema.CinemaNetwork = cinemaNetwork;
@@ -188,7 +186,6 @@ namespace NaCoDoKina.Api.Repository
                     var cinemaNetwork = new CinemaNetwork
                     {
                         Name = nameof(CinemaNetwork),
-                        Cinemas = new[] { cinema1 },
                     };
 
                     cinema.CinemaNetwork = cinemaNetwork;
@@ -247,7 +244,6 @@ namespace NaCoDoKina.Api.Repository
                     var cinemaNetwork = new CinemaNetwork
                     {
                         Name = nameof(CinemaNetwork),
-                        Cinemas = cinemas,
                     };
 
                     foreach (var cinema in cinemas)
@@ -316,7 +312,6 @@ namespace NaCoDoKina.Api.Repository
                     var cinemaNetwork = new CinemaNetwork
                     {
                         Name = nameof(CinemaNetwork),
-                        Cinemas = cinemas,
                     };
 
                     foreach (var cinema in cinemas)
@@ -370,7 +365,6 @@ namespace NaCoDoKina.Api.Repository
                     var cinemaNetwork = new CinemaNetwork
                     {
                         Name = nameof(CinemaNetwork),
-                        Cinemas = cinemas,
                     };
 
                     foreach (var cinema in cinemas)
@@ -424,7 +418,6 @@ namespace NaCoDoKina.Api.Repository
                     var cinemaNetwork = new CinemaNetwork
                     {
                         Name = nameof(CinemaNetwork),
-                        Cinemas = cinemas,
                     };
 
                     foreach (var cinema in cinemas)

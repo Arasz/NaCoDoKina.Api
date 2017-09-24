@@ -17,12 +17,17 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
 
         public Task<SignInResult> PasswordSignInAsync(string username, string password)
         {
-            return _signInManager.PasswordSignInAsync(username, password, false, false);
+            return _signInManager.PasswordSignInAsync(username, password, true, false);
+        }
+
+        public async Task CreateUserClaims(ApplicationUser user)
+        {
+            _signInManager.Context.User = await _signInManager.ClaimsFactory.CreateAsync(user);
         }
 
         public Task SignInAsync(ApplicationUser user)
         {
-            return _signInManager.SignInAsync(user, false);
+            return _signInManager.SignInAsync(user, true);
         }
 
         public ClaimsPrincipal CurrentContextUser => _signInManager.Context.User;

@@ -10,7 +10,7 @@ namespace NaCoDoKina.Api.Infrastructure.Services
         /// Parses request to url 
         /// </summary>
         /// <param name="request"> Request </param>
-        /// <returns> Url </returns>
+        /// <returns> Website </returns>
         string Parse(TRequest request);
     }
 }

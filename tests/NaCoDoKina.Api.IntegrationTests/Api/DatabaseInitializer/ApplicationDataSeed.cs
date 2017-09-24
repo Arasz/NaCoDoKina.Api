@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
 {
-    public class MovieDatabaseTestDataInitialization : IDbInitialize<ApplicationContext>
+    public class ApplicationDataSeed : IDatabaseSeed<ApplicationContext>
     {
-        private readonly ILogger<MovieDatabaseTestDataInitialization> _logger;
+        private readonly ILogger<ApplicationDataSeed> _logger;
         public ApplicationContext DbContext { get; }
 
-        private readonly Fixture _fixture;
+        private readonly IFixture _fixture;
 
-        public MovieDatabaseTestDataInitialization(ApplicationContext applicationContext, ILogger<MovieDatabaseTestDataInitialization> logger, Fixture fixture)
+        public ApplicationDataSeed(ApplicationContext applicationContext, ILogger<ApplicationDataSeed> logger, IFixture fixture)
         {
             _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -25,7 +25,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
             CustomizeFixture();
         }
 
-        public async Task InitializeAsync()
+        public async Task SeedAsync()
         {
             if (DbContext.Database.EnsureDeleted())
                 _logger.LogInformation("Database was deleted");
@@ -43,13 +43,21 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
             }
             _logger.LogInformation("Database migrations completed");
 
+            _logger.LogInformation("Generating and saving test data");
+
+            await GenerateAndSaveData();
+
+            _logger.LogInformation("Initialization complete");
+        }
+
+        private async Task GenerateAndSaveData()
+        {
             var movies = _fixture.CreateMany<Movie>(15)
                 .ToArray();
-            var cinemaNetworks = _fixture.CreateMany<CinemaNetwork>(2)
+
+            var cinemas = _fixture.CreateMany<Cinema>(3)
                 .ToArray();
-            var cinemas = cinemaNetworks
-                .SelectMany(network => network.Cinemas)
-                .ToArray();
+
             var movieShowtimes = _fixture.CreateMany<MovieShowtime>(15)
                 .ToArray();
 
@@ -60,33 +68,14 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
                 movieShowtimes[i].Movie = movies[i];
             }
 
-            DbContext.CinemaNetworks.AddRange(cinemaNetworks);
+            DbContext.Cinemas.AddRange(cinemas);
             DbContext.MovieShowtimes.AddRange(movieShowtimes);
             await DbContext.SaveChangesAsync();
         }
 
         private void CustomizeFixture()
         {
-            _fixture.Customize<Movie>(composer => composer
-                .Without(movie => movie.Id));
-
-            _fixture.Customize<MovieDetails>(composer => composer
-                .Without(details => details.Id)
-                .Without(details => details.MovieId));
-            _fixture.Customize<Cinema>(composer => composer
-                .Without(cinema => cinema.Id));
-
-            _fixture.Customize<CinemaNetwork>(composer => composer
-                .Without(cinemaNetwork => cinemaNetwork.Id));
-
-            _fixture.Customize<Location>(composer => composer
-                .With(location => location.Longitude, 52.44056)
-                .With(location => location.Latitude, 16.919235));
-
-            _fixture.Customize<MovieShowtime>(composer => composer
-                .Without(showtime => showtime.Id)
-                .Without(showtime => showtime.Cinema)
-                .Without(showtime => showtime.Movie));
+            _fixture.Customize(new MovieDatabaseFixtureCustomization());
         }
     }
 }

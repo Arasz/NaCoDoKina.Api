@@ -3,7 +3,7 @@ using Moq;
 
 namespace NaCoDoKina.Api.Repository
 {
-    public abstract partial class RepositoryTestBase<TRepository>
+    public abstract class RepositoryTestBase<TRepository> : UnitTestBase
     {
         protected TRepository RepositoryUnderTest { get; set; }
 

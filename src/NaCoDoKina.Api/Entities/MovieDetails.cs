@@ -17,7 +17,7 @@ namespace NaCoDoKina.Api.Entities
         /// <summary>
         /// Sites with movie descriptions 
         /// </summary>
-        public IEnumerable<ServiceUrl> DescriptionSites { get; set; }
+        public List<ServiceUrl> DescriptionSites { get; set; }
 
         /// <summary>
         /// Movie description 

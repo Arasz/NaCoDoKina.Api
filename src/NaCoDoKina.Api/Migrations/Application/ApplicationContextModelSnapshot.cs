@@ -8,13 +8,12 @@ using Microsoft.EntityFrameworkCore.Storage.Internal;
 using NaCoDoKina.Api.Data;
 using System;
 
-namespace NaCoDoKina.Api.Data.Migrations
+namespace NaCoDoKina.Api.Migrations.Application
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20170915213257_InitialCreate")]
-    partial class InitialCreate 
+    partial class ApplicationContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,15 +35,16 @@ namespace NaCoDoKina.Api.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(225);
 
-                    b.Property<string>("Url1");
-
-                    b.Property<string>("UrlName");
+                    b.Property<long?>("WebsiteId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CinemaNetworkId");
 
-                    b.HasIndex("UrlName", "Url1");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("WebsiteId");
 
                     b.ToTable("Cinemas");
                 });
@@ -58,18 +58,16 @@ namespace NaCoDoKina.Api.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(255);
 
-                    b.Property<string>("Url1");
-
-                    b.Property<string>("UrlName");
+                    b.Property<long?>("UrlId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UrlName", "Url1");
+                    b.HasIndex("UrlId");
 
                     b.ToTable("CinemaNetworks");
                 });
 
-            modelBuilder.Entity("NaCoDoKina.Api.Entities.DeletedMovieMark", b =>
+            modelBuilder.Entity("NaCoDoKina.Api.Entities.DeletedMovies", b =>
                 {
                     b.Property<long>("MovieId");
 
@@ -151,15 +149,24 @@ namespace NaCoDoKina.Api.Data.Migrations
 
             modelBuilder.Entity("NaCoDoKina.Api.Entities.ServiceUrl", b =>
                 {
-                    b.Property<string>("Name");
-
-                    b.Property<string>("Url");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<long?>("MovieDetailsId");
 
-                    b.HasKey("Name", "Url");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.Property<string>("Url")
+                        .IsRequired();
+
+                    b.HasKey("Id");
 
                     b.HasIndex("MovieDetailsId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("ServiceUrl");
                 });
@@ -167,12 +174,12 @@ namespace NaCoDoKina.Api.Data.Migrations
             modelBuilder.Entity("NaCoDoKina.Api.Entities.Cinema", b =>
                 {
                     b.HasOne("NaCoDoKina.Api.Entities.CinemaNetwork", "CinemaNetwork")
-                        .WithMany("Cinemas")
+                        .WithMany()
                         .HasForeignKey("CinemaNetworkId");
 
-                    b.HasOne("NaCoDoKina.Api.Entities.ServiceUrl", "Url")
+                    b.HasOne("NaCoDoKina.Api.Entities.ServiceUrl", "Website")
                         .WithMany()
-                        .HasForeignKey("UrlName", "Url1");
+                        .HasForeignKey("WebsiteId");
 
                     b.OwnsOne("NaCoDoKina.Api.Entities.Location", "Location", b1 =>
                         {
@@ -195,7 +202,7 @@ namespace NaCoDoKina.Api.Data.Migrations
                 {
                     b.HasOne("NaCoDoKina.Api.Entities.ServiceUrl", "Url")
                         .WithMany()
-                        .HasForeignKey("UrlName", "Url1");
+                        .HasForeignKey("UrlId");
                 });
 
             modelBuilder.Entity("NaCoDoKina.Api.Entities.MovieDetails", b =>

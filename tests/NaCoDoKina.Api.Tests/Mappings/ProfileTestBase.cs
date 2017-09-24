@@ -2,13 +2,14 @@
 
 namespace NaCoDoKina.Api.Mappings
 {
-    public class ProfileBaseTest<TProfile> where TProfile : Profile, new()
+    public class ProfileTestBase<TProfile> : UnitTestBase
+        where TProfile : Profile, new()
     {
         protected TProfile ProfileUnderTest { get; }
 
         protected IMapper Mapper { get; }
 
-        public ProfileBaseTest()
+        public ProfileTestBase()
         {
             ProfileUnderTest = new TProfile();
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace NaCoDoKina.Api.Migrations
 {
-    public partial class UpdateUserId : Migration
+    public partial class InitializeDataModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
