@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -44,12 +45,24 @@ namespace NaCoDoKina.Api
 
             ConfigureSwaggerServices(services);
 
+            ConfigureAutoMapper(services);
+
             var builder = new ContainerBuilder();
             builder.Populate(services);
             builder.RegisterModule(new ApplicationModule(Configuration));
             ApplicationContainer = builder.Build();
 
             return new AutofacServiceProvider(ApplicationContainer);
+        }
+
+        /// <summary>
+        /// Adds auto mapper as dependency and imports all possible extension from assembly 
+        /// </summary>
+        /// <see cref="https://github.com/AutoMapper/AutoMapper.Extensions.Microsoft.DependencyInjection"/>
+        /// <param name="services"></param>
+        private void ConfigureAutoMapper(IServiceCollection services)
+        {
+            services.AddAutoMapper();
         }
 
         /// <summary>
