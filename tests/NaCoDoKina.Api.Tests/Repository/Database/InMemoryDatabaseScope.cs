@@ -1,7 +1,7 @@
-﻿using Microsoft.Data.Sqlite;
-using System;
+﻿using System;
+using Microsoft.Data.Sqlite;
 
-namespace NaCoDoKina.Api.Repository
+namespace NaCoDoKina.Api.Repository.Database
 {
     /// <inheritdoc/>
     /// <summary>

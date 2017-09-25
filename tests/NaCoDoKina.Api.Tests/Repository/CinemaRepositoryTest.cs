@@ -9,9 +9,9 @@ using Xunit;
 
 namespace NaCoDoKina.Api.Repository
 {
-    public class CinemaRepositoryTest : RepositoryTestBase<ICinemaRepository>
+    public class CinemaRepositoryTest : ApplicationRepositoryTestBase<ICinemaRepository>
     {
-        public class GetAllCinemasForMovie : RepositoryTestBase<ICinemaRepository>
+        public class GetAllCinemasForMovie : CinemaRepositoryTest
         {
             [Fact]
             public async Task Should_return_all_cinemas_for_movie()
@@ -83,11 +83,11 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var contextScope = CreateContextScope())
                 {
-                    contextScope.ApplicationContext.Cinemas.AddRange(cinemas);
-                    contextScope.ApplicationContext.MovieShowtimes.AddRange(movieShowtimes);
-                    await contextScope.ApplicationContext.SaveChangesAsync();
+                    contextScope.DbContext.Cinemas.AddRange(cinemas);
+                    contextScope.DbContext.MovieShowtimes.AddRange(movieShowtimes);
+                    await contextScope.DbContext.SaveChangesAsync();
 
-                    foreach (var movie in contextScope.ApplicationContext.Movies)
+                    foreach (var movie in contextScope.DbContext.Movies)
                     {
                         movies.Single(m => m.Name == movie.Name).Id = movie.Id;
                     }
@@ -95,7 +95,7 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var contextScope = CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
                     var returnedCinemas = await RepositoryUnderTest.GetAllCinemasForMovieAsync(movie1.Id);
@@ -107,8 +107,8 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var contextScope = CreateContextScope())
                 {
-                    contextScope.ApplicationContext.Cinemas.Should().HaveSameCount(cinemas);
-                    contextScope.ApplicationContext.Movies.Should().HaveSameCount(movies);
+                    contextScope.DbContext.Cinemas.Should().HaveSameCount(cinemas);
+                    contextScope.DbContext.Movies.Should().HaveSameCount(movies);
                 }
             }
         }
@@ -137,7 +137,7 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var contextScope = CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
                     var returnedCinema = await RepositoryUnderTest.AddCinema(cinema);
@@ -149,8 +149,8 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var contextScope = CreateContextScope())
                 {
-                    contextScope.ApplicationContext.Cinemas.Count().Should().Be(1);
-                    contextScope.ApplicationContext.CinemaNetworks.Count().Should().Be(1);
+                    contextScope.DbContext.Cinemas.Count().Should().Be(1);
+                    contextScope.DbContext.CinemaNetworks.Count().Should().Be(1);
                 }
             }
 
@@ -184,13 +184,13 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var contextScope = CreateContextScope())
                 {
-                    contextScope.ApplicationContext.Cinemas.Add(cinema1);
-                    await contextScope.ApplicationContext.SaveChangesAsync();
+                    contextScope.DbContext.Cinemas.Add(cinema1);
+                    await contextScope.DbContext.SaveChangesAsync();
                 }
 
                 using (var contextScope = CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
                     Func<Task<Cinema>> action = () => RepositoryUnderTest.AddCinema(cinema);
@@ -201,8 +201,8 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var contextScope = CreateContextScope())
                 {
-                    contextScope.ApplicationContext.Cinemas.Count().Should().Be(1);
-                    contextScope.ApplicationContext.CinemaNetworks.Count().Should().Be(1);
+                    contextScope.DbContext.Cinemas.Count().Should().Be(1);
+                    contextScope.DbContext.CinemaNetworks.Count().Should().Be(1);
                 }
             }
         }
@@ -239,14 +239,14 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var contextScope = CreateContextScope())
                 {
-                    contextScope.ApplicationContext.Cinemas.AddRange(cinemas);
-                    await contextScope.ApplicationContext.SaveChangesAsync();
+                    contextScope.DbContext.Cinemas.AddRange(cinemas);
+                    await contextScope.DbContext.SaveChangesAsync();
                 }
 
                 IEnumerable<Cinema> returnedCinemas;
                 using (var contextScope = CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
                     returnedCinemas = await RepositoryUnderTest.GetAllCinemas();
@@ -259,12 +259,12 @@ namespace NaCoDoKina.Api.Repository
                         .Match(enumerable => enumerable.All(cinema => cinema.Id > 0));
 
                     // Needs equals operators implementation
-                    //contextScope.ApplicationContext.Cinemas
+                    //contextScope.DbContext.Cinemas
                     //    .Include(c => c.CinemaNetwork)
                     //    .Should().BeEquivalentTo(returnedCinemas);
 
-                    contextScope.ApplicationContext.Cinemas.Should().HaveCount(cinemas.Length);
-                    contextScope.ApplicationContext.CinemaNetworks.Should().HaveCount(1);
+                    contextScope.DbContext.Cinemas.Should().HaveCount(cinemas.Length);
+                    contextScope.DbContext.CinemaNetworks.Should().HaveCount(1);
                 }
             }
         }
@@ -303,13 +303,13 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var contextScope = CreateContextScope())
                 {
-                    contextScope.ApplicationContext.Cinemas.AddRange(cinemas);
-                    await contextScope.ApplicationContext.SaveChangesAsync();
+                    contextScope.DbContext.Cinemas.AddRange(cinemas);
+                    await contextScope.DbContext.SaveChangesAsync();
                 }
 
                 using (var contextScope = CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
                     var returnedCinema = await RepositoryUnderTest.GetCinemaAsync(cinema1Id);
@@ -352,13 +352,13 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var contextScope = CreateContextScope())
                 {
-                    contextScope.ApplicationContext.Cinemas.AddRange(cinemas);
-                    await contextScope.ApplicationContext.SaveChangesAsync();
+                    contextScope.DbContext.Cinemas.AddRange(cinemas);
+                    await contextScope.DbContext.SaveChangesAsync();
                 }
 
                 using (var contextScope = CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
                     var returnedCinema = await RepositoryUnderTest.GetCinemaAsync(cinema1.Name);
@@ -401,13 +401,13 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var contextScope = CreateContextScope())
                 {
-                    contextScope.ApplicationContext.Cinemas.AddRange(cinemas);
-                    await contextScope.ApplicationContext.SaveChangesAsync();
+                    contextScope.DbContext.Cinemas.AddRange(cinemas);
+                    await contextScope.DbContext.SaveChangesAsync();
                 }
 
                 using (var contextScope = CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
                     var returnedCinema = await RepositoryUnderTest.GetCinemaAsync(nonExistingId);

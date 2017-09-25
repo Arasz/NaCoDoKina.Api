@@ -1,9 +1,18 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
+using NaCoDoKina.Api.Repository.Database;
 
 namespace NaCoDoKina.Api.Repository
 {
-    public abstract class RepositoryTestBase<TRepository> : UnitTestBase
+    /// <inheritdoc/>
+    /// <summary>
+    /// Base class for all repositories tests 
+    /// </summary>
+    /// <typeparam name="TRepository"> Repository under test type </typeparam>
+    /// <typeparam name="TDbContext"> Context used by repository </typeparam>
+    public abstract class RepositoryTestBase<TRepository, TDbContext> : UnitTestBase
+        where TDbContext : DbContext
     {
         protected TRepository RepositoryUnderTest { get; set; }
 
@@ -11,9 +20,9 @@ namespace NaCoDoKina.Api.Repository
 
         protected InMemoryDatabaseScope DatabaseScope { get; }
 
-        protected TestDatabaseContextScope CreateContextScope()
+        protected DbContextScope<TDbContext> CreateContextScope()
         {
-            return new TestDatabaseContextScope(DatabaseScope);
+            return new DbContextScope<TDbContext>(DatabaseScope);
         }
 
         protected RepositoryTestBase()
@@ -39,7 +48,7 @@ namespace NaCoDoKina.Api.Repository
         {
             using (var contextScope = CreateContextScope())
             {
-                contextScope.ApplicationContext.Database.EnsureCreated();
+                contextScope.DbContext.Database.EnsureCreated();
             }
         }
     }

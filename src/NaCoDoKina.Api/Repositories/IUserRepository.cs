@@ -12,14 +12,15 @@ namespace NaCoDoKina.Api.Repositories
         /// <param name="user"> User </param>
         /// <param name="oldPassword"> Old password </param>
         /// <param name="newPassword"> New password </param>
-        Task UpdateUserPassword(ApplicationUser user, string oldPassword, string newPassword);
+        /// <returns> True if succeeded </returns>
+        Task<bool> UpdateUserPassword(ApplicationUser user, string oldPassword, string newPassword);
 
         /// <summary>
         /// Increments failed access counter for user 
         /// </summary>
         /// <param name="user"> User </param>
-        /// <returns></returns>
-        Task IncrementAccessFailed(ApplicationUser user);
+        /// <returns> True if succeeded </returns>
+        Task<bool> IncrementAccessFailed(ApplicationUser user);
 
         /// <summary>
         /// Returns all registered users 
@@ -29,9 +30,8 @@ namespace NaCoDoKina.Api.Repositories
         /// <summary>
         /// Returns user by name 
         /// </summary>
-        /// <param name="userId"> User name </param>
         /// <returns> RegisterUser </returns>
-        Task<ApplicationUser> GetUserByNameAsync(string userId);
+        Task<ApplicationUser> GetUserByNameAsync(string userName);
 
         /// <summary>
         /// Returns user by name 
@@ -51,14 +51,6 @@ namespace NaCoDoKina.Api.Repositories
         /// Returns user by id 
         /// </summary>
         /// <param name="userId"> user id </param>
-        Task<ApplicationUser> GetUserByIdAsync(string userId);
-
-        /// <summary>
-        /// Returns user by external login provider 
-        /// </summary>
-        /// <param name="loginProvider"> Login provider name </param>
-        /// <param name="key"> Login provider name </param>
-        /// <returns></returns>
-        Task<ApplicationUser> GetUserByLoginProviderAsync(string loginProvider, string key);
+        Task<ApplicationUser> GetUserByIdAsync(long userId);
     }
 }

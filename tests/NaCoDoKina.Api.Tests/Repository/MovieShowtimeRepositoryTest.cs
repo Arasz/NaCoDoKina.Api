@@ -10,7 +10,7 @@ using Xunit;
 
 namespace NaCoDoKina.Api.Repository
 {
-    public class MovieShowtimeRepositoryTest : RepositoryTestBase<IMovieShowtimeRepository>
+    public class MovieShowtimeRepositoryTest : ApplicationRepositoryTestBase<IMovieShowtimeRepository>
     {
         public class GetMovieShowtimesAsync : MovieShowtimeRepositoryTest
         {
@@ -32,13 +32,13 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes.AddRange(showtimes);
-                    await scope.ApplicationContext.SaveChangesAsync();
+                    scope.DbContext.MovieShowtimes.AddRange(showtimes);
+                    await scope.DbContext.SaveChangesAsync();
                 }
 
                 using (var scope = CreateContextScope())
                 {
-                    Mock.Provide(scope.ApplicationContext);
+                    Mock.Provide(scope.DbContext);
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
@@ -50,7 +50,7 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes
+                    scope.DbContext.MovieShowtimes
                         .Count().Should().Be(showtimeCount);
                 }
             }
@@ -73,13 +73,13 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes.AddRange(showtimes);
-                    await scope.ApplicationContext.SaveChangesAsync();
+                    scope.DbContext.MovieShowtimes.AddRange(showtimes);
+                    await scope.DbContext.SaveChangesAsync();
                 }
 
                 using (var scope = CreateContextScope())
                 {
-                    Mock.Provide(scope.ApplicationContext);
+                    Mock.Provide(scope.DbContext);
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
@@ -91,7 +91,7 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes
+                    scope.DbContext.MovieShowtimes
                         .Count().Should().Be(showtimeCount);
                 }
             }
@@ -111,13 +111,13 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes.AddRange(showtimes);
-                    await scope.ApplicationContext.SaveChangesAsync();
+                    scope.DbContext.MovieShowtimes.AddRange(showtimes);
+                    await scope.DbContext.SaveChangesAsync();
                 }
 
                 using (var scope = CreateContextScope())
                 {
-                    Mock.Provide(scope.ApplicationContext);
+                    Mock.Provide(scope.DbContext);
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
@@ -129,7 +129,7 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes
+                    scope.DbContext.MovieShowtimes
                         .Count().Should().Be(showtimeCount);
                 }
             }
@@ -156,14 +156,14 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.Movies.Add(movie);
-                    scope.ApplicationContext.MovieShowtimes.AddRange(laterShowtimes.Concat(earlierShowtimes));
-                    await scope.ApplicationContext.SaveChangesAsync();
+                    scope.DbContext.Movies.Add(movie);
+                    scope.DbContext.MovieShowtimes.AddRange(laterShowtimes.Concat(earlierShowtimes));
+                    await scope.DbContext.SaveChangesAsync();
                 }
 
                 using (var scope = CreateContextScope())
                 {
-                    Mock.Provide(scope.ApplicationContext);
+                    Mock.Provide(scope.DbContext);
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
@@ -175,7 +175,7 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes
+                    scope.DbContext.MovieShowtimes
                         .Count().Should().Be(2 * showtimeCount);
                 }
             }
@@ -208,13 +208,13 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes.AddRange(showtimes);
-                    await scope.ApplicationContext.SaveChangesAsync();
+                    scope.DbContext.MovieShowtimes.AddRange(showtimes);
+                    await scope.DbContext.SaveChangesAsync();
                 }
 
                 using (var scope = CreateContextScope())
                 {
-                    Mock.Provide(scope.ApplicationContext);
+                    Mock.Provide(scope.DbContext);
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
@@ -228,7 +228,7 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes
+                    scope.DbContext.MovieShowtimes
                         .Count().Should().Be(showtimeCount + 1);
                 }
             }
@@ -258,13 +258,13 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes.AddRange(showtimes);
-                    await scope.ApplicationContext.SaveChangesAsync();
+                    scope.DbContext.MovieShowtimes.AddRange(showtimes);
+                    await scope.DbContext.SaveChangesAsync();
                 }
 
                 using (var scope = CreateContextScope())
                 {
-                    Mock.Provide(scope.ApplicationContext);
+                    Mock.Provide(scope.DbContext);
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
@@ -276,7 +276,7 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes
+                    scope.DbContext.MovieShowtimes
                         .Count().Should().Be(showtimeCount + 1);
                 }
             }
@@ -298,13 +298,13 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes.AddRange(showtimes);
-                    await scope.ApplicationContext.SaveChangesAsync();
+                    scope.DbContext.MovieShowtimes.AddRange(showtimes);
+                    await scope.DbContext.SaveChangesAsync();
                 }
 
                 using (var scope = CreateContextScope())
                 {
-                    Mock.Provide(scope.ApplicationContext);
+                    Mock.Provide(scope.DbContext);
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
@@ -316,7 +316,7 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes
+                    scope.DbContext.MovieShowtimes
                         .Count().Should().Be(showtimeCount);
                 }
             }
@@ -345,15 +345,15 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.Movies.Add(movie);
-                    scope.ApplicationContext.Cinemas.Add(cinema);
-                    scope.ApplicationContext.MovieShowtimes.AddRange(laterShowtimes.Concat(earlierShowtimes));
-                    await scope.ApplicationContext.SaveChangesAsync();
+                    scope.DbContext.Movies.Add(movie);
+                    scope.DbContext.Cinemas.Add(cinema);
+                    scope.DbContext.MovieShowtimes.AddRange(laterShowtimes.Concat(earlierShowtimes));
+                    await scope.DbContext.SaveChangesAsync();
                 }
 
                 using (var scope = CreateContextScope())
                 {
-                    Mock.Provide(scope.ApplicationContext);
+                    Mock.Provide(scope.DbContext);
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
@@ -365,7 +365,7 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes
+                    scope.DbContext.MovieShowtimes
                         .Count().Should().Be(2 * showtimeCount);
                 }
             }
@@ -392,13 +392,13 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes.AddRange(showtimes);
-                    await scope.ApplicationContext.SaveChangesAsync();
+                    scope.DbContext.MovieShowtimes.AddRange(showtimes);
+                    await scope.DbContext.SaveChangesAsync();
                 }
 
                 using (var scope = CreateContextScope())
                 {
-                    Mock.Provide(scope.ApplicationContext);
+                    Mock.Provide(scope.DbContext);
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
@@ -408,9 +408,9 @@ namespace NaCoDoKina.Api.Repository
                 // Assert
                 using (var scope = CreateContextScope())
                 {
-                    scope.ApplicationContext.MovieShowtimes
+                    scope.DbContext.MovieShowtimes
                         .Count().Should().Be(1);
-                    var single = await scope.ApplicationContext.MovieShowtimes
+                    var single = await scope.DbContext.MovieShowtimes
                         .SingleAsync();
                     single.Id.Should().Be(notDeleted.Id);
                 }
@@ -448,15 +448,15 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var contextScope = CreateContextScope())
                 {
-                    cinema.Id = contextScope.ApplicationContext.Cinemas.Add(cinema).Entity.Id;
-                    movie.Id = contextScope.ApplicationContext.Movies.Add(movie).Entity.Id;
+                    cinema.Id = contextScope.DbContext.Cinemas.Add(cinema).Entity.Id;
+                    movie.Id = contextScope.DbContext.Movies.Add(movie).Entity.Id;
 
-                    await contextScope.ApplicationContext.SaveChangesAsync();
+                    await contextScope.DbContext.SaveChangesAsync();
                 }
 
                 using (var contextScope = CreateContextScope())
                 {
-                    RepositoryUnderTest = new MovieShowtimeRepository(contextScope.ApplicationContext, LoggerMock.Object);
+                    RepositoryUnderTest = new MovieShowtimeRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
                     var movieShowtimeId = await RepositoryUnderTest.AddMovieShowtimeAsync(movieShowtime);
@@ -467,10 +467,10 @@ namespace NaCoDoKina.Api.Repository
 
                 using (var contextScope = CreateContextScope())
                 {
-                    contextScope.ApplicationContext.MovieShowtimes
+                    contextScope.DbContext.MovieShowtimes
                         .Should().HaveCount(1);
 
-                    contextScope.ApplicationContext.MovieShowtimes
+                    contextScope.DbContext.MovieShowtimes
                         .Should().ContainSingle(showtime => showtime.Id == showtimeId);
                 }
             }
