@@ -7,10 +7,10 @@ namespace NaCoDoKina.Api.DataContracts.Authentication
     /// </summary>
     public class Credentials
     {
-        [Required]
+        [Required, StringLength(40, MinimumLength = 1)]
         public string UserName { get; set; }
 
-        [Required]
+        [Required, StringLength(40, MinimumLength = 10)]
         public string Password { get; set; }
     }
 }

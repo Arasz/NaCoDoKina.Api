@@ -46,11 +46,11 @@ namespace NaCoDoKina.Api.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-                _logger.LogDebug("RegisterUser mapping");
+                _logger.LogDebug("User mapping");
 
                 var user = _mapper.Map<User>(credentials);
 
-                _logger.LogDebug("RegisterUser mapped {@registerUser}", user);
+                _logger.LogDebug("User mapped {@registerUser}", user);
 
                 _logger.LogDebug("Authentication");
 
