@@ -13,6 +13,7 @@ namespace NaCoDoKina.Api
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseApplicationInsights()
                 .ConfigureLogging(builder =>
                 {
                     builder.AddSerilog();
