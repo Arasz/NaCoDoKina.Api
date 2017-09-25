@@ -54,7 +54,7 @@ namespace NaCoDoKina.Api.Controllers
 
                 _logger.LogDebug("Authentication");
 
-                var result = await _userService.Authenticate(user, credentials.Password);
+                var result = await _userService.AuthenticateAsync(user, credentials.Password);
 
                 _logger.LogDebug("Authentication result {@result}", result);
 

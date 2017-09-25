@@ -36,7 +36,7 @@ namespace NaCoDoKina.Api.Services
             return _authenticatedUserId.Id;
         }
 
-        public async Task<Result> Authenticate(User user, string password)
+        public async Task<Result> AuthenticateAsync(User user, string password)
         {
             var internalUser = await _userRepository.GetUserByIdAsync(user.Id);
 
@@ -55,8 +55,9 @@ namespace NaCoDoKina.Api.Services
                     return Result.CreateSucceeded();
 
                 case PasswordVerificationResult.SuccessRehashNeeded:
-                    await _userRepository.UpdateUserPassword(internalUser, password, password);
-                    return Result.CreateSucceeded();
+                    var rehashResult = await _userRepository.UpdateUserPassword(internalUser, password, password);
+
+                    return rehashResult ? Result.CreateSucceeded() : Result.CreateFailed("Password cannot be updated");
 
                 default:
                     throw new ArgumentOutOfRangeException();
