@@ -53,12 +53,12 @@ namespace NaCoDoKina.Api.Controllers
 
                 _logger.LogDebug("Authentication result {@result}", result);
 
-                if (!result.Succeeded)
+                if (!result.IsSuccess)
                     return Unauthorized();
 
                 _logger.LogDebug("Create token");
 
-                var token = _tokenService.CreateToken(result.Data);
+                var token = _tokenService.CreateToken(result.Value);
 
                 _logger.LogDebug("Token created {@token}", token);
 

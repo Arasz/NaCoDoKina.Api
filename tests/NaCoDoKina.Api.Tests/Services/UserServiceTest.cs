@@ -72,8 +72,8 @@ namespace NaCoDoKina.Api.Services
                 var result = await ServiceUnderTest.AuthenticateAsync(user, password);
 
                 // Assert
-                result.Succeeded.Should().BeTrue();
-                result.Data.Id.Should().Be(user.Id);
+                result.IsSuccess.Should().BeTrue();
+                result.Value.Id.Should().Be(user.Id);
             }
 
             [Fact]
@@ -99,7 +99,7 @@ namespace NaCoDoKina.Api.Services
                 var result = await ServiceUnderTest.AuthenticateAsync(user, password);
 
                 // Assert
-                result.Succeeded.Should().BeFalse();
+                result.IsSuccess.Should().BeFalse();
             }
 
             [Fact]
@@ -125,7 +125,7 @@ namespace NaCoDoKina.Api.Services
                 var result = await ServiceUnderTest.AuthenticateAsync(user, password);
 
                 // Assert
-                result.Succeeded.Should().BeFalse();
+                result.IsSuccess.Should().BeFalse();
             }
 
             [Fact]
@@ -156,7 +156,7 @@ namespace NaCoDoKina.Api.Services
                 var result = await ServiceUnderTest.AuthenticateAsync(user, password);
 
                 // Assert
-                result.Succeeded.Should().BeTrue();
+                result.IsSuccess.Should().BeTrue();
                 Mock.Mock<IUserRepository>().Verify();
             }
 
@@ -188,7 +188,7 @@ namespace NaCoDoKina.Api.Services
                 var result = await ServiceUnderTest.AuthenticateAsync(user, password);
 
                 // Assert
-                result.Succeeded.Should().BeFalse();
+                result.IsSuccess.Should().BeFalse();
                 Mock.Mock<IUserRepository>().Verify();
             }
         }
@@ -332,8 +332,8 @@ namespace NaCoDoKina.Api.Services
                 var result = await ServiceUnderTest.CreateUserWithPasswordAsync(user, password);
 
                 // Assert
-                result.Succeeded.Should().BeTrue();
-                result.Data.Id.Should().BePositive();
+                result.IsSuccess.Should().BeTrue();
+                result.Value.Id.Should().BePositive();
             }
 
             [Fact]
@@ -351,7 +351,7 @@ namespace NaCoDoKina.Api.Services
                 var result = await ServiceUnderTest.CreateUserWithPasswordAsync(user, password);
 
                 // Assert
-                result.Succeeded.Should().BeFalse();
+                result.IsSuccess.Should().BeFalse();
             }
         }
 
