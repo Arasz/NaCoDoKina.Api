@@ -56,11 +56,12 @@ namespace NaCoDoKina.Api.Services
                 var password = Fixture.Create<string>();
                 var internalPasswordHash = Fixture.Create<string>();
                 var internalUser = Fixture.Build<ApplicationUser>()
+                    .With(applicationUser => applicationUser.Id, user.Id)
                     .With(applicationUser => applicationUser.PasswordHash, internalPasswordHash)
                     .Create();
 
                 Mock.Mock<IUserRepository>()
-                    .Setup(repository => repository.GetUserByIdAsync(user.Id))
+                    .Setup(repository => repository.GetUserByNameAsync(user.UserName))
                     .ReturnsAsync(internalUser);
 
                 Mock.Mock<IPasswordHasher<ApplicationUser>>()
@@ -72,6 +73,7 @@ namespace NaCoDoKina.Api.Services
 
                 // Assert
                 result.Succeeded.Should().BeTrue();
+                result.Data.Id.Should().Be(user.Id);
             }
 
             [Fact]
@@ -138,7 +140,7 @@ namespace NaCoDoKina.Api.Services
                     .Create();
 
                 Mock.Mock<IUserRepository>()
-                    .Setup(repository => repository.GetUserByIdAsync(user.Id))
+                    .Setup(repository => repository.GetUserByNameAsync(user.UserName))
                     .ReturnsAsync(internalUser);
 
                 Mock.Mock<IUserRepository>()
@@ -170,7 +172,7 @@ namespace NaCoDoKina.Api.Services
                     .Create();
 
                 Mock.Mock<IUserRepository>()
-                    .Setup(repository => repository.GetUserByIdAsync(user.Id))
+                    .Setup(repository => repository.GetUserByNameAsync(user.UserName))
                     .ReturnsAsync(internalUser);
 
                 Mock.Mock<IUserRepository>()
@@ -319,17 +321,19 @@ namespace NaCoDoKina.Api.Services
             {
                 // Arrange
                 var user = Fixture.Create<User>();
+                var internalUser = Fixture.Create<ApplicationUser>();
                 var password = Fixture.Create<string>();
 
                 Mock.Mock<IUserRepository>()
                     .Setup(repository => repository.CreateUserWithPasswordAsync(It.IsAny<ApplicationUser>(), password))
-                    .ReturnsAsync(true);
+                    .ReturnsAsync(internalUser);
 
                 // Act
                 var result = await ServiceUnderTest.CreateUserWithPasswordAsync(user, password);
 
                 // Assert
                 result.Succeeded.Should().BeTrue();
+                result.Data.Id.Should().BePositive();
             }
 
             [Fact]
@@ -341,7 +345,7 @@ namespace NaCoDoKina.Api.Services
 
                 Mock.Mock<IUserRepository>()
                     .Setup(repository => repository.CreateUserWithPasswordAsync(It.IsAny<ApplicationUser>(), password))
-                    .ReturnsAsync(false);
+                    .ReturnsAsync((ApplicationUser)null);
 
                 // Act
                 var result = await ServiceUnderTest.CreateUserWithPasswordAsync(user, password);

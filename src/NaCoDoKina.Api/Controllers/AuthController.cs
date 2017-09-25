@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 namespace NaCoDoKina.Api.Controllers
 {
     [Route("v1/[controller]")]
+    [AllowAnonymous]
     public class AuthController : Controller
     {
         private readonly ITokenService _tokenService;
@@ -36,7 +37,6 @@ namespace NaCoDoKina.Api.Controllers
         [ProducesResponseType(typeof(JwtToken), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [AllowAnonymous]
         public async Task<IActionResult> GetTokenForUser([FromBody]Credentials credentials)
         {
             using (_logger.BeginScope(nameof(GetTokenForUser)))
@@ -58,7 +58,7 @@ namespace NaCoDoKina.Api.Controllers
 
                 _logger.LogDebug("Create token");
 
-                var token = _tokenService.CreateToken(user);
+                var token = _tokenService.CreateToken(result.Data);
 
                 _logger.LogDebug("Token created {@token}", token);
 

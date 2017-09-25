@@ -21,14 +21,20 @@ namespace NaCoDoKina.Api.Repositories
         public async Task<bool> UpdateUserPassword(ApplicationUser user, string oldPassword, string newPassword)
         {
             var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
-            _logger.LogDebug("{methodName} with result {@result}", nameof(UpdateUserPassword), result);
+
+            if (!result.Succeeded)
+                _logger.LogError("Errors during {methodName} {@errors}", nameof(UpdateUserPassword), result.Errors);
+
             return result.Succeeded;
         }
 
         public async Task<bool> IncrementAccessFailed(ApplicationUser user)
         {
             var result = await _userManager.AccessFailedAsync(user);
-            _logger.LogDebug("{methodName} with result {@result}", nameof(IncrementAccessFailed), result);
+
+            if (!result.Succeeded)
+                _logger.LogError("Errors during {methodName} {@errors}", nameof(IncrementAccessFailed), result.Errors);
+
             return result.Succeeded;
         }
 
@@ -54,10 +60,15 @@ namespace NaCoDoKina.Api.Repositories
                 .SingleOrDefaultAsync(user => user.Email == email);
         }
 
-        public async Task<bool> CreateUserWithPasswordAsync(ApplicationUser user, string password)
+        public async Task<ApplicationUser> CreateUserWithPasswordAsync(ApplicationUser user, string password)
         {
             var result = await _userManager.CreateAsync(user, password);
-            return result.Succeeded;
+
+            if (result.Succeeded)
+                return user;
+
+            _logger.LogError("Errors during {methodName} {@errors}", nameof(CreateUserWithPasswordAsync), result.Errors);
+            return null;
         }
     }
 }

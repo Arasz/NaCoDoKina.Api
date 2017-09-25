@@ -19,7 +19,7 @@ namespace NaCoDoKina.Api.Services
         /// <param name="user"> RegisterUser </param>
         /// <param name="password"> Password </param>
         /// <returns> True if successful authenticated </returns>
-        Task<Result> AuthenticateAsync(User user, string password);
+        Task<Result<User>> AuthenticateAsync(User user, string password);
 
         /// <summary>
         /// Returns all registered users 
@@ -45,6 +45,6 @@ namespace NaCoDoKina.Api.Services
         /// </summary>
         /// <param name="user"> RegisterUser </param>
         /// <param name="password"> Password </param>
-        Task<Result> CreateUserWithPasswordAsync(User user, string password);
+        Task<Result<User>> CreateUserWithPasswordAsync(User user, string password);
     }
 }

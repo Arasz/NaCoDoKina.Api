@@ -53,7 +53,7 @@ namespace NaCoDoKina.Api.Controllers
 
                 Mock.Mock<IUserService>()
                     .Setup(service => service.AuthenticateAsync(It.IsAny<User>(), credentials.Password))
-                    .ReturnsAsync(Result.CreateSucceeded);
+                    .ReturnsAsync(Result<User>.CreateSucceeded(It.IsAny<User>()));
 
                 Mock.Mock<ITokenService>()
                     .Setup(service => service.CreateToken(It.IsAny<User>()))
@@ -78,7 +78,7 @@ namespace NaCoDoKina.Api.Controllers
 
                 Mock.Mock<IUserService>()
                     .Setup(service => service.AuthenticateAsync(It.IsAny<User>(), credentials.Password))
-                    .ReturnsAsync(Result.CreateFailed());
+                    .ReturnsAsync(Result<User>.CreateFailed());
 
                 Mock.Mock<ITokenService>()
                     .Setup(service => service.CreateToken(It.IsAny<User>()))

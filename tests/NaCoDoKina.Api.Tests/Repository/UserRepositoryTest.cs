@@ -504,7 +504,9 @@ namespace NaCoDoKina.Api.Repository
                     var result = await RepositoryUnderTest.CreateUserWithPasswordAsync(newUser, password);
 
                     // Assert
-                    result.Should().BeTrue();
+                    result.Should().NotBeNull();
+                    result.UserName.Should().Be(newUser.UserName);
+                    result.Id.Should().BePositive();
                 }
                 using (var scope = CreateContextScope())
                 {
@@ -547,7 +549,7 @@ namespace NaCoDoKina.Api.Repository
 
                     // Assert
 
-                    result.Should().BeFalse();
+                    result.Should().BeNull();
                 }
                 using (var scope = CreateContextScope())
                 {
@@ -589,7 +591,7 @@ namespace NaCoDoKina.Api.Repository
                     var result = await RepositoryUnderTest.CreateUserWithPasswordAsync(newUser, password);
 
                     // Assert
-                    result.Should().BeFalse();
+                    result.Should().BeNull();
                 }
                 using (var scope = CreateContextScope())
                 {

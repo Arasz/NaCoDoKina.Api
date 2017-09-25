@@ -2,11 +2,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed;
 using NaCoDoKina.Api.IntegrationTests.Api.Fixtures;
+using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api
 {
+    [Collection("Database tests")]
     public class HttpTestWithDatabase : HttpTestBase
     {
+        private readonly DatabaseFixture _databaseFixture;
+
         protected TDbContext GetDbContext<TDbContext>()
             where TDbContext : DbContext
         {
@@ -15,8 +19,8 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
         public HttpTestWithDatabase()
         {
-            var databaseFixture = Services.GetService<DatabaseFixture>();
-            databaseFixture.CreateDatabase();
+            _databaseFixture = Services.GetService<DatabaseFixture>();
+            _databaseFixture.CreateDatabase();
         }
 
         protected override void ConfigureServices(IServiceCollection serviceCollection)
@@ -26,6 +30,16 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             serviceCollection.AddSingleton<IDatabaseSeed, ApplicationDataSeed>();
             serviceCollection.AddSingleton<IDatabaseSeed, IdentityDataSeed>();
             serviceCollection.AddSingleton<DatabaseFixture>();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            if (disposing)
+            {
+                _databaseFixture.Dispose();
+            }
         }
     }
 }
