@@ -20,7 +20,7 @@ namespace NaCoDoKina.Api.Repositories
 
         public async Task<bool> UpdateUserPassword(ApplicationUser user, string oldPassword, string newPassword)
         {
-            var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+            IdentityResult result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
 
             if (!result.Succeeded)
                 _logger.LogError("Errors during {methodName} {@errors}", nameof(UpdateUserPassword), result.Errors);

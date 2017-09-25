@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NaCoDoKina.Api.DataContracts.Movies;
 using NaCoDoKina.Api.Exceptions;
+using NaCoDoKina.Api.Results;
 using NaCoDoKina.Api.Services;
 using Ploeh.AutoFixture;
 using System;
@@ -432,7 +433,7 @@ namespace NaCoDoKina.Api.Controllers
 
             RatingServiceMock
                 .Setup(service => service.SetMovieRating(movieId, rating))
-                .Returns(() => Task.CompletedTask);
+                .ReturnsAsync(Result.Success());
 
             //Act
             var result = await ControllerUnderTest.SetRatingForMovie(movieId, rating);
