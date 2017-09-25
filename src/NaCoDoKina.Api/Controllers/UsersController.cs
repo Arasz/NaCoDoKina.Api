@@ -49,7 +49,10 @@ namespace NaCoDoKina.Api.Controllers
                 _logger.LogDebug("User created with result {@result}", result);
 
                 if (result.Succeeded)
-                    return CreatedAtAction(nameof(AuthController.GetTokenForUser), nameof(AuthController), _mapper.Map<Credentials>(user));
+                {
+                    var userCredentials = _mapper.Map<Credentials>(user);
+                    return CreatedAtAction(nameof(AuthController.GetTokenForUser), null, nameof(AuthController), userCredentials);
+                }
 
                 return StatusCode(StatusCodes.Status500InternalServerError, result.FailReason);
             }

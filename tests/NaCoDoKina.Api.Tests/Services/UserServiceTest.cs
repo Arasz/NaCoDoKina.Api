@@ -60,7 +60,7 @@ namespace NaCoDoKina.Api.Services
                     .Create();
 
                 Mock.Mock<IUserRepository>()
-                    .Setup(repository => repository.GetUserByIdAsync(user.Id))
+                    .Setup(repository => repository.GetUserByNameAsync(user.UserName))
                     .ReturnsAsync(internalUser);
 
                 Mock.Mock<IPasswordHasher<ApplicationUser>>()
@@ -72,6 +72,7 @@ namespace NaCoDoKina.Api.Services
 
                 // Assert
                 result.Succeeded.Should().BeTrue();
+                result.Data.Id.Should().Be(user.Id);
             }
 
             [Fact]
@@ -138,7 +139,7 @@ namespace NaCoDoKina.Api.Services
                     .Create();
 
                 Mock.Mock<IUserRepository>()
-                    .Setup(repository => repository.GetUserByIdAsync(user.Id))
+                    .Setup(repository => repository.GetUserByNameAsync(user.UserName))
                     .ReturnsAsync(internalUser);
 
                 Mock.Mock<IUserRepository>()
@@ -170,7 +171,7 @@ namespace NaCoDoKina.Api.Services
                     .Create();
 
                 Mock.Mock<IUserRepository>()
-                    .Setup(repository => repository.GetUserByIdAsync(user.Id))
+                    .Setup(repository => repository.GetUserByNameAsync(user.UserName))
                     .ReturnsAsync(internalUser);
 
                 Mock.Mock<IUserRepository>()
