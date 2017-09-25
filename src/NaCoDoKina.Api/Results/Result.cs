@@ -1,45 +1,58 @@
 ﻿namespace NaCoDoKina.Api.Results
 {
     /// <summary>
-    /// Operation result without data 
+    /// Operation result without value 
     /// </summary>
     public class Result
     {
-        public static Result CreateSucceeded() => new Result(null);
+        public static Result<TData> Success<TData>(TData data) => Result<TData>.CreateSucceeded(data);
 
-        public static Result CreateFailed(string failReason) => new Result(failReason);
+        public static Result<TData> Failure<TData>(string failReason) => Result<TData>.CreateFailed(failReason);
 
-        public static Result CreateFailed() => new Result(string.Empty);
+        public static Result<TData> Failure<TData>() => Failure<TData>(string.Empty);
 
-        public bool Succeeded { get; }
+        public static Result Success() => new Result();
 
-        public string FailReason { get; }
+        public static Result Failure(string failReason) => new Result(false, failReason);
 
-        protected Result(string failReason)
+        public static Result Failure() => new Result(false);
+
+        /// <summary>
+        /// Indicates that operation ended with success 
+        /// </summary>
+        public bool IsSuccess { get; }
+
+        /// <summary>
+        /// Failure reason 
+        /// </summary>
+        public string FailureReason { get; }
+
+        protected Result(bool isSuccess = true, string failureReason = "")
         {
-            Succeeded = failReason is null;
-            FailReason = failReason;
+            IsSuccess = isSuccess;
+            FailureReason = failureReason;
         }
     }
 
     /// <inheritdoc/>
     /// <summary>
-    /// Operation result with data 
+    /// Operation result with value 
     /// </summary>
-    /// <typeparam name="TData"> Returned data type </typeparam>
-    public class Result<TData> : Result
+    /// <typeparam name="TValue"> Returned value type </typeparam>
+    public class Result<TValue> : Result
     {
-        public TData Data { get; }
+        /// <summary>
+        /// Operation result return value 
+        /// </summary>
+        public TValue Value { get; }
 
-        public static Result<TData> CreateSucceeded(TData data) => new Result<TData>(data, null);
+        public static Result<TValue> CreateSucceeded(TValue data) => new Result<TValue>(data);
 
-        public new static Result<TData> CreateFailed(string failReason) => new Result<TData>(default(TData), failReason);
+        public static Result<TValue> CreateFailed(string failReason) => new Result<TValue>(default(TValue), false, failReason);
 
-        public new static Result<TData> CreateFailed() => new Result<TData>(default(TData), string.Empty);
-
-        protected Result(TData data, string failReason) : base(failReason)
+        protected Result(TValue value, bool isSuccess = true, string failureReason = "") : base(isSuccess, failureReason)
         {
-            Data = data;
+            Value = value;
         }
     }
 }

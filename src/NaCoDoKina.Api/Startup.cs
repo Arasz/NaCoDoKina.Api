@@ -19,6 +19,7 @@ using NaCoDoKina.Api.Infrastructure.Settings;
 using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Text;
 
@@ -97,7 +98,11 @@ namespace NaCoDoKina.Api
                 builder.UseNpgsql(connectionString);
             });
 
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+                    options.ClaimsIdentity.UserIdClaimType = JwtRegisteredClaimNames.UniqueName;
+                })
                 .AddEntityFrameworkStores<ApplicationIdentityContext>();
 
             var jwtSettings = Configuration.GetSettings<JwtSettings>();

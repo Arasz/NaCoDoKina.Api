@@ -41,7 +41,7 @@ namespace NaCoDoKina.Api.Services
             var internalUser = await _userRepository.GetUserByNameAsync(user.UserName);
 
             if (internalUser is null)
-                return Result<User>.CreateFailed(AuthenticationFailedMessage);
+                return Result<User>.Failure<User>(AuthenticationFailedMessage);
 
             var result = _passwordHasher.VerifyHashedPassword(internalUser, internalUser.PasswordHash, password);
 
@@ -49,7 +49,7 @@ namespace NaCoDoKina.Api.Services
             {
                 case PasswordVerificationResult.Failed:
 
-                    return Result<User>.CreateFailed(AuthenticationFailedMessage);
+                    return Result<User>.Failure<User>(AuthenticationFailedMessage);
 
                 case PasswordVerificationResult.Success:
                     var completeUser = _mapper.Map<User>(internalUser);
@@ -58,7 +58,7 @@ namespace NaCoDoKina.Api.Services
                 case PasswordVerificationResult.SuccessRehashNeeded:
                     var rehashResult = await _userRepository.UpdateUserPassword(internalUser, password, password);
                     completeUser = _mapper.Map<User>(internalUser);
-                    return rehashResult ? Result<User>.CreateSucceeded(completeUser) : Result<User>.CreateFailed("Password cannot be updated");
+                    return rehashResult ? Result<User>.CreateSucceeded(completeUser) : Result<User>.Failure<User>("Password cannot be updated");
 
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -101,7 +101,7 @@ namespace NaCoDoKina.Api.Services
             internalUser = await _userRepository.CreateUserWithPasswordAsync(internalUser, password);
 
             if (internalUser is null)
-                return Result<User>.CreateFailed("User creation failed");
+                return Result<User>.Failure<User>("User creation failed");
 
             user = _mapper.Map<User>(internalUser);
             return Result<User>.CreateSucceeded(user);
