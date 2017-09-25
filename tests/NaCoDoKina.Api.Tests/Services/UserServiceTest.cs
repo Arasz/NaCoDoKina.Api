@@ -56,6 +56,7 @@ namespace NaCoDoKina.Api.Services
                 var password = Fixture.Create<string>();
                 var internalPasswordHash = Fixture.Create<string>();
                 var internalUser = Fixture.Build<ApplicationUser>()
+                    .With(applicationUser => applicationUser.Id, user.Id)
                     .With(applicationUser => applicationUser.PasswordHash, internalPasswordHash)
                     .Create();
 
