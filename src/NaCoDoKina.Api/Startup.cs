@@ -1,5 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
+using NaCoDoKina.Api.ActionFilters;
 using NaCoDoKina.Api.Data;
 using NaCoDoKina.Api.Infrastructure.Extensions;
 using NaCoDoKina.Api.Infrastructure.Identity;
@@ -36,7 +39,7 @@ namespace NaCoDoKina.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            ConfigureMvc(services);
 
             ConfigureIdentity(services);
 
@@ -44,12 +47,41 @@ namespace NaCoDoKina.Api
 
             ConfigureSwaggerServices(services);
 
+            ConfigureAutoMapper(services);
+
             var builder = new ContainerBuilder();
             builder.Populate(services);
             builder.RegisterModule(new ApplicationModule(Configuration));
             ApplicationContainer = builder.Build();
 
             return new AutofacServiceProvider(ApplicationContainer);
+        }
+
+        /// <summary>
+        /// Configure MVC framework 
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureMvc(IServiceCollection services)
+        {
+            services
+                .AddMvc(options =>
+                {
+                    options.Filters.Add<ValidationActionFilter>();
+                })
+                .AddFluentValidation(cfg =>
+                {
+                    cfg.RegisterValidatorsFromAssemblyContaining<Startup>();
+                });
+        }
+
+        /// <summary>
+        /// Adds auto mapper as dependency and imports all possible extension from assembly 
+        /// </summary>
+        /// <see cref="https://github.com/AutoMapper/AutoMapper.Extensions.Microsoft.DependencyInjection"/>
+        /// <param name="services"></param>
+        private void ConfigureAutoMapper(IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(Startup));
         }
 
         /// <summary>

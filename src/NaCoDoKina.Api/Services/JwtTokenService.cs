@@ -1,12 +1,13 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using NaCoDoKina.Api.Infrastructure.Extensions;
 using NaCoDoKina.Api.Infrastructure.Settings;
+using NaCoDoKina.Api.Models;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace NaCoDoKina.Api.Infrastructure.Services.Token
+namespace NaCoDoKina.Api.Services
 {
     public class JwtTokenService : ITokenService
     {
@@ -17,14 +18,14 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Token
             _jwtSettings = jwtSettings;
         }
 
-        public AuthenticationToken CreateToken(UserInformation userInformation)
+        public AuthToken CreateToken(User user)
         {
             var now = DateTime.UtcNow;
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userInformation.Id),
-                new Claim(JwtRegisteredClaimNames.UniqueName, userInformation.Id),
-                new Claim(JwtRegisteredClaimNames.Email, userInformation.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, now.ToTimestamp().ToString(), ClaimValueTypes.Integer64)
             };
@@ -43,7 +44,7 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Token
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.WriteToken(jwt);
 
-            return new AuthenticationToken
+            return new AuthToken
             {
                 Token = token,
                 Expires = expires

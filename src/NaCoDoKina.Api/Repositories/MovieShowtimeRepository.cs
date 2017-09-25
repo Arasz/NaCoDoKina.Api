@@ -39,6 +39,7 @@ namespace NaCoDoKina.Api.Repositories
                 .ToListAsync();
 
             _applicationContext.MovieShowtimes.RemoveRange(showtimesToDelete);
+            await _applicationContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<MovieShowtime>> GetMovieShowtimesAsync(long movieId, DateTime laterThan)

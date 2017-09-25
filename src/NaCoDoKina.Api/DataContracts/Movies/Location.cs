@@ -3,7 +3,7 @@
 namespace NaCoDoKina.Api.DataContracts.Movies
 {
     /// <summary>
-    /// User location 
+    /// RegisterUser location 
     /// </summary>
     public class Location
     {

@@ -23,9 +23,9 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
         {
             var user = await GetDbContext<ApplicationIdentityContext>().Users.FirstAsync();
             var url = $"{ApiSettings.Version}/users/token";
-            var payload = new Creditentials
+            var payload = new Credentials
             {
-                Email = user.Email,
+                UserName = user.UserName,
                 Password = ApiSettings.DefaultUserPassword
             };
 

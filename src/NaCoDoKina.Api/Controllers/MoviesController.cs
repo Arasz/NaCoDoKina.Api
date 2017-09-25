@@ -111,7 +111,7 @@ namespace NaCoDoKina.Api.Controllers
         /// Returns list of nearest cinemas which plays movie with given id 
         /// </summary>
         /// <param name="id"> Movie id </param>
-        /// <param name="searchArea"> User searchArea </param>
+        /// <param name="searchArea"> RegisterUser searchArea </param>
         /// <returns> Detailed informations about show </returns>
         [ProducesResponseType(typeof(IEnumerable<Cinema>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -29,7 +29,6 @@ namespace NaCoDoKina.Api.Infrastructure.IoC
             builder.RegisterModule<RepositoriesModule>();
             builder.RegisterModule<ServicesModule>();
             builder.RegisterModule<RequestParsersModule>();
-            builder.RegisterModule<MapperModule>();
             builder.RegisterModule<GoogleServiceDependenciesModule>();
         }
     }
