@@ -50,14 +50,14 @@ namespace NaCoDoKina.Api.Controllers
 
                 Mock.Mock<IUserService>()
                     .Setup(service => service.CreateUserWithPasswordAsync(It.IsAny<User>(), registerUser.Password))
-                    .ReturnsAsync(Result.CreateSucceeded);
+                    .ReturnsAsync(new Func<User, string, Result<User>>((user, pswd) => Result<User>.CreateSucceeded(user)));
 
                 // Act
                 var result = await ControllerUnderTest.CreateUser(registerUser);
 
                 // Assert
-                result.Should().BeOfType<CreatedAtActionResult>();
-                var body = (result as CreatedAtActionResult)?.Value as Credentials;
+                result.Should().BeOfType<CreatedResult>();
+                var body = (result as CreatedResult)?.Value as Credentials;
                 body.Should().NotBeNull();
                 body.Password.Should().BeNull();
                 body.UserName.Should().Be(registerUser.UserName);
@@ -71,7 +71,7 @@ namespace NaCoDoKina.Api.Controllers
 
                 Mock.Mock<IUserService>()
                     .Setup(service => service.CreateUserWithPasswordAsync(It.IsAny<User>(), registerUser.Password))
-                    .ReturnsAsync(Result.CreateFailed());
+                    .ReturnsAsync(Result<User>.CreateFailed());
 
                 // Act
                 var result = await ControllerUnderTest.CreateUser(registerUser);

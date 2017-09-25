@@ -45,7 +45,7 @@ namespace NaCoDoKina.Api.Repositories
         /// </summary>
         /// <param name="user"> User </param>
         /// <param name="password"> Password </param>
-        Task<bool> CreateUserWithPasswordAsync(ApplicationUser user, string password);
+        Task<ApplicationUser> CreateUserWithPasswordAsync(ApplicationUser user, string password);
 
         /// <summary>
         /// Returns user by id 

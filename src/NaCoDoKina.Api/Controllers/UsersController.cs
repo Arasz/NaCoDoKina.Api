@@ -50,8 +50,8 @@ namespace NaCoDoKina.Api.Controllers
 
                 if (result.Succeeded)
                 {
-                    var userCredentials = _mapper.Map<Credentials>(user);
-                    return CreatedAtAction(nameof(AuthController.GetTokenForUser), null, nameof(AuthController), userCredentials);
+                    var userCredentials = _mapper.Map<Credentials>(result.Data);
+                    return Created("", userCredentials);
                 }
 
                 return StatusCode(StatusCodes.Status500InternalServerError, result.FailReason);

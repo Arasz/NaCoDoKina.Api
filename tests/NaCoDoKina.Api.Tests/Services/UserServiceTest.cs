@@ -321,17 +321,19 @@ namespace NaCoDoKina.Api.Services
             {
                 // Arrange
                 var user = Fixture.Create<User>();
+                var internalUser = Fixture.Create<ApplicationUser>();
                 var password = Fixture.Create<string>();
 
                 Mock.Mock<IUserRepository>()
                     .Setup(repository => repository.CreateUserWithPasswordAsync(It.IsAny<ApplicationUser>(), password))
-                    .ReturnsAsync(true);
+                    .ReturnsAsync(internalUser);
 
                 // Act
                 var result = await ServiceUnderTest.CreateUserWithPasswordAsync(user, password);
 
                 // Assert
                 result.Succeeded.Should().BeTrue();
+                result.Data.Id.Should().BePositive();
             }
 
             [Fact]
@@ -343,7 +345,7 @@ namespace NaCoDoKina.Api.Services
 
                 Mock.Mock<IUserRepository>()
                     .Setup(repository => repository.CreateUserWithPasswordAsync(It.IsAny<ApplicationUser>(), password))
-                    .ReturnsAsync(false);
+                    .ReturnsAsync((ApplicationUser)null);
 
                 // Act
                 var result = await ServiceUnderTest.CreateUserWithPasswordAsync(user, password);

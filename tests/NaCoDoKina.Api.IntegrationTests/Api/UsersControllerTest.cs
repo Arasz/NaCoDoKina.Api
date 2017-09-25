@@ -1,7 +1,5 @@
 ﻿using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using NaCoDoKina.Api.DataContracts.Authentication;
-using NaCoDoKina.Api.Infrastructure.Identity;
 using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
 using Ploeh.AutoFixture;
 using System;
@@ -19,7 +17,6 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             public async Task Should_create_new_user_and_login()
             {
                 // Arrange
-                var user = await GetDbContext<ApplicationIdentityContext>().Users.FirstAsync();
                 var registerUrl = $"{ApiSettings.Version}/users";
                 var loginUrl = $"{ApiSettings.Version}/auth/token";
                 var email = "test@kmail.com";
@@ -31,23 +28,19 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                     Password = ApiSettings.DefaultUserPassword,
                 };
 
-                var loginPayload = new Credentials
-                {
-                    UserName = ApiSettings.DefaultUserName,
-                    Password = ApiSettings.DefaultUserPassword
-                };
-
                 var tokenHandler = new JwtSecurityTokenHandler();
 
                 // Act
                 var registerResponse = await Client.PostAsync(registerUrl, GetPayload(registerPayload));
-                var body = await registerResponse.Content.ReadAsStringAsync();
 
                 // Assert
 
                 registerResponse.EnsureSuccessStatusCode();
 
-                var loginResponse = await Client.PostAsync(loginUrl, GetPayload(loginPayload));
+                var credentials = await registerResponse.Content.ReadAsJsonObjectAsync<Credentials>();
+                credentials.Password = ApiSettings.DefaultUserPassword;
+
+                var loginResponse = await Client.PostAsync(loginUrl, GetPayload(credentials));
 
                 loginResponse.EnsureSuccessStatusCode();
 

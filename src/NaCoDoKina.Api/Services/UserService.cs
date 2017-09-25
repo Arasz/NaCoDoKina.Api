@@ -95,12 +95,16 @@ namespace NaCoDoKina.Api.Services
             return _mapper.Map<User>(user);
         }
 
-        public async Task<Result> CreateUserWithPasswordAsync(User user, string password)
+        public async Task<Result<User>> CreateUserWithPasswordAsync(User user, string password)
         {
             var internalUser = _mapper.Map<ApplicationUser>(user);
-            var wasCreated = await _userRepository.CreateUserWithPasswordAsync(internalUser, password);
+            internalUser = await _userRepository.CreateUserWithPasswordAsync(internalUser, password);
 
-            return wasCreated ? Result.CreateSucceeded() : Result.CreateFailed("User creation failed");
+            if (internalUser is null)
+                return Result<User>.CreateFailed("User creation failed");
+
+            user = _mapper.Map<User>(internalUser);
+            return Result<User>.CreateSucceeded(user);
         }
     }
 }
