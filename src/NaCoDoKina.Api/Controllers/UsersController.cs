@@ -48,13 +48,13 @@ namespace NaCoDoKina.Api.Controllers
 
                 _logger.LogDebug("User created with result {@result}", result);
 
-                if (result.Succeeded)
+                if (result.IsSuccess)
                 {
-                    var userCredentials = _mapper.Map<Credentials>(result.Data);
+                    var userCredentials = _mapper.Map<Credentials>(result.Value);
                     return Created("", userCredentials);
                 }
 
-                return StatusCode(StatusCodes.Status500InternalServerError, result.FailReason);
+                return StatusCode(StatusCodes.Status500InternalServerError, result.FailureReason);
             }
         }
     }

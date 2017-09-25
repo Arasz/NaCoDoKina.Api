@@ -5,6 +5,7 @@ using NaCoDoKina.Api.DataContracts.Movies;
 using NaCoDoKina.Api.Infrastructure.Identity;
 using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
 using System.Globalization;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
@@ -77,7 +78,8 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 responseContent
                     .Should()
                     .NotBeNullOrEmpty().And
-                    .HaveCount(3);
+                    .OnlyHaveUniqueItems().And
+                    .Subject.Count().Should().BePositive();
             }
         }
     }

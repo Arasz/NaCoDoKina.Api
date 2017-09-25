@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using NaCoDoKina.Api.Results;
 
 namespace NaCoDoKina.Api.Services
 {
@@ -19,6 +20,6 @@ namespace NaCoDoKina.Api.Services
         /// </summary>
         /// <param name="movieId"> Movie id </param>
         /// <param name="movieRating"> Movie rating </param>
-        Task SetMovieRating(long movieId, double movieRating);
+        Task<Result> SetMovieRating(long movieId, double movieRating);
     }
 }

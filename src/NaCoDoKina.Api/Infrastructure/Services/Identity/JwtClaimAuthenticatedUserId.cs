@@ -23,7 +23,7 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
                 if (uniqueNameClaim != null && long.TryParse(uniqueNameClaim.Value, out var id))
                     return id;
 
-                _logger.LogWarning("Claim value cannot be parsed to long or claim is null, {@claim}", uniqueNameClaim);
+                _logger.LogWarning("For claim {@claim} value cannot be parsed to long or claim is null, principal {@principal} ", uniqueNameClaim, httpContext.User);
 
                 return 0;
             }
