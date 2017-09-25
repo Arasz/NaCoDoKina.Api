@@ -18,12 +18,15 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
                 var httpContext = _httpContextAccessor.HttpContext;
                 var uniqueNameClaim = httpContext.User.FindFirst(JwtRegisteredClaimNames.UniqueName);
 
+                if (uniqueNameClaim is null)
+                    uniqueNameClaim = httpContext.User.FindFirst(JwtRegisteredClaimNames.Sub);
+
                 _logger.LogDebug("Founded claim {@claim}", uniqueNameClaim);
 
                 if (uniqueNameClaim != null && long.TryParse(uniqueNameClaim.Value, out var id))
                     return id;
 
-                _logger.LogWarning("For claim {@claim} value cannot be parsed to long or claim is null, principal {@principal} ", uniqueNameClaim, httpContext.User);
+                _logger.LogWarning("For claim {@claim} value cannot be parsed to long or claim is null, all claims {@claims} ", uniqueNameClaim, httpContext.User.Claims);
 
                 return 0;
             }
