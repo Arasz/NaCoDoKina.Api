@@ -62,7 +62,7 @@ namespace NaCoDoKina.Api
         /// <param name="services"></param>
         private void ConfigureAutoMapper(IServiceCollection services)
         {
-            services.AddAutoMapper();
+            services.AddAutoMapper(typeof(Startup));
         }
 
         /// <summary>
