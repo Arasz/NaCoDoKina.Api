@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
+using NaCoDoKina.Api.ActionFilters;
 using NaCoDoKina.Api.Data;
 using NaCoDoKina.Api.Infrastructure.Extensions;
 using NaCoDoKina.Api.Infrastructure.Identity;
@@ -63,8 +64,14 @@ namespace NaCoDoKina.Api
         private void ConfigureMvc(IServiceCollection services)
         {
             services
-                .AddMvc()
-                .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Startup>());
+                .AddMvc(options =>
+                {
+                    options.Filters.Add<ValidationActionFilter>();
+                })
+                .AddFluentValidation(cfg =>
+                {
+                    cfg.RegisterValidatorsFromAssemblyContaining<Startup>();
+                });
         }
 
         /// <summary>

@@ -10,7 +10,6 @@ using Ploeh.AutoFixture;
 using System;
 using System.Threading.Tasks;
 using Xunit;
-using JwtToken = NaCoDoKina.Api.DataContracts.Authentication.JwtToken;
 
 namespace NaCoDoKina.Api.Controllers
 {
@@ -27,93 +26,60 @@ namespace NaCoDoKina.Api.Controllers
         private void SetupMapper()
         {
             Mock.Mock<IMapper>()
-                .Setup(mapper => mapper.Map<User>(It.IsAny<Credentials>()))
-                .Returns(new Func<Credentials, User>(credentials => new User
+                .Setup(mapper => mapper.Map<Credentials>(It.IsAny<User>()))
+                .Returns(new Func<User, Credentials>(credentials => new Credentials
                 {
                     UserName = credentials.UserName,
                 }));
             Mock.Mock<IMapper>()
-                .Setup(mapper => mapper.Map<JwtToken>(It.IsAny<AuthToken>()))
-                .Returns(new Func<AuthToken, JwtToken>(authToken => new JwtToken
+                .Setup(mapper => mapper.Map<User>(It.IsAny<RegisterUser>()))
+                .Returns(new Func<RegisterUser, User>(user => new User
                 {
-                    Token = authToken.Token,
-                    Expires = authToken.Expires
+                    UserName = user.UserName,
+                    Email = user.Email
                 }));
         }
 
-        public class GetTokenForUser : UsersControllerTest
+        public class CreateUser : UsersControllerTest
         {
             [Fact]
-            public async Task Should_return_OkObjectResult_with_token_when_credentials_are_correct()
+            public async Task Should_return_CreatedAtAction_result_when_user_created()
             {
                 // Arrange
-                var token = Fixture.Create<AuthToken>();
-                var credentials = Fixture.Create<Credentials>();
+                var registerUser = Fixture.Create<RegisterUser>();
 
                 Mock.Mock<IUserService>()
-                    .Setup(service => service.AuthenticateAsync(It.IsAny<User>(), credentials.Password))
+                    .Setup(service => service.CreateUserWithPasswordAsync(It.IsAny<User>(), registerUser.Password))
                     .ReturnsAsync(Result.CreateSucceeded);
 
-                Mock.Mock<ITokenService>()
-                    .Setup(service => service.CreateToken(It.IsAny<User>()))
-                    .Returns(token);
-
                 // Act
-                var actionResult = await ControllerUnderTest.GetTokenForUser(credentials);
+                var result = await ControllerUnderTest.CreateUser(registerUser);
 
                 // Assert
-                actionResult.Should().BeOfType<OkObjectResult>();
-                var tokenFromResult = (actionResult as OkObjectResult)?.Value as JwtToken;
-                tokenFromResult.Should().NotBeNull();
-                tokenFromResult.Token.Should().Be(token.Token);
+                result.Should().BeOfType<CreatedAtActionResult>();
+                var body = (result as CreatedAtActionResult)?.Value as Credentials;
+                body.Should().NotBeNull();
+                body.Password.Should().BeNull();
+                body.UserName.Should().Be(registerUser.UserName);
             }
 
             [Fact]
-            public async Task Should_return_UnauthorizedResult_when_credentials_are_incorrect()
+            public async Task Should_return_InternalServerError_when_user_can_not_be_created()
             {
                 // Arrange
-                var token = Fixture.Create<AuthToken>();
-                var credentials = Fixture.Create<Credentials>();
+                var registerUser = Fixture.Create<RegisterUser>();
 
                 Mock.Mock<IUserService>()
-                    .Setup(service => service.AuthenticateAsync(It.IsAny<User>(), credentials.Password))
+                    .Setup(service => service.CreateUserWithPasswordAsync(It.IsAny<User>(), registerUser.Password))
                     .ReturnsAsync(Result.CreateFailed());
 
-                Mock.Mock<ITokenService>()
-                    .Setup(service => service.CreateToken(It.IsAny<User>()))
-                    .Returns(token);
-
                 // Act
-                var actionResult = await ControllerUnderTest.GetTokenForUser(credentials);
+                var result = await ControllerUnderTest.CreateUser(registerUser);
 
                 // Assert
-                actionResult.Should().BeOfType<UnauthorizedResult>();
-            }
-
-            [Fact]
-            public async Task Should_return_BadRequestResult_when_credentials_are_in_incorrect_state()
-            {
-                // Arrange
-                var token = Fixture.Create<AuthToken>();
-                var credentials = Fixture.Build<Credentials>()
-                    .OmitAutoProperties()
-                    .Create();
-
-                Mock.Mock<IUserService>()
-                    .Setup(service => service.AuthenticateAsync(It.IsAny<User>(), credentials.Password))
-                    .ReturnsAsync(Result.CreateFailed());
-
-                Mock.Mock<ITokenService>()
-                    .Setup(service => service.CreateToken(It.IsAny<User>()))
-                    .Returns(token);
-
-                ControllerUnderTest.ModelState.AddModelError(nameof(credentials.UserName), "Empty user name");
-
-                // Act
-                var actionResult = await ControllerUnderTest.GetTokenForUser(credentials);
-
-                // Assert
-                actionResult.Should().BeOfType<BadRequestResult>();
+                result.Should().BeOfType<ObjectResult>();
+                (result as ObjectResult)?
+                    .StatusCode.Should().Be(500);
             }
         }
     }
