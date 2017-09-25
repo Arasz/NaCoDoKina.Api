@@ -7,11 +7,7 @@ namespace NaCoDoKina.Api.Infrastructure.IoC.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<SignInManagerAdapter>()
-                .AsImplementedInterfaces()
-                .SingleInstance();
-
-            builder.RegisterType<UserManagerAdapter>()
+            builder.RegisterType<JwtClaimAuthenticatedUserId>()
                 .AsImplementedInterfaces()
                 .SingleInstance();
         }

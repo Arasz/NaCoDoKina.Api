@@ -2,51 +2,46 @@
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.DataContracts.Authentication;
 using NaCoDoKina.Api.Infrastructure.Identity;
-using NaCoDoKina.Api.Infrastructure.Services.Identity;
+using NaCoDoKina.Api.Repositories;
 using Ploeh.AutoFixture;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
+namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
 {
-    public class IdentityDataSeed : IDatabaseSeed<ApplicationIdentityContext>
+    public class IdentityDataSeed : IDatabaseSeed
     {
-        public string UniversalPassword => "Aw23_ffdD3df_ddw!efefdewww";
+        private readonly IUserRepository _userRepository;
+        private readonly IntegrationTestApiSettings _apiSettings;
 
-        public string UniversalEmail => "a@bmail.com";
+        private int _userCounter = 1;
 
-        private int _userCounter;
-
-        private readonly IUserManager _identityService;
         private readonly IFixture _fixture;
         private readonly ILogger<IdentityDataSeed> _logger;
         public ApplicationIdentityContext DbContext { get; }
 
-        public IdentityDataSeed(ApplicationIdentityContext identityContext, IUserManager userManager, ILogger<IdentityDataSeed> logger, IFixture fixture)
+        public IdentityDataSeed(ApplicationIdentityContext identityContext, IUserRepository userRepository, ILogger<IdentityDataSeed> logger, IFixture fixture, IntegrationTestApiSettings apiSettings)
         {
-            _identityService = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _userRepository = userRepository;
+            _apiSettings = apiSettings ?? throw new ArgumentNullException(nameof(apiSettings));
             _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             DbContext = identityContext ?? throw new ArgumentNullException(nameof(identityContext));
         }
 
-        public async Task SeedAsync()
+        public void Seed()
         {
             using (_logger.BeginScope(nameof(IdentityDataSeed)))
             {
-                if (DbContext.Database.EnsureDeleted())
-                    _logger.LogInformation("Database for context {contextName} was deleted", DbContext.GetType().Name);
-
                 _logger.LogInformation("Ensure database is created");
-                await DbContext.Database.MigrateAsync();
+                DbContext.Database.Migrate();
                 _logger.LogInformation("Migration completed");
 
                 _logger.LogInformation("Create users data");
                 _fixture.Register(() => new RegisterUser
                 {
-                    Email = $"{UniversalEmail}{_userCounter++}",
-                    Password = UniversalPassword
+                    Email = $"{_apiSettings.DefaultUserName}{_userCounter++}",
+                    Password = _apiSettings.DefaultUserPassword,
                 });
 
                 _logger.LogInformation("Create users");
@@ -64,11 +59,18 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
 
                 foreach (var userWithPassword in applicationUserWithPassword)
                 {
-                    await _identityService.CreateAsync(userWithPassword.User, userWithPassword.Password);
+                    _userRepository.CreateUserWithPasswordAsync(userWithPassword.User, userWithPassword.Password).GetAwaiter().GetResult();
                 }
 
                 _logger.LogInformation("All users created");
             }
+        }
+
+        public void Dispose()
+        {
+            if (DbContext.Database.EnsureDeleted())
+                _logger.LogInformation("Database for context {contextName} was deleted", DbContext.GetType().Name);
+            DbContext?.Dispose();
         }
     }
 }

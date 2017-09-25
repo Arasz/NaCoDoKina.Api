@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 namespace NaCoDoKina.Api.Controllers
 {
     [Route("v1/[controller]")]
+    [Authorize]
     public class MoviesController : Controller
     {
         private readonly IMovieShowtimeService _movieShowtimeService;
@@ -109,7 +111,7 @@ namespace NaCoDoKina.Api.Controllers
         /// Returns list of nearest cinemas which plays movie with given id 
         /// </summary>
         /// <param name="id"> Movie id </param>
-        /// <param name="searchArea"> User searchArea </param>
+        /// <param name="searchArea"> RegisterUser searchArea </param>
         /// <returns> Detailed informations about show </returns>
         [ProducesResponseType(typeof(IEnumerable<Cinema>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

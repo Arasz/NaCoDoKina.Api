@@ -2,24 +2,29 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Exceptions;
-using NaCoDoKina.Api.IntegrationTests.Modules;
-using System;
-using System.Threading.Tasks;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services;
 using NaCoDoKina.Api.Infrastructure.Settings;
+using NaCoDoKina.Api.IntegrationTests.Modules;
+using Ploeh.AutoFixture;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Recommendation
 {
     public class RecommendationServiceTest
     {
+        private Fixture Fixture { get; }
+
         private IContainer _container;
         private IRecommendationService ServiceUnderTest { get; }
 
         public RecommendationServiceTest()
         {
+            Fixture = new Fixture();
+
             var builder = new ContainerBuilder();
 
             builder
@@ -56,7 +61,9 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Recommendation
             public async Task Should_return_rating_for_user_and_movie()
             {
                 //Arrange
-                var request = new RecommendationApiRequest(1, 1);
+                var userId = 1;
+                var movieId = 1;
+                var request = new RecommendationApiRequest(userId, movieId);
 
                 //Act
                 var response = await ServiceUnderTest.GetMovieRating(request);

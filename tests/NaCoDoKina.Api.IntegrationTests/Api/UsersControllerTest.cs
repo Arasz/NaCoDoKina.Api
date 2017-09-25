@@ -1,9 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using NaCoDoKina.Api.DataContracts.Authentication;
 using NaCoDoKina.Api.Infrastructure.Identity;
-using NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer;
 using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,42 +10,29 @@ using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api
 {
-    public class AccountControllerTest : HttpTestBase
+    public class UsersControllerTest : HttpTestWithDatabase
     {
-        private IdentityDataSeed IdentityContextSeed { get; set; }
-
-        /// <inheritdoc/>
-        protected override async Task SeedDatabaseAsync()
-        {
-            IdentityContextSeed = Services
-                .GetService<IDatabaseSeed<ApplicationIdentityContext>>() as IdentityDataSeed
-                ?? throw new ArgumentNullException(nameof(IdentityContextSeed));
-
-            await IdentityContextSeed.SeedAsync();
-        }
-
-        public class Register : AccountControllerTest
+        public class CreateUser : UsersControllerTest
         {
             [Fact]
             public async Task Should_create_new_user_and_login()
             {
                 // Arrange
-                await SeedDatabaseAsync();
-                var user = await IdentityContextSeed.DbContext.Users.FirstAsync();
-                var registerUrl = $"{Version}/account";
-                var loginUrl = $"{Version}/account/token";
+                var user = await GetDbContext<ApplicationIdentityContext>().Users.FirstAsync();
+                var registerUrl = $"{ApiSettings.Version}/users";
+                var loginUrl = $"{ApiSettings.Version}/users/token";
                 var email = "test@kmail.com";
 
-                var registerPayload = new RegisterUser
+                var registerPayload = new DataContracts.Authentication.RegisterUser
                 {
                     Email = email,
-                    Password = IdentityContextSeed.UniversalPassword
+                    Password = ApiSettings.DefaultUserPassword,
                 };
 
-                var loginPayload = new LoginUser
+                var loginPayload = new Credentials
                 {
-                    Email = user.Email,
-                    Password = IdentityContextSeed.UniversalPassword
+                    UserName = ApiSettings.DefaultUserName,
+                    Password = ApiSettings.DefaultUserPassword
                 };
 
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -74,19 +59,18 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             }
         }
 
-        public class Login : AccountControllerTest
+        public class GetUserToken : UsersControllerTest
         {
             [Fact]
             public async Task Should_return_token_when_registered_user_tries_to_log_in()
             {
                 // Arrange
-                await SeedDatabaseAsync();
-                var user = await IdentityContextSeed.DbContext.Users.FirstAsync();
-                var url = $"{Version}/account/token";
-                var payload = new LoginUser
+                var user = await GetDbContext<ApplicationIdentityContext>().Users.FirstAsync();
+                var url = $"{ApiSettings.Version}/users/token";
+                var payload = new Credentials
                 {
-                    Email = user.Email,
-                    Password = IdentityContextSeed.UniversalPassword
+                    UserName = user.UserName,
+                    Password = ApiSettings.DefaultUserPassword
                 };
                 var tokenHandler = new JwtSecurityTokenHandler();
 

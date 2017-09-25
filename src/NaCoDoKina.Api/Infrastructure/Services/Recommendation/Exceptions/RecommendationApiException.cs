@@ -7,12 +7,12 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Recommendation.Exceptions
     {
         public HttpStatusCode StatusCode { get; }
 
-        public RecommendationApiException(HttpStatusCode statusCode, string message) : base(message)
+        public RecommendationApiException(HttpStatusCode statusCode, string userName) : base(userName)
         {
             StatusCode = statusCode;
         }
 
-        public RecommendationApiException(string message) : base(message)
+        public RecommendationApiException(string userName) : base(userName)
         {
         }
     }

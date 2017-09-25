@@ -40,8 +40,8 @@ namespace NaCoDoKina.Api.Services
 
         protected void PreConfigureMocks()
         {
-            UserServiceMock.Setup(service => service.GetCurrentUserIdAsync())
-                .Returns(Task.FromResult(DefaultUserId));
+            UserServiceMock.Setup(service => service.GetCurrentUserId())
+                .Returns(DefaultUserId);
 
             MapperMock
                 .Setup(mapper => mapper.Map<Movie>(It.IsAny<Entities.Movie>()))
