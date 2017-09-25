@@ -64,7 +64,7 @@ namespace NaCoDoKina.Api.Services
             }
         }
 
-        public async Task<IEnumerable<User>> GetAllUsers()
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             var users = await _userRepository.GetAllUsersAsync();
 
@@ -99,7 +99,7 @@ namespace NaCoDoKina.Api.Services
             var internalUser = _mapper.Map<ApplicationUser>(user);
             var wasCreated = await _userRepository.CreateUserWithPasswordAsync(internalUser, password);
 
-            return wasCreated ? Result.CreateSucceeded() : Result.CreateFailed("RegisterUser creation failed");
+            return wasCreated ? Result.CreateSucceeded() : Result.CreateFailed("User creation failed");
         }
     }
 }

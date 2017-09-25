@@ -24,7 +24,7 @@ namespace NaCoDoKina.Api.Services
         /// <summary>
         /// Returns all registered users 
         /// </summary>
-        Task<IEnumerable<User>> GetAllUsers();
+        Task<IEnumerable<User>> GetAllUsersAsync();
 
         /// <summary>
         /// Returns user by name 
