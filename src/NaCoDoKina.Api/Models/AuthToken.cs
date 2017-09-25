@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace NaCoDoKina.Api.Infrastructure.Services.Token
+namespace NaCoDoKina.Api.Models
 {
     /// <summary>
     /// Authentication token 
     /// </summary>
-    public class AuthenticationToken
+    public class AuthToken
     {
         /// <summary>
         /// Token 

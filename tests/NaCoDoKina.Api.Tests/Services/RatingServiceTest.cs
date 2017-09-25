@@ -38,8 +38,8 @@ namespace NaCoDoKina.Api.Services
                 var expectedRating = 4.5;
                 var userId = 2L;
 
-                UserServiceMock.Setup(service => service.GetCurrentUserIdAsync())
-                    .Returns(() => Task.FromResult(userId));
+                UserServiceMock.Setup(service => service.GetCurrentUserId())
+                    .Returns(() => userId);
 
                 RecommendationServiceMock
                     .Setup(service => service.GetMovieRating(It.IsAny<RecommendationApiRequest>()))
@@ -63,8 +63,8 @@ namespace NaCoDoKina.Api.Services
                 var expectedRating = 4.5;
                 var userId = 2L;
 
-                UserServiceMock.Setup(service => service.GetCurrentUserIdAsync())
-                    .Returns(() => Task.FromResult(userId));
+                UserServiceMock.Setup(service => service.GetCurrentUserId())
+                    .Returns(() => userId);
 
                 RecommendationServiceMock
                     .Setup(service => service.GetMovieRating(It.IsAny<RecommendationApiRequest>()))

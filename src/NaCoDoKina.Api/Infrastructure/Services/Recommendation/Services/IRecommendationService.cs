@@ -4,7 +4,7 @@ using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
 namespace NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services
 {
     /// <summary>
-    /// User recommendation service 
+    /// RegisterUser recommendation service 
     /// </summary>
     public interface IRecommendationService
     {

@@ -16,7 +16,7 @@ namespace NaCoDoKina.Api.DataContracts.Movies
         }
 
         /// <summary>
-        /// User location, search area center 
+        /// RegisterUser location, search area center 
         /// </summary>
         public Location Center { get; set; }
 

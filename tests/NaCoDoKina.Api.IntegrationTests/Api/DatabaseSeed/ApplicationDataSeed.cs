@@ -5,11 +5,10 @@ using NaCoDoKina.Api.Entities;
 using Ploeh.AutoFixture;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
+namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
 {
-    public class ApplicationDataSeed : IDatabaseSeed<ApplicationContext>
+    public class ApplicationDataSeed : IDatabaseSeed
     {
         private readonly ILogger<ApplicationDataSeed> _logger;
         public ApplicationContext DbContext { get; }
@@ -25,32 +24,32 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
             CustomizeFixture();
         }
 
-        public async Task SeedAsync()
+        public void Seed()
         {
-            if (DbContext.Database.EnsureDeleted())
-                _logger.LogInformation("Database was deleted");
-
-            _logger.LogInformation("Starting database migrations");
-
-            try
+            using (_logger.BeginScope(nameof(ApplicationDataSeed)))
             {
-                await DbContext.Database.MigrateAsync();
+                _logger.LogInformation("Starting database migrations");
+
+                try
+                {
+                    DbContext.Database.Migrate();
+                }
+                catch (Exception migrationException)
+                {
+                    _logger.LogInformation("Database migrations failed with error {@migrationException}", migrationException);
+                    throw;
+                }
+                _logger.LogInformation("Database migrations completed");
+
+                _logger.LogInformation("Generating and saving test data");
+
+                GenerateAndSaveData();
+
+                _logger.LogInformation("Initialization complete");
             }
-            catch (Exception migrationException)
-            {
-                _logger.LogInformation("Database migrations failed with error {@migrationException}", migrationException);
-                throw;
-            }
-            _logger.LogInformation("Database migrations completed");
-
-            _logger.LogInformation("Generating and saving test data");
-
-            await GenerateAndSaveData();
-
-            _logger.LogInformation("Initialization complete");
         }
 
-        private async Task GenerateAndSaveData()
+        private void GenerateAndSaveData()
         {
             var movies = _fixture.CreateMany<Movie>(15)
                 .ToArray();
@@ -70,12 +69,20 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseInitializer
 
             DbContext.Cinemas.AddRange(cinemas);
             DbContext.MovieShowtimes.AddRange(movieShowtimes);
-            await DbContext.SaveChangesAsync();
+            DbContext.SaveChanges();
         }
 
         private void CustomizeFixture()
         {
             _fixture.Customize(new MovieDatabaseFixtureCustomization());
+        }
+
+        public void Dispose()
+        {
+            if (DbContext.Database.EnsureDeleted())
+                _logger.LogInformation("Database was deleted");
+
+            DbContext?.Dispose();
         }
     }
 }
