@@ -48,22 +48,19 @@ namespace NaCoDoKina.Api.Services
                 return currentDate.Add(cinema.CinemaTravelInformation.Duration);
             }
 
-            var getPlayedMoviesTasks = cinemas
-                .Select(cinema => _movieRepository.GetMoviesIdsPlayedInCinemaAsync(cinema.Id, DateAfterTravel(cinema)));
-
-            var availableMovies = (await Task.WhenAll(getPlayedMoviesTasks))
-                .SelectMany(movieId => movieId)
-                .Distinct();
-
-            async Task<(long MovieId, double Rating)> GetMovieRating(long movieId)
+            var availableMoviesIds = new List<long>();
+            foreach (var cinema in cinemas)
             {
-                return (movieId, await _ratingService.GetMovieRating(movieId));
+                var playedMovie = await _movieRepository.GetMoviesIdsPlayedInCinemaAsync(cinema.Id, DateAfterTravel(cinema));
+                availableMoviesIds.AddRange(playedMovie);
             }
 
-            var getMovieRatingsForMoviesTasks = availableMovies
-                .Select(GetMovieRating);
-
-            var movieRatings = await Task.WhenAll(getMovieRatingsForMoviesTasks);
+            var movieRatings = new List<(long MovieId, double Rating)>();
+            foreach (var movieId in availableMoviesIds.Distinct())
+            {
+                var rating = await _ratingService.GetMovieRating(movieId);
+                movieRatings.Add((movieId, rating));
+            }
 
             return movieRatings
                 .OrderByDescending(tuple => tuple.Rating)

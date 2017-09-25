@@ -4,7 +4,6 @@ using NaCoDoKina.Api.DataContracts.Authentication;
 using NaCoDoKina.Api.DataContracts.Movies;
 using NaCoDoKina.Api.Infrastructure.Identity;
 using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
-using System;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Text;
@@ -22,7 +21,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
         public async Task<string> Login()
         {
             var user = await GetDbContext<ApplicationIdentityContext>().Users.FirstAsync();
-            var url = $"{ApiSettings.Version}/users/token";
+            var url = $"{ApiSettings.Version}/auth/token";
             var payload = new Credentials
             {
                 UserName = user.UserName,
@@ -59,8 +58,8 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             {
                 // Arrange
 
-                var testLocation = new Location(51.44056, 16.919235);
-                var searchArea = new SearchArea(testLocation, 100);
+                var testLocation = new Location(52.3886399802915, 16.8517549802915);
+                var searchArea = new SearchArea(testLocation, 10000);
                 var queryString = ParseSearchAreaToQuery(searchArea);
 
                 // Act
@@ -72,8 +71,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 // Assert
 
-                Action action = () => response.EnsureSuccessStatusCode();
-                action.ShouldNotThrow();
+                response.EnsureSuccessStatusCode();
 
                 var responseContent = await response.Content.ReadAsJsonObjectAsync<long[]>();
                 responseContent
