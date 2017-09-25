@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
 using Moq;
-using System;
-using System.Threading.Tasks;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace NaCoDoKina.Api.Services
@@ -16,8 +16,8 @@ namespace NaCoDoKina.Api.Services
 
         public RatingServiceTest()
         {
-            UserServiceMock = new Mock<IUserService>();
-            RecommendationServiceMock = new Mock<IRecommendationService>();
+            UserServiceMock = Mock.Mock<IUserService>();
+            RecommendationServiceMock = Mock.Mock<IRecommendationService>();
             ServiceUnderTest = new RatingService(RecommendationServiceMock.Object, UserServiceMock.Object);
         }
 
@@ -38,8 +38,8 @@ namespace NaCoDoKina.Api.Services
                 var expectedRating = 4.5;
                 var userId = 2L;
 
-                UserServiceMock.Setup(service => service.GetCurrentUserIdAsync())
-                    .Returns(() => Task.FromResult(userId));
+                UserServiceMock.Setup(service => service.GetCurrentUserId())
+                    .Returns(() => userId);
 
                 RecommendationServiceMock
                     .Setup(service => service.GetMovieRating(It.IsAny<RecommendationApiRequest>()))
@@ -63,8 +63,8 @@ namespace NaCoDoKina.Api.Services
                 var expectedRating = 4.5;
                 var userId = 2L;
 
-                UserServiceMock.Setup(service => service.GetCurrentUserIdAsync())
-                    .Returns(() => Task.FromResult(userId));
+                UserServiceMock.Setup(service => service.GetCurrentUserId())
+                    .Returns(() => userId);
 
                 RecommendationServiceMock
                     .Setup(service => service.GetMovieRating(It.IsAny<RecommendationApiRequest>()))

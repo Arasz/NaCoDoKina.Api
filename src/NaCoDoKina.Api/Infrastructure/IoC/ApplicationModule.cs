@@ -24,11 +24,11 @@ namespace NaCoDoKina.Api.Infrastructure.IoC
                 .AsSelf()
                 .SingleInstance();
 
+            builder.RegisterModule<IdentityModule>();
             builder.RegisterModule(new SettingsModule(_applicationConfiguration));
             builder.RegisterModule<RepositoriesModule>();
             builder.RegisterModule<ServicesModule>();
             builder.RegisterModule<RequestParsersModule>();
-            builder.RegisterModule<MapperModule>();
             builder.RegisterModule<GoogleServiceDependenciesModule>();
         }
     }

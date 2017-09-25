@@ -46,7 +46,7 @@ namespace NaCoDoKina.Api.Repositories
 
         public async Task<bool> SoftDeleteMovieAsync(long movieId)
         {
-            var userId = await _userService.GetCurrentUserIdAsync();
+            var userId = _userService.GetCurrentUserId();
 
             var movieExist = await _applicationContext.Movies.AnyAsync(movie => movie.Id == movieId);
 
@@ -60,7 +60,7 @@ namespace NaCoDoKina.Api.Repositories
             if (markExist)
                 return true;
 
-            _applicationContext.DeletedMovieMarks.Add(new DeletedMovieMark(movieId, userId));
+            _applicationContext.DeletedMovieMarks.Add(new DeletedMovies(movieId, userId));
             await _applicationContext.SaveChangesAsync();
 
             return true;
@@ -68,7 +68,7 @@ namespace NaCoDoKina.Api.Repositories
 
         private async Task<bool> IsMovieSoftDeletedAsync(long id)
         {
-            var userId = await _userService.GetCurrentUserIdAsync();
+            var userId = _userService.GetCurrentUserId();
 
             return await _applicationContext.DeletedMovieMarks
                 .Where(mark => mark.MovieId == id)
@@ -88,7 +88,7 @@ namespace NaCoDoKina.Api.Repositories
 
         public async Task<IEnumerable<long>> GetMoviesIdsPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
         {
-            var userId = await _userService.GetCurrentUserIdAsync();
+            var userId = _userService.GetCurrentUserId();
 
             var markedAsDeletedMoviesIds = _applicationContext.DeletedMovieMarks
                 .Where(mark => mark.UserId == userId)

@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
+using Ploeh.AutoFixture;
+using Serilog;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -18,6 +21,8 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
     /// </summary>
     public abstract class HttpTestBase : IDisposable
     {
+        protected IntegrationTestApiSettings ApiSettings { get; set; }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing)
@@ -37,24 +42,40 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
         protected HttpClient Client { get; }
 
-        protected virtual Uri BaseAddress => new Uri(@"http://localhost:5000");
+        public IServiceProvider Services { get; }
 
-        protected virtual string Environment => "Development";
+        public IFixture Fixture { get; }
 
         protected HttpTestBase()
         {
+            LoadTestConfiguration();
+
             var contentRoot = GetProjectPath("src", typeof(Startup).Assembly);
 
             var builder = WebHost.CreateDefaultBuilder()
-                .UseEnvironment(Environment)
+                .UseEnvironment(ApiSettings.Environment)
                 .UseContentRoot(contentRoot)
                 .ConfigureServices(ConfigureServices)
+                .UseSerilog()
                 .UseStartup<Startup>();
 
             Server = new TestServer(builder);
 
             Client = Server.CreateClient();
-            Client.BaseAddress = BaseAddress;
+            Client.BaseAddress = new Uri(ApiSettings.BaseAddress);
+
+            Services = Server.Host.Services;
+            Fixture = Services.GetService<IFixture>();
+        }
+
+        private void LoadTestConfiguration()
+        {
+            var testContentRoot = GetProjectPath("tests", GetType().Assembly);
+            var testConfiguration = new ConfigurationBuilder()
+                .SetBasePath(testContentRoot)
+                .AddJsonFile("appsettings.Test.json", false)
+                .Build();
+            ApiSettings = testConfiguration.Get<IntegrationTestApiSettings>();
         }
 
         /// <summary>
@@ -103,8 +124,10 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             throw new Exception($"Solution root could not be located using application root {applicationBasePath}.");
         }
 
-        protected virtual void ConfigureServices(WebHostBuilderContext webHostBuilderContext, IServiceCollection serviceCollection)
+        protected virtual void ConfigureServices(IServiceCollection serviceCollection)
         {
+            serviceCollection.AddSingleton<IFixture, Fixture>();
+            serviceCollection.AddSingleton(ApiSettings);
         }
     }
 }

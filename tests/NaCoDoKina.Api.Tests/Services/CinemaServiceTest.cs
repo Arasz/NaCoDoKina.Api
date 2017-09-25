@@ -20,10 +20,9 @@ namespace NaCoDoKina.Api.Services
         public CinemaServiceTest()
         {
             TravelServiceFake = new TravelServiceFakeImpl();
-            TravelServiceMock = new Mock<ITravelService>();
+            TravelServiceMock = Mock.Mock<ITravelService>();
 
-            ServiceUnderTest = new CinemaService(RepositoryMockObject, TravelServiceFake,
-                LoggerMock.Object, MapperMock.Object);
+            ServiceUnderTest = new CinemaService(RepositoryMockObject, TravelServiceFake, LoggerMock.Object, MapperMock.Object);
         }
 
         private class TravelServiceFakeImpl : ITravelService

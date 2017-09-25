@@ -36,14 +36,20 @@ namespace NaCoDoKina.Api.Services
             return await FindNearestCinemasAsync(searchArea, allCinemasForMovie);
         }
 
-        private async Task<TravelInformation[]> GetTravelInformationForCinemas(SearchArea searchArea, IEnumerable<Cinema> allCinemaModels)
+        private async Task<IEnumerable<TravelInformation>> GetTravelInformationForCinemas(SearchArea searchArea, IEnumerable<Cinema> allCinemaModels)
         {
-            var travelInformationTasks = allCinemaModels
+            var travelPlans = allCinemaModels
                 .Select(cinema => new TravelPlan(searchArea.Center, cinema.Location))
-                .Select(plan => _travelService.CalculateInformationForTravelAsync(plan));
+                .ToArray();
 
-            var travelInformationForCinemas = await Task.WhenAll(travelInformationTasks);
-            return travelInformationForCinemas;
+            var travelInformation = new List<TravelInformation>(travelPlans.Length);
+            foreach (var travelPlan in travelPlans)
+            {
+                var information = await _travelService.CalculateInformationForTravelAsync(travelPlan);
+                travelInformation.Add(information);
+            }
+
+            return travelInformation;
         }
 
         private Cinema[] MapCinemas(IEnumerable<Entities.Cinema> cinemas)

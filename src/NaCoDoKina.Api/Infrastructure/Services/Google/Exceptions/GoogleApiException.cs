@@ -7,7 +7,7 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Google.Exceptions
     {
         public GoogleApiStatus Status { get; set; }
 
-        public GoogleApiException(string status, string message) : base(message)
+        public GoogleApiException(string status, string userName) : base(userName)
         {
             Status = Enum.Parse<GoogleApiStatus>(status.Replace("_", ""), true);
         }

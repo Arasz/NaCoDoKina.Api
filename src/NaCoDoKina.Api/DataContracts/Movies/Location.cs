@@ -3,10 +3,14 @@
 namespace NaCoDoKina.Api.DataContracts.Movies
 {
     /// <summary>
-    /// User location 
+    /// RegisterUser location 
     /// </summary>
     public class Location
     {
+        public Location()
+        {
+        }
+
         public Location(double longitude, double latitude)
         {
             Longitude = longitude;

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using NaCoDoKina.Api.Infrastructure.Services.Identity;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using NaCoDoKina.Api.Repositories;
 using NaCoDoKina.Api.Services;
@@ -37,6 +38,19 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Assert
                 googleApiSettings.Should().NotBeNull();
                 googleApiSettings.ApiKey.Should().NotBeNullOrEmpty();
+            }
+
+            [Fact]
+            public void Should_return_user_authenticated_user_id_provider()
+            {
+                // Arrange
+                var serviceProvider = Server.Host.Services;
+
+                // Act
+                var userManager = serviceProvider.GetService<IAuthenticatedUserId>();
+
+                // Assert
+                userManager.Should().NotBeNull();
             }
 
             [Fact]

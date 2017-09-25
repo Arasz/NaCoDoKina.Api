@@ -1,28 +1,54 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
+using NaCoDoKina.Api.Repository.Database;
 
 namespace NaCoDoKina.Api.Repository
 {
-    public abstract partial class RepositoryTestBase<TRepository>
+    /// <inheritdoc/>
+    /// <summary>
+    /// Base class for all repositories tests 
+    /// </summary>
+    /// <typeparam name="TRepository"> Repository under test type </typeparam>
+    /// <typeparam name="TDbContext"> Context used by repository </typeparam>
+    public abstract class RepositoryTestBase<TRepository, TDbContext> : UnitTestBase
+        where TDbContext : DbContext
     {
         protected TRepository RepositoryUnderTest { get; set; }
 
-        protected Mock<ILogger<TRepository>> LoggerMock { get; }
+        protected Mock<ILogger<TRepository>> LoggerMock => Mock.Mock<ILogger<TRepository>>();
+
+        protected InMemoryDatabaseScope DatabaseScope { get; }
+
+        protected DbContextScope<TDbContext> CreateContextScope()
+        {
+            return new DbContextScope<TDbContext>(DatabaseScope);
+        }
 
         protected RepositoryTestBase()
         {
-            LoggerMock = new Mock<ILogger<TRepository>>();
+            DatabaseScope = new InMemoryDatabaseScope();
+            EnsureCreated();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            if (disposing)
+            {
+                DatabaseScope.Dispose();
+            }
         }
 
         /// <summary>
         /// Ensures that database schema is created 
         /// </summary>
-        /// <param name="databaseScope"> Database scope </param>
-        protected void EnsureCreated(InMemoryDatabaseScope databaseScope)
+        private void EnsureCreated()
         {
-            using (var contextScope = new TestDatabaseContextScope(databaseScope))
+            using (var contextScope = CreateContextScope())
             {
-                contextScope.ApplicationContext.Database.EnsureCreated();
+                contextScope.DbContext.Database.EnsureCreated();
             }
         }
     }

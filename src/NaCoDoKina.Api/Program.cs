@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Serilog;
 
 namespace NaCoDoKina.Api
 {
@@ -12,7 +13,12 @@ namespace NaCoDoKina.Api
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureLogging(builder =>
+                {
+                    builder.AddSerilog();
+                })
                 .UseStartup<Startup>()
+                .UseSerilog()
                 .Build();
     }
 }
