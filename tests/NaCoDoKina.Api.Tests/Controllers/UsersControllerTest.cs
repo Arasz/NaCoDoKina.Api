@@ -107,6 +107,8 @@ namespace NaCoDoKina.Api.Controllers
                     .Setup(service => service.CreateToken(It.IsAny<User>()))
                     .Returns(token);
 
+                ControllerUnderTest.ModelState.AddModelError(nameof(credentials.UserName), "Empty user name");
+
                 // Act
                 var actionResult = await ControllerUnderTest.GetTokenForUser(credentials);
 

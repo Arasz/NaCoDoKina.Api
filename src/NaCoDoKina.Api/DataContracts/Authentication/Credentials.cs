@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace NaCoDoKina.Api.DataContracts.Authentication
 {
     /// <summary>
@@ -7,10 +5,8 @@ namespace NaCoDoKina.Api.DataContracts.Authentication
     /// </summary>
     public class Credentials
     {
-        [Required, StringLength(40, MinimumLength = 1)]
         public string UserName { get; set; }
 
-        [Required, StringLength(40, MinimumLength = 10)]
         public string Password { get; set; }
     }
 }

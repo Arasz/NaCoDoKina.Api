@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,7 +38,7 @@ namespace NaCoDoKina.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            ConfigureMvc(services);
 
             ConfigureIdentity(services);
 
@@ -53,6 +54,17 @@ namespace NaCoDoKina.Api
             ApplicationContainer = builder.Build();
 
             return new AutofacServiceProvider(ApplicationContainer);
+        }
+
+        /// <summary>
+        /// Configure MVC framework 
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureMvc(IServiceCollection services)
+        {
+            services
+                .AddMvc()
+                .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Startup>());
         }
 
         /// <summary>
