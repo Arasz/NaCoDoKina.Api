@@ -29,10 +29,20 @@ namespace NaCoDoKina.Api
     {
         public IContainer ApplicationContainer { get; private set; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IConfigurationBuilder builder)
         {
             Configuration = configuration;
+
+            ConfigureAzureKeyVault(configuration, builder);
+
             ConfigureLogger(configuration);
+        }
+
+        private static void ConfigureAzureKeyVault(IConfiguration configuration, IConfigurationBuilder builder)
+        {
+            var keyVaultSettings = configuration.GetSettings<KeyVaultSettings>();
+            builder.AddAzureKeyVault(keyVaultSettings.VaultUrl, keyVaultSettings.ClientId,
+                keyVaultSettings.ClientSecret);
         }
 
         public IConfiguration Configuration { get; }
