@@ -21,6 +21,8 @@ deploy:
     site: http://nacodokinaapistaging.azurewebsites.net
     on: staging
     skip_cleanup: true
+services:
+  - postgresql
 before_install:
   - chmod a+x ./scripts/install.sh
 install:
