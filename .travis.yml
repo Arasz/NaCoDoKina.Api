@@ -8,16 +8,48 @@ branches:
     - production
     - staging
     - develop
-before_script:
-  - chmod a+x ./travis-build.sh
-  - chmod a+x ./run-tests.sh
-  - chmod a+x ./after-success.sh
-script:
-  - ./travis-build.sh
-  - ./run-tests.sh
-after_success:
-  - ./after-success.sh
 notifications:
   email:
     on_success: never
     on_failure: always
+deploy:
+  - provider: azure_web_apps
+    site: http://nacodokinaapi.azurewebsites.net
+    on: production
+    skip_cleanup: true
+  - provider: azure_web_apps
+    site: http://nacodokinaapi-staging.azurewebsites.net
+    slot: nacodokinaapi-staging
+    on: staging
+    skip_cleanup: true
+services:
+  - postgresql
+before_install:
+  - chmod a+x ./scripts/install.sh
+install:
+  - ./scripts/install.sh
+before_script:
+  - chmod a+x ./scripts/travis-build.sh
+  - chmod a+x ./scripts/run-unti-tests.sh
+  - chmod a+x ./scripts/run-integration-tests.sh
+  - chmod a+x ./scripts/after-success.sh
+  - chmod a+x ./scripts/before-deploy.sh
+  - chmod a+x ./scripts/after-deploy.sh
+  - chmod a+x ./scripts/after-failure.sh
+  - chmod a+x ./scripts/set-env-per-branch.sh
+  - chmod a+x ./scripts/migrations.sh
+  - ./scripts/set-env-per-branch.sh
+script:
+  - ./scripts/travis-build.sh
+  - ./scripts/run-unti-tests.sh
+  - ./scripts/run-integration-tests.sh
+after_success:
+  - ./scripts/after-success.sh
+  - ./scripts/migrations.sh
+after_failure:
+  - ./scripts/after-failure.sh
+before_deploy:
+  - ./scripts/before_deploy.sh
+after_deploy:
+  - ./scripts/after_deploy.sh
+
