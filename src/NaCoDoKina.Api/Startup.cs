@@ -91,7 +91,7 @@ namespace NaCoDoKina.Api
         /// <param name="services"></param>
         private void ConfigureIdentity(IServiceCollection services)
         {
-            var connectionString = ConnectionString("IdentityConnection");
+            var connectionString = ConnectionString("Identity");
 
             services.AddDbContext<ApplicationIdentityContext>(builder =>
             {
@@ -139,7 +139,7 @@ namespace NaCoDoKina.Api
         /// <param name="services"></param>
         private void ConfigureApplicationDataAccess(IServiceCollection services)
         {
-            var connectionString = ConnectionString("DataConnection");
+            var connectionString = ConnectionString("NaCoDoKina");
 
             services.AddDbContext<ApplicationContext>(builder =>
             {

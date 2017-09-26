@@ -18,7 +18,8 @@ deploy:
     on: production
     skip_cleanup: true
   - provider: azure_web_apps
-    site: http://nacodokinaapistaging.azurewebsites.net
+    site: http://nacodokinaapi-staging.azurewebsites.net
+    slot: nacodokinaapi-staging
     on: staging
     skip_cleanup: true
 services:
