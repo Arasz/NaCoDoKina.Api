@@ -98,7 +98,7 @@ namespace NaCoDoKina.Api.Mappings
 
                 //Assert
                 result.Should().BeOfType<Models.MovieShowtime>();
-                result.CinemaName.Should().Be(movieShowtime.CinemaName);
+
                 result.Language.Should().Be(movieShowtime.Language);
                 result.ShowType.Should().Be(movieShowtime.ShowType);
                 result.ShowTime.Should().Be(movieShowtime.ShowTime);
@@ -115,7 +115,7 @@ namespace NaCoDoKina.Api.Mappings
 
                 //Assert
                 result.Should().BeOfType<MovieShowtime>();
-                result.CinemaName.Should().Be(movieShowtime.CinemaName);
+
                 result.Language.Should().Be(movieShowtime.Language);
                 result.ShowType.Should().Be(movieShowtime.ShowType);
                 result.ShowTime.Should().Be(movieShowtime.ShowTime);

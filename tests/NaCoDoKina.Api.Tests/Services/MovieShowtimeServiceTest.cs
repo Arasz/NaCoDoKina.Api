@@ -30,8 +30,6 @@ namespace NaCoDoKina.Api.Services
                     Language = showtime.Language,
                     ShowTime = showtime.ShowTime,
                     ShowType = showtime.ShowType,
-                    CinemaName = showtime.Cinema.Name,
-                    MovieName = showtime.Movie.Name,
                 }));
         }
 

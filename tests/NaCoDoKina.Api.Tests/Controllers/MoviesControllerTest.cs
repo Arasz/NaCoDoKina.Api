@@ -64,7 +64,7 @@ namespace NaCoDoKina.Api.Controllers
                     .Returns(new Func<Models.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
                     {
                         ShowType = showtime.ShowType,
-                        CinemaName = showtime.CinemaName,
+
                         Language = showtime.Language,
                         ShowTime = showtime.ShowTime,
                     }));
@@ -97,7 +97,7 @@ namespace NaCoDoKina.Api.Controllers
                     .Returns(new Func<Models.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
                     {
                         ShowType = showtime.ShowType,
-                        CinemaName = showtime.CinemaName,
+
                         Language = showtime.Language,
                         ShowTime = showtime.ShowTime,
                     }));
@@ -128,7 +128,7 @@ namespace NaCoDoKina.Api.Controllers
                     .Returns(new Func<Models.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
                     {
                         ShowType = showtime.ShowType,
-                        CinemaName = showtime.CinemaName,
+
                         Language = showtime.Language,
                         ShowTime = showtime.ShowTime,
                     }));

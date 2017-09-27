@@ -112,7 +112,7 @@ namespace NaCoDoKina.Api.Controllers
         /// </summary>
         /// <param name="id"> Movie id </param>
         /// <param name="searchArea"> RegisterUser searchArea </param>
-        /// <returns> Detailed informations about show </returns>
+        /// <returns> Detailed information about show </returns>
         [ProducesResponseType(typeof(IEnumerable<Cinema>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

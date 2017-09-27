@@ -18,11 +18,6 @@ namespace NaCoDoKina.Api.Models
         public string ShowType { get; set; }
 
         /// <summary>
-        /// Cinema name 
-        /// </summary>
-        public string CinemaName { get; set; }
-
-        /// <summary>
         /// Cinema in which the movie is played 
         /// </summary>
         public long CinemaId { get; set; }
@@ -33,18 +28,13 @@ namespace NaCoDoKina.Api.Models
         public long MovieId { get; set; }
 
         /// <summary>
-        /// Movie name 
-        /// </summary>
-        public string MovieName { get; set; }
-
-        /// <summary>
         /// Show times 
         /// </summary>
         public DateTime ShowTime { get; set; }
 
         public override string ToString()
         {
-            return $"{nameof(Language)}: {Language}, {nameof(ShowType)}: {ShowType}, {nameof(CinemaName)}: {CinemaName}, {nameof(CinemaId)}: {CinemaId}, {nameof(MovieId)}: {MovieId}, {nameof(MovieName)}: {MovieName}, {nameof(ShowTime)}: {ShowTime}";
+            return $"{nameof(Language)}: {Language}, {nameof(ShowType)}: {ShowType}, {nameof(CinemaId)}: {CinemaId}, {nameof(MovieId)}: {MovieId}, {nameof(ShowTime)}: {ShowTime}";
         }
     }
 }
