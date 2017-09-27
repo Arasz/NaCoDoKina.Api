@@ -16,13 +16,13 @@ deploy:
   - provider: azure_web_apps
     site: nacodokinaapi
     on: production
-    skip_cleanup: true
+    skip_cleanup: false
     verbose: true
   - provider: azure_web_apps
     site: nacodokinaapi-staging
     slot: nacodokinaapi-staging
     on: staging
-    skip_cleanup: true
+    skip_cleanup: false
     verbose: true
 services:
   - postgresql
