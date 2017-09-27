@@ -55,6 +55,13 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             var builder = WebHost.CreateDefaultBuilder()
                 .UseEnvironment(ApiSettings.Environment)
                 .UseContentRoot(contentRoot)
+                .ConfigureAppConfiguration((context, configurationBuilder) =>
+                {
+                    if (context.HostingEnvironment.IsProduction())
+                    {
+                        configurationBuilder.AddUserSecrets<Startup>();
+                    }
+                })
                 .ConfigureServices(ConfigureServices)
                 .UseSerilog()
                 .UseStartup<Startup>();
