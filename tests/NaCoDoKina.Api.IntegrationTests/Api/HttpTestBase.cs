@@ -55,6 +55,13 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             var builder = WebHost.CreateDefaultBuilder()
                 .UseEnvironment(ApiSettings.Environment)
                 .UseContentRoot(contentRoot)
+                .ConfigureAppConfiguration((context, configurationBuilder) =>
+                {
+                    if (context.HostingEnvironment.IsProduction())
+                    {
+                        configurationBuilder.AddUserSecrets<Startup>();
+                    }
+                })
                 .ConfigureServices(ConfigureServices)
                 .UseSerilog()
                 .UseStartup<Startup>();
@@ -73,7 +80,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             var testContentRoot = GetProjectPath("tests", GetType().Assembly);
             var testConfiguration = new ConfigurationBuilder()
                 .SetBasePath(testContentRoot)
-                .AddJsonFile("appsettings.Test.json", false)
+                .AddJsonFile("appsettings.test.json", false)
                 .Build();
             ApiSettings = testConfiguration.Get<IntegrationTestApiSettings>();
         }

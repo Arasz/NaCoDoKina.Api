@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace NaCoDoKina.Api.Infrastructure.Services.Identity
 {
@@ -26,7 +27,9 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
                 if (uniqueNameClaim != null && long.TryParse(uniqueNameClaim.Value, out var id))
                     return id;
 
-                _logger.LogWarning("For claim {@claim} value cannot be parsed to long or claim is null, all claims {@claims} ", uniqueNameClaim, httpContext.User.Claims);
+                var allClaims = httpContext.User.Claims
+                    .Select(claim => new { claim.Type, claim.Value });
+                _logger.LogWarning("For claim {@claim} value cannot be parsed to long or claim is null, all claims {@claims} ", uniqueNameClaim, allClaims);
 
                 return 0;
             }

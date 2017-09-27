@@ -32,6 +32,7 @@ namespace NaCoDoKina.Api
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
             ConfigureLogger(configuration);
         }
 
@@ -91,7 +92,7 @@ namespace NaCoDoKina.Api
         /// <param name="services"></param>
         private void ConfigureIdentity(IServiceCollection services)
         {
-            var connectionString = ConnectionString("IdentityConnection");
+            var connectionString = ConnectionString("Identity");
 
             services.AddDbContext<ApplicationIdentityContext>(builder =>
             {
@@ -139,7 +140,7 @@ namespace NaCoDoKina.Api
         /// <param name="services"></param>
         private void ConfigureApplicationDataAccess(IServiceCollection services)
         {
-            var connectionString = ConnectionString("DataConnection");
+            var connectionString = ConnectionString("NaCoDoKina");
 
             services.AddDbContext<ApplicationContext>(builder =>
             {
@@ -182,7 +183,7 @@ namespace NaCoDoKina.Api
         /// <returns></returns>
         private string ConnectionString(string name) =>
             $"{Configuration.GetConnectionString(name)}" +
-            $"{Configuration["DatabasePassword"]};";
+            $"{Configuration["Database:Password"]};";
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
