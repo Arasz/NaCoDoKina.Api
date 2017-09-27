@@ -49,7 +49,7 @@ after_success:
 after_failure:
   - ./scripts/after-failure.sh
 before_deploy:
-  - ./scripts/before_deploy.sh
+  - ./scripts/before-deploy.sh
 after_deploy:
-  - ./scripts/after_deploy.sh
+  - ./scripts/after-deploy.sh
 
