@@ -1,2 +1,4 @@
 #!/usr/bin/env sh
-dotnet test --no-build --no-restore   ./tests/NaCoDoKina.Api.Tests/*.csproj
+if [${RUN_UNIT_TESTS} == "true"]; then
+    dotnet test --no-build --no-restore   ./tests/NaCoDoKina.Api.Tests/*.csproj
+fi
