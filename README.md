@@ -14,6 +14,9 @@ Api for NaCoDoKina project. Contains all bussines logic. In first version create
 http://nacodokinaapi.azurewebsites.net/documentation
 
 ## Staging enviroment url:
+http://nacodokinaapi-staging.azurewebsites.net
+
+## Production enviroment url:
 http://nacodokinaapi.azurewebsites.net
 
 
