@@ -24,6 +24,8 @@ deploy:
     skip_cleanup: true
 services:
   - postgresql
+env:
+  - ASPNETCORE_ENVIRONMENT=${TRAVIS_BRANCH}
 before_install:
   - chmod a+x ./scripts/install.sh
 install:
@@ -38,7 +40,6 @@ before_script:
   - chmod a+x ./scripts/after-failure.sh
   - chmod a+x ./scripts/set-env-per-branch.sh
   - chmod a+x ./scripts/migrations.sh
-  - ./scripts/set-env-per-branch.sh
 script:
   - ./scripts/travis-build.sh
   - ./scripts/run-unit-tests.sh
