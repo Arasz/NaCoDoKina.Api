@@ -255,7 +255,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 var movieId = 1L;
                 var now = DateTime.Now.AddDays(-2);
                 var cinemaId = 1;
-                var url = $"{BaseUrl}{movieId}/cinemas/{cinemaId}/showtimes/?laterThan={now}";
+                var url = $"{BaseUrl}{movieId}/cinemas/{cinemaId}/showtimes/?laterThan={now.ToString(CultureInfo.InvariantCulture)}";
 
                 // Act
                 await Login();
