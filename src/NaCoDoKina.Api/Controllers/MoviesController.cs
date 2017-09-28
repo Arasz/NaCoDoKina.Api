@@ -204,16 +204,12 @@ namespace NaCoDoKina.Api.Controllers
         [HttpPost("{id}/rating")]
         public async Task<IActionResult> SetRatingForMovie(long id, [FromBody]double rating)
         {
-            try
-            {
-                await _ratingService.SetMovieRating(id, rating);
+            var result = await _ratingService.SetMovieRating(id, rating);
+
+            if (result.IsSuccess)
                 return CreatedAtAction(nameof(GetMovieDetailsAsync), id, rating);
-            }
-            catch (MovieNotFoundException movieNotFoundException)
-            {
-                _logger.LogWarning("Movie with id {id} not found by rating service", id);
-                return NotFound(movieNotFoundException.Message);
-            }
+
+            return NotFound(result.FailureReason);
         }
     }
 }
