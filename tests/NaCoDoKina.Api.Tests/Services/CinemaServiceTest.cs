@@ -217,7 +217,7 @@ namespace NaCoDoKina.Api.Services
                         .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
 
                     //Act
-                    var result = await ServiceUnderTest.GetNearestCinemasAsync(searchArea);
+                    var result = await ServiceUnderTest.GetCinemasInSearchAreaAsync(searchArea);
 
                     //Assert
                     result.Should().HaveCount(cinemas.Count - 1);
@@ -234,7 +234,7 @@ namespace NaCoDoKina.Api.Services
                     var searchArea = new SearchArea(location, 100);
 
                     //Act
-                    Func<Task<IEnumerable<Cinema>>> action = () => ServiceUnderTest.GetNearestCinemasAsync(searchArea);
+                    Func<Task<IEnumerable<Cinema>>> action = () => ServiceUnderTest.GetCinemasInSearchAreaAsync(searchArea);
 
                     //Assert
                     action.ShouldThrow<CinemasNotFoundException>();

@@ -145,33 +145,24 @@ namespace NaCoDoKina.Api.Controllers
         }
 
         /// <summary>
-        /// Returns movie showtimes for given cinema. If no cinema is given, all showtimes for movie
-        /// are returned.
+        /// Returns movie showtimes for given cinema. 
         /// </summary>
         /// <param name="movieId"> Movie id </param>
-        /// <param name="cinemaId"> Cinema id. Optional. </param>
+        /// <param name="cinemaId"> Cinema id. </param>
         /// <param name="laterThan">
         /// Minimal movie show time. When not provided current time is used
         /// </param>
         /// <returns> Movie showtimes </returns>
         [ProducesResponseType(typeof(IEnumerable<MovieShowtime>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("{movieId}/cinemas/{cinemaId?}")]
-        public async Task<IActionResult> GetMovieShowtimesAsync(long movieId, long? cinemaId = null, [FromQuery]DateTime? laterThan = null)
+        [HttpGet("{movieId}/cinemas/{cinemaId}/showtimes")]
+        public async Task<IActionResult> GetMovieShowtimesAsync(long movieId, long cinemaId, [FromQuery]DateTime? laterThan = null)
         {
             try
             {
                 var minimalShowTime = laterThan ?? DateTime.Now;
-                IEnumerable<Models.Movies.MovieShowtime> showtimes;
 
-                if (cinemaId is null)
-                {
-                    showtimes = await _movieShowtimeService.GetMovieShowtimesAsync(movieId, minimalShowTime);
-                }
-                else
-                {
-                    showtimes = await _movieShowtimeService.GetMovieShowtimesForCinemaAsync(movieId, cinemaId.Value, minimalShowTime);
-                }
+                var showtimes = await _movieShowtimeService.GetMovieShowtimesForCinemaAsync(movieId, cinemaId, minimalShowTime);
 
                 var mappedShowtimes = showtimes
                     .Map<Models.Movies.MovieShowtime, MovieShowtime>(_mapper)
@@ -190,7 +181,7 @@ namespace NaCoDoKina.Api.Controllers
         /// Returns detailed information about show 
         /// </summary>
         /// <param name="id"> Movie id </param>
-        /// <returns> Detailed informations about show </returns>
+        /// <returns> Detailed information about show </returns>
         [ProducesResponseType(typeof(MovieDetails), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}/details")]

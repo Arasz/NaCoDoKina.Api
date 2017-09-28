@@ -22,7 +22,7 @@ namespace NaCoDoKina.Api.Services
 
         public MovieService(IMovieRepository movieRepository, ICinemaService cinemaService, IRatingService ratingService, IMapper mapper, ILogger<IMovieService> logger)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _ratingService = ratingService ?? throw new ArgumentNullException(nameof(ratingService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _movieRepository = movieRepository ?? throw new ArgumentNullException(nameof(movieRepository));
@@ -31,14 +31,14 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<IEnumerable<long>> GetAllMoviesAsync(SearchArea searchArea)
         {
-            var nearestCinemas = await _cinemaService.GetNearestCinemasAsync(searchArea);
+            var cinemas = await _cinemaService.GetCinemasInSearchAreaAsync(searchArea);
 
-            var moviesPlayedInCinemas = await GetMoviesPlayedInCinemas(nearestCinemas);
+            var movies = await GetMoviesPlayedInCinemas(cinemas);
 
-            if (moviesPlayedInCinemas is null || !moviesPlayedInCinemas.Any())
-                throw new MoviesNotFoundException(nearestCinemas, searchArea);
+            if (movies is null || !movies.Any())
+                throw new MoviesNotFoundException(cinemas, searchArea);
 
-            return moviesPlayedInCinemas;
+            return movies;
         }
 
         private async Task<IEnumerable<long>> GetMoviesPlayedInCinemas(IEnumerable<Cinema> cinemas)
@@ -53,8 +53,8 @@ namespace NaCoDoKina.Api.Services
             var availableMoviesIds = new List<long>();
             foreach (var cinema in cinemas)
             {
-                var playedMovie = await _movieRepository.GetMoviesIdsPlayedInCinemaAsync(cinema.Id, DateAfterTravel(cinema));
-                availableMoviesIds.AddRange(playedMovie);
+                var movies = await _movieRepository.GetMoviesIdsPlayedInCinemaAsync(cinema.Id, DateAfterTravel(cinema));
+                availableMoviesIds.AddRange(movies);
             }
 
             var movieRatings = new List<(long MovieId, double Rating)>();

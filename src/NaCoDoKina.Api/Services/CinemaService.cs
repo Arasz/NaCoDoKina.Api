@@ -29,18 +29,31 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<IEnumerable<Cinema>> GetCinemasPlayingMovieInSearchArea(long movieId, SearchArea searchArea)
         {
-            var allCinemasForMovie = (await _cinemaRepository.GetAllCinemasForMovieAsync(movieId))
-                .ToArray();
+            var cinemas = await _cinemaRepository.GetAllCinemasForMovieAsync(movieId);
 
-            if (allCinemasForMovie is null || !allCinemasForMovie.Any())
-                throw new CinemasNotFoundException(movieId, searchArea);
-
-            return await FindNearestCinemasAsync(searchArea, allCinemasForMovie);
+            return await MapAndFilter(searchArea, cinemas);
         }
 
-        private async Task<IEnumerable<TravelInformation>> GetTravelInformationForCinemas(SearchArea searchArea, IEnumerable<Cinema> allCinemaModels)
+        private async Task<IEnumerable<Cinema>> MapAndFilter(SearchArea searchArea, IEnumerable<Entities.Cinemas.Cinema> cinemas)
         {
-            var travelPlans = allCinemaModels
+            var mappedCinemas = MapCinemas(cinemas);
+
+            EnsureCinemasFound(searchArea, mappedCinemas);
+
+            var cinemasInSearchArea = await ExcludeOutsideCinemas(searchArea, mappedCinemas);
+
+            return cinemasInSearchArea;
+        }
+
+        private static void EnsureCinemasFound(SearchArea searchArea, Cinema[] mappedCinemas)
+        {
+            if (mappedCinemas is null || !mappedCinemas.Any())
+                throw new CinemasNotFoundException(searchArea);
+        }
+
+        private async Task<IEnumerable<TravelInformation>> GetTravelInformationForCinemasAsync(SearchArea searchArea, Cinema[] cinemas)
+        {
+            var travelPlans = cinemas
                 .Select(cinema => new TravelPlan(searchArea.Center, cinema.Location))
                 .ToArray();
 
@@ -56,30 +69,24 @@ namespace NaCoDoKina.Api.Services
 
         private Cinema[] MapCinemas(IEnumerable<Entities.Cinemas.Cinema> cinemas)
         {
-            var allCinemaModels = cinemas
-                .Select(_mapper.Map<Cinema>)
+            var mappedCinemas = cinemas
+                ?.Select(_mapper.Map<Cinema>)
                 .ToArray();
-            return allCinemaModels;
+            return mappedCinemas;
         }
 
-        public async Task<IEnumerable<Cinema>> GetNearestCinemasAsync(SearchArea searchArea)
+        public async Task<IEnumerable<Cinema>> GetCinemasInSearchAreaAsync(SearchArea searchArea)
         {
-            var allCinemas = (await _cinemaRepository.GetAllCinemas())
-                .ToArray();
+            var cinemas = await _cinemaRepository.GetAllCinemas();
 
-            if (allCinemas is null || !allCinemas.Any())
-                throw new CinemasNotFoundException(searchArea);
-
-            return await FindNearestCinemasAsync(searchArea, allCinemas);
+            return await MapAndFilter(searchArea, cinemas);
         }
 
-        private async Task<IEnumerable<Cinema>> FindNearestCinemasAsync(SearchArea searchArea, IEnumerable<Entities.Cinemas.Cinema> allCinemas)
+        private async Task<IEnumerable<Cinema>> ExcludeOutsideCinemas(SearchArea searchArea, Cinema[] cinemas)
         {
-            var allCinemaModels = MapCinemas(allCinemas);
+            var travelInformationForCinemas = await GetTravelInformationForCinemasAsync(searchArea, cinemas);
 
-            var travelInformationForCinemas = await GetTravelInformationForCinemas(searchArea, allCinemaModels);
-
-            var nearestCinemas = allCinemaModels
+            var nearestCinemas = cinemas
                 .Join(travelInformationForCinemas, cinema => cinema.Location,
                     information => information.TravelPlan.Destination,
                     (cinema, information) =>
@@ -88,7 +95,8 @@ namespace NaCoDoKina.Api.Services
                         return (Cinema: cinema, Distance: information.Distance);
                     })
                 .Where(tuple => tuple.Distance <= searchArea.Radius)
-                .Select(tuple => tuple.Cinema);
+                .Select(tuple => tuple.Cinema)
+                .ToArray();
 
             return nearestCinemas;
         }

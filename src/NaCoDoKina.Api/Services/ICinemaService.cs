@@ -23,7 +23,7 @@ namespace NaCoDoKina.Api.Services
         /// </summary>
         /// <param name="searchArea"> RegisterUser searchArea </param>
         /// <returns> List of nearest cinemas </returns>
-        Task<IEnumerable<Cinema>> GetNearestCinemasAsync(SearchArea searchArea);
+        Task<IEnumerable<Cinema>> GetCinemasInSearchAreaAsync(SearchArea searchArea);
 
         /// <summary>
         /// Adds new cinema 

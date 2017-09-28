@@ -198,7 +198,7 @@ namespace NaCoDoKina.Api.Services
                     .Returns(new Func<long, Task<double>>((movieId) => Task.FromResult((double)movieId)));
 
                 CinemaServiceMock
-                    .Setup(service => service.GetNearestCinemasAsync(SearchArea))
+                    .Setup(service => service.GetCinemasInSearchAreaAsync(SearchArea))
                     .Returns(() => Task.FromResult(Cinemas.AsEnumerable()));
 
                 //Act
@@ -217,7 +217,7 @@ namespace NaCoDoKina.Api.Services
                 _movieRepositoryFake.SetTestData(new List<MovieShowtime>());
 
                 CinemaServiceMock
-                    .Setup(service => service.GetNearestCinemasAsync(SearchArea))
+                    .Setup(service => service.GetCinemasInSearchAreaAsync(SearchArea))
                     .Returns(() => Task.FromResult(Cinemas.AsEnumerable()));
 
                 //Act
@@ -233,7 +233,7 @@ namespace NaCoDoKina.Api.Services
                 //Arrange
 
                 CinemaServiceMock
-                    .Setup(service => service.GetNearestCinemasAsync(SearchArea))
+                    .Setup(service => service.GetCinemasInSearchAreaAsync(SearchArea))
                     .Throws(new CinemasNotFoundException(SearchArea));
 
                 //Act
@@ -250,7 +250,7 @@ namespace NaCoDoKina.Api.Services
                 SetFakeTestData();
 
                 CinemaServiceMock
-                    .Setup(service => service.GetNearestCinemasAsync(SearchArea))
+                    .Setup(service => service.GetCinemasInSearchAreaAsync(SearchArea))
                     .Returns(() => Task.FromResult(Cinemas.AsEnumerable()));
 
                 RatingServiceMock

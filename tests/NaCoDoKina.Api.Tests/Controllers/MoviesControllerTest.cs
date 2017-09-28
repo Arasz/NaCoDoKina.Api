@@ -57,6 +57,7 @@ namespace NaCoDoKina.Api.Controllers
             {
                 // Arrange
                 var movieId = Fixture.Create<long>();
+                var cinemaId = Fixture.Create<long>();
                 var moviesCount = 5;
                 var movieShowtimes = Fixture.CreateMany<Models.Movies.MovieShowtime>(moviesCount);
                 var laterThan = Fixture.Create<DateTime>();
@@ -71,11 +72,11 @@ namespace NaCoDoKina.Api.Controllers
                     }));
 
                 MovieShowtimeServiceMock
-                    .Setup(service => service.GetMovieShowtimesAsync(movieId, laterThan))
+                    .Setup(service => service.GetMovieShowtimesForCinemaAsync(movieId, cinemaId, laterThan))
                     .ReturnsAsync(movieShowtimes);
 
                 // Act
-                var result = await ControllerUnderTest.GetMovieShowtimesAsync(movieId, laterThan: laterThan);
+                var result = await ControllerUnderTest.GetMovieShowtimesAsync(movieId, cinemaId, laterThan);
 
                 //Assert
                 result.Should().BeOfType<OkObjectResult>();
@@ -135,11 +136,11 @@ namespace NaCoDoKina.Api.Controllers
                     }));
 
                 MovieShowtimeServiceMock
-                    .Setup(service => service.GetMovieShowtimesAsync(movieId, laterThan))
+                    .Setup(service => service.GetMovieShowtimesForCinemaAsync(movieId, cinemaId, laterThan))
                     .ThrowsAsync(new MovieShowtimeNotFoundException(movieId, cinemaId));
 
                 // Act
-                var result = await ControllerUnderTest.GetMovieShowtimesAsync(movieId, laterThan: laterThan);
+                var result = await ControllerUnderTest.GetMovieShowtimesAsync(movieId, cinemaId, laterThan);
 
                 //Assert
                 result.Should().BeOfType<NotFoundObjectResult>();

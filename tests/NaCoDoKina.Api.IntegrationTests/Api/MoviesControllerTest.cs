@@ -5,6 +5,7 @@ using NaCoDoKina.Api.DataContracts.Cinemas;
 using NaCoDoKina.Api.DataContracts.Movies;
 using NaCoDoKina.Api.Infrastructure.Identity;
 using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
+using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -206,7 +207,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Arrange
                 var movieId = 1L;
                 var url = $"{BaseUrl}{movieId}/rating";
-                var rating = 4;
+                var rating = Fixture.Create<double>();
 
                 // Act
                 await Login();
@@ -224,12 +225,13 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
         public class GetMovieShowtimesAsync : MoviesControllerTest
         {
             [Fact]
-            public async Task Should_return_all_showtimes_for_movie()
+            public async Task Should_return_all_showtimes_for_movie_in_given_cinema()
             {
                 // Arrange
                 var movieId = 1L;
                 var now = DateTime.Now.AddMinutes(-2);
-                var url = $"{BaseUrl}{movieId}/cinemas";
+                var cinemaId = 1;
+                var url = $"{BaseUrl}{movieId}/cinemas/{cinemaId}/showtimes";
 
                 // Act
                 await Login();
@@ -247,32 +249,13 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             }
 
             [Fact]
-            public async Task Should_return_all_showtimes_for_movie_in_given_cinema()
-            {
-                // Arrange
-                var movieId = 1L;
-                var cinemaId = 1;
-                var url = $"{BaseUrl}{movieId}/cinemas{cinemaId}";
-
-                // Act
-                await Login();
-                var response = await Client.GetAsync(url);
-
-                // Assert
-                response.EnsureSuccessStatusCode();
-
-                var movieShowtimes = await response.Content.ReadAsJsonObjectAsync<MovieShowtime[]>();
-
-                movieShowtimes.Should().NotBeNullOrEmpty();
-            }
-
-            [Fact]
             public async Task Should_return_all_showtimes_for_movie_after_given_time()
             {
                 // Arrange
                 var movieId = 1L;
                 var now = DateTime.Now.AddDays(-2);
-                var url = $"{BaseUrl}{movieId}/cinemas?laterThan={now}";
+                var cinemaId = 1;
+                var url = $"{BaseUrl}{movieId}/cinemas/{cinemaId}/showtimes/?laterThan={now}";
 
                 // Act
                 await Login();
