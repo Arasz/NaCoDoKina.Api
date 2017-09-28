@@ -1,4 +1,4 @@
-namespace NaCoDoKina.Api.Models
+namespace NaCoDoKina.Api.Models.Movies
 {
     /// <summary>
     /// Basic movie information 
@@ -7,13 +7,13 @@ namespace NaCoDoKina.Api.Models
     {
         public long Id { get; set; }
 
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         public string PosterUrl { get; set; }
 
         public override string ToString()
         {
-            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}";
+            return $"{nameof(Id)}: {Id}, {nameof(Title)}: {Title}";
         }
     }
 }

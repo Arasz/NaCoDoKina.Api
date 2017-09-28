@@ -1,4 +1,4 @@
-﻿namespace NaCoDoKina.Api.Models
+﻿namespace NaCoDoKina.Api.Models.Travel
 {
     /// <summary>
     /// All data needed for travel time calculations 

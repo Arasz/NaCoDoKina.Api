@@ -1,4 +1,6 @@
-﻿namespace NaCoDoKina.Api.DataContracts.Movies
+﻿using NaCoDoKina.Api.DataContracts.Resources;
+
+namespace NaCoDoKina.Api.DataContracts.Cinemas
 {
     /// <summary>
     /// Information about cinema 
@@ -23,11 +25,16 @@
         /// <summary>
         /// Cinema website 
         /// </summary>
-        public ServiceUrl Website { get; set; }
+        public ResourceLink Website { get; set; }
 
         /// <summary>
         /// Network name to which cinema belongs 
         /// </summary>
         public string NetworkName { get; set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(NetworkName)}: {NetworkName}";
+        }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using FluentAssertions;
 using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Cinemas;
+using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NaCoDoKina.Api.Entities.Cinemas;
 using Xunit;
 
 namespace NaCoDoKina.Api.Repository
@@ -43,7 +44,7 @@ namespace NaCoDoKina.Api.Repository
 
                 var movie1 = new Movie
                 {
-                    Name = $"{nameof(Movie)}1",
+                    Title = $"{nameof(Movie)}1",
                     Details = new MovieDetails
                     {
                         Description = nameof(MovieDetails),
@@ -51,7 +52,7 @@ namespace NaCoDoKina.Api.Repository
                 };
                 var movie2 = new Movie
                 {
-                    Name = $"{nameof(Movie)}2",
+                    Title = $"{nameof(Movie)}2",
                     Details = new MovieDetails
                     {
                         Description = nameof(MovieDetails),
@@ -90,7 +91,7 @@ namespace NaCoDoKina.Api.Repository
 
                     foreach (var movie in contextScope.DbContext.Movies)
                     {
-                        movies.Single(m => m.Name == movie.Name).Id = movie.Id;
+                        movies.Single(m => m.Title == movie.Title).Id = movie.Id;
                     }
                 }
 

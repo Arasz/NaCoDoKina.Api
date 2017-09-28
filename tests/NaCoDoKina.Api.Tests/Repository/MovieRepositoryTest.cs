@@ -1,14 +1,13 @@
 ﻿using FluentAssertions;
 using Moq;
-using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Cinemas;
+using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Repositories;
 using NaCoDoKina.Api.Services;
 using Ploeh.AutoFixture;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using NaCoDoKina.Api.Entities.Cinemas;
-using NaCoDoKina.Api.Entities.Movies;
 using Xunit;
 
 namespace NaCoDoKina.Api.Repository
@@ -36,14 +35,8 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_add_movie_and_return_id()
             {
                 //Arrange
-                var movieId = 1;
-
-                var movie = new Movie
-                {
-                    Name = nameof(Movie),
-                    Details = new MovieDetails(),
-                    PosterUrl = nameof(Movie.PosterUrl),
-                };
+                var movie = Fixture.Create<Movie>();
+                var movieId = movie.Id;
 
                 using (var contextScope = CreateContextScope())
                 {
@@ -71,24 +64,12 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_add_movie_details_and_return_id()
             {
                 //Arrange
-                var movieId = 1;
+                var movie = Fixture.Create<Movie>();
+                var movieId = movie.Id;
 
-                var movie = new Movie
-                {
-                    Name = nameof(Movie),
-                    Details = new MovieDetails
-                    {
-                        Description = nameof(MovieDetails)
-                    },
-                    PosterUrl = nameof(Movie.PosterUrl),
-                };
-
-                var movieDetails = new MovieDetails
-                {
-                    Id = 0,
-                    MovieId = movieId,
-                    Description = nameof(MovieDetails.Description),
-                };
+                var movieDetails = Fixture.Build<MovieDetails>()
+                    .With(details => details.Id, movieId)
+                    .Create();
 
                 using (var contextScope = CreateContextScope())
                 {
@@ -118,7 +99,8 @@ namespace NaCoDoKina.Api.Repository
                         .Should().BeTrue();
 
                     contextScope.DbContext.MovieDetails
-                        .Single().Description.Should().Be(nameof(MovieDetails.Description));
+                        .Single()
+                        .Description.Should().Be(movieDetails.Description);
                 }
             }
 
@@ -126,25 +108,15 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_return_0_id_when_movie_can_not_be_found()
             {
                 //Arrange
-                var movieId = 1;
                 var notExistingMovieId = 404L;
 
-                var movie = new Movie
-                {
-                    Name = nameof(Movie),
-                    Details = new MovieDetails
-                    {
-                        Description = nameof(MovieDetails)
-                    },
-                    PosterUrl = nameof(Movie.PosterUrl),
-                };
+                //Arrange
+                var movie = Fixture.Create<Movie>();
+                var movieId = movie.Id;
 
-                var movieDetails = new MovieDetails
-                {
-                    Id = 0,
-                    MovieId = notExistingMovieId,
-                    Description = nameof(MovieDetails.Description),
-                };
+                var movieDetails = Fixture.Build<MovieDetails>()
+                    .With(details => details.Id, notExistingMovieId)
+                    .Create();
 
                 using (var contextScope = CreateContextScope())
                 {
@@ -170,7 +142,8 @@ namespace NaCoDoKina.Api.Repository
                         .Should().BeTrue();
 
                     contextScope.DbContext.MovieDetails
-                        .Should().OnlyContain(details => details.Description == nameof(MovieDetails));
+                        .Should()
+                        .OnlyContain(details => details.Description == movie.Details.Description);
                 }
             }
         }
@@ -181,14 +154,9 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_delete_movie_and_return_true_when_movie_exist()
             {
                 //Arrange
-                var movieId = 1;
-
-                var movie = new Movie
-                {
-                    Name = nameof(Movie),
-                    Details = new MovieDetails(),
-                    PosterUrl = nameof(Movie.PosterUrl),
-                };
+                //Arrange
+                var movie = Fixture.Create<Movie>();
+                var movieId = movie.Id;
 
                 using (var contextScope = CreateContextScope())
                 {
@@ -212,9 +180,9 @@ namespace NaCoDoKina.Api.Repository
                     contextScope.DbContext.Movies
                         .Any(m => m.Id == movieId)
                         .Should().BeTrue();
-                    contextScope.DbContext.DeletedMovieMarks
+                    contextScope.DbContext.DeletedMovies
                         .Should().HaveCount(1);
-                    contextScope.DbContext.DeletedMovieMarks
+                    contextScope.DbContext.DeletedMovies
                         .Should().ContainSingle(mark => mark.MovieId == movieId && mark.UserId == DefaultUserId);
                 }
             }
@@ -223,15 +191,11 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_return_false_when_movie_do_not_exist()
             {
                 //Arrange
-                var movieId = 1;
                 var nonExistingId = 53;
 
-                var movie = new Movie
-                {
-                    Name = nameof(Movie),
-                    Details = new MovieDetails(),
-                    PosterUrl = nameof(Movie.PosterUrl),
-                };
+                //Arrange
+                var movie = Fixture.Create<Movie>();
+                var movieId = movie.Id;
 
                 using (var contextScope = CreateContextScope())
                 {
@@ -255,7 +219,7 @@ namespace NaCoDoKina.Api.Repository
                     contextScope.DbContext.Movies
                         .Any(m => m.Id == movieId)
                         .Should().BeTrue();
-                    contextScope.DbContext.DeletedMovieMarks
+                    contextScope.DbContext.DeletedMovies
                         .Should().BeEmpty();
                 }
             }
@@ -264,21 +228,15 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_return_true_if_already_deleted()
             {
                 //Arrange
-                var movieId = 1;
-
-                var movie = new Movie
-                {
-                    Name = nameof(Movie),
-                    Details = new MovieDetails(),
-                    PosterUrl = nameof(Movie.PosterUrl),
-                };
+                var movie = Fixture.Create<Movie>();
+                var movieId = movie.Id;
 
                 var deletedMovieMark = new DeletedMovies(movieId, DefaultUserId);
 
                 using (var contextScope = CreateContextScope())
                 {
                     contextScope.DbContext.Movies.Add(movie);
-                    contextScope.DbContext.DeletedMovieMarks.Add(deletedMovieMark);
+                    contextScope.DbContext.DeletedMovies.Add(deletedMovieMark);
                     await contextScope.DbContext.SaveChangesAsync();
                 }
 
@@ -298,9 +256,9 @@ namespace NaCoDoKina.Api.Repository
                     contextScope.DbContext.Movies
                         .Any(m => m.Id == movieId)
                         .Should().BeTrue();
-                    contextScope.DbContext.DeletedMovieMarks
+                    contextScope.DbContext.DeletedMovies
                         .Should().HaveCount(1);
-                    contextScope.DbContext.DeletedMovieMarks
+                    contextScope.DbContext.DeletedMovies
                         .Should()
                         .ContainSingle(mark => mark.MovieId == deletedMovieMark.MovieId && mark.UserId == DefaultUserId);
                 }
@@ -314,14 +272,8 @@ namespace NaCoDoKina.Api.Repository
         public async Task Should_return_movie_when_exist_and_is_not_marked_as_deleted()
         {
             //Arrange
-            var movieId = 1;
-
-            var movie = new Movie
-            {
-                Name = nameof(Movie),
-                Details = new MovieDetails(),
-                PosterUrl = nameof(Movie.PosterUrl),
-            };
+            var movie = Fixture.Create<Movie>();
+            var movieId = movie.Id;
 
             using (var contextScope = CreateContextScope())
             {
@@ -340,7 +292,7 @@ namespace NaCoDoKina.Api.Repository
                 //Assert
                 movieFromDb.Id.Should().BePositive();
                 movieFromDb.Details.Should().BeNull("We only get necessary data");
-                movieFromDb.Name.Should().Be(movie.Name);
+                movieFromDb.Title.Should().Be(movie.Title);
             }
         }
 
@@ -348,14 +300,10 @@ namespace NaCoDoKina.Api.Repository
         public async Task Should_return_null_when_movie_do_not_exist()
         {
             //Arrange
-            var nonExistingMovieId = 52;
+            var nonExistingMovieId = Fixture.Create<long>();
 
-            var movie = new Movie
-            {
-                Name = nameof(Movie),
-                Details = new MovieDetails(),
-                PosterUrl = nameof(Movie.PosterUrl),
-            };
+            //Arrange
+            var movie = Fixture.Create<Movie>();
 
             using (var contextScope = CreateContextScope())
             {
@@ -380,21 +328,15 @@ namespace NaCoDoKina.Api.Repository
         public async Task Should_return_null_when_movie_is_soft_deleted()
         {
             //Arrange
-            var movieId = 1;
-
-            var movie = new Movie
-            {
-                Name = nameof(Movie),
-                Details = new MovieDetails(),
-                PosterUrl = nameof(Movie.PosterUrl),
-            };
+            var movie = Fixture.Create<Movie>();
+            var movieId = movie.Id;
 
             var deletedMovieMark = new DeletedMovies(movieId, DefaultUserId);
 
             using (var contextScope = CreateContextScope())
             {
                 contextScope.DbContext.Movies.Add(movie);
-                contextScope.DbContext.DeletedMovieMarks.Add(deletedMovieMark);
+                contextScope.DbContext.DeletedMovies.Add(deletedMovieMark);
                 await contextScope.DbContext.SaveChangesAsync();
             }
 
@@ -417,18 +359,8 @@ namespace NaCoDoKina.Api.Repository
         public async Task Should_return_movie_details_when_exist_and_is_not_marked_as_deleted()
         {
             //Arrange
-            var movieId = 1;
-
-            var movie = new Movie
-            {
-                Name = nameof(Movie),
-                Details = new MovieDetails
-                {
-                    ReleaseDate = DateTime.MinValue,
-                    Description = nameof(MovieDetails)
-                },
-                PosterUrl = nameof(Movie.PosterUrl),
-            };
+            var movie = Fixture.Create<Movie>();
+            var movieId = movie.Id;
 
             using (var contextScope = CreateContextScope())
             {
@@ -446,7 +378,7 @@ namespace NaCoDoKina.Api.Repository
 
                 //Assert
                 movieFromDb.Id.Should().BePositive();
-                movieFromDb.ReleaseDate.Should().Be(DateTime.MinValue);
+                movieFromDb.ReleaseDate.Should().Be(movie.Details.ReleaseDate);
             }
         }
 
@@ -456,12 +388,8 @@ namespace NaCoDoKina.Api.Repository
             //Arrange
             var nonExistingMovieId = 52;
 
-            var movie = new Movie
-            {
-                Name = nameof(Movie),
-                Details = new MovieDetails(),
-                PosterUrl = nameof(Movie.PosterUrl),
-            };
+            //Arrange
+            var movie = Fixture.Create<Movie>();
 
             using (var contextScope = CreateContextScope())
             {
@@ -486,21 +414,15 @@ namespace NaCoDoKina.Api.Repository
         public async Task Should_return_null_when_movie_is_soft_deleted()
         {
             //Arrange
-            var movieId = 1;
-
-            var movie = new Movie
-            {
-                Name = nameof(Movie),
-                Details = new MovieDetails(),
-                PosterUrl = nameof(Movie.PosterUrl),
-            };
+            var movie = Fixture.Create<Movie>();
+            var movieId = movie.Id;
 
             var deletedMovieMark = new DeletedMovies(movieId, DefaultUserId);
 
             using (var contextScope = CreateContextScope())
             {
                 contextScope.DbContext.Movies.Add(movie);
-                contextScope.DbContext.DeletedMovieMarks.Add(deletedMovieMark);
+                contextScope.DbContext.DeletedMovies.Add(deletedMovieMark);
                 await contextScope.DbContext.SaveChangesAsync();
             }
 
@@ -523,32 +445,16 @@ namespace NaCoDoKina.Api.Repository
         public async Task Should_return_all_not_deleted_movies_ids_played_in_cinema()
         {
             //Arrange
-            var movieId = 1;
-            var deletedMovieId = 2;
-            var cinemaId = 1;
+            var movie = Fixture.Create<Movie>();
+            var movieId = movie.Id;
 
-            var movie = new Movie
-            {
-                Name = nameof(Movie),
-                Details = new MovieDetails(),
-                PosterUrl = nameof(Movie.PosterUrl),
-            };
-
-            var deletedMovie = new Movie
-            {
-                Name = "Deleted" + nameof(Movie),
-                Details = new MovieDetails(),
-                PosterUrl = nameof(Movie.PosterUrl),
-            };
+            var deletedMovie = Fixture.Create<Movie>();
+            var deletedMovieId = deletedMovie.Id;
 
             var deleteMovieMark = new DeletedMovies(deletedMovieId, DefaultUserId);
 
-            var cinema = new Cinema
-            {
-                Name = nameof(Cinema),
-                Address = nameof(Cinema.Address),
-                Location = new Location(1, 1)
-            };
+            var cinema = Fixture.Create<Cinema>();
+            var cinemaId = cinema.Id;
 
             var movieShowtime = new MovieShowtime
             {
@@ -563,7 +469,7 @@ namespace NaCoDoKina.Api.Repository
                 contextScope.DbContext.MovieShowtimes.Add(movieShowtime);
                 contextScope.DbContext.Movies.Add(movie);
                 contextScope.DbContext.Movies.Add(deletedMovie);
-                contextScope.DbContext.DeletedMovieMarks.Add(deleteMovieMark);
+                contextScope.DbContext.DeletedMovies.Add(deleteMovieMark);
 
                 await contextScope.DbContext.SaveChangesAsync();
             }
@@ -594,21 +500,15 @@ namespace NaCoDoKina.Api.Repository
         public async Task Should_return_true_and_remove_movie_and_details_when_deleted()
         {
             //Arrange
-            var movieId = 1;
-
-            var movie = new Movie
-            {
-                Name = nameof(Movie),
-                Details = new MovieDetails(),
-                PosterUrl = nameof(Movie.PosterUrl),
-            };
+            var movie = Fixture.Create<Movie>();
+            var movieId = movie.Id;
 
             var movieDeletedMark = new DeletedMovies(movieId, DefaultUserId);
 
             using (var contextScope = CreateContextScope())
             {
                 contextScope.DbContext.Movies.Add(movie);
-                contextScope.DbContext.DeletedMovieMarks.Add(movieDeletedMark);
+                contextScope.DbContext.DeletedMovies.Add(movieDeletedMark);
 
                 await contextScope.DbContext.SaveChangesAsync();
             }
@@ -630,7 +530,7 @@ namespace NaCoDoKina.Api.Repository
                     .Should().BeEmpty();
                 contextScope.DbContext.MovieDetails
                     .Should().BeEmpty();
-                contextScope.DbContext.DeletedMovieMarks
+                contextScope.DbContext.DeletedMovies
                     .Should().BeEmpty();
             }
         }
@@ -639,14 +539,8 @@ namespace NaCoDoKina.Api.Repository
         public async Task Should_return_false_when_movie_can_not_be_found()
         {
             //Arrange
-            var movieId = 2;
-
-            var movie = new Movie
-            {
-                Name = nameof(Movie),
-                Details = new MovieDetails(),
-                PosterUrl = nameof(Movie.PosterUrl),
-            };
+            var movie = Fixture.Create<Movie>();
+            var nonExistingMovie = Fixture.Create<long>();
 
             using (var contextScope = CreateContextScope())
             {
@@ -660,7 +554,7 @@ namespace NaCoDoKina.Api.Repository
                 RepositoryUnderTest = new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
 
                 //Act
-                var deleted = await RepositoryUnderTest.DeleteMovieAsync(movieId);
+                var deleted = await RepositoryUnderTest.DeleteMovieAsync(nonExistingMovie);
 
                 //Assert
                 deleted.Should().BeFalse();

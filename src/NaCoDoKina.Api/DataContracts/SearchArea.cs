@@ -1,4 +1,4 @@
-namespace NaCoDoKina.Api.DataContracts.Movies
+namespace NaCoDoKina.Api.DataContracts
 {
     /// <summary>
     /// Cinemas search area 
@@ -16,7 +16,7 @@ namespace NaCoDoKina.Api.DataContracts.Movies
         }
 
         /// <summary>
-        /// RegisterUser location, search area center 
+        /// User location, search area center 
         /// </summary>
         public Location Center { get; set; }
 

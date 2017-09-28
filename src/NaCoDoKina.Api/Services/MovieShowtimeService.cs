@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Infrastructure.Extensions;
-using NaCoDoKina.Api.Models;
+using NaCoDoKina.Api.Models.Movies;
 using NaCoDoKina.Api.Repositories;
 using System;
 using System.Collections.Generic;
@@ -31,7 +31,7 @@ namespace NaCoDoKina.Api.Services
             if (showtimes is null || !showtimes.Any())
                 throw new MovieShowtimeNotFoundException(movieId);
 
-            return _mapper.MapMany<Entities.MovieShowtime, MovieShowtime>(showtimes);
+            return _mapper.MapMany<Entities.Movies.MovieShowtime, MovieShowtime>(showtimes);
         }
 
         public async Task<IEnumerable<MovieShowtime>> GetMovieShowtimesForCinemaAsync(long movieId, long cinemaId, DateTime laterThan)
@@ -41,7 +41,7 @@ namespace NaCoDoKina.Api.Services
             if (showtimes is null || !showtimes.Any())
                 throw new MovieShowtimeNotFoundException(movieId);
 
-            return _mapper.MapMany<Entities.MovieShowtime, MovieShowtime>(showtimes);
+            return _mapper.MapMany<Entities.Movies.MovieShowtime, MovieShowtime>(showtimes);
         }
     }
 }

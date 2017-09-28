@@ -1,5 +1,6 @@
 ﻿using NaCoDoKina.Api.Entities;
 using NaCoDoKina.Api.Entities.Cinemas;
+using NaCoDoKina.Api.Entities.Movies;
 using Ploeh.AutoFixture;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
@@ -13,7 +14,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
 
             fixture.Customize<MovieDetails>(composer => composer
                 .Without(details => details.Id)
-                .Without(details => details.MovieId));
+                .Without(details => details.Id));
             fixture.Customize<Cinema>(composer => composer
                 .Without(cinema => cinema.Id));
 

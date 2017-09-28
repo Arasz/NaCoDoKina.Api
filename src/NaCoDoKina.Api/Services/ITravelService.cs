@@ -1,6 +1,7 @@
 ﻿using NaCoDoKina.Api.Models;
 using System;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Models.Travel;
 
 namespace NaCoDoKina.Api.Services
 {

@@ -11,6 +11,7 @@ using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Resp
 using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding;
 using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
 using NaCoDoKina.Api.Infrastructure.Settings;
+using NaCoDoKina.Api.Models.Travel;
 using Xunit;
 using Location = NaCoDoKina.Api.Models.Location;
 

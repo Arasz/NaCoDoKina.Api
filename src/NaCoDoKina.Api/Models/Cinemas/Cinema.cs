@@ -1,4 +1,7 @@
-﻿namespace NaCoDoKina.Api.Models
+﻿using NaCoDoKina.Api.Models.Resources;
+using NaCoDoKina.Api.Models.Travel;
+
+namespace NaCoDoKina.Api.Models.Cinemas
 {
     /// <summary>
     /// Information about cinema 
@@ -23,7 +26,7 @@
         /// <summary>
         /// Cinema website 
         /// </summary>
-        public ServiceUrl Website { get; set; }
+        public ResourceLink Website { get; set; }
 
         /// <summary>
         /// Network name to which cinema belongs 

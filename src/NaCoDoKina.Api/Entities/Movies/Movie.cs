@@ -1,4 +1,4 @@
-﻿namespace NaCoDoKina.Api.Entities
+﻿namespace NaCoDoKina.Api.Entities.Movies
 {
     /// <inheritdoc/>
     /// <summary>
@@ -9,7 +9,7 @@
         /// <summary>
         /// Movie name (title) 
         /// </summary>
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         /// <summary>
         /// Movie poster url 

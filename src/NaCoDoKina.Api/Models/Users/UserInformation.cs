@@ -1,4 +1,4 @@
-﻿namespace NaCoDoKina.Api.Infrastructure.Services.Token
+﻿namespace NaCoDoKina.Api.Models.Users
 {
     public class UserInformation
     {

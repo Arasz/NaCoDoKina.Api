@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NaCoDoKina.Api.DataContracts;
+using NaCoDoKina.Api.DataContracts.Cinemas;
 using NaCoDoKina.Api.DataContracts.Movies;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Infrastructure.Extensions;
@@ -89,7 +91,7 @@ namespace NaCoDoKina.Api.Controllers
         /// Deletes (hides) show for current user 
         /// </summary>
         /// <param name="id"> Movie id </param>
-        /// <returns> Basic informations about show </returns>
+        /// <returns> Basic information about show </returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
@@ -159,13 +161,13 @@ namespace NaCoDoKina.Api.Controllers
                 {
                     var showtimes = await _movieShowtimeService.GetMovieShowtimesAsync(movieId, minimalShowTime);
 
-                    return Ok(showtimes.Map<Models.MovieShowtime, MovieShowtime>(_mapper));
+                    return Ok(showtimes.Map<Models.Movies.MovieShowtime, MovieShowtime>(_mapper));
                 }
                 else
                 {
                     var showtimes = await _movieShowtimeService.GetMovieShowtimesForCinemaAsync(movieId, cinemaId.Value, minimalShowTime);
 
-                    return Ok(showtimes.Map<Models.MovieShowtime, MovieShowtime>(_mapper));
+                    return Ok(showtimes.Map<Models.Movies.MovieShowtime, MovieShowtime>(_mapper));
                 }
             }
             catch (MovieShowtimeNotFoundException exception)

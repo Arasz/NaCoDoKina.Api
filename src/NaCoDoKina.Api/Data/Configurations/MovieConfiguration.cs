@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Movies;
 
 namespace NaCoDoKina.Api.Data.Configurations
 {
@@ -15,7 +15,7 @@ namespace NaCoDoKina.Api.Data.Configurations
                 .WithOne()
                 .HasForeignKey<MovieDetails>(details => details.Id);
 
-            builder.Property(movie => movie.Name)
+            builder.Property(movie => movie.Title)
                 .IsRequired()
                 .HasMaxLength(255);
 
@@ -25,6 +25,16 @@ namespace NaCoDoKina.Api.Data.Configurations
         public void Configure(EntityTypeBuilder<MovieDetails> builder)
         {
             builder.ToTable(TableName);
+
+            builder
+                .HasMany(movieDetail => movieDetail.MediaResources)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder
+                .HasMany(movieDetail => movieDetail.MovieReviews)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

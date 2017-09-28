@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NaCoDoKina.Api.Models
+namespace NaCoDoKina.Api.Models.Movies
 {
     /// <summary>
     /// Movie show times for cinema 

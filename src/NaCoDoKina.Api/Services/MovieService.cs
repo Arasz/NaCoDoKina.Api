@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Models;
+using NaCoDoKina.Api.Models.Cinemas;
+using NaCoDoKina.Api.Models.Movies;
 using NaCoDoKina.Api.Repositories;
 using System;
 using System.Collections.Generic;
@@ -111,7 +113,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<long> AddMovieAsync(Movie newMovie)
         {
-            var entityMovie = _mapper.Map<Entities.Movie>(newMovie);
+            var entityMovie = _mapper.Map<Entities.Movies.Movie>(newMovie);
 
             var movieId = await _movieRepository.AddMovieAsync(entityMovie);
 
@@ -123,7 +125,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<long> AddMovieDetailsAsync(MovieDetails movieDetails)
         {
-            var entityMovieDetails = _mapper.Map<Entities.MovieDetails>(movieDetails);
+            var entityMovieDetails = _mapper.Map<Entities.Movies.MovieDetails>(movieDetails);
 
             var movieId = await _movieRepository.AddMovieDetailsAsync(entityMovieDetails);
 

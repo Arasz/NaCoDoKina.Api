@@ -1,27 +1,38 @@
-﻿using System;
+﻿using NaCoDoKina.Api.Models.Resources;
+using System;
 using System.Collections.Generic;
 
-namespace NaCoDoKina.Api.Models
+namespace NaCoDoKina.Api.Models.Movies
 {
     /// <summary>
-    /// Detailed information about show 
+    /// Movie details entity 
     /// </summary>
     public class MovieDetails
     {
         /// <summary>
         /// Movie id 
         /// </summary>
-        public long MovieId { get; set; }
-
-        /// <summary>
-        /// Sites with movie descriptions 
-        /// </summary>
-        public List<ServiceUrl> DescriptionSites { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// Movie description 
         /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Links to movie review services 
+        /// </summary>
+        public List<ReviewLink> MovieReviews { get; set; }
+
+        /// <summary>
+        /// Links to external media resources. <example> Trailer, poster </example> 
+        /// </summary>
+        public List<MediaLink> MediaResources { get; set; }
+
+        /// <summary>
+        /// Movie title 
+        /// </summary>
+        public string Title { get; set; }
 
         /// <summary>
         /// Original movie title 
@@ -54,11 +65,6 @@ namespace NaCoDoKina.Api.Models
         public DateTime ReleaseDate { get; set; }
 
         /// <summary>
-        /// Movie rating for current user 
-        /// </summary>
-        public double Rating { get; set; }
-
-        /// <summary>
         /// Movie director 
         /// </summary>
         public string Director { get; set; }
@@ -68,9 +74,14 @@ namespace NaCoDoKina.Api.Models
         /// </summary>
         public string CrewDescription { get; set; }
 
+        /// <summary>
+        /// Movie rating 
+        /// </summary>
+        public double Rating { get; set; }
+
         public override string ToString()
         {
-            return $"{nameof(MovieId)}: {MovieId}, {nameof(Description)}: {Description}, {nameof(OriginalTitle)}: {OriginalTitle}, {nameof(Rating)}: {Rating}";
+            return $"{nameof(Id)}: {Id}, {nameof(Description)}: {Description}, {nameof(OriginalTitle)}: {OriginalTitle}, {nameof(Rating)}: {Rating}";
         }
     }
 }

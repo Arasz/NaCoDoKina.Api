@@ -11,7 +11,7 @@
         public ResourceLink Logo { get; set; }
 
         /// <summary>
-        /// Name of service with review 
+        /// Title of service with review 
         /// </summary>
         public string Name { get; set; }
 

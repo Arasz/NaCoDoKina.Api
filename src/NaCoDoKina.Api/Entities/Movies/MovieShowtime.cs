@@ -1,6 +1,7 @@
-﻿using System;
+﻿using NaCoDoKina.Api.Entities.Cinemas;
+using System;
 
-namespace NaCoDoKina.Api.Entities
+namespace NaCoDoKina.Api.Entities.Movies
 {
     /// <inheritdoc/>
     /// <summary>

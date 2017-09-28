@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="Infrastructure\Services\Email\" />
+    <Folder Include="Migrations\Application\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

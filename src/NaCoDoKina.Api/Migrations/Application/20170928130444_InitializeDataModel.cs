@@ -10,7 +10,7 @@ namespace NaCoDoKina.Api.Migrations.Application
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "DeletedMovieMarks",
+                name: "DeletedMovies",
                 columns: table => new
                 {
                     MovieId = table.Column<long>(type: "int8", nullable: false),
@@ -18,7 +18,7 @@ namespace NaCoDoKina.Api.Migrations.Application
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DeletedMovieMarks", x => new { x.MovieId, x.UserId });
+                    table.PrimaryKey("PK_DeletedMovies", x => new { x.MovieId, x.UserId });
                 });
 
             migrationBuilder.CreateTable(
@@ -27,8 +27,8 @@ namespace NaCoDoKina.Api.Migrations.Application
                 {
                     Id = table.Column<long>(type: "int8", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
                     PosterUrl = table.Column<string>(type: "text", nullable: true),
+                    Title = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
                     AgeLimit = table.Column<string>(type: "text", nullable: true),
                     CrewDescription = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
@@ -36,9 +36,9 @@ namespace NaCoDoKina.Api.Migrations.Application
                     Genre = table.Column<string>(type: "text", nullable: true),
                     Language = table.Column<string>(type: "text", nullable: true),
                     Length = table.Column<TimeSpan>(type: "interval", nullable: false),
-                    MovieId = table.Column<long>(type: "int8", nullable: false),
                     OriginalTitle = table.Column<string>(type: "text", nullable: true),
-                    ReleaseDate = table.Column<DateTime>(type: "timestamp", nullable: false)
+                    ReleaseDate = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    MovieDetails_Title = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -46,21 +46,38 @@ namespace NaCoDoKina.Api.Migrations.Application
                 });
 
             migrationBuilder.CreateTable(
-                name: "ServiceUrl",
+                name: "ResourceLink",
                 columns: table => new
                 {
+                    MediaType = table.Column<int>(type: "int4", nullable: true),
+                    MovieDetailsId = table.Column<long>(type: "int8", nullable: true),
                     Id = table.Column<long>(type: "int8", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    MovieDetailsId = table.Column<long>(type: "int8", nullable: true),
-                    Name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
-                    Url = table.Column<string>(type: "text", nullable: false)
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    Url = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false),
+                    LogoId = table.Column<long>(type: "int8", nullable: true),
+                    ReviewLink_MovieDetailsId = table.Column<long>(type: "int8", nullable: true),
+                    Name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
+                    Rating = table.Column<double>(type: "float8", nullable: true, defaultValue: 0.0)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ServiceUrl", x => x.Id);
+                    table.PrimaryKey("PK_ResourceLink", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ServiceUrl_Movies_MovieDetailsId",
+                        name: "FK_ResourceLink_Movies_MovieDetailsId",
                         column: x => x.MovieDetailsId,
+                        principalTable: "Movies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ResourceLink_ResourceLink_LogoId",
+                        column: x => x.LogoId,
+                        principalTable: "ResourceLink",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ResourceLink_Movies_ReviewLink_MovieDetailsId",
+                        column: x => x.ReviewLink_MovieDetailsId,
                         principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -79,9 +96,9 @@ namespace NaCoDoKina.Api.Migrations.Application
                 {
                     table.PrimaryKey("PK_CinemaNetworks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CinemaNetworks_ServiceUrl_UrlId",
+                        name: "FK_CinemaNetworks_ResourceLink_UrlId",
                         column: x => x.UrlId,
-                        principalTable: "ServiceUrl",
+                        principalTable: "ResourceLink",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -109,9 +126,9 @@ namespace NaCoDoKina.Api.Migrations.Application
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Cinemas_ServiceUrl_WebsiteId",
+                        name: "FK_Cinemas_ResourceLink_WebsiteId",
                         column: x => x.WebsiteId,
-                        principalTable: "ServiceUrl",
+                        principalTable: "ResourceLink",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -177,21 +194,31 @@ namespace NaCoDoKina.Api.Migrations.Application
                 column: "MovieId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceUrl_MovieDetailsId",
-                table: "ServiceUrl",
+                name: "IX_ResourceLink_MovieDetailsId",
+                table: "ResourceLink",
                 column: "MovieDetailsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceUrl_Name",
-                table: "ServiceUrl",
-                column: "Name",
+                name: "IX_ResourceLink_Url",
+                table: "ResourceLink",
+                column: "Url",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ResourceLink_LogoId",
+                table: "ResourceLink",
+                column: "LogoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ResourceLink_ReviewLink_MovieDetailsId",
+                table: "ResourceLink",
+                column: "ReviewLink_MovieDetailsId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DeletedMovieMarks");
+                name: "DeletedMovies");
 
             migrationBuilder.DropTable(
                 name: "MovieShowtimes");
@@ -203,7 +230,7 @@ namespace NaCoDoKina.Api.Migrations.Application
                 name: "CinemaNetworks");
 
             migrationBuilder.DropTable(
-                name: "ServiceUrl");
+                name: "ResourceLink");
 
             migrationBuilder.DropTable(
                 name: "Movies");

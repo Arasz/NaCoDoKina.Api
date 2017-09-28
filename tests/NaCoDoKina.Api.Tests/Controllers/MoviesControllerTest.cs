@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NaCoDoKina.Api.DataContracts;
 using NaCoDoKina.Api.DataContracts.Movies;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Results;
@@ -13,8 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
-using Cinema = NaCoDoKina.Api.DataContracts.Movies.Cinema;
-using Location = NaCoDoKina.Api.DataContracts.Movies.Location;
+using Cinema = NaCoDoKina.Api.DataContracts.Cinemas.Cinema;
+using Location = NaCoDoKina.Api.DataContracts.Location;
 using Movie = NaCoDoKina.Api.DataContracts.Movies.Movie;
 using MovieDetails = NaCoDoKina.Api.DataContracts.Movies.MovieDetails;
 
@@ -57,11 +58,11 @@ namespace NaCoDoKina.Api.Controllers
                 // Arrange
                 var movieId = Fixture.Create<long>();
                 var moviesCount = 5;
-                var movieShowtimes = Fixture.CreateMany<Models.MovieShowtime>(moviesCount);
+                var movieShowtimes = Fixture.CreateMany<Models.Movies.MovieShowtime>(moviesCount);
                 var laterThan = Fixture.Create<DateTime>();
 
-                MapperMock.Setup(mapper => mapper.Map<MovieShowtime>(It.IsAny<Models.MovieShowtime>()))
-                    .Returns(new Func<Models.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
+                MapperMock.Setup(mapper => mapper.Map<MovieShowtime>(It.IsAny<Models.Movies.MovieShowtime>()))
+                    .Returns(new Func<Models.Movies.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
                     {
                         ShowType = showtime.ShowType,
 
@@ -91,10 +92,10 @@ namespace NaCoDoKina.Api.Controllers
                 var movieId = Fixture.Create<long>();
                 var moviesCount = 5;
                 var laterThan = Fixture.Create<DateTime>();
-                var movieShowtimes = Fixture.CreateMany<Models.MovieShowtime>(moviesCount);
+                var movieShowtimes = Fixture.CreateMany<Models.Movies.MovieShowtime>(moviesCount);
 
-                MapperMock.Setup(mapper => mapper.Map<MovieShowtime>(It.IsAny<Models.MovieShowtime>()))
-                    .Returns(new Func<Models.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
+                MapperMock.Setup(mapper => mapper.Map<MovieShowtime>(It.IsAny<Models.Movies.MovieShowtime>()))
+                    .Returns(new Func<Models.Movies.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
                     {
                         ShowType = showtime.ShowType,
 
@@ -125,7 +126,7 @@ namespace NaCoDoKina.Api.Controllers
                 var laterThan = Fixture.Create<DateTime>();
 
                 MapperMock.Setup(mapper => mapper.Map<MovieShowtime>(It.IsAny<MovieShowtime>()))
-                    .Returns(new Func<Models.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
+                    .Returns(new Func<Models.Movies.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
                     {
                         ShowType = showtime.ShowType,
 
@@ -221,14 +222,14 @@ namespace NaCoDoKina.Api.Controllers
         {
             //Arrange
             var movieId = 1;
-            var modelCinemas = new List<Models.Cinema> { new Models.Cinema() };
+            var modelCinemas = new List<Models.Cinemas.Cinema> { new Models.Cinemas.Cinema() };
             var modelLocation = new Models.Location(1, 1);
             var modelSearchArea = new Models.SearchArea(modelLocation, 500);
             var apiLocation = new Location(1, 1);
             var apiSearchArea = new SearchArea(apiLocation, 500);
 
             MapperMock
-                .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Models.Cinema>()))
+                .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Models.Cinemas.Cinema>()))
                 .Returns(new Cinema());
 
             MapperMock
@@ -299,12 +300,12 @@ namespace NaCoDoKina.Api.Controllers
             var movie = new Movie();
 
             MapperMock
-                .Setup(mapper => mapper.Map<Movie>(It.IsAny<Models.Movie>()))
+                .Setup(mapper => mapper.Map<Movie>(It.IsAny<Models.Movies.Movie>()))
                 .Returns(movie);
 
             MovieServiceMock
                 .Setup(service => service.GetMovieAsync(showId))
-                .Returns(() => Task.FromResult(new Models.Movie()));
+                .Returns(() => Task.FromResult(new Models.Movies.Movie()));
 
             //Act
             var result = await ControllerUnderTest.GetMovieAsync(showId);
@@ -388,12 +389,12 @@ namespace NaCoDoKina.Api.Controllers
             var movieDetails = new MovieDetails();
 
             MapperMock
-                .Setup(mapper => mapper.Map<MovieDetails>(It.IsAny<Models.MovieDetails>()))
+                .Setup(mapper => mapper.Map<MovieDetails>(It.IsAny<Models.Movies.MovieDetails>()))
                 .Returns(movieDetails);
 
             MovieServiceMock
                 .Setup(service => service.GetMovieDetailsAsync(showId))
-                .Returns(() => Task.FromResult(new Models.MovieDetails()));
+                .Returns(() => Task.FromResult(new Models.Movies.MovieDetails()));
 
             //Act
             var result = await ControllerUnderTest.GetMovieDetailsAsync(showId);

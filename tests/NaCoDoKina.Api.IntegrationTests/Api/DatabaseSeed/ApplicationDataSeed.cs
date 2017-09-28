@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Data;
-using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Cinemas;
+using NaCoDoKina.Api.Entities.Movies;
 using Ploeh.AutoFixture;
 using System;
 using System.Linq;
-using NaCoDoKina.Api.Entities.Cinemas;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
 {

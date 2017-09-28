@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NaCoDoKina.Api.DataContracts;
 using NaCoDoKina.Api.DataContracts.Authentication;
-using NaCoDoKina.Api.DataContracts.Movies;
 using NaCoDoKina.Api.Infrastructure.Identity;
 using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
 using System.Globalization;

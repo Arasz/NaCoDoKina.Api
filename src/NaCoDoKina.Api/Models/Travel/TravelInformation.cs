@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace NaCoDoKina.Api.Models
+namespace NaCoDoKina.Api.Models.Travel
 {
     /// <summary>
     /// All information about travel 

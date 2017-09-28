@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Data;
-using NaCoDoKina.Api.Entities;
 using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Services;
 using System;
@@ -19,7 +18,7 @@ namespace NaCoDoKina.Api.Repositories
 
         public MovieRepository(ApplicationContext applicationContext, IUserService userService, ILogger<IMovieRepository> logger)
         {
-            _userService = userService;
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -31,15 +30,21 @@ namespace NaCoDoKina.Api.Repositories
             if (movieToDelete is null)
                 return false;
 
-            var detailsToDelete = await _applicationContext.MovieDetails.FindAsync(movieId);
+            var movieDetails = await _applicationContext.MovieDetails
+                .SingleAsync(details => details.Id == movieId);
 
-            _applicationContext.Movies.Remove(movieToDelete);
-            _applicationContext.MovieDetails.Remove(detailsToDelete);
+            var movieShowtimes = _applicationContext.MovieShowtimes
+                .Where(showtime => showtime.Movie.Id == movieId);
 
-            var softDeletesForMovie = _applicationContext.DeletedMovieMarks
+            _applicationContext.RemoveRange(movieShowtimes);
+
+            _applicationContext.Remove(movieToDelete);
+            _applicationContext.Remove(movieDetails);
+
+            var deletedMovies = _applicationContext.DeletedMovies
                 .Where(mark => mark.MovieId == movieId);
 
-            _applicationContext.DeletedMovieMarks.RemoveRange(softDeletesForMovie);
+            _applicationContext.RemoveRange(deletedMovies);
 
             await _applicationContext.SaveChangesAsync();
             return true;
@@ -54,14 +59,14 @@ namespace NaCoDoKina.Api.Repositories
             if (!movieExist)
                 return false;
 
-            var markExist = await _applicationContext.DeletedMovieMarks
+            var markExist = await _applicationContext.DeletedMovies
                 .Where(mark => mark.UserId == userId)
                 .AnyAsync(mark => mark.MovieId == movieId);
 
             if (markExist)
                 return true;
 
-            _applicationContext.DeletedMovieMarks.Add(new DeletedMovies(movieId, userId));
+            _applicationContext.DeletedMovies.Add(new DeletedMovies(movieId, userId));
             await _applicationContext.SaveChangesAsync();
 
             return true;
@@ -71,7 +76,7 @@ namespace NaCoDoKina.Api.Repositories
         {
             var userId = _userService.GetCurrentUserId();
 
-            return await _applicationContext.DeletedMovieMarks
+            return await _applicationContext.DeletedMovies
                 .Where(mark => mark.MovieId == id)
                 .Where(mark => mark.UserId == userId)
                 .AnyAsync();
@@ -91,7 +96,7 @@ namespace NaCoDoKina.Api.Repositories
         {
             var userId = _userService.GetCurrentUserId();
 
-            var markedAsDeletedMoviesIds = _applicationContext.DeletedMovieMarks
+            var markedAsDeletedMoviesIds = _applicationContext.DeletedMovies
                 .Where(mark => mark.UserId == userId)
                 .Select(mark => mark.MovieId)
                 .Distinct()
@@ -125,7 +130,7 @@ namespace NaCoDoKina.Api.Repositories
 
         public async Task<long> AddMovieDetailsAsync(MovieDetails movieDetails)
         {
-            var movie = await _applicationContext.Movies.FindAsync(movieDetails.MovieId);
+            var movie = await _applicationContext.Movies.FindAsync(movieDetails.Id);
 
             if (movie is null)
                 return default(long);

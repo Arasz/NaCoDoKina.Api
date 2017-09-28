@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NaCoDoKina.Api.Entities
+namespace NaCoDoKina.Api.Entities.Movies
 {
     /// <inheritdoc/>
     /// <summary>

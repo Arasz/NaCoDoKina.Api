@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Models;
+using NaCoDoKina.Api.Models.Cinemas;
+using NaCoDoKina.Api.Models.Travel;
 using NaCoDoKina.Api.Repositories;
 using System;
 using System.Collections.Generic;
