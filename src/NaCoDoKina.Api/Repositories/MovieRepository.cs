@@ -118,7 +118,11 @@ namespace NaCoDoKina.Api.Repositories
             if (isMovieSoftDeleted)
                 return default(MovieDetails);
 
-            return await _applicationContext.MovieDetails.FindAsync(id);
+            return await _applicationContext.MovieDetails
+                .Include(details => details.MediaResources)
+                .Include(details => details.MovieReviews)
+                    .ThenInclude(link => link.Logo)
+                .SingleOrDefaultAsync(details => details.Id == id);
         }
 
         public async Task<long> AddMovieAsync(Movie newMovie)

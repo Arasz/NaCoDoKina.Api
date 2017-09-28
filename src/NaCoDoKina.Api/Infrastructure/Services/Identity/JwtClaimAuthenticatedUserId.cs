@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 
 namespace NaCoDoKina.Api.Infrastructure.Services.Identity
 {
@@ -12,24 +14,29 @@ namespace NaCoDoKina.Api.Infrastructure.Services.Identity
         private readonly ILogger<JwtClaimAuthenticatedUserId> _logger;
         public long Id => GetUserId();
 
+        private readonly HashSet<string> _claimsWithId = new HashSet<string>
+        {
+            JwtRegisteredClaimNames.UniqueName,
+            ClaimTypes.NameIdentifier,
+            JwtRegisteredClaimNames.Sub
+        };
+
         private long GetUserId()
         {
             using (_logger.BeginScope(nameof(GetUserId)))
             {
                 var httpContext = _httpContextAccessor.HttpContext;
-                var uniqueNameClaim = httpContext.User.FindFirst(JwtRegisteredClaimNames.UniqueName);
+                var idClaim = httpContext.User
+                    .FindFirst(claim => _claimsWithId.Contains(claim.Type));
 
-                if (uniqueNameClaim is null)
-                    uniqueNameClaim = httpContext.User.FindFirst(JwtRegisteredClaimNames.Sub);
+                _logger.LogDebug("Founded claim {@claim}", idClaim);
 
-                _logger.LogDebug("Founded claim {@claim}", uniqueNameClaim);
-
-                if (uniqueNameClaim != null && long.TryParse(uniqueNameClaim.Value, out var id))
+                if (idClaim != null && long.TryParse(idClaim.Value, out var id))
                     return id;
 
                 var allClaims = httpContext.User.Claims
                     .Select(claim => new { claim.Type, claim.Value });
-                _logger.LogWarning("For claim {@claim} value cannot be parsed to long or claim is null, all claims {@claims} ", uniqueNameClaim, allClaims);
+                _logger.LogWarning("For claim {@claim} value cannot be parsed to long or claim is null, all claims {@claims} ", idClaim, allClaims);
 
                 return 0;
             }

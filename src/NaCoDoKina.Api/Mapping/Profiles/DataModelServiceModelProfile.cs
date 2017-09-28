@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using NaCoDoKina.Api.DataContracts.Resources;
 
 namespace NaCoDoKina.Api.Mapping.Profiles
 {
@@ -34,6 +35,15 @@ namespace NaCoDoKina.Api.Mapping.Profiles
 
             CreateMap<Models.Resources.MediaLink, Entities.Resources.MediaLink>()
                 .ReverseMap();
+
+            CreateMap<string, MediaLink>()
+                .ConstructUsing(url => new MediaLink
+                {
+                    MediaType = MediaType.Poster,
+                    Url = url
+                })
+                .ReverseMap()
+                .ConstructUsing(link => link.Url);
 
             CreateMap<Models.Movies.Movie, Entities.Movies.Movie>()
                 .ReverseMap();

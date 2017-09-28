@@ -1,4 +1,6 @@
-﻿namespace NaCoDoKina.Api.Entities.Movies
+﻿using NaCoDoKina.Api.DataContracts.Resources;
+
+namespace NaCoDoKina.Api.Entities.Movies
 {
     /// <inheritdoc/>
     /// <summary>
@@ -14,7 +16,7 @@
         /// <summary>
         /// Movie poster url 
         /// </summary>
-        public string PosterUrl { get; set; }
+        public MediaLink PosterUrl { get; set; }
 
         /// <summary>
         /// Detailed information about movie 

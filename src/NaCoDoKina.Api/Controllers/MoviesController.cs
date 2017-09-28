@@ -119,7 +119,7 @@ namespace NaCoDoKina.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{id}/cinemas")]
-        public async Task<IActionResult> GetNearestCinemasForMovie(long id, SearchArea searchArea)
+        public async Task<IActionResult> GetNearestCinemasForMovie(long id, [FromQuery]SearchArea searchArea)
         {
             if (searchArea is null)
                 return BadRequest();
@@ -127,8 +127,14 @@ namespace NaCoDoKina.Api.Controllers
             try
             {
                 var modelSearchArea = _mapper.Map<Models.SearchArea>(searchArea);
+
                 var nearestCinemas = await _cinemaService.GetNearestCinemasForMovieAsync(id, modelSearchArea);
-                return Ok(nearestCinemas.Select(_mapper.Map<Location>));
+
+                var mappedCinemas = nearestCinemas
+                    .Select(_mapper.Map<Cinema>)
+                    .ToArray();
+
+                return Ok(mappedCinemas);
             }
             catch (CinemasNotFoundException exception)
             {
@@ -156,19 +162,22 @@ namespace NaCoDoKina.Api.Controllers
             try
             {
                 var minimalShowTime = laterThan ?? DateTime.Now;
+                IEnumerable<Models.Movies.MovieShowtime> showtimes;
 
                 if (cinemaId is null)
                 {
-                    var showtimes = await _movieShowtimeService.GetMovieShowtimesAsync(movieId, minimalShowTime);
-
-                    return Ok(showtimes.Map<Models.Movies.MovieShowtime, MovieShowtime>(_mapper));
+                    showtimes = await _movieShowtimeService.GetMovieShowtimesAsync(movieId, minimalShowTime);
                 }
                 else
                 {
-                    var showtimes = await _movieShowtimeService.GetMovieShowtimesForCinemaAsync(movieId, cinemaId.Value, minimalShowTime);
-
-                    return Ok(showtimes.Map<Models.Movies.MovieShowtime, MovieShowtime>(_mapper));
+                    showtimes = await _movieShowtimeService.GetMovieShowtimesForCinemaAsync(movieId, cinemaId.Value, minimalShowTime);
                 }
+
+                var mappedShowtimes = showtimes
+                    .Map<Models.Movies.MovieShowtime, MovieShowtime>(_mapper)
+                    .ToArray();
+
+                return Ok(mappedShowtimes);
             }
             catch (MovieShowtimeNotFoundException exception)
             {

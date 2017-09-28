@@ -10,6 +10,10 @@ namespace NaCoDoKina.Api.Data.Configurations
         {
             builder
                 .HasBaseType<ResourceLink>();
+
+            builder
+                .Property(link => link.MediaType)
+                .IsRequired();
         }
 
         public void Configure(EntityTypeBuilder<ResourceLink> builder)
@@ -20,7 +24,7 @@ namespace NaCoDoKina.Api.Data.Configurations
 
             builder
                 .Property(link => link.Url)
-                .HasMaxLength(500)
+                .HasMaxLength(300)
                 .IsRequired();
         }
 

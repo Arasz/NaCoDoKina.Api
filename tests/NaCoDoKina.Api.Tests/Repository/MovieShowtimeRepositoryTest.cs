@@ -434,7 +434,9 @@ namespace NaCoDoKina.Api.Repository
                 {
                     Cinema = cinema,
                     Movie = movie,
-                    ShowTime = DateTime.Now.AddHours(2)
+                    ShowTime = DateTime.Now.AddHours(2),
+                    Language = "",
+                    ShowType = "",
                 };
 
                 using (var contextScope = CreateContextScope())
