@@ -6,6 +6,8 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using NaCoDoKina.Api.Models.Authentication;
+using NaCoDoKina.Api.Models.Users;
 
 namespace NaCoDoKina.Api.Services
 {

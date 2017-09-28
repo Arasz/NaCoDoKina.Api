@@ -11,7 +11,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 {
     public class StartupTest : HttpTestBase
     {
-        public class ConfigureServices : StartupTest
+        public class ConfigureServicesTest : StartupTest
         {
             [Fact]
             public void Should_return_cinema_service()

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Cinemas;
 
 namespace NaCoDoKina.Api.Data.Configurations
 {
@@ -14,11 +14,11 @@ namespace NaCoDoKina.Api.Data.Configurations
 
             builder.Property(cinema => cinema.Name)
                 .IsRequired()
-                .HasMaxLength(225);
+                .HasMaxLength(80);
 
             builder.Property(cinema => cinema.Address)
                 .IsRequired()
-                .HasMaxLength(255);
+                .HasMaxLength(80);
 
             builder.OwnsOne(cinema => cinema.Location);
         }

@@ -1,6 +1,7 @@
 ﻿using NaCoDoKina.Api.Models;
 using System.Collections.Generic;
 using System.Linq;
+using NaCoDoKina.Api.Models.Cinemas;
 
 namespace NaCoDoKina.Api.Exceptions
 {

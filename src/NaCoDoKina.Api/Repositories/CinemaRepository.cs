@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Data;
-using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Cinemas;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +22,17 @@ namespace NaCoDoKina.Api.Repositories
 
         public async Task<IEnumerable<Cinema>> GetAllCinemasForMovieAsync(long movieId)
         {
-            var cinemasForMovie = await _applicationContext.MovieShowtimes
+            var cinemaIds = _applicationContext.MovieShowtimes
                 .Where(showtime => showtime.ShowTime > DateTime.Now)
                 .Where(showtime => showtime.Movie.Id == movieId)
-                .Select(showtime => showtime.Cinema)
-                .Include(cinema => cinema.CinemaNetwork)
+                .Select(showtime => showtime.Cinema.Id)
                 .Distinct()
-                .Cast<Cinema>()
+                .ToHashSet();
+
+            var cinemasForMovie = await _applicationContext.Cinemas
+                .Include(cinema => cinema.Website)
+                .Include(cinema => cinema.CinemaNetwork)
+                .Where(cinema => cinemaIds.Contains(cinema.Id))
                 .ToListAsync();
 
             return cinemasForMovie.AsEnumerable();

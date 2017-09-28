@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Cinemas;
 
 namespace NaCoDoKina.Api.Data.Configurations
 {

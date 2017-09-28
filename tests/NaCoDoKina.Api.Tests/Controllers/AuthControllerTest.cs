@@ -9,6 +9,8 @@ using NaCoDoKina.Api.Services;
 using Ploeh.AutoFixture;
 using System;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Models.Authentication;
+using NaCoDoKina.Api.Models.Users;
 using Xunit;
 using JwtToken = NaCoDoKina.Api.DataContracts.Authentication.JwtToken;
 

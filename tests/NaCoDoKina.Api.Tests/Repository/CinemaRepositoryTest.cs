@@ -1,6 +1,10 @@
 ﻿using FluentAssertions;
+using NaCoDoKina.Api.DataContracts.Resources;
 using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Cinemas;
+using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Repositories;
+using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,19 +46,19 @@ namespace NaCoDoKina.Api.Repository
 
                 var movie1 = new Movie
                 {
-                    Name = $"{nameof(Movie)}1",
-                    Details = new MovieDetails
-                    {
-                        Description = nameof(MovieDetails),
-                    },
+                    Title = $"{nameof(Movie)}1",
+                    Details = Fixture.Build<MovieDetails>()
+                        .Without(details => details.Id)
+                        .Create(),
+                    PosterUrl = Fixture.Create<MediaLink>()
                 };
                 var movie2 = new Movie
                 {
-                    Name = $"{nameof(Movie)}2",
-                    Details = new MovieDetails
-                    {
-                        Description = nameof(MovieDetails),
-                    },
+                    Title = $"{nameof(Movie)}2",
+                    Details = Fixture.Build<MovieDetails>()
+                        .Without(details => details.Id)
+                        .Create(),
+                    PosterUrl = Fixture.Create<MediaLink>()
                 };
 
                 var movies = new List<Movie> { movie1, movie2 };
@@ -66,18 +70,24 @@ namespace NaCoDoKina.Api.Repository
                             Cinema = cinema1,
                             ShowTime = DateTime.Now.AddHours(1),
                             Movie = movie1,
+                            Language = "",
+                            ShowType = ""
                         },
                         new MovieShowtime
                         {
                             Cinema = cinema1,
                             ShowTime = DateTime.Now,
                             Movie = movie1,
+                            Language = "",
+                            ShowType = ""
                         },
                         new MovieShowtime
                         {
                             Cinema = cinema2,
                             Movie = movie2,
                             ShowTime = DateTime.Now.AddHours(1),
+                            Language = "",
+                            ShowType = ""
                         }
                     };
 
@@ -89,7 +99,7 @@ namespace NaCoDoKina.Api.Repository
 
                     foreach (var movie in contextScope.DbContext.Movies)
                     {
-                        movies.Single(m => m.Name == movie.Name).Id = movie.Id;
+                        movies.Single(m => m.Title == movie.Title).Id = movie.Id;
                     }
                 }
 

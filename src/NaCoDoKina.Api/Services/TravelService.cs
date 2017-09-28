@@ -8,6 +8,7 @@ using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Requ
 using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;
 using NaCoDoKina.Api.Infrastructure.Services.Google.Exceptions;
 using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
+using NaCoDoKina.Api.Models.Travel;
 
 namespace NaCoDoKina.Api.Services
 {

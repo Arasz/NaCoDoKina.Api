@@ -1,4 +1,6 @@
 ﻿using NaCoDoKina.Api.Models;
+using NaCoDoKina.Api.Models.Authentication;
+using NaCoDoKina.Api.Models.Users;
 
 namespace NaCoDoKina.Api.Services
 {

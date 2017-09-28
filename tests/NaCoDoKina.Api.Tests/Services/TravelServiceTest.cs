@@ -10,6 +10,7 @@ using NaCoDoKina.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Models.Travel;
 using Xunit;
 using Location = NaCoDoKina.Api.Models.Location;
 

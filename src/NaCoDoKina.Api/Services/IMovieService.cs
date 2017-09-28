@@ -1,4 +1,5 @@
 ﻿using NaCoDoKina.Api.Models;
+using NaCoDoKina.Api.Models.Movies;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

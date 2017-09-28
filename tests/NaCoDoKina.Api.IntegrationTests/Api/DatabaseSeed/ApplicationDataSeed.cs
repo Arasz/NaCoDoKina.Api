@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Data;
-using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Cinemas;
+using NaCoDoKina.Api.Entities.Movies;
 using Ploeh.AutoFixture;
 using System;
 using System.Linq;
@@ -51,22 +52,23 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
 
         private void GenerateAndSaveData()
         {
-            var movies = _fixture.CreateMany<Movie>(15)
+            var movies = _fixture.CreateMany<Movie>(30)
                 .ToArray();
 
             var cinemas = _fixture.CreateMany<Cinema>(3)
                 .ToArray();
 
-            var movieShowtimes = _fixture.CreateMany<MovieShowtime>(15)
+            var movieShowtimes = _fixture.CreateMany<MovieShowtime>(60)
                 .ToArray();
 
             var rnd = new Random(5);
             for (var i = 0; i < movieShowtimes.Length; i++)
             {
                 movieShowtimes[i].Cinema = cinemas[rnd.Next(0, cinemas.Length)];
-                movieShowtimes[i].Movie = movies[i];
+                movieShowtimes[i].Movie = movies[i % 30];
             }
 
+            DbContext.Movies.AddRange(movies);
             DbContext.Cinemas.AddRange(cinemas);
             DbContext.MovieShowtimes.AddRange(movieShowtimes);
             DbContext.SaveChanges();

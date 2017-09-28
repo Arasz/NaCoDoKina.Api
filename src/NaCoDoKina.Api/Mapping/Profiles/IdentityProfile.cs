@@ -2,6 +2,8 @@
 using NaCoDoKina.Api.DataContracts.Authentication;
 using NaCoDoKina.Api.Infrastructure.Identity;
 using NaCoDoKina.Api.Models;
+using NaCoDoKina.Api.Models.Authentication;
+using NaCoDoKina.Api.Models.Users;
 
 namespace NaCoDoKina.Api.Mapping.Profiles
 {

@@ -10,25 +10,31 @@ namespace NaCoDoKina.Api.Mapping.Profiles
     {
         public DataContractServiceModelProfile()
         {
-            CreateMap<Models.Location, DataContracts.Movies.Location>()
+            CreateMap<Models.Location, DataContracts.Location>()
                 .ReverseMap();
 
-            CreateMap<Models.Cinema, DataContracts.Movies.Cinema>()
+            CreateMap<Models.Cinemas.Cinema, DataContracts.Cinemas.Cinema>()
                 .ReverseMap();
 
-            CreateMap<Models.ServiceUrl, DataContracts.Movies.ServiceUrl>()
+            CreateMap<Models.Resources.ResourceLink, DataContracts.Resources.ResourceLink>()
                 .ReverseMap();
 
-            CreateMap<Models.Movie, DataContracts.Movies.Movie>()
+            CreateMap<Models.Resources.ReviewLink, DataContracts.Resources.ReviewLink>()
                 .ReverseMap();
 
-            CreateMap<Models.MovieDetails, DataContracts.Movies.MovieDetails>()
+            CreateMap<Models.Resources.MediaLink, DataContracts.Resources.MediaLink>()
                 .ReverseMap();
 
-            CreateMap<Models.MovieShowtime, DataContracts.Movies.MovieShowtime>()
+            CreateMap<Models.Movies.Movie, DataContracts.Movies.Movie>()
                 .ReverseMap();
 
-            CreateMap<Models.SearchArea, DataContracts.Movies.SearchArea>()
+            CreateMap<Models.Movies.MovieDetails, DataContracts.Movies.MovieDetails>()
+                .ReverseMap();
+
+            CreateMap<Models.Movies.MovieShowtime, DataContracts.Movies.MovieShowtime>()
+                .ReverseMap();
+
+            CreateMap<Models.SearchArea, DataContracts.SearchArea>()
                 .ReverseMap();
         }
     }

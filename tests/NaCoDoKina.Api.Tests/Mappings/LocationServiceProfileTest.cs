@@ -4,6 +4,7 @@ using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Reque
 using NaCoDoKina.Api.Mapping.Profiles;
 using NaCoDoKina.Api.Models;
 using System;
+using NaCoDoKina.Api.Models.Travel;
 using Xunit;
 using Location = NaCoDoKina.Api.Models.Location;
 using TravelMode = NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request.TravelMode;
@@ -39,7 +40,7 @@ namespace NaCoDoKina.Api.Mappings
                 result.Origin.Longitude.Should().Be(orign.Lng);
                 result.Destination.Latitude.Should().Be(destination.Lat);
                 result.Destination.Longitude.Should().Be(destination.Lng);
-                result.TravelMode.Should().HaveFlag(Models.TravelMode.Driving);
+                result.TravelMode.Should().HaveFlag(Models.Travel.TravelMode.Driving);
             }
 
             [Fact]
@@ -48,7 +49,7 @@ namespace NaCoDoKina.Api.Mappings
                 //Arrange
                 var orign = new Location(0, 1);
                 var destination = new Location(2, 3);
-                var travelPlan = new TravelPlan(orign, destination, Models.TravelMode.Bicycling);
+                var travelPlan = new TravelPlan(orign, destination, Models.Travel.TravelMode.Bicycling);
 
                 //Act
                 var result = Mapper.Map<DirectionsApiRequest>(travelPlan);

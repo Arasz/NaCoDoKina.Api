@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Movies;
 
 namespace NaCoDoKina.Api.Data.Configurations
 {
@@ -15,9 +15,17 @@ namespace NaCoDoKina.Api.Data.Configurations
                 .WithOne()
                 .HasForeignKey<MovieDetails>(details => details.Id);
 
-            builder.Property(movie => movie.Name)
+            builder.Property(movie => movie.Title)
                 .IsRequired()
-                .HasMaxLength(255);
+                .IsUnicode()
+                .HasMaxLength(80);
+
+            builder
+                .HasOne(movie => movie.PosterUrl)
+                .WithOne()
+                .IsRequired();
+
+            // builder .Property(details => details.Title) .HasColumnName(nameof(Movie.Title));
 
             builder.ToTable(TableName);
         }
@@ -25,6 +33,54 @@ namespace NaCoDoKina.Api.Data.Configurations
         public void Configure(EntityTypeBuilder<MovieDetails> builder)
         {
             builder.ToTable(TableName);
+
+            //builder
+            //   .Property(details => details.Title)
+            //   .HasColumnName(nameof(Movie.Title));
+
+            builder.Property(movie => movie.Title)
+                .IsRequired()
+                .IsUnicode()
+                .HasMaxLength(80);
+
+            builder.Property(movie => movie.OriginalTitle)
+                .IsRequired()
+                .IsUnicode()
+                .HasMaxLength(80);
+
+            builder.Property(movie => movie.Description)
+                .IsRequired()
+                .IsUnicode()
+                .HasMaxLength(1000);
+
+            builder.Property(movie => movie.AgeLimit)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            builder.Property(movie => movie.Language)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            builder.Property(movie => movie.Genre)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            builder.Property(movie => movie.Director)
+                .HasMaxLength(100);
+
+            builder.Property(movie => movie.CrewDescription)
+                .IsUnicode()
+                .HasMaxLength(300);
+
+            builder
+                .HasMany(movieDetail => movieDetail.MediaResources)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder
+                .HasMany(movieDetail => movieDetail.MovieReviews)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

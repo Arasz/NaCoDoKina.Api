@@ -4,7 +4,7 @@ using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Infrastructure.Extensions;
 using NaCoDoKina.Api.Infrastructure.Identity;
 using NaCoDoKina.Api.Infrastructure.Services.Identity;
-using NaCoDoKina.Api.Models;
+using NaCoDoKina.Api.Models.Users;
 using NaCoDoKina.Api.Repositories;
 using NaCoDoKina.Api.Results;
 using System;

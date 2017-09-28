@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Models.Users;
 using Xunit;
 
 namespace NaCoDoKina.Api.Services

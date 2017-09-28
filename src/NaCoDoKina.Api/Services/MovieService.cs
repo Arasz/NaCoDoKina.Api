@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Models;
+using NaCoDoKina.Api.Models.Cinemas;
+using NaCoDoKina.Api.Models.Movies;
 using NaCoDoKina.Api.Repositories;
 using System;
 using System.Collections.Generic;
@@ -20,7 +22,7 @@ namespace NaCoDoKina.Api.Services
 
         public MovieService(IMovieRepository movieRepository, ICinemaService cinemaService, IRatingService ratingService, IMapper mapper, ILogger<IMovieService> logger)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _ratingService = ratingService ?? throw new ArgumentNullException(nameof(ratingService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _movieRepository = movieRepository ?? throw new ArgumentNullException(nameof(movieRepository));
@@ -29,14 +31,14 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<IEnumerable<long>> GetAllMoviesAsync(SearchArea searchArea)
         {
-            var nearestCinemas = await _cinemaService.GetNearestCinemasAsync(searchArea);
+            var cinemas = await _cinemaService.GetCinemasInSearchAreaAsync(searchArea);
 
-            var moviesPlayedInCinemas = await GetMoviesPlayedInCinemas(nearestCinemas);
+            var movies = await GetMoviesPlayedInCinemas(cinemas);
 
-            if (moviesPlayedInCinemas is null || !moviesPlayedInCinemas.Any())
-                throw new MoviesNotFoundException(nearestCinemas, searchArea);
+            if (movies is null || !movies.Any())
+                throw new MoviesNotFoundException(cinemas, searchArea);
 
-            return moviesPlayedInCinemas;
+            return movies;
         }
 
         private async Task<IEnumerable<long>> GetMoviesPlayedInCinemas(IEnumerable<Cinema> cinemas)
@@ -51,8 +53,8 @@ namespace NaCoDoKina.Api.Services
             var availableMoviesIds = new List<long>();
             foreach (var cinema in cinemas)
             {
-                var playedMovie = await _movieRepository.GetMoviesIdsPlayedInCinemaAsync(cinema.Id, DateAfterTravel(cinema));
-                availableMoviesIds.AddRange(playedMovie);
+                var movies = await _movieRepository.GetMoviesIdsPlayedInCinemaAsync(cinema.Id, DateAfterTravel(cinema));
+                availableMoviesIds.AddRange(movies);
             }
 
             var movieRatings = new List<(long MovieId, double Rating)>();
@@ -111,7 +113,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<long> AddMovieAsync(Movie newMovie)
         {
-            var entityMovie = _mapper.Map<Entities.Movie>(newMovie);
+            var entityMovie = _mapper.Map<Entities.Movies.Movie>(newMovie);
 
             var movieId = await _movieRepository.AddMovieAsync(entityMovie);
 
@@ -123,7 +125,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<long> AddMovieDetailsAsync(MovieDetails movieDetails)
         {
-            var entityMovieDetails = _mapper.Map<Entities.MovieDetails>(movieDetails);
+            var entityMovieDetails = _mapper.Map<Entities.Movies.MovieDetails>(movieDetails);
 
             var movieId = await _movieRepository.AddMovieDetailsAsync(entityMovieDetails);
 

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Cinemas;
+using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Repositories;
 using Ploeh.AutoFixture;
 using System;
@@ -425,25 +426,17 @@ namespace NaCoDoKina.Api.Repository
                 //Arrange
                 var showtimeId = 1;
 
-                var movie = new Movie
-                {
-                    Name = nameof(Movie),
-                    Details = new MovieDetails(),
-                    PosterUrl = nameof(Movie.PosterUrl),
-                };
+                var movie = Fixture.Create<Movie>();
 
-                var cinema = new Cinema
-                {
-                    Name = nameof(Cinema),
-                    Address = nameof(Cinema.Address),
-                    Location = new Location(1, 1)
-                };
+                var cinema = Fixture.Create<Cinema>();
 
                 var movieShowtime = new MovieShowtime
                 {
                     Cinema = cinema,
                     Movie = movie,
-                    ShowTime = DateTime.Now.AddHours(2)
+                    ShowTime = DateTime.Now.AddHours(2),
+                    Language = "",
+                    ShowType = "",
                 };
 
                 using (var contextScope = CreateContextScope())

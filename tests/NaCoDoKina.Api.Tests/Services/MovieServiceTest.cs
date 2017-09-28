@@ -2,16 +2,17 @@
 using Moq;
 using NaCoDoKina.Api.Exceptions;
 using NaCoDoKina.Api.Models;
+using NaCoDoKina.Api.Models.Travel;
 using NaCoDoKina.Api.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
-using Cinema = NaCoDoKina.Api.Models.Cinema;
-using Movie = NaCoDoKina.Api.Models.Movie;
-using MovieDetails = NaCoDoKina.Api.Models.MovieDetails;
-using MovieShowtime = NaCoDoKina.Api.Entities.MovieShowtime;
+using Cinema = NaCoDoKina.Api.Models.Cinemas.Cinema;
+using Movie = NaCoDoKina.Api.Models.Movies.Movie;
+using MovieDetails = NaCoDoKina.Api.Models.Movies.MovieDetails;
+using MovieShowtime = NaCoDoKina.Api.Entities.Movies.MovieShowtime;
 using SearchArea = NaCoDoKina.Api.Models.SearchArea;
 
 namespace NaCoDoKina.Api.Services
@@ -44,34 +45,34 @@ namespace NaCoDoKina.Api.Services
                 .Returns(DefaultUserId);
 
             MapperMock
-                .Setup(mapper => mapper.Map<Movie>(It.IsAny<Entities.Movie>()))
-                .Returns(new Func<Entities.Movie, Movie>(movie => new Movie
+                .Setup(mapper => mapper.Map<Movie>(It.IsAny<Entities.Movies.Movie>()))
+                .Returns(new Func<Entities.Movies.Movie, Movie>(movie => new Movie
                 {
                     Id = movie.Id,
-                    Name = movie.Name,
+                    Title = movie.Title,
                 }));
 
             MapperMock
-                .Setup(mapper => mapper.Map<Entities.Movie>(It.IsAny<Movie>()))
-                .Returns(new Func<Movie, Entities.Movie>(movie => new Entities.Movie
+                .Setup(mapper => mapper.Map<Entities.Movies.Movie>(It.IsAny<Movie>()))
+                .Returns(new Func<Movie, Entities.Movies.Movie>(movie => new Entities.Movies.Movie
                 {
                     Id = movie.Id,
-                    Name = movie.Name,
+                    Title = movie.Title,
                 }));
 
             MapperMock
-                .Setup(mapper => mapper.Map<MovieDetails>(It.IsAny<Entities.MovieDetails>()))
-                .Returns(new Func<Entities.MovieDetails, MovieDetails>(movieDetails => new MovieDetails
+                .Setup(mapper => mapper.Map<MovieDetails>(It.IsAny<Entities.Movies.MovieDetails>()))
+                .Returns(new Func<Entities.Movies.MovieDetails, MovieDetails>(movieDetails => new MovieDetails
                 {
-                    MovieId = movieDetails.Id,
+                    Id = movieDetails.Id,
                     Description = movieDetails.Description,
                 }));
 
             MapperMock
-                .Setup(mapper => mapper.Map<Entities.MovieDetails>(It.IsAny<MovieDetails>()))
-                .Returns(new Func<MovieDetails, Entities.MovieDetails>(movieDetails => new Entities.MovieDetails
+                .Setup(mapper => mapper.Map<Entities.Movies.MovieDetails>(It.IsAny<MovieDetails>()))
+                .Returns(new Func<MovieDetails, Entities.Movies.MovieDetails>(movieDetails => new Entities.Movies.MovieDetails
                 {
-                    Id = movieDetails.MovieId,
+                    Id = movieDetails.Id,
                     Description = movieDetails.Description,
                 }));
 
@@ -84,11 +85,11 @@ namespace NaCoDoKina.Api.Services
         {
             protected class MovieRepositoryFake : IMovieRepository
             {
-                private List<Entities.MovieShowtime> _movieShowtimes = new List<Entities.MovieShowtime>();
+                private List<MovieShowtime> _movieShowtimes = new List<MovieShowtime>();
 
-                public void SetTestData(IEnumerable<Entities.MovieShowtime> data)
+                public void SetTestData(IEnumerable<MovieShowtime> data)
                 {
-                    _movieShowtimes = data as List<Entities.MovieShowtime> ?? data.ToList();
+                    _movieShowtimes = data as List<MovieShowtime> ?? data.ToList();
                 }
 
                 public Task<bool> SoftDeleteMovieAsync(long movieId)
@@ -101,7 +102,7 @@ namespace NaCoDoKina.Api.Services
                     throw new NotImplementedException();
                 }
 
-                public Task<Entities.Movie> GetMovieAsync(long id)
+                public Task<Entities.Movies.Movie> GetMovieAsync(long id)
                 {
                     throw new NotImplementedException();
                 }
@@ -116,17 +117,17 @@ namespace NaCoDoKina.Api.Services
                     return Task.FromResult(moviesIds);
                 }
 
-                public Task<Entities.MovieDetails> GetMovieDetailsAsync(long id)
+                public Task<Entities.Movies.MovieDetails> GetMovieDetailsAsync(long id)
                 {
-                    return Task.FromResult(new Entities.MovieDetails { Id = id });
+                    return Task.FromResult(new Entities.Movies.MovieDetails { Id = id });
                 }
 
-                public Task<long> AddMovieAsync(Entities.Movie newMovie)
+                public Task<long> AddMovieAsync(Entities.Movies.Movie newMovie)
                 {
                     return Task.FromResult(newMovie.Id);
                 }
 
-                public Task<long> AddMovieDetailsAsync(Entities.MovieDetails movieDetails)
+                public Task<long> AddMovieDetailsAsync(Entities.Movies.MovieDetails movieDetails)
                 {
                     return Task.FromResult(movieDetails.Id);
                 }
@@ -137,7 +138,7 @@ namespace NaCoDoKina.Api.Services
             protected long[] MoviesIds;
             protected (long, long)[] CinemasIdsWithDuration;
             protected DateTime Now;
-            protected IEnumerable<Entities.Movie> Movies;
+            protected IEnumerable<Entities.Movies.Movie> Movies;
             protected Cinema[] Cinemas;
             protected IEnumerable<MovieShowtime> ShowTimes;
 
@@ -160,7 +161,7 @@ namespace NaCoDoKina.Api.Services
                 SearchArea = new SearchArea(new Location(1, 1), 30);
 
                 Movies = MoviesIds
-                    .Select(id => new Entities.Movie() { Id = id });
+                    .Select(id => new Entities.Movies.Movie { Id = id });
 
                 Cinemas = CinemasIdsWithDuration
                     .Select(tuple => new Cinema
@@ -169,10 +170,10 @@ namespace NaCoDoKina.Api.Services
                         CinemaTravelInformation = new TravelInformation(null, 0, TimeSpan.FromMinutes(tuple.Item2))
                     }).ToArray();
 
-                ShowTimes = Movies.Zip(Cinemas, (movie, cinema) => new Entities.MovieShowtime
+                ShowTimes = Movies.Zip(Cinemas, (movie, cinema) => new MovieShowtime
                 {
                     Movie = movie,
-                    Cinema = new Entities.Cinema
+                    Cinema = new Entities.Cinemas.Cinema
                     {
                         Id = cinema.Id,
                     },
@@ -197,7 +198,7 @@ namespace NaCoDoKina.Api.Services
                     .Returns(new Func<long, Task<double>>((movieId) => Task.FromResult((double)movieId)));
 
                 CinemaServiceMock
-                    .Setup(service => service.GetNearestCinemasAsync(SearchArea))
+                    .Setup(service => service.GetCinemasInSearchAreaAsync(SearchArea))
                     .Returns(() => Task.FromResult(Cinemas.AsEnumerable()));
 
                 //Act
@@ -216,7 +217,7 @@ namespace NaCoDoKina.Api.Services
                 _movieRepositoryFake.SetTestData(new List<MovieShowtime>());
 
                 CinemaServiceMock
-                    .Setup(service => service.GetNearestCinemasAsync(SearchArea))
+                    .Setup(service => service.GetCinemasInSearchAreaAsync(SearchArea))
                     .Returns(() => Task.FromResult(Cinemas.AsEnumerable()));
 
                 //Act
@@ -232,7 +233,7 @@ namespace NaCoDoKina.Api.Services
                 //Arrange
 
                 CinemaServiceMock
-                    .Setup(service => service.GetNearestCinemasAsync(SearchArea))
+                    .Setup(service => service.GetCinemasInSearchAreaAsync(SearchArea))
                     .Throws(new CinemasNotFoundException(SearchArea));
 
                 //Act
@@ -249,7 +250,7 @@ namespace NaCoDoKina.Api.Services
                 SetFakeTestData();
 
                 CinemaServiceMock
-                    .Setup(service => service.GetNearestCinemasAsync(SearchArea))
+                    .Setup(service => service.GetCinemasInSearchAreaAsync(SearchArea))
                     .Returns(() => Task.FromResult(Cinemas.AsEnumerable()));
 
                 RatingServiceMock
@@ -274,10 +275,10 @@ namespace NaCoDoKina.Api.Services
 
                 RepositoryMock
                     .Setup(repository => repository.GetMovieAsync(movieId))
-                    .Returns(new Func<long, Task<Entities.Movie>>(id => Task.FromResult(new Entities.Movie()
+                    .ReturnsAsync(new Func<long, Entities.Movies.Movie>(id => new Entities.Movies.Movie
                     {
                         Id = id
-                    })));
+                    }));
 
                 //Act
                 var resultMovie = await ServiceUnderTest.GetMovieAsync(movieId);
@@ -293,7 +294,7 @@ namespace NaCoDoKina.Api.Services
 
                 RepositoryMock
                     .Setup(repository => repository.GetMovieAsync(movieId))
-                    .Returns(() => Task.FromResult((Entities.Movie)null));
+                    .Returns(() => Task.FromResult((Entities.Movies.Movie)null));
 
                 //Act
                 Func<Task<Movie>> action = () => ServiceUnderTest.GetMovieAsync(movieId);
@@ -313,11 +314,11 @@ namespace NaCoDoKina.Api.Services
 
                 RepositoryMock
                     .Setup(repository => repository.SoftDeleteMovieAsync(movieId))
-                    .Returns(() => Task.FromResult(true));
+                    .ReturnsAsync(true);
 
                 RepositoryMock
                     .Setup(repository => repository.GetMovieAsync(movieId))
-                    .Returns(() => Task.FromResult((Entities.Movie)null));
+                    .ReturnsAsync((Entities.Movies.Movie)null);
 
                 //Act
                 await ServiceUnderTest.DeleteMovieAsync(movieId);
@@ -355,15 +356,15 @@ namespace NaCoDoKina.Api.Services
 
                 RepositoryMock
                     .Setup(repository => repository.GetMovieDetailsAsync(movieId))
-                    .Returns(new Func<long, Task<Entities.MovieDetails>>(id => Task.FromResult(new Entities.MovieDetails()
+                    .ReturnsAsync(new Func<long, Entities.Movies.MovieDetails>(id => new Entities.Movies.MovieDetails
                     {
                         Id = id,
-                    })));
+                    }));
 
                 //Act
                 var movieDetails = await ServiceUnderTest.GetMovieDetailsAsync(movieId);
 
-                movieDetails.MovieId.Should().Be(movieId);
+                movieDetails.Id.Should().Be(movieId);
                 movieDetails.Rating.Should().Be(movieId);
             }
 
@@ -379,15 +380,15 @@ namespace NaCoDoKina.Api.Services
 
                 RepositoryMock
                     .Setup(repository => repository.GetMovieDetailsAsync(movieId))
-                    .Returns(new Func<long, Task<Entities.MovieDetails>>(id => Task.FromResult(new Entities.MovieDetails()
+                    .ReturnsAsync(new Func<long, Entities.Movies.MovieDetails>(id => new Entities.Movies.MovieDetails
                     {
                         Id = id,
-                    })));
+                    }));
 
                 //Act
                 var movieDetails = await ServiceUnderTest.GetMovieDetailsAsync(movieId);
 
-                movieDetails.MovieId.Should().Be(movieId);
+                movieDetails.Id.Should().Be(movieId);
                 movieDetails.Rating.Should().Be(0);
             }
 
@@ -399,7 +400,7 @@ namespace NaCoDoKina.Api.Services
 
                 RepositoryMock
                     .Setup(repository => repository.GetMovieDetailsAsync(movieId))
-                    .Returns(() => Task.FromResult((Entities.MovieDetails)null));
+                    .ReturnsAsync(() => (Entities.Movies.MovieDetails)null);
 
                 //Act
                 Func<Task<MovieDetails>> action = () => ServiceUnderTest.GetMovieDetailsAsync(movieId);
@@ -416,10 +417,10 @@ namespace NaCoDoKina.Api.Services
             {
                 //Arrange
                 var movieId = 404L;
-                var movie = new Movie { Id = movieId, Name = "A" };
+                var movie = new Movie { Id = movieId, Title = "A" };
                 RepositoryMock
-                    .Setup(repository => repository.AddMovieAsync(It.IsAny<Entities.Movie>()))
-                    .Returns(new Func<Entities.Movie, Task<long>>(m => Task.FromResult(m.Id)));
+                    .Setup(repository => repository.AddMovieAsync(It.IsAny<Entities.Movies.Movie>()))
+                    .ReturnsAsync(new Func<Entities.Movies.Movie, long>(m => m.Id));
 
                 //Act
                 var newId = await ServiceUnderTest.AddMovieAsync(movie);
@@ -432,11 +433,11 @@ namespace NaCoDoKina.Api.Services
             {
                 //Arrange
                 var movieId = 404L;
-                var movie = new Movie { Id = movieId, Name = "A" };
+                var movie = new Movie { Id = movieId, Title = "A" };
 
                 RepositoryMock
-                    .Setup(repository => repository.AddMovieAsync(It.IsAny<Entities.Movie>()))
-                    .Returns(() => Task.FromResult(0L));
+                    .Setup(repository => repository.AddMovieAsync(It.IsAny<Entities.Movies.Movie>()))
+                    .ReturnsAsync(0);
 
                 //Act
                 Func<Task<long>> action = () => ServiceUnderTest.AddMovieAsync(movie);
@@ -453,11 +454,15 @@ namespace NaCoDoKina.Api.Services
             {
                 //Arrange
                 var movieDetailsId = 404L;
-                var movieDetails = new MovieDetails { MovieId = movieDetailsId, OriginalTitle = "A" };
+                var movieDetails = new MovieDetails
+                {
+                    Id = movieDetailsId,
+                    OriginalTitle = "A"
+                };
 
                 RepositoryMock
-                    .Setup(repository => repository.AddMovieDetailsAsync(It.IsAny<Entities.MovieDetails>()))
-                    .Returns(new Func<Entities.MovieDetails, Task<long>>(m => Task.FromResult(m.Id)));
+                    .Setup(repository => repository.AddMovieDetailsAsync(It.IsAny<Entities.Movies.MovieDetails>()))
+                    .ReturnsAsync(new Func<Entities.Movies.MovieDetails, long>(m => m.Id));
 
                 //Act
                 var newId = await ServiceUnderTest.AddMovieDetailsAsync(movieDetails);
@@ -470,12 +475,11 @@ namespace NaCoDoKina.Api.Services
             {
                 //Arrange
                 var movieDetailsId = 404L;
-                var movieDetails = new MovieDetails { MovieId = movieDetailsId, OriginalTitle = "A" };
+                var movieDetails = new MovieDetails { Id = movieDetailsId, OriginalTitle = "A" };
 
                 RepositoryMock
-                    .Setup(repository => repository.AddMovieDetailsAsync(It.IsAny<Entities.MovieDetails>()))
-                    .Returns(() => Task.FromResult(0L));
-
+                    .Setup(repository => repository.AddMovieDetailsAsync(It.IsAny<Entities.Movies.MovieDetails>()))
+                    .ReturnsAsync(0);
                 //Act
                 Func<Task<long>> action = () => ServiceUnderTest.AddMovieDetailsAsync(movieDetails);
 

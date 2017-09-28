@@ -8,6 +8,7 @@ using NaCoDoKina.Api.Models;
 using NaCoDoKina.Api.Services;
 using System;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Models.Users;
 
 namespace NaCoDoKina.Api.Controllers
 {

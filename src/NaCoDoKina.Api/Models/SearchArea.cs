@@ -1,5 +1,3 @@
-﻿using System.Globalization;
-
 namespace NaCoDoKina.Api.Models
 {
     /// <summary>
@@ -29,7 +27,7 @@ namespace NaCoDoKina.Api.Models
 
         public override string ToString()
         {
-            return $"{nameof(Center)}: {Center}, {nameof(Radius)}: {Radius.ToString(CultureInfo.InvariantCulture)}";
+            return $"{nameof(Center)}: {Center}, {nameof(Radius)}: {Radius}";
         }
     }
 }

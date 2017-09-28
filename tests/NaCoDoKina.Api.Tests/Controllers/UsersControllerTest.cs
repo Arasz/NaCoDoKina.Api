@@ -9,6 +9,7 @@ using NaCoDoKina.Api.Services;
 using Ploeh.AutoFixture;
 using System;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Models.Users;
 using Xunit;
 
 namespace NaCoDoKina.Api.Controllers

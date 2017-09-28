@@ -116,6 +116,7 @@ namespace NaCoDoKina.Api
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
+                        NameClaimType = JwtRegisteredClaimNames.UniqueName,
                         ValidIssuer = jwtSettings.Issuer,
                         ValidateAudience = false,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),

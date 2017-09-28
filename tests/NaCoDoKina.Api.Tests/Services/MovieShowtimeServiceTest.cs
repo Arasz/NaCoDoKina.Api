@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Moq;
 using NaCoDoKina.Api.Exceptions;
-using NaCoDoKina.Api.Models;
+using NaCoDoKina.Api.Models.Movies;
 using NaCoDoKina.Api.Repositories;
 using Ploeh.AutoFixture;
 using System;
@@ -22,16 +22,14 @@ namespace NaCoDoKina.Api.Services
         protected void InitializeMapping()
         {
             MapperMock
-                .Setup(mapper => mapper.Map<MovieShowtime>(It.IsAny<Entities.MovieShowtime>()))
-                .Returns(new Func<Entities.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
+                .Setup(mapper => mapper.Map<MovieShowtime>(It.IsAny<Entities.Movies.MovieShowtime>()))
+                .Returns(new Func<Entities.Movies.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
                 {
                     MovieId = showtime.Movie.Id,
                     CinemaId = showtime.Cinema.Id,
                     Language = showtime.Language,
                     ShowTime = showtime.ShowTime,
                     ShowType = showtime.ShowType,
-                    CinemaName = showtime.Cinema.Name,
-                    MovieName = showtime.Movie.Name,
                 }));
         }
 
@@ -45,12 +43,12 @@ namespace NaCoDoKina.Api.Services
                 var movieId = Fixture.Create<long>();
                 var cinemaId = Fixture.Create<long>();
                 var laterThan = Fixture.Create<DateTime>();
-                Fixture.Customize<Entities.Movie>(composer =>
+                Fixture.Customize<Entities.Movies.Movie>(composer =>
                 {
                     return composer.With(movie => movie.Id, movieId);
                 });
                 var movieShowtimes = Fixture
-                    .CreateMany<Entities.MovieShowtime>()
+                    .CreateMany<Entities.Movies.MovieShowtime>()
                     .ToArray();
 
                 RepositoryMock
@@ -79,7 +77,7 @@ namespace NaCoDoKina.Api.Services
                 var movieId = Fixture.Create<long>();
                 var cinemaId = Fixture.Create<long>();
                 var laterThan = Fixture.Create<DateTime>();
-                var movieShowtimes = Fixture.CreateMany<Entities.MovieShowtime>(0);
+                var movieShowtimes = Fixture.CreateMany<Entities.Movies.MovieShowtime>(0);
 
                 RepositoryMock
                     .Setup(repository => repository.GetMovieShowtimesForCinemaAsync(movieId, cinemaId, laterThan))
@@ -105,12 +103,12 @@ namespace NaCoDoKina.Api.Services
 
                 var movieId = Fixture.Create<long>();
                 var laterThan = Fixture.Create<DateTime>();
-                Fixture.Customize<Entities.Movie>(composer =>
+                Fixture.Customize<Entities.Movies.Movie>(composer =>
                 {
                     return composer.With(movie => movie.Id, movieId);
                 });
                 var movieShowtimes = Fixture
-                    .CreateMany<Entities.MovieShowtime>()
+                    .CreateMany<Entities.Movies.MovieShowtime>()
                     .ToArray();
 
                 RepositoryMock
@@ -139,7 +137,7 @@ namespace NaCoDoKina.Api.Services
                 var movieId = Fixture.Create<long>();
                 var cinemaId = Fixture.Create<long>();
                 var laterThan = Fixture.Create<DateTime>();
-                var movieShowtimes = Fixture.CreateMany<Entities.MovieShowtime>(0);
+                var movieShowtimes = Fixture.CreateMany<Entities.Movies.MovieShowtime>(0);
 
                 RepositoryMock
                     .Setup(repository => repository.GetMovieShowtimesAsync(movieId, laterThan))
