@@ -33,5 +33,10 @@ namespace NaCoDoKina.Api.Entities.Movies
         /// Played movie 
         /// </summary>
         public Movie Movie { get; set; }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}, {nameof(Language)}: {Language}, {nameof(ShowType)}: {ShowType}, {nameof(ShowTime)}: {ShowTime}, {nameof(Cinema)}: {Cinema}, {nameof(Movie)}: {Movie}";
+        }
     }
 }

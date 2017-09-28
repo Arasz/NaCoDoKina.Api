@@ -8,6 +8,11 @@ namespace NaCoDoKina.Api.Entities
     public abstract partial class Entity
     {
         public long Id { get; set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(Id)}: {Id}";
+        }
     }
 
     public abstract partial class Entity

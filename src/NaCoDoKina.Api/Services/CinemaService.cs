@@ -27,7 +27,7 @@ namespace NaCoDoKina.Api.Services
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<IEnumerable<Cinema>> GetNearestCinemasForMovieAsync(long movieId, SearchArea searchArea)
+        public async Task<IEnumerable<Cinema>> GetCinemasPlayingMovieInSearchArea(long movieId, SearchArea searchArea)
         {
             var allCinemasForMovie = (await _cinemaRepository.GetAllCinemasForMovieAsync(movieId))
                 .ToArray();

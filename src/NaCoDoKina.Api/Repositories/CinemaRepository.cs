@@ -22,16 +22,17 @@ namespace NaCoDoKina.Api.Repositories
 
         public async Task<IEnumerable<Cinema>> GetAllCinemasForMovieAsync(long movieId)
         {
-            var cinemasForMovie = await _applicationContext.MovieShowtimes
-                .Include(showtime => showtime.Cinema)
-                    .ThenInclude(cinema => cinema.Website)
-                .Include(showtime => showtime.Cinema)
-                    .ThenInclude(cinema => cinema.CinemaNetwork)
-                .Include(showtime => showtime.Movie)
+            var cinemaIds = _applicationContext.MovieShowtimes
                 .Where(showtime => showtime.ShowTime > DateTime.Now)
                 .Where(showtime => showtime.Movie.Id == movieId)
-                .Select(showtime => showtime.Cinema)
+                .Select(showtime => showtime.Cinema.Id)
                 .Distinct()
+                .ToHashSet();
+
+            var cinemasForMovie = await _applicationContext.Cinemas
+                .Include(cinema => cinema.Website)
+                .Include(cinema => cinema.CinemaNetwork)
+                .Where(cinema => cinemaIds.Contains(cinema.Id))
                 .ToListAsync();
 
             return cinemasForMovie.AsEnumerable();

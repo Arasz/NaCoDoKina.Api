@@ -16,7 +16,7 @@ namespace NaCoDoKina.Api.Services
         /// <param name="movieId"> Movie id </param>
         /// <param name="searchArea"> RegisterUser searchArea </param>
         /// <returns> List of cinemas nearest to user searchArea that play given movie </returns>
-        Task<IEnumerable<Cinema>> GetNearestCinemasForMovieAsync(long movieId, SearchArea searchArea);
+        Task<IEnumerable<Cinema>> GetCinemasPlayingMovieInSearchArea(long movieId, SearchArea searchArea);
 
         /// <summary>
         /// Returns list of nearest cinemas 

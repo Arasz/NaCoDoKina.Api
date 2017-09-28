@@ -32,5 +32,10 @@ namespace NaCoDoKina.Api.Entities.Cinemas
         /// The network to which the movie belongs 
         /// </summary>
         public CinemaNetwork CinemaNetwork { get; set; }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}, {nameof(Name)}: {Name}, {nameof(Address)}: {Address}, {nameof(Location)}: {Location}, {nameof(CinemaNetwork)}: {CinemaNetwork}";
+        }
     }
 }

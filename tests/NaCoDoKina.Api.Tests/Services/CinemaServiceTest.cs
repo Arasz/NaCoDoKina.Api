@@ -98,7 +98,7 @@ namespace NaCoDoKina.Api.Services
                 addedCinema.Id.Should().BeGreaterThan(0);
             }
 
-            public class GetNearestCinemasForMovieAsync : CinemaServiceTest
+            public class GetCinemasPlayingMovieInSearchAreaAsync : CinemaServiceTest
             {
                 [Fact]
                 public async Task Should_return_nearest_cinemas_for_correct_parameters()
@@ -134,7 +134,7 @@ namespace NaCoDoKina.Api.Services
                         .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
 
                     //Act
-                    var result = await ServiceUnderTest.GetNearestCinemasForMovieAsync(movieId, searchArea);
+                    var result = await ServiceUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, searchArea);
 
                     //Assert
                     result.Should().HaveCount(cinemas.Count - 1);
@@ -159,7 +159,7 @@ namespace NaCoDoKina.Api.Services
 
                     //Act
                     Func<Task<IEnumerable<Cinema>>> action = () =>
-                        ServiceUnderTest.GetNearestCinemasForMovieAsync(movieId, searchArea);
+                        ServiceUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, searchArea);
 
                     //Assert
                     action.ShouldThrow<CinemasNotFoundException>();
@@ -175,7 +175,7 @@ namespace NaCoDoKina.Api.Services
 
                     //Act
                     Func<Task<IEnumerable<Cinema>>> action = () =>
-                        ServiceUnderTest.GetNearestCinemasForMovieAsync(movieId, searchArea);
+                        ServiceUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, searchArea);
 
                     //Assert
                     action.ShouldThrow<CinemasNotFoundException>();

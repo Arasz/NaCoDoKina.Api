@@ -69,5 +69,10 @@ namespace NaCoDoKina.Api.Entities.Movies
         /// Movie crew description 
         /// </summary>
         public string CrewDescription { get; set; }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}, {nameof(Title)}: {Title}, {nameof(Genre)}: {Genre}, {nameof(Length)}: {Length}, {nameof(Language)}: {Language}, {nameof(AgeLimit)}: {AgeLimit}";
+        }
     }
 }

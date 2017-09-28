@@ -19,7 +19,7 @@
 
         public override string ToString()
         {
-            return $"{nameof(Url)}: {Url}";
+            return $"{base.ToString()}, {nameof(Url)}: {Url}";
         }
     }
 }

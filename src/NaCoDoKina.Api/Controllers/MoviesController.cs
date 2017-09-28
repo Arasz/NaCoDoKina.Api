@@ -110,16 +110,16 @@ namespace NaCoDoKina.Api.Controllers
         }
 
         /// <summary>
-        /// Returns list of nearest cinemas which plays movie with given id 
+        /// Returns list of cinemas inside search area playing movie with given id 
         /// </summary>
         /// <param name="id"> Movie id </param>
-        /// <param name="searchArea"> RegisterUser searchArea </param>
-        /// <returns> Detailed information about show </returns>
+        /// <param name="searchArea"> User search area </param>
+        /// <returns> List of cinemas </returns>
         [ProducesResponseType(typeof(IEnumerable<Cinema>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{id}/cinemas")]
-        public async Task<IActionResult> GetNearestCinemasForMovie(long id, [FromQuery]SearchArea searchArea)
+        public async Task<IActionResult> GetCinemasPlayingMovieInSearchArea(long id, [FromQuery]SearchArea searchArea)
         {
             if (searchArea is null)
                 return BadRequest();
@@ -128,7 +128,7 @@ namespace NaCoDoKina.Api.Controllers
             {
                 var modelSearchArea = _mapper.Map<Models.SearchArea>(searchArea);
 
-                var nearestCinemas = await _cinemaService.GetNearestCinemasForMovieAsync(id, modelSearchArea);
+                var nearestCinemas = await _cinemaService.GetCinemasPlayingMovieInSearchArea(id, modelSearchArea);
 
                 var mappedCinemas = nearestCinemas
                     .Select(_mapper.Map<Cinema>)

@@ -18,14 +18,14 @@ namespace NaCoDoKina.Api.Mapping.Profiles
                 .ConstructUsing((networkName, context) => new Entities.Cinemas.CinemaNetwork
                 {
                     Name = networkName
-                });
-
-            CreateMap<Entities.Cinemas.CinemaNetwork, string>()
+                })
+                .ReverseMap()
                 .ConstructUsing(network => network.Name);
 
             CreateMap<Models.Cinemas.Cinema, Entities.Cinemas.Cinema>()
                 .ReverseMap()
-                .ForMember(cinema => cinema.CinemaTravelInformation, cfg => cfg.Ignore());
+                .ForMember(cinema => cinema.CinemaTravelInformation, cfg => cfg.Ignore())
+                .ForMember(cinema => cinema.NetworkName, cfg => cfg.MapFrom(cinema => cinema.CinemaNetwork.Name));
 
             CreateMap<Models.Resources.ResourceLink, Entities.Resources.ResourceLink>()
                 .ReverseMap();

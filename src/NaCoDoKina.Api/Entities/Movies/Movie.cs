@@ -22,5 +22,10 @@ namespace NaCoDoKina.Api.Entities.Movies
         /// Detailed information about movie 
         /// </summary>
         public MovieDetails Details { get; set; }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}, {nameof(Title)}: {Title}";
+        }
     }
 }

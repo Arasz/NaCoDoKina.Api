@@ -280,7 +280,7 @@ namespace NaCoDoKina.Api.Mappings
                 result.Address.Should().Be(cinema.Address);
                 result.Id.Should().Be(cinema.Id);
                 result.Website.Should().NotBeNull();
-                //result.NetworkName.Should().Be(cinema.NetworkName);
+                result.NetworkName.Should().Be(cinema.CinemaNetwork.Name);
                 //result.Website.Should()
                 //    .Match<ServiceUrl>(url => url.Name == cinema.Website.Name)
                 //    .And

@@ -21,7 +21,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
                 composer.Without(link => link.Id));
 
             fixture.Customize<Movie>(composer => composer
-                .Without(movie => movie.Id));
+                .With(movie => movie.Id, 0));
 
             fixture.Customize<MovieDetails>(composer => composer
                 .Without(details => details.Id));

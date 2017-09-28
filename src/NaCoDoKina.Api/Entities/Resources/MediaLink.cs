@@ -9,5 +9,10 @@
         /// Type of resource 
         /// </summary>
         public MediaType MediaType { get; set; }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}, {nameof(MediaType)}: {MediaType}";
+        }
     }
 }

@@ -19,5 +19,10 @@
         /// Movie rating 
         /// </summary>
         public double Rating { get; set; }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}, {nameof(Logo)}: {Logo}, {nameof(Name)}: {Name}, {nameof(Rating)}: {Rating}";
+        }
     }
 }

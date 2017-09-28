@@ -215,7 +215,7 @@ namespace NaCoDoKina.Api.Controllers
         }
     }
 
-    public class GetNearestCinemasForMovie : MoviesControllerTest
+    public class GetCinemasPlayingMovieInSearchArea : MoviesControllerTest
     {
         [Fact]
         public async void Should_return_OkObjectResult_and_Cinemas()
@@ -237,11 +237,11 @@ namespace NaCoDoKina.Api.Controllers
                 .Returns(modelSearchArea);
 
             CinemaServiceMock
-                .Setup(service => service.GetNearestCinemasForMovieAsync(movieId, modelSearchArea))
+                .Setup(service => service.GetCinemasPlayingMovieInSearchArea(movieId, modelSearchArea))
                 .Returns(() => Task.FromResult(modelCinemas.AsEnumerable()));
 
             //Act
-            var result = await ControllerUnderTest.GetNearestCinemasForMovie(movieId, apiSearchArea);
+            var result = await ControllerUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, apiSearchArea);
 
             //Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -258,7 +258,7 @@ namespace NaCoDoKina.Api.Controllers
             //Arrange
             var movieId = 1;
             //Act
-            var result = await ControllerUnderTest.GetNearestCinemasForMovie(movieId, null);
+            var result = await ControllerUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, null);
 
             //Assert
             result.Should().BeOfType<BadRequestResult>();
@@ -279,11 +279,11 @@ namespace NaCoDoKina.Api.Controllers
                 .Returns(modelSearchArea);
 
             CinemaServiceMock
-                .Setup(service => service.GetNearestCinemasForMovieAsync(movieId, modelSearchArea))
+                .Setup(service => service.GetCinemasPlayingMovieInSearchArea(movieId, modelSearchArea))
                 .Throws(new CinemasNotFoundException(movieId, modelSearchArea));
 
             //Act
-            var result = await ControllerUnderTest.GetNearestCinemasForMovie(movieId, apiSearchArea);
+            var result = await ControllerUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, apiSearchArea);
 
             //Assert
             result.Should().BeOfType<NotFoundObjectResult>();

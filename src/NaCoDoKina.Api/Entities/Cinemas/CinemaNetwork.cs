@@ -17,5 +17,10 @@ namespace NaCoDoKina.Api.Entities.Cinemas
         /// Website to cinema network site 
         /// </summary>
         public ResourceLink Url { get; set; }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}, {nameof(Name)}: {Name}, {nameof(Url)}: {Url}";
+        }
     }
 }

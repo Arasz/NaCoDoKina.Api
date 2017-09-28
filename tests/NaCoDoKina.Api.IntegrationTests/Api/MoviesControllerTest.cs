@@ -1,10 +1,12 @@
 ﻿using FluentAssertions;
 using NaCoDoKina.Api.DataContracts;
 using NaCoDoKina.Api.DataContracts.Authentication;
+using NaCoDoKina.Api.DataContracts.Cinemas;
 using NaCoDoKina.Api.DataContracts.Movies;
 using NaCoDoKina.Api.Infrastructure.Identity;
 using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -288,7 +290,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             }
         }
 
-        public class GetNearestCinemasForMovie : MoviesControllerTest
+        public class GetCinemasPlayingMovieInSearchArea : MoviesControllerTest
         {
             [Fact]
             public async Task Should_return_all_cinemas_inside_search_area()
@@ -310,7 +312,8 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 response.EnsureSuccessStatusCode();
 
-                var responseContent = await response.Content.ReadAsJsonObjectAsync<long[]>();
+                var responseContent = await response.Content.ReadAsJsonObjectAsync<List<Cinema>>();
+
                 responseContent
                     .Should()
                     .NotBeNullOrEmpty().And
