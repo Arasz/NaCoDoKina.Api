@@ -172,7 +172,7 @@ namespace NaCoDoKina.Api.Services
                 ShowTimes = Movies.Zip(Cinemas, (movie, cinema) => new Entities.MovieShowtime
                 {
                     Movie = movie,
-                    Cinema = new Entities.Cinema
+                    Cinema = new Entities.Cinemas.Cinema
                     {
                         Id = cinema.Id,
                     },

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Cinemas;
+using NaCoDoKina.Api.Entities.Resources;
 
 namespace NaCoDoKina.Api.Mapping.Profiles
 {
@@ -24,7 +26,7 @@ namespace NaCoDoKina.Api.Mapping.Profiles
                 .ReverseMap()
                 .ForMember(cinema => cinema.CinemaTravelInformation, cfg => cfg.Ignore());
 
-            CreateMap<Models.ServiceUrl, ServiceUrl>()
+            CreateMap<Models.ServiceUrl, ResourceLink>()
                 .ReverseMap();
 
             CreateMap<Models.Movie, Movie>()

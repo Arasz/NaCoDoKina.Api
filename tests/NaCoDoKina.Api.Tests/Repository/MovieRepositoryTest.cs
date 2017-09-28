@@ -7,6 +7,8 @@ using Ploeh.AutoFixture;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Entities.Cinemas;
+using NaCoDoKina.Api.Entities.Movies;
 using Xunit;
 
 namespace NaCoDoKina.Api.Repository

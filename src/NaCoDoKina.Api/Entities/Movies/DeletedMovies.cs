@@ -1,4 +1,4 @@
-﻿namespace NaCoDoKina.Api.Entities
+﻿namespace NaCoDoKina.Api.Entities.Movies
 {
     /// <summary>
     /// Marks movie as deleted for user 

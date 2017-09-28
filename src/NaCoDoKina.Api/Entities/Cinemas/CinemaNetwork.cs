@@ -1,4 +1,6 @@
-﻿namespace NaCoDoKina.Api.Entities
+﻿using NaCoDoKina.Api.Entities.Resources;
+
+namespace NaCoDoKina.Api.Entities.Cinemas
 {
     /// <inheritdoc/>
     /// <summary>
@@ -14,6 +16,6 @@
         /// <summary>
         /// Website to cinema network site 
         /// </summary>
-        public ServiceUrl Url { get; set; }
+        public ResourceLink Url { get; set; }
     }
 }

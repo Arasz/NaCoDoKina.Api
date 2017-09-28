@@ -1,4 +1,5 @@
 ﻿using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Cinemas;
 using Ploeh.AutoFixture;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed

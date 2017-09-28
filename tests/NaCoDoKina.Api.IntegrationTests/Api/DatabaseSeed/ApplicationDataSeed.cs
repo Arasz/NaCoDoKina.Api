@@ -5,6 +5,7 @@ using NaCoDoKina.Api.Entities;
 using Ploeh.AutoFixture;
 using System;
 using System.Linq;
+using NaCoDoKina.Api.Entities.Cinemas;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
 {

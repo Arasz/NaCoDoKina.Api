@@ -1,14 +1,14 @@
 ﻿using FluentAssertions;
+using NaCoDoKina.Api.Entities.Resources;
 using NaCoDoKina.Api.Mapping.Profiles;
-using NaCoDoKina.Api.Models;
 using Ploeh.AutoFixture;
 using System.Linq;
 using Xunit;
-using Cinema = NaCoDoKina.Api.Entities.Cinema;
+using Cinema = NaCoDoKina.Api.Entities.Cinemas.Cinema;
+using Location = NaCoDoKina.Api.Models.Location;
 using Movie = NaCoDoKina.Api.Entities.Movie;
 using MovieDetails = NaCoDoKina.Api.Entities.MovieDetails;
 using MovieShowtime = NaCoDoKina.Api.Entities.MovieShowtime;
-using ServiceUrl = NaCoDoKina.Api.Entities.ServiceUrl;
 
 namespace NaCoDoKina.Api.Mappings
 {
@@ -166,7 +166,7 @@ namespace NaCoDoKina.Api.Mappings
             public void Should_return_model_service_url_given_data_service_url()
             {
                 //Arrange
-                var serviceUrl = Fixture.Create<ServiceUrl>();
+                var serviceUrl = Fixture.Create<ResourceLink>();
 
                 //Act
                 var result = Mapper.Map<Models.ServiceUrl>(serviceUrl);
@@ -184,10 +184,10 @@ namespace NaCoDoKina.Api.Mappings
                 var serviceUrl = Fixture.Create<Models.ServiceUrl>();
 
                 //Act
-                var result = Mapper.Map<ServiceUrl>(serviceUrl);
+                var result = Mapper.Map<ResourceLink>(serviceUrl);
 
                 //Assert
-                result.Should().BeOfType<ServiceUrl>();
+                result.Should().BeOfType<ResourceLink>();
                 result.Name.Should().Be(serviceUrl.Name);
                 result.Url.Should().Be(serviceUrl.Url);
             }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NaCoDoKina.Api.Data.Configurations;
 using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Cinemas;
+using NaCoDoKina.Api.Entities.Movies;
 
 namespace NaCoDoKina.Api.Data
 {
@@ -33,7 +35,7 @@ namespace NaCoDoKina.Api.Data
             modelBuilder.ApplyConfiguration(new CinemaConfiguration());
             modelBuilder.ApplyConfiguration(new CinemaNetworkConfiguration());
             modelBuilder.ApplyConfiguration(new MovieShowtimeConfiguration());
-            modelBuilder.ApplyConfiguration(new ServiceUrlConfiguration());
+            modelBuilder.ApplyConfiguration(new ResourceLinkConfiguration());
             modelBuilder.ApplyConfiguration(new DeletedMovieMarkConfiguration());
         }
     }

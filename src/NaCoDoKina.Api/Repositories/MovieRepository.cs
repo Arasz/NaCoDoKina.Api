@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Data;
 using NaCoDoKina.Api.Entities;
+using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Services;
 using System;
 using System.Collections.Generic;

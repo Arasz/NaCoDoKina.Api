@@ -1,6 +1,7 @@
 ﻿using NaCoDoKina.Api.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NaCoDoKina.Api.Entities.Cinemas;
 
 namespace NaCoDoKina.Api.Repositories
 {

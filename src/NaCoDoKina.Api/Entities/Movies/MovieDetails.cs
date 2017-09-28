@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NaCoDoKina.Api.Entities.Resources;
+using System;
 using System.Collections.Generic;
 
 namespace NaCoDoKina.Api.Entities
@@ -10,19 +11,24 @@ namespace NaCoDoKina.Api.Entities
     public class MovieDetails : Entity
     {
         /// <summary>
-        /// Movie id 
-        /// </summary>
-        public long MovieId { get; set; }
-
-        /// <summary>
-        /// Sites with movie descriptions 
-        /// </summary>
-        public List<ServiceUrl> DescriptionSites { get; set; }
-
-        /// <summary>
         /// Movie description 
         /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Links to movie review services 
+        /// </summary>
+        public List<ReviewLink> MovieReviews { get; set; }
+
+        /// <summary>
+        /// Links to external media resources. <example> Trailer, poster </example> 
+        /// </summary>
+        public List<MediaLink> MediaResources { get; set; }
+
+        /// <summary>
+        /// Movie title 
+        /// </summary>
+        public string Title { get; set; }
 
         /// <summary>
         /// Original movie title 

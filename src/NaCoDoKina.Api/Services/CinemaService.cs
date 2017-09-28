@@ -52,7 +52,7 @@ namespace NaCoDoKina.Api.Services
             return travelInformation;
         }
 
-        private Cinema[] MapCinemas(IEnumerable<Entities.Cinema> cinemas)
+        private Cinema[] MapCinemas(IEnumerable<Entities.Cinemas.Cinema> cinemas)
         {
             var allCinemaModels = cinemas
                 .Select(_mapper.Map<Cinema>)
@@ -71,7 +71,7 @@ namespace NaCoDoKina.Api.Services
             return await FindNearestCinemasAsync(searchArea, allCinemas);
         }
 
-        private async Task<IEnumerable<Cinema>> FindNearestCinemasAsync(SearchArea searchArea, IEnumerable<Entities.Cinema> allCinemas)
+        private async Task<IEnumerable<Cinema>> FindNearestCinemasAsync(SearchArea searchArea, IEnumerable<Entities.Cinemas.Cinema> allCinemas)
         {
             var allCinemaModels = MapCinemas(allCinemas);
 
@@ -93,7 +93,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<Cinema> AddCinemaAsync(Cinema cinema)
         {
-            var entityCinema = _mapper.Map<Entities.Cinema>(cinema);
+            var entityCinema = _mapper.Map<Entities.Cinemas.Cinema>(cinema);
             entityCinema = await _cinemaRepository.AddCinema(entityCinema);
             return _mapper.Map<Cinema>(entityCinema);
         }
