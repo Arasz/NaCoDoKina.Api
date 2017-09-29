@@ -1,7 +1,7 @@
 namespace NaCoDoKina.Api.Models
 {
     /// <summary>
-    /// Cinemas search area 
+    /// Area in which cinemas are searched 
     /// </summary>
     public class SearchArea
     {
@@ -16,7 +16,7 @@ namespace NaCoDoKina.Api.Models
         }
 
         /// <summary>
-        /// RegisterUser location, search area center 
+        /// User location, search area center 
         /// </summary>
         public Location Center { get; set; }
 

@@ -38,7 +38,7 @@ namespace NaCoDoKina.Api.Data
             modelBuilder.ApplyConfiguration<ResourceLink>(new ResourceLinkConfiguration());
             modelBuilder.ApplyConfiguration<ReviewLink>(new ResourceLinkConfiguration());
             modelBuilder.ApplyConfiguration<MediaLink>(new ResourceLinkConfiguration());
-            modelBuilder.ApplyConfiguration(new DeletedMovieMarkConfiguration());
+            modelBuilder.ApplyConfiguration(new DeletedMovieConfiguration());
         }
     }
 }

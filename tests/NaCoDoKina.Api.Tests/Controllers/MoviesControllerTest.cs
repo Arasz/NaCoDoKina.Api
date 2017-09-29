@@ -453,7 +453,7 @@ namespace NaCoDoKina.Api.Controllers
 
             RatingServiceMock
                 .Setup(service => service.SetMovieRating(movieId, rating))
-                .Throws(new MovieNotFoundException(movieId));
+                .ReturnsAsync(Result.Failure());
 
             //Act
             var result = await ControllerUnderTest.SetRatingForMovie(movieId, rating);

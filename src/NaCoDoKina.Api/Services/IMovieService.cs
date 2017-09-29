@@ -13,7 +13,7 @@ namespace NaCoDoKina.Api.Services
         /// <summary>
         /// Get all movies available near given inside search area. 
         /// </summary>
-        /// <param name="searchArea"> RegisterUser location and searched distance </param>
+        /// <param name="searchArea"> Are in which movies are played </param>
         /// <returns> Shows ids sorted by estimated user rating </returns>
         Task<IEnumerable<long>> GetAllMoviesAsync(SearchArea searchArea);
 

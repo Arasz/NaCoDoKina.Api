@@ -1,7 +1,7 @@
 ﻿using NaCoDoKina.Api.Models;
+using NaCoDoKina.Api.Models.Cinemas;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NaCoDoKina.Api.Models.Cinemas;
 
 namespace NaCoDoKina.Api.Services
 {
@@ -15,13 +15,13 @@ namespace NaCoDoKina.Api.Services
         /// </summary>
         /// <param name="movieId"> Movie id </param>
         /// <param name="searchArea"> RegisterUser searchArea </param>
-        /// <returns> List of cinemas nearest to user searchArea that play given movie </returns>
+        /// <returns> List of cinemas in user searchArea that play given movie </returns>
         Task<IEnumerable<Cinema>> GetCinemasPlayingMovieInSearchArea(long movieId, SearchArea searchArea);
 
         /// <summary>
-        /// Returns list of nearest cinemas 
+        /// Returns list of cinemas in search area 
         /// </summary>
-        /// <param name="searchArea"> RegisterUser searchArea </param>
+        /// <param name="searchArea"> User search area </param>
         /// <returns> List of nearest cinemas </returns>
         Task<IEnumerable<Cinema>> GetCinemasInSearchAreaAsync(SearchArea searchArea);
 

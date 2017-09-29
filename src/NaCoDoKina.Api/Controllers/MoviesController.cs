@@ -199,7 +199,13 @@ namespace NaCoDoKina.Api.Controllers
             }
         }
 
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        /// <summary>
+        /// Sets user rating for movie 
+        /// </summary>
+        /// <param name="id"> Movie id </param>
+        /// <param name="rating"> User rating </param>
+        /// <returns> Set rating </returns>
+        [ProducesResponseType(typeof(double), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost("{id}/rating")]
         public async Task<IActionResult> SetRatingForMovie(long id, [FromBody]double rating)

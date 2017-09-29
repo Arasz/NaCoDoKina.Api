@@ -26,7 +26,7 @@ namespace NaCoDoKina.Api.Controllers
         }
 
         /// <summary>
-        /// Creates new registerUser 
+        /// Creates new user 
         /// </summary>
         /// <param name="registerUser"> New user data </param>
         [HttpPost]
