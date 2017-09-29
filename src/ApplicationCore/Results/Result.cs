@@ -1,4 +1,4 @@
-﻿namespace NaCoDoKina.Api.Results
+﻿namespace ApplicationCore.Results
 {
     /// <summary>
     /// Operation result without value 

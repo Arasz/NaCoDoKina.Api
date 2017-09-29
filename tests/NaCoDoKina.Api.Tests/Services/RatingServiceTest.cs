@@ -3,10 +3,10 @@ using Moq;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services;
 using NaCoDoKina.Api.Infrastructure.Settings;
-using NaCoDoKina.Api.Results;
 using Ploeh.AutoFixture;
 using System;
 using System.Threading.Tasks;
+using ApplicationCore.Results;
 using Xunit;
 
 namespace NaCoDoKina.Api.Services

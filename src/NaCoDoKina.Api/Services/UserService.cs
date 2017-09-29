@@ -6,11 +6,11 @@ using NaCoDoKina.Api.Infrastructure.Identity;
 using NaCoDoKina.Api.Infrastructure.Services.Identity;
 using NaCoDoKina.Api.Models.Users;
 using NaCoDoKina.Api.Repositories;
-using NaCoDoKina.Api.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApplicationCore.Results;
 
 namespace NaCoDoKina.Api.Services
 {

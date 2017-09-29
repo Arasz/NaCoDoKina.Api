@@ -2,12 +2,12 @@
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
 using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Exceptions;
 using NaCoDoKina.Api.Infrastructure.Settings;
-using NaCoDoKina.Api.Results;
 using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using ApplicationCore.Results;
 
 namespace NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services
 {

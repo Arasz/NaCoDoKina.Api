@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using NaCoDoKina.Api.Results;
+using ApplicationCore.Results;
 
 namespace NaCoDoKina.Api.Services
 {

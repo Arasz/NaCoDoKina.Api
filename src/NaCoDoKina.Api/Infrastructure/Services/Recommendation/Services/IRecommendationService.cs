@@ -1,6 +1,6 @@
 ﻿using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
 using System.Threading.Tasks;
-using NaCoDoKina.Api.Results;
+using ApplicationCore.Results;
 
 namespace NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services
 {

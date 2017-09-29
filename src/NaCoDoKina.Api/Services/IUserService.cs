@@ -1,7 +1,7 @@
 ﻿using NaCoDoKina.Api.Models;
-using NaCoDoKina.Api.Results;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ApplicationCore.Results;
 using NaCoDoKina.Api.Models.Users;
 
 namespace NaCoDoKina.Api.Services
