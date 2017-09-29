@@ -197,6 +197,21 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 movieDetails.MovieReviews.Should().NotBeNullOrEmpty();
                 movieDetails.Rating.Should().BeGreaterThan(0); // Default rating is greater than 0
             }
+
+            [Fact]
+            public async Task Should_return_bad_request_when_id_is_less_than_or_equal_0()
+            {
+                // Arrange
+                var movieId = -10;
+                var url = $"{BaseUrl}{movieId}/details";
+
+                // Act
+                await Login();
+                var response = await Client.GetAsync(url);
+
+                // Assert
+                response.StatusCode.Should().HaveFlag(HttpStatusCode.BadRequest);
+            }
         }
 
         public class SetRatingForMovie : MoviesControllerTest

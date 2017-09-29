@@ -68,7 +68,9 @@ namespace NaCoDoKina.Api
             services
                 .AddMvc(options =>
                 {
-                    options.Filters.Add<ValidationActionFilter>();
+                    //Important order
+                    options.Filters.Add<IdValidationActionFilter>();
+                    options.Filters.Add<InvalidModelActionFilter>();
                 })
                 .AddFluentValidation(cfg =>
                 {

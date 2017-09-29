@@ -7,7 +7,7 @@ namespace NaCoDoKina.Api.ActionFilters
     /// <summary>
     /// Automatically returns bad request result when model validation fails 
     /// </summary>
-    public class ValidationActionFilter : IActionFilter
+    public class InvalidModelActionFilter : IActionFilter
     {
         public void OnActionExecuting(ActionExecutingContext context)
         {

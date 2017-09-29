@@ -21,7 +21,7 @@ namespace NaCoDoKina.Api.Models
         public Location Center { get; set; }
 
         /// <summary>
-        /// Search radius 
+        /// Search radius in meters 
         /// </summary>
         public double Radius { get; set; }
 
