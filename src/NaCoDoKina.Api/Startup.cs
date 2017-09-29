@@ -2,6 +2,9 @@
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.MemoryStorage;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,10 +30,13 @@ namespace NaCoDoKina.Api
 {
     public class Startup
     {
+        private IHostingEnvironment Env { get; }
+
         public IContainer ApplicationContainer { get; private set; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
+            Env = env;
             Configuration = configuration;
 
             ConfigureLogger(configuration);
@@ -51,12 +57,34 @@ namespace NaCoDoKina.Api
 
             ConfigureAutoMapper(services);
 
+            ConfigureHangfire(services);
+
             var builder = new ContainerBuilder();
             builder.Populate(services);
             builder.RegisterModule(new ApplicationModule(Configuration));
             ApplicationContainer = builder.Build();
 
             return new AutofacServiceProvider(ApplicationContainer);
+        }
+
+        /// <summary>
+        /// Configuration for hangfire job system 
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureHangfire(IServiceCollection services)
+        {
+            var connectionString = ConnectionString("Jobs");
+            services.AddHangfire(cfg =>
+            {
+                if (Env.IsDevelopment())
+                {
+                    cfg.UseMemoryStorage();
+                }
+                else
+                {
+                    cfg.UseStorage(new PostgreSqlStorage(connectionString));
+                }
+            });
         }
 
         /// <summary>
@@ -189,9 +217,9 @@ namespace NaCoDoKina.Api
             $"{Configuration["Database:Password"]};";
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (Env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -206,6 +234,9 @@ namespace NaCoDoKina.Api
 
             app.UseAuthentication();
             app.UseMvc();
+
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
         }
     }
 }
