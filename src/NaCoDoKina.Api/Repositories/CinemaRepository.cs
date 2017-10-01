@@ -46,19 +46,19 @@ namespace NaCoDoKina.Api.Repositories
             return allCinemas.AsEnumerable();
         }
 
-        public async Task<Cinema> AddCinema(Cinema cinema)
+        public async Task<Cinema> CreateCinemaAsync(Cinema cinema)
         {
             var entry = _applicationContext.Cinemas.Add(cinema);
             await _applicationContext.SaveChangesAsync();
             return entry.Entity;
         }
 
-        public Task<Cinema> GetCinemaAsync(long id)
+        public Task<Cinema> GetCinemaByIdAsync(long id)
         {
             return _applicationContext.Cinemas.FindAsync(id);
         }
 
-        public Task<Cinema> GetCinemaAsync(string name)
+        public Task<Cinema> GetCinemaByNameAsync(string name)
         {
             return _applicationContext.Cinemas
                 .SingleOrDefaultAsync(c => c.Name == name);

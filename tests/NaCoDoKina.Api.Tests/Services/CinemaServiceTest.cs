@@ -82,7 +82,7 @@ namespace NaCoDoKina.Api.Services
                     }));
 
                 RepositoryMock
-                    .Setup(repository => repository.AddCinema(entityCinema))
+                    .Setup(repository => repository.CreateCinemaAsync(entityCinema))
                     .Returns(() =>
                     {
                         entityCinema.Id++;
@@ -265,7 +265,7 @@ namespace NaCoDoKina.Api.Services
                         }));
 
                     RepositoryMock
-                        .Setup(repository => repository.GetCinemaAsync(cinemaId))
+                        .Setup(repository => repository.GetCinemaByIdAsync(cinemaId))
                         .Returns(() => Task.FromResult(cinema));
 
                     //Act
@@ -300,7 +300,7 @@ namespace NaCoDoKina.Api.Services
                         }));
 
                     RepositoryMock
-                        .Setup(repository => repository.GetCinemaAsync(cinemaName))
+                        .Setup(repository => repository.GetCinemaByNameAsync(cinemaName))
                         .Returns(() => Task.FromResult(cinema));
 
                     //Act
@@ -336,7 +336,7 @@ namespace NaCoDoKina.Api.Services
                         }));
 
                     RepositoryMock
-                        .Setup(repository => repository.GetCinemaAsync(cinemaId))
+                        .Setup(repository => repository.GetCinemaByIdAsync(cinemaId))
                         .Returns(() => Task.FromResult(cinema));
 
                     //Act
@@ -370,7 +370,7 @@ namespace NaCoDoKina.Api.Services
                         }));
 
                     RepositoryMock
-                        .Setup(repository => repository.GetCinemaAsync(cinemaId))
+                        .Setup(repository => repository.GetCinemaByIdAsync(cinemaId))
                         .Returns(() => Task.FromResult(cinema));
 
                     //Act

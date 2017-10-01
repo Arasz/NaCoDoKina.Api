@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +10,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
     public class EntityBuilder<TEntity> : IEntityBuilder<TEntity>
         where TEntity : Entities.Entity, new()
     {
+        private readonly ILogger<EntityBuilder<TEntity>> _logger;
         public bool Successful { get; private set; }
 
         public BuildFailure BuildFailure { get; private set; }
@@ -16,33 +19,40 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
 
         public int CurrentStep { get; private set; }
 
-        public EntityBuilder(IEnumerable<IBuildStep<TEntity>> buildSteps)
+        public EntityBuilder(IEnumerable<IBuildStep<TEntity>> buildSteps, ILogger<EntityBuilder<TEntity>> logger)
         {
-            BuildSteps = buildSteps.ToImmutableList();
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            BuildSteps = buildSteps.ToImmutableList() ?? throw new ArgumentNullException(nameof(buildSteps));
         }
 
         public async Task<TEntity> Build()
         {
-            var entity = new TEntity();
-
-            foreach (var buildStep in BuildSteps.OrderBy(step => step.Position))
+            using (_logger.BeginScope(nameof(EntityBuilder<TEntity>)))
             {
-                CurrentStep++;
+                var entity = new TEntity();
 
-                var result = await buildStep.Build(entity);
-
-                if (result.IsSuccess)
-                    entity = result.Value;
-                else
+                foreach (var buildStep in BuildSteps.OrderBy(step => step.Position))
                 {
-                    Successful = false;
-                    BuildFailure = new BuildFailure(result.FailureReason, CurrentStep);
-                    return entity;
-                }
-            }
+                    CurrentStep++;
 
-            Successful = true;
-            return entity;
+                    _logger.LogDebug("Build step {@step} number {current}", buildStep, CurrentStep);
+
+                    var result = await buildStep.Build(entity);
+
+                    if (result.IsSuccess)
+                        entity = result.Value;
+                    else
+                    {
+                        Successful = false;
+                        BuildFailure = new BuildFailure(result.FailureReason, CurrentStep);
+                        _logger.LogDebug("Build step {@step} number {current} failed with failure {@failure}", buildStep, CurrentStep, result.FailureReason);
+                        return entity;
+                    }
+                }
+
+                Successful = true;
+                return entity;
+            }
         }
     }
 }

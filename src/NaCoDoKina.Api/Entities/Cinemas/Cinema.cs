@@ -9,6 +9,11 @@ namespace NaCoDoKina.Api.Entities.Cinemas
     public class Cinema : Entity
     {
         /// <summary>
+        /// Id from external system <example> Cinema web api or site </example> 
+        /// </summary>
+        public string ExternalId { get; set; }
+
+        /// <summary>
         /// Cinema name 
         /// </summary>
         public string Name { get; set; }

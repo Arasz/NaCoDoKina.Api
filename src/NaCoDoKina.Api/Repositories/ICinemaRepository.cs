@@ -1,7 +1,6 @@
-﻿using NaCoDoKina.Api.Entities;
+﻿using NaCoDoKina.Api.Entities.Cinemas;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NaCoDoKina.Api.Entities.Cinemas;
 
 namespace NaCoDoKina.Api.Repositories
 {
@@ -24,24 +23,24 @@ namespace NaCoDoKina.Api.Repositories
         Task<IEnumerable<Cinema>> GetAllCinemas();
 
         /// <summary>
-        /// Adds cinema 
+        /// Creates cinema 
         /// </summary>
         /// <param name="cinema"> New cinema </param>
         /// <returns> Added cinema </returns>
-        Task<Cinema> AddCinema(Cinema cinema);
+        Task<Cinema> CreateCinemaAsync(Cinema cinema);
 
         /// <summary>
         /// Gets cinema by id 
         /// </summary>
         /// <param name="id"> Cinema name </param>
         /// <returns> Cinema </returns>
-        Task<Cinema> GetCinemaAsync(long id);
+        Task<Cinema> GetCinemaByIdAsync(long id);
 
         /// <summary>
         /// Gets cinema by name 
         /// </summary>
         /// <param name="name"> Cinema name </param>
         /// <returns> Cinema </returns>
-        Task<Cinema> GetCinemaAsync(string name);
+        Task<Cinema> GetCinemaByNameAsync(string name);
     }
 }

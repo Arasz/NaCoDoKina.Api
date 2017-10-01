@@ -4,9 +4,16 @@ using System.Threading.Tasks;
 namespace NaCoDoKina.Api.DataProviders.EntityBuilder
 {
     /// <summary>
+    /// Marker interface 
+    /// </summary>
+    public interface IBuildStep
+    {
+    }
+
+    /// <summary>
     /// Entity build step 
     /// </summary>
-    public interface IBuildStep<TEntity>
+    public interface IBuildStep<TEntity> : IBuildStep
     {
         /// <summary>
         /// Build step name 

@@ -104,13 +104,13 @@ namespace NaCoDoKina.Api.Services
         public async Task<Cinema> AddCinemaAsync(Cinema cinema)
         {
             var entityCinema = _mapper.Map<Entities.Cinemas.Cinema>(cinema);
-            entityCinema = await _cinemaRepository.AddCinema(entityCinema);
+            entityCinema = await _cinemaRepository.CreateCinemaAsync(entityCinema);
             return _mapper.Map<Cinema>(entityCinema);
         }
 
         public async Task<Cinema> GetCinemaAsync(long id)
         {
-            var cinema = await _cinemaRepository.GetCinemaAsync(id);
+            var cinema = await _cinemaRepository.GetCinemaByIdAsync(id);
 
             if (cinema is null)
                 throw new CinemaNotFoundException(id);
@@ -120,7 +120,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<Cinema> GetCinemaAsync(string name)
         {
-            var cinema = await _cinemaRepository.GetCinemaAsync(name);
+            var cinema = await _cinemaRepository.GetCinemaByNameAsync(name);
 
             if (cinema is null)
                 throw new CinemaNotFoundException(name);
