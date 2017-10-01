@@ -1,5 +1,4 @@
 ﻿using ApplicationCore.Results;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.EntityBuilder
@@ -31,6 +30,6 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
         /// </summary>
         /// <param name="entities"> Partially built entities </param>
         /// <returns> Partially built entities </returns>
-        Task<Result<IEnumerable<TEntity>>> BuildMany(IEnumerable<TEntity> entities);
+        Task<Result<TEntity[]>> BuildMany(TEntity[] entities);
     }
 }

@@ -123,6 +123,42 @@ namespace NaCoDoKina.Api.Repository
             }
         }
 
+        public class CreateCinemasAsync : CinemaRepositoryTest
+        {
+            [Fact]
+            public async Task Should_add_cinemas_to_database()
+            {
+                //Arrange
+                var cinemasCount = 5;
+                var cinemaNetwork = Fixture.Build<CinemaNetwork>()
+                    .Without(network => network.Id)
+                    .Create();
+
+                var resourceLink = Fixture.Build<Entities.Resources.ResourceLink>()
+                    .Without(link => link.Id)
+                    .Create();
+
+                var cinemas = Fixture.Build<Cinema>()
+                    .Without(cinema => cinema.Id)
+                    .With(cinema => cinema.CinemaNetwork, cinemaNetwork)
+                    .With(cinema => cinema.Website, resourceLink)
+                    .CreateMany(cinemasCount);
+
+                using (var contextScope = CreateContextScope())
+                {
+                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
+
+                    //Act
+                    await RepositoryUnderTest.CreateCinemasAsync(cinemas);
+                }
+
+                using (var contextScope = CreateContextScope())
+                {
+                    contextScope.DbContext.Cinemas.Count().Should().Be(cinemasCount);
+                }
+            }
+        }
+
         public class CreateCinemaAsync : CinemaRepositoryTest
         {
             [Fact]

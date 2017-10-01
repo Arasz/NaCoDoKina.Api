@@ -46,6 +46,12 @@ namespace NaCoDoKina.Api.Repositories
             return allCinemas.AsEnumerable();
         }
 
+        public async Task CreateCinemasAsync(IEnumerable<Cinema> cinemas)
+        {
+            _applicationContext.Cinemas.AddRange(cinemas);
+            await _applicationContext.SaveChangesAsync();
+        }
+
         public async Task<Cinema> CreateCinemaAsync(Cinema cinema)
         {
             var entry = _applicationContext.Cinemas.Add(cinema);

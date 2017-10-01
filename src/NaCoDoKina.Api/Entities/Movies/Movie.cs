@@ -1,4 +1,5 @@
-﻿using NaCoDoKina.Api.DataContracts.Resources;
+﻿using NaCoDoKina.Api.Entities.Resources;
+using System.Collections.Generic;
 
 namespace NaCoDoKina.Api.Entities.Movies
 {
@@ -12,6 +13,11 @@ namespace NaCoDoKina.Api.Entities.Movies
         /// Movie name (title) 
         /// </summary>
         public string Title { get; set; }
+
+        /// <summary>
+        /// External ids from cinemas 
+        /// </summary>
+        public List<MovieCinemaId> MovieCinemaIds { get; set; }
 
         /// <summary>
         /// Movie poster url 

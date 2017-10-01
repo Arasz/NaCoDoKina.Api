@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas;
 using NaCoDoKina.Api.Infrastructure.Services.Identity;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using NaCoDoKina.Api.Repositories;
@@ -74,6 +75,19 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 // Act
                 var repository = serviceProvider.GetService<ICinemaRepository>();
+
+                // Assert
+                repository.Should().NotBeNull();
+            }
+
+            [Fact]
+            public void Should_return_cinema_city_cinemas_task()
+            {
+                // Arrange
+                var serviceProvider = Server.Host.Services;
+
+                // Act
+                var repository = serviceProvider.GetService<CinemaCityCinemasTask>();
 
                 // Assert
                 repository.Should().NotBeNull();

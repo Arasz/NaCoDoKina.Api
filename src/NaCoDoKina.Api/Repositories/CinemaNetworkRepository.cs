@@ -27,5 +27,8 @@ namespace NaCoDoKina.Api.Repositories
 
         public Task<CinemaNetwork> GetByIdAsync(long id) => _applicationContext.CinemaNetworks
             .FindAsync(id);
+
+        public async Task<bool> ExistAsync(string name) => await _applicationContext.CinemaNetworks
+            .AnyAsync(network => network.Name == name);
     }
 }

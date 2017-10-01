@@ -30,7 +30,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
         {
             using (_logger.BeginScope(nameof(EntityBuilder<TEntity>)))
             {
-                var entities = Array.Empty<TEntity>() as IEnumerable<TEntity>;
+                var entities = Array.Empty<TEntity>();
 
                 foreach (var buildStep in BuildSteps.OrderBy(step => step.Position))
                 {

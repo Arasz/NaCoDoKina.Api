@@ -8,7 +8,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
     /// Builds entities of given type from provided steps 
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public interface IEntityBuilder<TEntity>
+    public interface IEntitiesBuilder<TEntity>
     {
         /// <summary>
         /// Is entity fully built 
@@ -34,6 +34,6 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
         /// Execute all build steps for entities collection 
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<TEntity>> BuildMany(CancellationToken cancellationToken);
+        Task<IEnumerable<TEntity>> BuildMany(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

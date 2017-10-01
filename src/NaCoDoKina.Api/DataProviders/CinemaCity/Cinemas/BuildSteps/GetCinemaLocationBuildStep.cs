@@ -5,7 +5,6 @@ using NaCoDoKina.Api.Entities;
 using NaCoDoKina.Api.Entities.Cinemas;
 using NaCoDoKina.Api.Services;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
@@ -18,14 +17,14 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
 
         public int Position => 3;
 
-        public async Task<Result<IEnumerable<Cinema>>> BuildMany(IEnumerable<Cinema> entities)
+        public async Task<Result<Cinema[]>> BuildMany(Cinema[] entities)
         {
             foreach (var cinema in entities)
             {
                 var location = await _travelService.TranslateAddressToLocationAsync(cinema.Address);
 
                 if (location is null)
-                    return Result.Failure<IEnumerable<Cinema>>($"Location not found for cinema {cinema}");
+                    return Result.Failure<Cinema[]>($"Location not found for cinema {cinema}");
 
                 cinema.Location = _mapper.Map<Location>(location);
             }

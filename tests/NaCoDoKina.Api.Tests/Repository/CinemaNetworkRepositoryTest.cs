@@ -11,6 +11,71 @@ namespace NaCoDoKina.Api.Repository
 {
     public class CinemaNetworkRepositoryTest : ApplicationRepositoryTestBase<ICinemaNetworkRepository>
     {
+        public class ExistAsync : CinemaNetworkRepositoryTest
+        {
+            [Fact]
+            public async Task Should_return_true_when_network_with_given_name_exist()
+            {
+                // Arrange
+                var resource = Fixture.Build<ResourceLink>()
+                    .Without(link => link.Id)
+                    .Create();
+
+                var cinemaNetwork = Fixture.Build<CinemaNetwork>()
+                    .With(network => network.Url, resource)
+                    .Create();
+
+                using (var scope = CreateContextScope())
+                {
+                    scope.DbContext.Add(cinemaNetwork);
+                    await scope.DbContext.SaveChangesAsync();
+                }
+
+                using (var scope = CreateContextScope())
+                {
+                    RepositoryUnderTest = new CinemaNetworkRepository(scope.DbContext);
+
+                    // Act
+                    var exist = await RepositoryUnderTest.ExistAsync(cinemaNetwork.Name);
+
+                    // Assert
+                    exist.Should().BeTrue();
+                }
+            }
+
+            [Fact]
+            public async Task Should_return_false_when_network_with_given_name_do_not_exist()
+            {
+                // Arrange
+                var resource = Fixture.Build<ResourceLink>()
+                    .Without(link => link.Id)
+                    .Create();
+
+                var nonExistingName = Fixture.Create<string>();
+
+                var cinemaNetwork = Fixture.Build<CinemaNetwork>()
+                    .With(network => network.Url, resource)
+                    .Create();
+
+                using (var scope = CreateContextScope())
+                {
+                    scope.DbContext.Add(cinemaNetwork);
+                    await scope.DbContext.SaveChangesAsync();
+                }
+
+                using (var scope = CreateContextScope())
+                {
+                    RepositoryUnderTest = new CinemaNetworkRepository(scope.DbContext);
+
+                    // Act
+                    var exist = await RepositoryUnderTest.ExistAsync(nonExistingName);
+
+                    // Assert
+                    exist.Should().BeFalse();
+                }
+            }
+        }
+
         public class CreateAsync : CinemaNetworkRepositoryTest
         {
             [Fact]

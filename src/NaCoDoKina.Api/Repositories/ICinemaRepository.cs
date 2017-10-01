@@ -42,5 +42,12 @@ namespace NaCoDoKina.Api.Repositories
         /// <param name="name"> Cinema name </param>
         /// <returns> Cinema </returns>
         Task<Cinema> GetCinemaByNameAsync(string name);
+
+        /// <summary>
+        /// Creates many cinemas at once 
+        /// </summary>
+        /// <param name="cinemas"> Cinemas to create </param>
+        /// <returns></returns>
+        Task CreateCinemasAsync(IEnumerable<Cinema> cinemas);
     }
 }

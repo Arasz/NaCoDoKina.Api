@@ -4,7 +4,6 @@ using NaCoDoKina.Api.Entities.Cinemas;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using NaCoDoKina.Api.Repositories;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
@@ -17,12 +16,12 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
 
         public int Position => 2;
 
-        public async Task<Result<IEnumerable<Cinema>>> BuildMany(IEnumerable<Cinema> entities)
+        public async Task<Result<Cinema[]>> BuildMany(Cinema[] entities)
         {
             var cinemaNetwork = await _cinemaNetworkRepository.GetByNameAsync(_cinemaNetworksSettings.CinemaCityName);
 
             if (cinemaNetwork is null)
-                return Result.Failure<IEnumerable<Cinema>>("Can not found cinema network for cinema");
+                return Result.Failure<Cinema[]>("Can not found cinema network for cinema");
 
             foreach (var cinema in entities)
             {

@@ -13,10 +13,10 @@ namespace NaCoDoKina.Api.DataProviders
     /// </summary>
     public class WebClient : IWebClient
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<WebClient> _logger;
         private readonly HttpClient _httpClient;
 
-        protected WebClient(ILogger logger, HttpClient httpClient)
+        public WebClient(ILogger<WebClient> logger, HttpClient httpClient)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
