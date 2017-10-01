@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Results;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.EntityBuilder
@@ -26,10 +27,10 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
         int Position { get; }
 
         /// <summary>
-        /// Execute part of work to build entity 
+        /// Execute part of work to build entities 
         /// </summary>
-        /// <param name="entity"> Partially build entity </param>
-        /// <returns> Partially build entity </returns>
-        Task<Result<TEntity>> Build(TEntity entity);
+        /// <param name="entities"> Partially built entities </param>
+        /// <returns> Partially built entities </returns>
+        Task<Result<IEnumerable<TEntity>>> BuildMany(IEnumerable<TEntity> entities);
     }
 }

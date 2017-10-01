@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.EntityBuilder
@@ -25,33 +26,39 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
             BuildSteps = buildSteps.ToImmutableList() ?? throw new ArgumentNullException(nameof(buildSteps));
         }
 
-        public async Task<TEntity> Build()
+        public async Task<IEnumerable<TEntity>> BuildMany(CancellationToken cancellationToken = default(CancellationToken))
         {
             using (_logger.BeginScope(nameof(EntityBuilder<TEntity>)))
             {
-                var entity = new TEntity();
+                var entities = Array.Empty<TEntity>() as IEnumerable<TEntity>;
 
                 foreach (var buildStep in BuildSteps.OrderBy(step => step.Position))
                 {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        _logger.LogDebug("Cancellation requested");
+                        return entities;
+                    }
+
                     CurrentStep++;
 
                     _logger.LogDebug("Build step {@step} number {current}", buildStep, CurrentStep);
 
-                    var result = await buildStep.Build(entity);
+                    var result = await buildStep.BuildMany(entities);
 
                     if (result.IsSuccess)
-                        entity = result.Value;
+                        entities = result.Value;
                     else
                     {
                         Successful = false;
                         BuildFailure = new BuildFailure(result.FailureReason, CurrentStep);
                         _logger.LogDebug("Build step {@step} number {current} failed with failure {@failure}", buildStep, CurrentStep, result.FailureReason);
-                        return entity;
+                        return entities;
                     }
                 }
 
                 Successful = true;
-                return entity;
+                return entities;
             }
         }
     }

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.EntityBuilder
 {
     /// <summary>
-    /// Builds entity of given type from provided steps 
+    /// Builds entities of given type from provided steps 
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     public interface IEntityBuilder<TEntity>
@@ -30,9 +31,9 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
         int CurrentStep { get; }
 
         /// <summary>
-        /// Execute all build steps 
+        /// Execute all build steps for entities collection 
         /// </summary>
-        /// <returns> Built entity </returns>
-        Task<TEntity> Build();
+        /// <returns></returns>
+        Task<IEnumerable<TEntity>> BuildMany(CancellationToken cancellationToken);
     }
 }
