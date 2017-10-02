@@ -41,7 +41,7 @@ namespace NaCoDoKina.Api.Services
             return movies;
         }
 
-        private async Task<IEnumerable<long>> GetMoviesPlayedInCinemas(IEnumerable<Cinema> cinemas)
+        private async Task<long[]> GetMoviesPlayedInCinemas(IEnumerable<Cinema> cinemas)
         {
             var currentDate = DateTime.Now;
 
@@ -66,7 +66,8 @@ namespace NaCoDoKina.Api.Services
 
             return movieRatings
                 .OrderByDescending(tuple => tuple.Rating)
-                .Select(tuple => tuple.MovieId);
+                .Select(tuple => tuple.MovieId)
+                .ToArray();
         }
 
         public async Task<Movie> GetMovieAsync(long id)

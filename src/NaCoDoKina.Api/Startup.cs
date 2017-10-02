@@ -219,16 +219,6 @@ namespace NaCoDoKina.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            if (Env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHangfireDashboard();
-                app.UseHangfireServer();
-            }
-
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
@@ -236,6 +226,12 @@ namespace NaCoDoKina.Api
                 options.RoutePrefix = "documentation";
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "NaCoDoKina.APi V1");
             });
+
+            if (!Env.IsDevelopment())
+            {
+                app.UseHangfireDashboard();
+                app.UseHangfireServer();
+            }
 
             app.UseAuthentication();
             app.UseMvc();

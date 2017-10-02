@@ -55,21 +55,28 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
             var movies = _fixture.CreateMany<Movie>(30)
                 .ToArray();
 
-            var cinemas = _fixture.CreateMany<Cinema>(3)
+            var cinemas = _fixture.CreateMany<Cinema>(2)
                 .ToArray();
+
+            DbContext.Movies.AddRange(movies);
+            DbContext.Cinemas.AddRange(cinemas);
+            DbContext.SaveChanges();
 
             var movieShowtimes = _fixture.CreateMany<MovieShowtime>(60)
                 .ToArray();
 
-            var rnd = new Random(5);
-            for (var i = 0; i < movieShowtimes.Length; i++)
+            for (var i = 0; i < movies.Length; i++)
             {
-                movieShowtimes[i].Cinema = cinemas[rnd.Next(0, cinemas.Length)];
-                movieShowtimes[i].Movie = movies[i % 30];
+                movieShowtimes[i].Cinema = cinemas[0];
+                movieShowtimes[i].Movie = movies[i];
             }
 
-            DbContext.Movies.AddRange(movies);
-            DbContext.Cinemas.AddRange(cinemas);
+            for (var i = movieShowtimes.Length - movies.Length; i < movieShowtimes.Length; i++)
+            {
+                movieShowtimes[i].Cinema = cinemas[1];
+                movieShowtimes[i].Movie = movies[i % movies.Length];
+            }
+
             DbContext.MovieShowtimes.AddRange(movieShowtimes);
             DbContext.SaveChanges();
         }
