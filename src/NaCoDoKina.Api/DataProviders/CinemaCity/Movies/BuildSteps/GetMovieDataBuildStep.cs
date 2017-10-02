@@ -53,19 +53,15 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
                 .ContentBody.Collection
                 .Select(movie => new Movie
                 {
-                    MovieCinemaIds = new List<MovieCinemaId>
+                    ExternalIds = new List<ExternalId>
                     {
-                        new MovieCinemaId
+                        new ExternalId
                         {
-                            ExternalId = movie.Id,
+                            MovieExternalId = movie.Id,
                             CinemaNetwork = cinemaNetwork
                         }
                     },
-                    PosterUrl = new MediaLink
-                    {
-                        MediaType = MediaType.Poster,
-                        Url = movie.PosterLink
-                    },
+                    PosterUrl = movie.PosterLink,
                     Title = Name,
                     Details = new MovieDetails
                     {
@@ -75,8 +71,13 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
                         {
                             new MediaLink
                             {
-                                 MediaType = MediaType.Video,
+                                MediaType = MediaType.Video,
                                 Url = movie.VideoLink,
+                            },
+                            new MediaLink
+                            {
+                                MediaType = MediaType.Poster,
+                                Url = movie.PosterLink
                             }
                         },
                     },

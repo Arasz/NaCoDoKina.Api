@@ -1,5 +1,4 @@
-﻿using NaCoDoKina.Api.Entities.Resources;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace NaCoDoKina.Api.Entities.Movies
 {
@@ -17,12 +16,12 @@ namespace NaCoDoKina.Api.Entities.Movies
         /// <summary>
         /// External ids from cinemas 
         /// </summary>
-        public List<MovieCinemaId> MovieCinemaIds { get; set; }
+        public List<ExternalId> ExternalIds { get; set; }
 
         /// <summary>
         /// Movie poster url 
         /// </summary>
-        public MediaLink PosterUrl { get; set; }
+        public string PosterUrl { get; set; }
 
         /// <summary>
         /// Detailed information about movie 

@@ -78,10 +78,9 @@ namespace NaCoDoKina.Api.Repository
 
                     //Act
                     await RepositoryUnderTest.CreateMoviesAsync(movies);
-
-                    //Assert
                 }
 
+                //Assert
                 using (var contextScope = CreateContextScope())
                 {
                     contextScope.DbContext.Movies
@@ -96,11 +95,8 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_add_movie_details_and_return_id()
             {
                 //Arrange
-                var movie = Fixture.Create<Movie>();
-                var movieId = movie.Id;
-
-                var movieDetails = Fixture.Build<MovieDetails>()
-                    .With(details => details.Id, movieId)
+                var movie = Fixture.Build<Movie>()
+                    .Without(m => m.Id)
                     .Create();
 
                 using (var contextScope = CreateContextScope())
@@ -108,6 +104,10 @@ namespace NaCoDoKina.Api.Repository
                     contextScope.DbContext.Movies.Add(movie);
                     await contextScope.DbContext.SaveChangesAsync();
                 }
+
+                var movieDetails = Fixture.Build<MovieDetails>()
+                    .With(details => details.Id, movie.Id)
+                    .Create();
 
                 using (var contextScope = CreateContextScope())
                 {
@@ -117,17 +117,17 @@ namespace NaCoDoKina.Api.Repository
                     var addedDetailsId = await RepositoryUnderTest.CreateMovieDetailsAsync(movieDetails);
 
                     //Assert
-                    addedDetailsId.Should().Be(movieId);
+                    addedDetailsId.Should().Be(movie.Id);
                 }
 
                 using (var contextScope = CreateContextScope())
                 {
                     contextScope.DbContext.Movies
-                        .Any(m => m.Id == movieId)
+                        .Any(m => m.Id == movie.Id)
                         .Should().BeTrue();
 
                     contextScope.DbContext.MovieDetails
-                        .Any(details => details.Id == movieId)
+                        .Any(details => details.Id == movie.Id)
                         .Should().BeTrue();
 
                     contextScope.DbContext.MovieDetails
@@ -143,8 +143,9 @@ namespace NaCoDoKina.Api.Repository
                 var notExistingMovieId = 404L;
 
                 //Arrange
-                var movie = Fixture.Create<Movie>();
-                var movieId = movie.Id;
+                var movie = Fixture.Build<Movie>()
+                    .Without(m => m.Id)
+                    .Create();
 
                 var movieDetails = Fixture.Build<MovieDetails>()
                     .With(details => details.Id, notExistingMovieId)
@@ -170,7 +171,7 @@ namespace NaCoDoKina.Api.Repository
                 using (var contextScope = CreateContextScope())
                 {
                     contextScope.DbContext.Movies
-                        .Any(m => m.Id == movieId)
+                        .Any(m => m.Id == movie.Id)
                         .Should().BeTrue();
 
                     contextScope.DbContext.MovieDetails
@@ -186,9 +187,9 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_delete_movie_and_return_true_when_movie_exist()
             {
                 //Arrange
-                //Arrange
-                var movie = Fixture.Create<Movie>();
-                var movieId = movie.Id;
+                var movie = Fixture.Build<Movie>()
+                    .Without(m => m.Id)
+                    .Create();
 
                 using (var contextScope = CreateContextScope())
                 {
@@ -201,7 +202,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
 
                     //Act
-                    var deleted = await RepositoryUnderTest.SoftDeleteMovieAsync(movieId);
+                    var deleted = await RepositoryUnderTest.SoftDeleteMovieAsync(movie.Id);
 
                     //Assert
                     deleted.Should().BeTrue();
@@ -210,12 +211,12 @@ namespace NaCoDoKina.Api.Repository
                 using (var contextScope = CreateContextScope())
                 {
                     contextScope.DbContext.Movies
-                        .Any(m => m.Id == movieId)
+                        .Any(m => m.Id == movie.Id)
                         .Should().BeTrue();
                     contextScope.DbContext.DeletedMovies
                         .Should().HaveCount(1);
                     contextScope.DbContext.DeletedMovies
-                        .Should().ContainSingle(mark => mark.MovieId == movieId && mark.UserId == DefaultUserId);
+                        .Should().ContainSingle(mark => mark.MovieId == movie.Id && mark.UserId == DefaultUserId);
                 }
             }
 
@@ -226,8 +227,9 @@ namespace NaCoDoKina.Api.Repository
                 var nonExistingId = 53;
 
                 //Arrange
-                var movie = Fixture.Create<Movie>();
-                var movieId = movie.Id;
+                var movie = Fixture.Build<Movie>()
+                    .Without(m => m.Id)
+                    .Create();
 
                 using (var contextScope = CreateContextScope())
                 {
@@ -249,7 +251,7 @@ namespace NaCoDoKina.Api.Repository
                 using (var contextScope = CreateContextScope())
                 {
                     contextScope.DbContext.Movies
-                        .Any(m => m.Id == movieId)
+                        .Any(m => m.Id == movie.Id)
                         .Should().BeTrue();
                     contextScope.DbContext.DeletedMovies
                         .Should().BeEmpty();
@@ -260,14 +262,20 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_return_true_if_already_deleted()
             {
                 //Arrange
-                var movie = Fixture.Create<Movie>();
-                var movieId = movie.Id;
-
-                var deletedMovieMark = new DeletedMovies(movieId, DefaultUserId);
+                var movie = Fixture.Build<Movie>()
+                    .Without(m => m.Id)
+                    .Create();
 
                 using (var contextScope = CreateContextScope())
                 {
                     contextScope.DbContext.Movies.Add(movie);
+                    await contextScope.DbContext.SaveChangesAsync();
+                }
+
+                var deletedMovieMark = new DeletedMovies(movie.Id, DefaultUserId);
+
+                using (var contextScope = CreateContextScope())
+                {
                     contextScope.DbContext.DeletedMovies.Add(deletedMovieMark);
                     await contextScope.DbContext.SaveChangesAsync();
                 }
@@ -277,7 +285,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
 
                     //Act
-                    var deleted = await RepositoryUnderTest.SoftDeleteMovieAsync(movieId);
+                    var deleted = await RepositoryUnderTest.SoftDeleteMovieAsync(movie.Id);
 
                     //Assert
                     deleted.Should().BeTrue();
@@ -286,7 +294,7 @@ namespace NaCoDoKina.Api.Repository
                 using (var contextScope = CreateContextScope())
                 {
                     contextScope.DbContext.Movies
-                        .Any(m => m.Id == movieId)
+                        .Any(m => m.Id == movie.Id)
                         .Should().BeTrue();
                     contextScope.DbContext.DeletedMovies
                         .Should().HaveCount(1);
@@ -304,8 +312,9 @@ namespace NaCoDoKina.Api.Repository
         public async Task Should_return_movie_when_exist_and_is_not_marked_as_deleted()
         {
             //Arrange
-            var movie = Fixture.Create<Movie>();
-            var movieId = movie.Id;
+            var movie = Fixture.Build<Movie>()
+                .Without(m => m.Id)
+                .Create();
 
             using (var contextScope = CreateContextScope())
             {
@@ -319,7 +328,7 @@ namespace NaCoDoKina.Api.Repository
                 RepositoryUnderTest = new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
 
                 //Act
-                var movieFromDb = await RepositoryUnderTest.GetMovieAsync(movieId);
+                var movieFromDb = await RepositoryUnderTest.GetMovieAsync(movie.Id);
 
                 //Assert
                 movieFromDb.Id.Should().BePositive();
@@ -334,8 +343,9 @@ namespace NaCoDoKina.Api.Repository
             //Arrange
             var nonExistingMovieId = Fixture.Create<long>();
 
-            //Arrange
-            var movie = Fixture.Create<Movie>();
+            var movie = Fixture.Build<Movie>()
+                .Without(m => m.Id)
+                .Create();
 
             using (var contextScope = CreateContextScope())
             {
@@ -391,8 +401,9 @@ namespace NaCoDoKina.Api.Repository
         public async Task Should_return_movie_details_when_exist_and_is_not_marked_as_deleted()
         {
             //Arrange
-            var movie = Fixture.Create<Movie>();
-            var movieId = movie.Id;
+            var movie = Fixture.Build<Movie>()
+                .Without(m => m.Id)
+                .Create();
 
             using (var contextScope = CreateContextScope())
             {
@@ -406,7 +417,7 @@ namespace NaCoDoKina.Api.Repository
                 RepositoryUnderTest = new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
 
                 //Act
-                var movieFromDb = await RepositoryUnderTest.GetMovieDetailsAsync(movieId);
+                var movieFromDb = await RepositoryUnderTest.GetMovieDetailsAsync(movie.Id);
 
                 //Assert
                 movieFromDb.Id.Should().BePositive();
@@ -477,8 +488,9 @@ namespace NaCoDoKina.Api.Repository
         public async Task Should_return_all_not_deleted_movies_ids_played_in_cinema()
         {
             //Arrange
-            var movie = Fixture.Create<Movie>();
-            var movieId = movie.Id;
+            var movie = Fixture.Build<Movie>()
+                .Without(m => m.Id)
+                .Create();
 
             var deletedMovie = Fixture.Create<Movie>();
             var deletedMovieId = deletedMovie.Id;
@@ -517,7 +529,7 @@ namespace NaCoDoKina.Api.Repository
 
                 //Assert
                 playedMoviesIds.Should().HaveCount(1);
-                playedMoviesIds.Single().Should().Be(movieId);
+                playedMoviesIds.Single().Should().Be(movie.Id);
             }
 
             using (var contextScope = CreateContextScope())
@@ -534,14 +546,22 @@ namespace NaCoDoKina.Api.Repository
         public async Task Should_return_true_and_remove_movie_and_details_when_deleted()
         {
             //Arrange
-            var movie = Fixture.Create<Movie>();
-            var movieId = movie.Id;
 
-            var movieDeletedMark = new DeletedMovies(movieId, DefaultUserId);
+            var movie = Fixture.Build<Movie>()
+                .Without(m => m.Id)
+                .Create();
 
             using (var contextScope = CreateContextScope())
             {
                 contextScope.DbContext.Movies.Add(movie);
+
+                await contextScope.DbContext.SaveChangesAsync();
+            }
+
+            var movieDeletedMark = new DeletedMovies(movie.Id, DefaultUserId);
+
+            using (var contextScope = CreateContextScope())
+            {
                 contextScope.DbContext.DeletedMovies.Add(movieDeletedMark);
 
                 await contextScope.DbContext.SaveChangesAsync();
@@ -552,7 +572,7 @@ namespace NaCoDoKina.Api.Repository
                 RepositoryUnderTest = new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
 
                 //Act
-                var deleted = await RepositoryUnderTest.DeleteMovieAsync(movieId);
+                var deleted = await RepositoryUnderTest.DeleteMovieAsync(movie.Id);
 
                 //Assert
                 deleted.Should().BeTrue();

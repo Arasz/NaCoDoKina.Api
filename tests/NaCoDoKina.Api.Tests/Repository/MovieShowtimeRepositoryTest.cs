@@ -19,23 +19,25 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_return_movie_showtime_when_movie_with_id_exist_and_is_later_than_now()
             {
                 // Arrange
-                var movieId = Fixture.Create<long>();
                 var laterThan = DateTime.Now;
                 var showtimeCount = 15;
 
                 var showtimes = Fixture.Build<MovieShowtime>()
+                    .Without(showtime => showtime.Id)
                     .With(showtime => showtime.ShowTime, laterThan.Add(TimeSpan.FromMinutes(1)))
                     .CreateMany(showtimeCount)
                     .ToArray();
+
                 var selectedShowtime = showtimes.First();
                 selectedShowtime.ShowTime = laterThan.AddMinutes(100);
-                movieId = selectedShowtime.Movie.Id;
 
                 using (var scope = CreateContextScope())
                 {
                     scope.DbContext.MovieShowtimes.AddRange(showtimes);
                     await scope.DbContext.SaveChangesAsync();
                 }
+
+                var movieId = selectedShowtime.Movie.Id;
 
                 using (var scope = CreateContextScope())
                 {

@@ -3,14 +3,14 @@
 namespace NaCoDoKina.Api.Entities.Movies
 {
     /// <summary>
-    /// Movie id in cinema system 
+    /// Movie id in cinema network 
     /// </summary>
-    public class MovieCinemaId : Entity
+    public class ExternalId : Entity
     {
         /// <summary>
-        /// External id 
+        /// Movie id in cinema network 
         /// </summary>
-        public string ExternalId { get; set; }
+        public string MovieExternalId { get; set; }
 
         /// <summary>
         /// Cinema network in which this id is valid 

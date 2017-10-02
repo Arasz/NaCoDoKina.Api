@@ -142,7 +142,7 @@ namespace NaCoDoKina.Api.Mappings
                 result.Should().BeOfType<Models.Movies.Movie>();
                 result.Title.Should().Be(movie.Title);
                 result.Id.Should().Be(movie.Id);
-                result.PosterUrl.Should().Be(movie.PosterUrl.Url);
+                result.PosterUrl.Should().Be(movie.PosterUrl);
             }
 
             [Fact]
@@ -158,7 +158,7 @@ namespace NaCoDoKina.Api.Mappings
                 result.Should().BeOfType<Movie>();
                 result.Title.Should().Be(movie.Title);
                 result.Id.Should().Be(movie.Id);
-                result.PosterUrl.Url.Should().Be(movie.PosterUrl);
+                result.PosterUrl.Should().Be(movie.PosterUrl);
             }
         }
 

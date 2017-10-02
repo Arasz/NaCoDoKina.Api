@@ -127,7 +127,8 @@ namespace NaCoDoKina.Api.Repositories
 
         public async Task CreateMoviesAsync(IEnumerable<Movie> movies)
         {
-            await _applicationContext.AddRangeAsync(movies);
+            _applicationContext.AddRange(movies);
+            await _applicationContext.SaveChangesAsync();
         }
 
         public async Task<long> CreateMovieAsync(Movie newMovie)

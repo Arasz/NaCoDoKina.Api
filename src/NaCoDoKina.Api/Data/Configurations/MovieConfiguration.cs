@@ -21,17 +21,15 @@ namespace NaCoDoKina.Api.Data.Configurations
                 .HasMaxLength(80);
 
             builder
-                .HasOne(movie => movie.PosterUrl)
-                .WithOne()
+                .Property(movie => movie.PosterUrl)
+                .HasMaxLength(200)
                 .IsRequired();
 
             builder
-                .HasOne(movie => movie.PosterUrl)
+                .HasMany(movie => movie.ExternalIds)
                 .WithOne()
-                .HasForeignKey(typeof(Movie))
-                .IsRequired();
-
-            // builder .Property(details => details.Title) .HasColumnName(nameof(Movie.Title));
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.ToTable(TableName);
         }
@@ -39,10 +37,6 @@ namespace NaCoDoKina.Api.Data.Configurations
         public void Configure(EntityTypeBuilder<MovieDetails> builder)
         {
             builder.ToTable(TableName);
-
-            //builder
-            //   .Property(details => details.Title)
-            //   .HasColumnName(nameof(Movie.Title));
 
             builder.Property(movie => movie.Title)
                 .IsRequired()

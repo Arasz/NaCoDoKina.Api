@@ -49,7 +49,7 @@ namespace NaCoDoKina.Api.Repository
                     Details = Fixture.Build<MovieDetails>()
                         .Without(details => details.Id)
                         .Create(),
-                    PosterUrl = Fixture.Create<Entities.Resources.MediaLink>()
+                    PosterUrl = Fixture.Create<string>()
                 };
                 var movie2 = new Movie
                 {
@@ -57,7 +57,7 @@ namespace NaCoDoKina.Api.Repository
                     Details = Fixture.Build<MovieDetails>()
                         .Without(details => details.Id)
                         .Create(),
-                    PosterUrl = Fixture.Create<Entities.Resources.MediaLink>()
+                    PosterUrl = Fixture.Create<string>()
                 };
 
                 var movies = new List<Movie> { movie1, movie2 };

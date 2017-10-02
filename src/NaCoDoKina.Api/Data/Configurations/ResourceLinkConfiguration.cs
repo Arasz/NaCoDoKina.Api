@@ -9,7 +9,13 @@ namespace NaCoDoKina.Api.Data.Configurations
         public void Configure(EntityTypeBuilder<MediaLink> builder)
         {
             builder
-                .HasBaseType<ResourceLink>();
+                .HasIndex(link => link.Url)
+                .IsUnique();
+
+            builder
+                .Property(link => link.Url)
+                .HasMaxLength(300)
+                .IsRequired();
 
             builder
                 .Property(link => link.MediaType)
@@ -26,12 +32,27 @@ namespace NaCoDoKina.Api.Data.Configurations
                 .Property(link => link.Url)
                 .HasMaxLength(300)
                 .IsRequired();
+
+            builder
+                .HasIndex(link => link.Url)
+                .IsUnique();
+
+            builder
+                .Property(link => link.Url)
+                .HasMaxLength(300)
+                .IsRequired();
         }
 
         public void Configure(EntityTypeBuilder<ReviewLink> builder)
         {
             builder
-                .HasBaseType<ResourceLink>();
+                .HasIndex(link => link.Url)
+                .IsUnique();
+
+            builder
+                .Property(link => link.Url)
+                .HasMaxLength(300)
+                .IsRequired();
 
             builder
                 .Property(link => link.Name)

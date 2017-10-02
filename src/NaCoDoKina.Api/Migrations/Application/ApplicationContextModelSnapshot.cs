@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using NaCoDoKina.Api.Data;
-using NaCoDoKina.Api.DataContracts.Resources;
 using NaCoDoKina.Api.Entities.Resources;
 using System;
 
@@ -22,20 +21,6 @@ namespace NaCoDoKina.Api.Migrations.Application
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.0.0-rtm-26452");
-
-            modelBuilder.Entity("NaCoDoKina.Api.DataContracts.Resources.MediaLink", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("MediaType");
-
-                    b.Property<string>("Url");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MediaLink");
-                });
 
             modelBuilder.Entity("NaCoDoKina.Api.Entities.Cinemas.Cinema", b =>
                 {
@@ -81,6 +66,9 @@ namespace NaCoDoKina.Api.Migrations.Application
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.HasIndex("UrlId");
 
                     b.ToTable("CinemaNetworks");
@@ -97,13 +85,35 @@ namespace NaCoDoKina.Api.Migrations.Application
                     b.ToTable("DeletedMovies");
                 });
 
+            modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.ExternalId", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long?>("CinemaNetworkId");
+
+                    b.Property<string>("MovieExternalId");
+
+                    b.Property<long?>("MovieId")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CinemaNetworkId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("ExternalId");
+                });
+
             modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.Movie", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<long?>("PosterUrlId")
-                        .IsRequired();
+                    b.Property<string>("PosterUrl")
+                        .IsRequired()
+                        .HasMaxLength(200);
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -111,9 +121,6 @@ namespace NaCoDoKina.Api.Migrations.Application
                         .IsUnicode(true);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PosterUrlId")
-                        .IsUnique();
 
                     b.ToTable("Movies");
                 });
@@ -293,11 +300,15 @@ namespace NaCoDoKina.Api.Migrations.Application
                         .HasForeignKey("UrlId");
                 });
 
-            modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.Movie", b =>
+            modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.ExternalId", b =>
                 {
-                    b.HasOne("NaCoDoKina.Api.DataContracts.Resources.MediaLink", "PosterUrl")
-                        .WithOne()
-                        .HasForeignKey("NaCoDoKina.Api.Entities.Movies.Movie", "PosterUrlId")
+                    b.HasOne("NaCoDoKina.Api.Entities.Cinemas.CinemaNetwork", "CinemaNetwork")
+                        .WithMany()
+                        .HasForeignKey("CinemaNetworkId");
+
+                    b.HasOne("NaCoDoKina.Api.Entities.Movies.Movie")
+                        .WithMany("ExternalIds")
+                        .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

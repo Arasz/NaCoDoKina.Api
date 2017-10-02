@@ -223,6 +223,11 @@ namespace NaCoDoKina.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHangfireDashboard();
+                app.UseHangfireServer();
+            }
 
             app.UseSwagger();
             app.UseSwaggerUI(options =>
@@ -234,9 +239,6 @@ namespace NaCoDoKina.Api
 
             app.UseAuthentication();
             app.UseMvc();
-
-            app.UseHangfireDashboard();
-            app.UseHangfireServer();
         }
     }
 }

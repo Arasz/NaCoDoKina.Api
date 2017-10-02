@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace NaCoDoKina.Api.Migrations.Application
 {
-    public partial class InitializeDataModel : Migration
+    public partial class InitializeData : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,26 +22,12 @@ namespace NaCoDoKina.Api.Migrations.Application
                 });
 
             migrationBuilder.CreateTable(
-                name: "MediaLink",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "int8", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    MediaType = table.Column<int>(type: "int4", nullable: false),
-                    Url = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MediaLink", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Movies",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "int8", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    PosterUrlId = table.Column<long>(type: "int8", nullable: false),
+                    PosterUrl = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false),
                     Title = table.Column<string>(type: "varchar(80)", maxLength: 80, nullable: false),
                     AgeLimit = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     CrewDescription = table.Column<string>(type: "varchar(300)", maxLength: 300, nullable: true),
@@ -57,12 +43,6 @@ namespace NaCoDoKina.Api.Migrations.Application
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Movies", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Movies_MediaLink_PosterUrlId",
-                        column: x => x.PosterUrlId,
-                        principalTable: "MediaLink",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -131,6 +111,7 @@ namespace NaCoDoKina.Api.Migrations.Application
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Address = table.Column<string>(type: "varchar(80)", maxLength: 80, nullable: false),
                     CinemaNetworkId = table.Column<long>(type: "int8", nullable: true),
+                    ExternalId = table.Column<string>(type: "text", nullable: true),
                     Name = table.Column<string>(type: "varchar(80)", maxLength: 80, nullable: false),
                     WebsiteId = table.Column<long>(type: "int8", nullable: true),
                     Location_Latitude = table.Column<double>(type: "float8", nullable: false),
@@ -151,6 +132,33 @@ namespace NaCoDoKina.Api.Migrations.Application
                         principalTable: "ResourceLink",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExternalId",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "int8", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CinemaNetworkId = table.Column<long>(type: "int8", nullable: true),
+                    MovieExternalId = table.Column<string>(type: "text", nullable: true),
+                    MovieId = table.Column<long>(type: "int8", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExternalId", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ExternalId_CinemaNetworks_CinemaNetworkId",
+                        column: x => x.CinemaNetworkId,
+                        principalTable: "CinemaNetworks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ExternalId_Movies_MovieId",
+                        column: x => x.MovieId,
+                        principalTable: "Movies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -183,6 +191,12 @@ namespace NaCoDoKina.Api.Migrations.Application
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CinemaNetworks_Name",
+                table: "CinemaNetworks",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CinemaNetworks_UrlId",
                 table: "CinemaNetworks",
                 column: "UrlId");
@@ -204,10 +218,14 @@ namespace NaCoDoKina.Api.Migrations.Application
                 column: "WebsiteId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Movies_PosterUrlId",
-                table: "Movies",
-                column: "PosterUrlId",
-                unique: true);
+                name: "IX_ExternalId_CinemaNetworkId",
+                table: "ExternalId",
+                column: "CinemaNetworkId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExternalId_MovieId",
+                table: "ExternalId",
+                column: "MovieId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MovieShowtimes_CinemaId",
@@ -247,6 +265,9 @@ namespace NaCoDoKina.Api.Migrations.Application
                 name: "DeletedMovies");
 
             migrationBuilder.DropTable(
+                name: "ExternalId");
+
+            migrationBuilder.DropTable(
                 name: "MovieShowtimes");
 
             migrationBuilder.DropTable(
@@ -260,9 +281,6 @@ namespace NaCoDoKina.Api.Migrations.Application
 
             migrationBuilder.DropTable(
                 name: "Movies");
-
-            migrationBuilder.DropTable(
-                name: "MediaLink");
         }
     }
 }
