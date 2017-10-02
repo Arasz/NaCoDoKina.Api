@@ -115,7 +115,7 @@ namespace NaCoDoKina.Api.Services
         {
             var entityMovie = _mapper.Map<Entities.Movies.Movie>(newMovie);
 
-            var movieId = await _movieRepository.AddMovieAsync(entityMovie);
+            var movieId = await _movieRepository.CreateMovieAsync(entityMovie);
 
             if (movieId == 0L)
                 throw new MovieNotAddedException(newMovie);
@@ -127,7 +127,7 @@ namespace NaCoDoKina.Api.Services
         {
             var entityMovieDetails = _mapper.Map<Entities.Movies.MovieDetails>(movieDetails);
 
-            var movieId = await _movieRepository.AddMovieDetailsAsync(entityMovieDetails);
+            var movieId = await _movieRepository.CreateMovieDetailsAsync(entityMovieDetails);
 
             if (movieId == 0L)
                 throw new MovieDetailsNotAddedException(movieDetails);

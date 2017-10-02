@@ -44,17 +44,24 @@ namespace NaCoDoKina.Api.Repositories
         Task<MovieDetails> GetMovieDetailsAsync(long id);
 
         /// <summary>
+        /// Creates movies 
+        /// </summary>
+        /// <param name="movies"></param>
+        /// <returns></returns>
+        Task CreateMoviesAsync(IEnumerable<Movie> movies);
+
+        /// <summary>
         /// Adds movie 
         /// </summary>
         /// <param name="newMovie"></param>
         /// <returns> Movie movieId </returns>
-        Task<long> AddMovieAsync(Movie newMovie);
+        Task<long> CreateMovieAsync(Movie newMovie);
 
         /// <summary>
         /// Adds movie details 
         /// </summary>
         /// <param name="movieDetails"></param>
         /// <returns> Movie details movieId (equal to movie movieId) </returns>
-        Task<long> AddMovieDetailsAsync(MovieDetails movieDetails);
+        Task<long> CreateMovieDetailsAsync(MovieDetails movieDetails);
     }
 }

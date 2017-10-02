@@ -125,14 +125,19 @@ namespace NaCoDoKina.Api.Repositories
                 .SingleOrDefaultAsync(details => details.Id == id);
         }
 
-        public async Task<long> AddMovieAsync(Movie newMovie)
+        public async Task CreateMoviesAsync(IEnumerable<Movie> movies)
+        {
+            await _applicationContext.AddRangeAsync(movies);
+        }
+
+        public async Task<long> CreateMovieAsync(Movie newMovie)
         {
             var entityEntry = _applicationContext.Movies.Add(newMovie);
             await _applicationContext.SaveChangesAsync();
             return entityEntry.Entity.Id;
         }
 
-        public async Task<long> AddMovieDetailsAsync(MovieDetails movieDetails)
+        public async Task<long> CreateMovieDetailsAsync(MovieDetails movieDetails)
         {
             var movie = await _applicationContext.Movies.FindAsync(movieDetails.Id);
 

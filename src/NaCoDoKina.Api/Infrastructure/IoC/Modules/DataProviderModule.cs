@@ -13,7 +13,7 @@ namespace NaCoDoKina.Api.Infrastructure.IoC.Modules
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterGeneric(typeof(EntityBuilder<>))
+            builder.RegisterGeneric(typeof(EntitiesBuilder<>))
                 .AsImplementedInterfaces();
 
             builder.RegisterAssemblyTypes(ThisAssembly)

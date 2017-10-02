@@ -29,24 +29,27 @@ namespace NaCoDoKina.Api.Repository
                 .Returns(DefaultUserId);
         }
 
-        public class AddMovieAsync : MovieRepositoryTest
+        public class CreateMovieAsync : MovieRepositoryTest
         {
             [Fact]
             public async Task Should_add_movie_and_return_id()
             {
                 //Arrange
-                var movie = Fixture.Create<Movie>();
-                var movieId = movie.Id;
+                var movie = Fixture.Build<Movie>()
+                    .Without(m => m.Id)
+                    .Create();
+
+                var movieId = 0L;
 
                 using (var contextScope = CreateContextScope())
                 {
                     RepositoryUnderTest = new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
 
                     //Act
-                    var addedMovieId = await RepositoryUnderTest.AddMovieAsync(movie);
+                    movieId = await RepositoryUnderTest.CreateMovieAsync(movie);
 
                     //Assert
-                    addedMovieId.Should().Be(movieId);
+                    movieId.Should().BePositive();
                 }
 
                 using (var contextScope = CreateContextScope())
@@ -54,6 +57,35 @@ namespace NaCoDoKina.Api.Repository
                     contextScope.DbContext.Movies
                         .Any(m => m.Id == movieId)
                         .Should().BeTrue();
+                }
+            }
+        }
+
+        public class CreateMoviesAsync : MovieRepositoryTest
+        {
+            [Fact]
+            public async Task Should_add_movies()
+            {
+                //Arrange
+                var moviesCount = 5;
+                var movies = Fixture.Build<Movie>()
+                    .Without(m => m.Id)
+                    .CreateMany(moviesCount);
+
+                using (var contextScope = CreateContextScope())
+                {
+                    RepositoryUnderTest = new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+
+                    //Act
+                    await RepositoryUnderTest.CreateMoviesAsync(movies);
+
+                    //Assert
+                }
+
+                using (var contextScope = CreateContextScope())
+                {
+                    contextScope.DbContext.Movies
+                        .Count().Should().Be(moviesCount);
                 }
             }
         }
@@ -82,7 +114,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
 
                     //Act
-                    var addedDetailsId = await RepositoryUnderTest.AddMovieDetailsAsync(movieDetails);
+                    var addedDetailsId = await RepositoryUnderTest.CreateMovieDetailsAsync(movieDetails);
 
                     //Assert
                     addedDetailsId.Should().Be(movieId);
@@ -129,7 +161,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
 
                     //Act
-                    var addedDetailsId = await RepositoryUnderTest.AddMovieDetailsAsync(movieDetails);
+                    var addedDetailsId = await RepositoryUnderTest.CreateMovieDetailsAsync(movieDetails);
 
                     //Assert
                     addedDetailsId.Should().Be(0);

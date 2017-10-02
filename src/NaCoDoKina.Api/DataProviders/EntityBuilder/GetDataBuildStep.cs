@@ -7,7 +7,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
 {
     public abstract class GetDataBuildStep<TEntity> : IBuildStep<TEntity>
     {
-        protected IParsableRequestData ParsableRequestData { get; };
+        protected IParsableRequestData ParsableRequestData { get; }
 
         protected ISerializationService SerializationService { get; }
 

@@ -46,6 +46,7 @@ namespace NaCoDoKina.Api.Mapping.Profiles
                 .ConstructUsing(link => link.Url);
 
             CreateMap<Models.Movies.Movie, Entities.Movies.Movie>()
+                .ForMember(movie => movie.MovieCinemaIds, cfg => cfg.Ignore())
                 .ReverseMap();
 
             CreateMap<Models.Movies.MovieDetails, Entities.Movies.MovieDetails>()

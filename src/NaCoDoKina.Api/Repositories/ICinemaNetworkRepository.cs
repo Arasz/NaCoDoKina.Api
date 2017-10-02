@@ -29,8 +29,8 @@ namespace NaCoDoKina.Api.Repositories
         /// <summary>
         /// Checks if given cinema network exist in database 
         /// </summary>
-        /// <param name="network"> Cinema network </param>
+        /// <param name="name"></param>
         /// <returns> True if exist </returns>
-        Task<bool> ExistAsync(CinemaNetwork network);
+        Task<bool> ExistAsync(string name);
     }
 }

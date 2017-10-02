@@ -25,6 +25,12 @@ namespace NaCoDoKina.Api.Data.Configurations
                 .WithOne()
                 .IsRequired();
 
+            builder
+                .HasOne(movie => movie.PosterUrl)
+                .WithOne()
+                .HasForeignKey(typeof(Movie))
+                .IsRequired();
+
             // builder .Property(details => details.Title) .HasColumnName(nameof(Movie.Title));
 
             builder.ToTable(TableName);

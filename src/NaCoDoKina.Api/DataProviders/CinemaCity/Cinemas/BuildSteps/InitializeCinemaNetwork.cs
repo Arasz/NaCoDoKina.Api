@@ -18,7 +18,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
 
         public async Task<Result<Cinema[]>> BuildMany(Cinema[] entities)
         {
-            var cinemaNetwork = await _cinemaNetworkRepository.GetByNameAsync(_cinemaNetworksSettings.CinemaCityName);
+            var cinemaNetwork = await _cinemaNetworkRepository.GetByNameAsync(_cinemaNetworksSettings.CinemaCityNetwork.Name);
 
             if (cinemaNetwork is null)
                 return Result.Failure<Cinema[]>("Can not found cinema network for cinema");

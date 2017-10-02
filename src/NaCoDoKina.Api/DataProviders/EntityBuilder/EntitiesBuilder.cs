@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.EntityBuilder
 {
-    public class EntityBuilder<TEntity> : IEntityBuilder<TEntity>
+    public class EntitiesBuilder<TEntity> : IEntitiesBuilder<TEntity>
         where TEntity : Entities.Entity, new()
     {
-        private readonly ILogger<EntityBuilder<TEntity>> _logger;
+        private readonly ILogger<EntitiesBuilder<TEntity>> _logger;
         public bool Successful { get; private set; }
 
         public BuildFailure BuildFailure { get; private set; }
@@ -20,7 +20,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
 
         public int CurrentStep { get; private set; }
 
-        public EntityBuilder(IEnumerable<IBuildStep<TEntity>> buildSteps, ILogger<EntityBuilder<TEntity>> logger)
+        public EntitiesBuilder(IEnumerable<IBuildStep<TEntity>> buildSteps, ILogger<EntitiesBuilder<TEntity>> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             BuildSteps = buildSteps.ToImmutableList() ?? throw new ArgumentNullException(nameof(buildSteps));
@@ -28,7 +28,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
 
         public async Task<IEnumerable<TEntity>> BuildMany(CancellationToken cancellationToken = default(CancellationToken))
         {
-            using (_logger.BeginScope(nameof(EntityBuilder<TEntity>)))
+            using (_logger.BeginScope(nameof(EntitiesBuilder<TEntity>)))
             {
                 var entities = Array.Empty<TEntity>();
 
