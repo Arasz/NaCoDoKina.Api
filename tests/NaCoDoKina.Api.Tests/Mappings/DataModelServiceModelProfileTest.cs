@@ -176,7 +176,7 @@ namespace NaCoDoKina.Api.Mappings
                 //Assert
                 result.Should().BeOfType<Models.Resources.ReviewLink>();
                 result.Url.Should().Be(reviewLink.Url);
-                result.Logo.Url.Should().Be(reviewLink.Logo.Url);
+                result.LogoUrl.Should().Be(reviewLink.LogoUrl);
                 result.Rating.Should().Be(reviewLink.Rating);
             }
 
@@ -193,7 +193,7 @@ namespace NaCoDoKina.Api.Mappings
                 result.Should().BeOfType<ReviewLink>();
                 result.Url.Should().Be(reviewLink.Url);
                 result.Url.Should().Be(reviewLink.Url);
-                result.Logo.Url.Should().Be(reviewLink.Logo.Url);
+                result.LogoUrl.Should().Be(reviewLink.LogoUrl);
                 result.Rating.Should().Be(reviewLink.Rating);
             }
         }
@@ -232,37 +232,6 @@ namespace NaCoDoKina.Api.Mappings
             }
         }
 
-        public class ResourceLinkTest : DataModelServiceModelProfileTest
-        {
-            [Fact]
-            public void Should_return_model_resource_link_given_data_resource_link()
-            {
-                //Arrange
-                var resourceLink = Fixture.Create<ResourceLink>();
-
-                //Act
-                var result = Mapper.Map<Models.Resources.ResourceLink>(resourceLink);
-
-                //Assert
-                result.Should().BeOfType<Models.Resources.ResourceLink>();
-                result.Url.Should().Be(resourceLink.Url);
-            }
-
-            [Fact]
-            public void Should_return_data_model_resource_link_given_model_resource_link()
-            {
-                //Arrange
-                var resourceLink = Fixture.Create<Models.Resources.ResourceLink>();
-
-                //Act
-                var result = Mapper.Map<ResourceLink>(resourceLink);
-
-                //Assert
-                result.Should().BeOfType<ResourceLink>();
-                result.Url.Should().Be(resourceLink.Url);
-            }
-        }
-
         public class CinemaTest : DataModelServiceModelProfileTest
         {
             [Fact]
@@ -279,12 +248,11 @@ namespace NaCoDoKina.Api.Mappings
                 result.Name.Should().Be(cinema.Name);
                 result.Address.Should().Be(cinema.Address);
                 result.Id.Should().Be(cinema.Id);
-                result.Website.Should().NotBeNull();
+                result.CinemaUrl.Should()
+                    .NotBeNullOrEmpty()
+                    .And
+                    .Be(cinema.CinemaUrl);
                 result.NetworkName.Should().Be(cinema.CinemaNetwork.Name);
-                //result.Website.Should()
-                //    .Match<ServiceUrl>(url => url.Name == cinema.Website.Name)
-                //    .And
-                //    .Match<ServiceUrl>(url => url.Website == cinema.Website.Website);
             }
 
             [Fact]

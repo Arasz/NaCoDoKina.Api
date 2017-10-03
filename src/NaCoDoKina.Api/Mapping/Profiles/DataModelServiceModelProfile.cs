@@ -26,9 +26,6 @@ namespace NaCoDoKina.Api.Mapping.Profiles
                 .ForMember(cinema => cinema.CinemaTravelInformation, cfg => cfg.Ignore())
                 .ForMember(cinema => cinema.NetworkName, cfg => cfg.MapFrom(cinema => cinema.CinemaNetwork.Name));
 
-            CreateMap<Models.Resources.ResourceLink, Entities.Resources.ResourceLink>()
-                .ReverseMap();
-
             CreateMap<Models.Resources.ReviewLink, Entities.Resources.ReviewLink>()
                 .ReverseMap();
 
@@ -36,7 +33,7 @@ namespace NaCoDoKina.Api.Mapping.Profiles
                 .ReverseMap();
 
             CreateMap<Models.Movies.Movie, Entities.Movies.Movie>()
-                .ForMember(movie => movie.ExternalIds, cfg => cfg.Ignore())
+                .ForMember(movie => movie.ExternalMovies, cfg => cfg.Ignore())
                 .ReverseMap();
 
             CreateMap<Models.Movies.MovieDetails, Entities.Movies.MovieDetails>()

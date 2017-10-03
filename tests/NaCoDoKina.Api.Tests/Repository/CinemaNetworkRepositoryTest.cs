@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NaCoDoKina.Api.Entities.Cinemas;
-using NaCoDoKina.Api.Entities.Resources;
 using NaCoDoKina.Api.Repositories;
 using Ploeh.AutoFixture;
 using System.Threading.Tasks;
@@ -17,12 +16,8 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_return_true_when_network_with_given_name_exist()
             {
                 // Arrange
-                var resource = Fixture.Build<ResourceLink>()
-                    .Without(link => link.Id)
-                    .Create();
-
                 var cinemaNetwork = Fixture.Build<CinemaNetwork>()
-                    .With(network => network.Url, resource)
+                    .Without(network => network.Id)
                     .Create();
 
                 using (var scope = CreateContextScope())
@@ -47,14 +42,11 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_return_false_when_network_with_given_name_do_not_exist()
             {
                 // Arrange
-                var resource = Fixture.Build<ResourceLink>()
-                    .Without(link => link.Id)
-                    .Create();
 
                 var nonExistingName = Fixture.Create<string>();
 
                 var cinemaNetwork = Fixture.Build<CinemaNetwork>()
-                    .With(network => network.Url, resource)
+                    .Without(network => network.Id)
                     .Create();
 
                 using (var scope = CreateContextScope())
@@ -83,13 +75,8 @@ namespace NaCoDoKina.Api.Repository
             {
                 // Arrange
 
-                var resource = Fixture.Build<ResourceLink>()
-                    .Without(link => link.Id)
-                    .Create();
-
                 var cinemaNetwork = Fixture.Build<CinemaNetwork>()
                     .Without(network => network.Id)
-                    .With(network => network.Url, resource)
                     .Create();
 
                 using (var scope = CreateContextScope())
@@ -106,17 +93,13 @@ namespace NaCoDoKina.Api.Repository
                 using (var scope = CreateContextScope())
                 {
                     var createdNetwork = await scope.DbContext.CinemaNetworks
-                        .Include(network => network.Url)
                         .SingleOrDefaultAsync(network => network.Name == cinemaNetwork.Name);
 
                     createdNetwork.Should()
                         .NotBeNull();
 
-                    createdNetwork.Url.Id.Should()
-                        .BePositive();
-
-                    createdNetwork.Url.Url.Should()
-                        .Be(resource.Url);
+                    createdNetwork.CinemaNetworkUrl.Should()
+                        .Be(cinemaNetwork.CinemaNetworkUrl);
                 }
             }
         }
@@ -127,13 +110,8 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_return_cinema_network_with_given_id_when_exist()
             {
                 // Arrange
-
-                var resource = Fixture.Build<ResourceLink>()
-                    .Without(link => link.Id)
-                    .Create();
-
                 var cinemaNetwork = Fixture.Build<CinemaNetwork>()
-                    .With(network => network.Url, resource)
+                    .Without(network => network.Id)
                     .Create();
 
                 using (var scope = CreateContextScope())
@@ -160,13 +138,8 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_return_null_when_cinema_network_can_not_be_found()
             {
                 // Arrange
-
-                var resource = Fixture.Build<ResourceLink>()
-                    .Without(link => link.Id)
-                    .Create();
-
                 var cinemaNetwork = Fixture.Build<CinemaNetwork>()
-                    .With(network => network.Url, resource)
+                    .Without(network => network.Id)
                     .Create();
 
                 var nonExistingId = Fixture.Create<long>();
@@ -196,13 +169,8 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_return_cinema_network_with_given_id_when_exist()
             {
                 // Arrange
-
-                var resource = Fixture.Build<ResourceLink>()
-                    .Without(link => link.Id)
-                    .Create();
-
                 var cinemaNetwork = Fixture.Build<CinemaNetwork>()
-                    .With(network => network.Url, resource)
+                    .Without(network => network.Id)
                     .Create();
 
                 using (var scope = CreateContextScope())
@@ -229,13 +197,8 @@ namespace NaCoDoKina.Api.Repository
             public async Task Should_return_null_when_cinema_network_can_not_be_found()
             {
                 // Arrange
-
-                var resource = Fixture.Build<ResourceLink>()
-                    .Without(link => link.Id)
-                    .Create();
-
                 var cinemaNetwork = Fixture.Build<CinemaNetwork>()
-                    .With(network => network.Url, resource)
+                    .Without(network => network.Id)
                     .Create();
 
                 var nonExistingName = Fixture.Create<string>();

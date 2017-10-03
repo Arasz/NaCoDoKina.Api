@@ -133,14 +133,9 @@ namespace NaCoDoKina.Api.Repository
                     .Without(network => network.Id)
                     .Create();
 
-                var resourceLink = Fixture.Build<Entities.Resources.ResourceLink>()
-                    .Without(link => link.Id)
-                    .Create();
-
                 var cinemas = Fixture.Build<Cinema>()
                     .Without(cinema => cinema.Id)
                     .With(cinema => cinema.CinemaNetwork, cinemaNetwork)
-                    .With(cinema => cinema.Website, resourceLink)
                     .CreateMany(cinemasCount);
 
                 using (var contextScope = CreateContextScope())

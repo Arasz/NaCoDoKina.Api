@@ -30,7 +30,6 @@ namespace NaCoDoKina.Api.Repositories
                 .ToHashSet();
 
             var cinemasForMovie = await _applicationContext.Cinemas
-                .Include(cinema => cinema.Website)
                 .Include(cinema => cinema.CinemaNetwork)
                 .Where(cinema => cinemaIds.Contains(cinema.Id))
                 .ToListAsync();

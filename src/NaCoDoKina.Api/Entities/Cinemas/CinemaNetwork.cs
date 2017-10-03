@@ -1,6 +1,4 @@
-﻿using NaCoDoKina.Api.Entities.Resources;
-
-namespace NaCoDoKina.Api.Entities.Cinemas
+﻿namespace NaCoDoKina.Api.Entities.Cinemas
 {
     /// <inheritdoc/>
     /// <summary>
@@ -14,13 +12,13 @@ namespace NaCoDoKina.Api.Entities.Cinemas
         public string Name { get; set; }
 
         /// <summary>
-        /// Website to cinema network site 
+        /// Cinema network site 
         /// </summary>
-        public ResourceLink Url { get; set; }
+        public string CinemaNetworkUrl { get; set; }
 
         public override string ToString()
         {
-            return $"{base.ToString()}, {nameof(Name)}: {Name}, {nameof(Url)}: {Url}";
+            return $"{base.ToString()}, {nameof(Name)}: {Name}";
         }
     }
 }

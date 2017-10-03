@@ -53,12 +53,13 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
                 .ContentBody.Collection
                 .Select(movie => new Movie
                 {
-                    ExternalIds = new List<ExternalId>
+                    ExternalMovies = new List<ExternalMovie>
                     {
-                        new ExternalId
+                        new ExternalMovie
                         {
-                            MovieExternalId = movie.Id,
-                            CinemaNetwork = cinemaNetwork
+                            ExternalId = movie.Id,
+                            CinemaNetwork = cinemaNetwork,
+                            MovieUrl = movie.Link
                         }
                     },
                     PosterUrl = movie.PosterLink,

@@ -26,7 +26,7 @@ namespace NaCoDoKina.Api.Data.Configurations
                 .IsRequired();
 
             builder
-                .HasMany(movie => movie.ExternalIds)
+                .HasMany(movie => movie.ExternalMovies)
                 .WithOne()
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);

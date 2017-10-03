@@ -1,7 +1,6 @@
 ﻿using NaCoDoKina.Api.DataProviders.CinemaCity.Common;
 using NaCoDoKina.Api.DataProviders.EntityBuilder;
 using NaCoDoKina.Api.Entities.Cinemas;
-using NaCoDoKina.Api.Entities.Resources;
 using NaCoDoKina.Api.Services;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,7 +45,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
                 {
                     Name = cinema.DisplayName,
                     Address = cinema.Address,
-                    Website = new ResourceLink(cinema.Link),
+                    CinemaUrl = cinema.Link,
                     ExternalId = cinema.Id,
                 }).ToArray();
 

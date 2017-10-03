@@ -1,5 +1,4 @@
-﻿using NaCoDoKina.Api.Models.Resources;
-using NaCoDoKina.Api.Models.Travel;
+﻿using NaCoDoKina.Api.Models.Travel;
 
 namespace NaCoDoKina.Api.Models.Cinemas
 {
@@ -24,9 +23,9 @@ namespace NaCoDoKina.Api.Models.Cinemas
         public string Address { get; set; }
 
         /// <summary>
-        /// Cinema website 
+        /// Cinema site url 
         /// </summary>
-        public ResourceLink Website { get; set; }
+        public string CinemaUrl { get; set; }
 
         /// <summary>
         /// Network name to which cinema belongs 

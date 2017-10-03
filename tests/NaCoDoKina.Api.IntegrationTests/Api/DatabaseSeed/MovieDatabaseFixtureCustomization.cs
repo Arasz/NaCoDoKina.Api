@@ -11,9 +11,6 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Customize<ResourceLink>(composer =>
-                composer.Without(link => link.Id));
-
             fixture.Customize<MediaLink>(composer =>
                 composer.Without(link => link.Id));
 

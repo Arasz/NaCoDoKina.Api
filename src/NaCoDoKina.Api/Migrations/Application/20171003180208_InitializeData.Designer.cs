@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
-using Microsoft.EntityFrameworkCore.ValueGeneration;
 using NaCoDoKina.Api.Data;
 using NaCoDoKina.Api.Entities.Resources;
 using System;
@@ -13,7 +12,7 @@ using System;
 namespace NaCoDoKina.Api.Migrations.Application
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20171002200210_InitializeData")]
+    [Migration("20171003180208_InitializeData")]
     partial class InitializeData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,13 +33,13 @@ namespace NaCoDoKina.Api.Migrations.Application
 
                     b.Property<long?>("CinemaNetworkId");
 
+                    b.Property<string>("CinemaUrl");
+
                     b.Property<string>("ExternalId");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(80);
-
-                    b.Property<long?>("WebsiteId");
 
                     b.HasKey("Id");
 
@@ -48,8 +47,6 @@ namespace NaCoDoKina.Api.Migrations.Application
 
                     b.HasIndex("Name")
                         .IsUnique();
-
-                    b.HasIndex("WebsiteId");
 
                     b.ToTable("Cinemas");
                 });
@@ -59,18 +56,16 @@ namespace NaCoDoKina.Api.Migrations.Application
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("CinemaNetworkUrl");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255);
-
-                    b.Property<long?>("UrlId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
-
-                    b.HasIndex("UrlId");
 
                     b.ToTable("CinemaNetworks");
                 });
@@ -86,17 +81,19 @@ namespace NaCoDoKina.Api.Migrations.Application
                     b.ToTable("DeletedMovies");
                 });
 
-            modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.ExternalId", b =>
+            modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.ExternalMovie", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<long?>("CinemaNetworkId");
 
-                    b.Property<string>("MovieExternalId");
+                    b.Property<string>("ExternalId");
 
                     b.Property<long?>("MovieId")
                         .IsRequired();
+
+                    b.Property<string>("MovieUrl");
 
                     b.HasKey("Id");
 
@@ -104,7 +101,7 @@ namespace NaCoDoKina.Api.Migrations.Application
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("ExternalId");
+                    b.ToTable("ExternalMovie");
                 });
 
             modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.Movie", b =>
@@ -204,13 +201,14 @@ namespace NaCoDoKina.Api.Migrations.Application
                     b.ToTable("MovieShowtimes");
                 });
 
-            modelBuilder.Entity("NaCoDoKina.Api.Entities.Resources.ResourceLink", b =>
+            modelBuilder.Entity("NaCoDoKina.Api.Entities.Resources.MediaLink", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired();
+                    b.Property<int>("MediaType");
+
+                    b.Property<long?>("MovieDetailsId");
 
                     b.Property<string>("Url")
                         .IsRequired()
@@ -218,37 +216,23 @@ namespace NaCoDoKina.Api.Migrations.Application
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MovieDetailsId");
+
                     b.HasIndex("Url")
                         .IsUnique();
 
-                    b.ToTable("ResourceLink");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("ResourceLink");
-                });
-
-            modelBuilder.Entity("NaCoDoKina.Api.Entities.Resources.MediaLink", b =>
-                {
-                    b.HasBaseType("NaCoDoKina.Api.Entities.Resources.ResourceLink");
-
-                    b.Property<int>("MediaType");
-
-                    b.Property<long?>("MovieDetailsId");
-
-                    b.HasIndex("MovieDetailsId");
-
                     b.ToTable("MediaLink");
-
-                    b.HasDiscriminator().HasValue("MediaLink");
                 });
 
             modelBuilder.Entity("NaCoDoKina.Api.Entities.Resources.ReviewLink", b =>
                 {
-                    b.HasBaseType("NaCoDoKina.Api.Entities.Resources.ResourceLink");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<long?>("LogoId");
+                    b.Property<string>("LogoUrl")
+                        .HasMaxLength(300);
 
-                    b.Property<long?>("MovieDetailsId")
-                        .HasColumnName("ReviewLink_MovieDetailsId");
+                    b.Property<long?>("MovieDetailsId");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -258,13 +242,20 @@ namespace NaCoDoKina.Api.Migrations.Application
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(0.0);
 
-                    b.HasIndex("LogoId");
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(300);
+
+                    b.HasKey("Id");
 
                     b.HasIndex("MovieDetailsId");
 
-                    b.ToTable("ReviewLink");
+                    b.HasIndex("Name");
 
-                    b.HasDiscriminator().HasValue("ReviewLink");
+                    b.HasIndex("Url")
+                        .IsUnique();
+
+                    b.ToTable("ReviewLink");
                 });
 
             modelBuilder.Entity("NaCoDoKina.Api.Entities.Cinemas.Cinema", b =>
@@ -272,10 +263,6 @@ namespace NaCoDoKina.Api.Migrations.Application
                     b.HasOne("NaCoDoKina.Api.Entities.Cinemas.CinemaNetwork", "CinemaNetwork")
                         .WithMany()
                         .HasForeignKey("CinemaNetworkId");
-
-                    b.HasOne("NaCoDoKina.Api.Entities.Resources.ResourceLink", "Website")
-                        .WithMany()
-                        .HasForeignKey("WebsiteId");
 
                     b.OwnsOne("NaCoDoKina.Api.Entities.Location", "Location", b1 =>
                         {
@@ -294,21 +281,14 @@ namespace NaCoDoKina.Api.Migrations.Application
                         });
                 });
 
-            modelBuilder.Entity("NaCoDoKina.Api.Entities.Cinemas.CinemaNetwork", b =>
-                {
-                    b.HasOne("NaCoDoKina.Api.Entities.Resources.ResourceLink", "Url")
-                        .WithMany()
-                        .HasForeignKey("UrlId");
-                });
-
-            modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.ExternalId", b =>
+            modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.ExternalMovie", b =>
                 {
                     b.HasOne("NaCoDoKina.Api.Entities.Cinemas.CinemaNetwork", "CinemaNetwork")
                         .WithMany()
                         .HasForeignKey("CinemaNetworkId");
 
                     b.HasOne("NaCoDoKina.Api.Entities.Movies.Movie")
-                        .WithMany("ExternalIds")
+                        .WithMany("ExternalMovies")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -344,10 +324,6 @@ namespace NaCoDoKina.Api.Migrations.Application
 
             modelBuilder.Entity("NaCoDoKina.Api.Entities.Resources.ReviewLink", b =>
                 {
-                    b.HasOne("NaCoDoKina.Api.Entities.Resources.ResourceLink", "Logo")
-                        .WithMany()
-                        .HasForeignKey("LogoId");
-
                     b.HasOne("NaCoDoKina.Api.Entities.Movies.MovieDetails")
                         .WithMany("MovieReviews")
                         .HasForeignKey("MovieDetailsId")

@@ -14,9 +14,9 @@ namespace NaCoDoKina.Api.Entities.Movies
         public string Title { get; set; }
 
         /// <summary>
-        /// External ids from cinemas 
+        /// Movie representation in cinema network 
         /// </summary>
-        public List<ExternalId> ExternalIds { get; set; }
+        public List<ExternalMovie> ExternalMovies { get; set; }
 
         /// <summary>
         /// Movie poster url 

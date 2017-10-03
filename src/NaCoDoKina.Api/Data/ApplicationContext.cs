@@ -35,7 +35,6 @@ namespace NaCoDoKina.Api.Data
             modelBuilder.ApplyConfiguration(new CinemaConfiguration());
             modelBuilder.ApplyConfiguration(new CinemaNetworkConfiguration());
             modelBuilder.ApplyConfiguration(new MovieShowtimeConfiguration());
-            modelBuilder.ApplyConfiguration<ResourceLink>(new ResourceLinkConfiguration());
             modelBuilder.ApplyConfiguration<ReviewLink>(new ResourceLinkConfiguration());
             modelBuilder.ApplyConfiguration<MediaLink>(new ResourceLinkConfiguration());
             modelBuilder.ApplyConfiguration(new DeletedMovieConfiguration());

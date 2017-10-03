@@ -4,7 +4,7 @@ using NaCoDoKina.Api.Entities.Resources;
 
 namespace NaCoDoKina.Api.Data.Configurations
 {
-    public class ResourceLinkConfiguration : IEntityTypeConfiguration<MediaLink>, IEntityTypeConfiguration<ResourceLink>, IEntityTypeConfiguration<ReviewLink>
+    public class ResourceLinkConfiguration : IEntityTypeConfiguration<MediaLink>, IEntityTypeConfiguration<ReviewLink>
     {
         public void Configure(EntityTypeBuilder<MediaLink> builder)
         {
@@ -22,30 +22,12 @@ namespace NaCoDoKina.Api.Data.Configurations
                 .IsRequired();
         }
 
-        public void Configure(EntityTypeBuilder<ResourceLink> builder)
-        {
-            builder
-                .HasIndex(link => link.Url)
-                .IsUnique();
-
-            builder
-                .Property(link => link.Url)
-                .HasMaxLength(300)
-                .IsRequired();
-
-            builder
-                .HasIndex(link => link.Url)
-                .IsUnique();
-
-            builder
-                .Property(link => link.Url)
-                .HasMaxLength(300)
-                .IsRequired();
-        }
-
         public void Configure(EntityTypeBuilder<ReviewLink> builder)
         {
             builder
+                .HasIndex(link => link.Name);
+
+            builder
                 .HasIndex(link => link.Url)
                 .IsUnique();
 
@@ -53,6 +35,10 @@ namespace NaCoDoKina.Api.Data.Configurations
                 .Property(link => link.Url)
                 .HasMaxLength(300)
                 .IsRequired();
+
+            builder
+                .Property(link => link.LogoUrl)
+                .HasMaxLength(300);
 
             builder
                 .Property(link => link.Name)

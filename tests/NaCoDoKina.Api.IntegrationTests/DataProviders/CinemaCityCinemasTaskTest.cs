@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using NaCoDoKina.Api.Data;
 using NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas;
-using NaCoDoKina.Api.Entities.Resources;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using NaCoDoKina.Api.IntegrationTests.Api;
 using System.Linq;
@@ -24,7 +23,7 @@ namespace NaCoDoKina.Api.IntegrationTests.DataProviders
             var cinemaCityNetwork = new CinemaNetwork
             {
                 Name = networksSettings.CinemaCityNetwork.Name,
-                Url = new ResourceLink(networksSettings.CinemaCityNetwork.Url),
+                CinemaNetworkUrl = networksSettings.CinemaCityNetwork.Url
             };
 
             context.CinemaNetworks.Add(cinemaCityNetwork);

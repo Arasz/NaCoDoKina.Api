@@ -16,9 +16,6 @@ namespace NaCoDoKina.Api.Mapping.Profiles
             CreateMap<Models.Cinemas.Cinema, DataContracts.Cinemas.Cinema>()
                 .ReverseMap();
 
-            CreateMap<Models.Resources.ResourceLink, DataContracts.Resources.ResourceLink>()
-                .ReverseMap();
-
             CreateMap<Models.Resources.ReviewLink, DataContracts.Resources.ReviewLink>()
                 .ReverseMap();
 
