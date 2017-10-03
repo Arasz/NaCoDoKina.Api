@@ -1,6 +1,4 @@
-﻿using NaCoDoKina.Api.DataProviders.Requests;
-
-namespace NaCoDoKina.Api.DataProviders
+﻿namespace NaCoDoKina.Api.DataProviders.Requests
 {
     /// <summary>
     /// Base class for all request data, defines common properties 

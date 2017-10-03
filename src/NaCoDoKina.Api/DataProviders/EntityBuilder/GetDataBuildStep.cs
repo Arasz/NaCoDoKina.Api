@@ -1,4 +1,6 @@
 ﻿using ApplicationCore.Results;
+using NaCoDoKina.Api.DataProviders.Client;
+using NaCoDoKina.Api.DataProviders.Requests;
 using NaCoDoKina.Api.Services;
 using System;
 using System.Threading.Tasks;

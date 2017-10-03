@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using NaCoDoKina.Api.IntegrationTests.Api;
 using NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed;
 using NaCoDoKina.Api.IntegrationTests.Api.Fixtures;
 using Xunit;
 
-namespace NaCoDoKina.Api.IntegrationTests.Api
+namespace NaCoDoKina.Api.IntegrationTests
 {
     [Collection("Database tests")]
     public class HttpTestWithDatabase : HttpTestBase

@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NaCoDoKina.Api.Data;
 using NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas;
 using NaCoDoKina.Api.Infrastructure.Settings;
-using NaCoDoKina.Api.IntegrationTests.Api;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -11,7 +10,7 @@ using CinemaNetwork = NaCoDoKina.Api.Entities.Cinemas.CinemaNetwork;
 
 namespace NaCoDoKina.Api.IntegrationTests.DataProviders
 {
-    public class CinemaCityCinemasTaskTest : HttpTestWithDatabase
+    public class CinemaCityCinemasTaskTest : TaskTestBase<CinemaCityCinemasTask>
     {
         [Fact]
         public async Task Should_execute_task_and_save_all_cinemas_from_cinema_city_to_database()
@@ -32,11 +31,9 @@ namespace NaCoDoKina.Api.IntegrationTests.DataProviders
 
             var cinemasCount = context.Cinemas.Count();
 
-            var task = Services.GetService<CinemaCityCinemasTask>();
-
             // Act
 
-            await task.Execute();
+            await TaskUnderTest.Execute();
 
             // Assert
 

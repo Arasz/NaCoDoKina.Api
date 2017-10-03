@@ -1,6 +1,7 @@
 ﻿using Autofac;
-using NaCoDoKina.Api.DataProviders;
+using NaCoDoKina.Api.DataProviders.Client;
 using NaCoDoKina.Api.DataProviders.EntityBuilder;
+using NaCoDoKina.Api.DataProviders.Requests;
 using NaCoDoKina.Api.DataProviders.Tasks;
 using System.Reflection;
 using Module = Autofac.Module;

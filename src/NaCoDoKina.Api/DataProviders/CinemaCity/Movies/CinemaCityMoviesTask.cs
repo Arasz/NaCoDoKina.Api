@@ -13,9 +13,9 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies
         private readonly IMovieRepository _movieRepository;
         private readonly IEntitiesBuilder<Movie> _entitiesBuilder;
 
-        public CinemaCityMoviesTask(IMovieRepository cinemaRepository, IEntitiesBuilder<Movie> entitiesBuilder, TasksSettings settings) : base(settings)
+        public CinemaCityMoviesTask(IMovieRepository movieRepository, IEntitiesBuilder<Movie> entitiesBuilder, TasksSettings settings) : base(settings)
         {
-            _movieRepository = cinemaRepository ?? throw new ArgumentNullException(nameof(cinemaRepository));
+            _movieRepository = movieRepository ?? throw new ArgumentNullException(nameof(movieRepository));
             _entitiesBuilder = entitiesBuilder ?? throw new ArgumentNullException(nameof(entitiesBuilder));
         }
 

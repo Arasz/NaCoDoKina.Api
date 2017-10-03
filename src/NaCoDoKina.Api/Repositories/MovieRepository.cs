@@ -121,7 +121,6 @@ namespace NaCoDoKina.Api.Repositories
             return await _applicationContext.MovieDetails
                 .Include(details => details.MediaResources)
                 .Include(details => details.MovieReviews)
-                    .ThenInclude(link => link.LogoUrl)
                 .SingleOrDefaultAsync(details => details.Id == id);
         }
 

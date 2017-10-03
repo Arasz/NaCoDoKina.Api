@@ -1,4 +1,5 @@
 ﻿using NaCoDoKina.Api.DataProviders.CinemaCity.Common;
+using NaCoDoKina.Api.DataProviders.Client;
 using NaCoDoKina.Api.DataProviders.EntityBuilder;
 using NaCoDoKina.Api.Entities.Cinemas;
 using NaCoDoKina.Api.Services;
@@ -21,27 +22,31 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
         {
         }
 
-        private class Cinema
+        private class Body
         {
-            public string Id { get; set; }
+            public class Cinema
+            {
+                public string Id { get; set; }
 
-            public string GroupId { get; set; }
+                public string GroupId { get; set; }
 
-            public string Link { get; set; }
+                public string Link { get; set; }
 
-            public string Address { get; set; }
+                public string Address { get; set; }
 
-            public string DisplayName { get; set; }
+                public string DisplayName { get; set; }
+            }
+
+            public Cinema[] Cinemas { get; set; }
         }
 
-        protected override Task<Entities.Cinemas.Cinema[]> BuildModelsFromResponseContent(string responseContent)
+        protected override Task<Cinema[]> BuildModelsFromResponseContent(string responseContent)
         {
-            CinemaCityResponse<Cinema>.SetCollectionDataMemberName("cinemas");
-            var deserializedCinemas = SerializationService.Deserialize<CinemaCityResponse<Cinema>>(responseContent);
+            var deserializedCinemas = SerializationService.Deserialize<CinemaCityResponse<Body>>(responseContent);
 
             var cinemas = deserializedCinemas
-                .ContentBody.Collection
-                .Select(cinema => new Entities.Cinemas.Cinema
+                .Body.Cinemas
+                .Select(cinema => new Cinema
                 {
                     Name = cinema.DisplayName,
                     Address = cinema.Address,

@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace NaCoDoKina.Api.DataProviders
+namespace NaCoDoKina.Api.DataProviders.Client
 {
     /// <summary>
     /// Web client which makes request to service and parses response 
@@ -60,6 +60,26 @@ namespace NaCoDoKina.Api.DataProviders
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                 {
                     _logger.LogError("Request failed with status code {code} and content {content}", httpResponse.StatusCode, content);
+                    return Result.Failure<string>($"Request failed with code {httpResponse.StatusCode}");
+                }
+
+                return Result.Success(content);
+            }
+        }
+
+        public async Task<Result<string>> MakeGetRequestAsync(string url)
+        {
+            using (_logger.BeginScope($"{GetType().Name} - {nameof(MakeGetRequestAsync)}"))
+            {
+                _logger.LogDebug("Making GET request to {url}", url);
+
+                var httpResponse = await _httpClient.GetAsync(url);
+
+                var content = await httpResponse.Content.ReadAsStringAsync();
+
+                if (httpResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    _logger.LogError("Request to url {url} failed with status code {code} and content {content}", url, httpResponse.StatusCode, content);
                     return Result.Failure<string>($"Request failed with code {httpResponse.StatusCode}");
                 }
 
