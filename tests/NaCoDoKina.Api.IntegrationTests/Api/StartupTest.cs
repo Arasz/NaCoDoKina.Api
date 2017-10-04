@@ -87,7 +87,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 var serviceProvider = Server.Host.Services;
 
                 // Act
-                var repository = serviceProvider.GetService<CinemaCityCinemasTask>();
+                var repository = serviceProvider.GetService<CinemasTask>();
 
                 // Assert
                 repository.Should().NotBeNull();

@@ -1,5 +1,4 @@
 ﻿using ApplicationCore.Results;
-using NaCoDoKina.Api.DataProviders.Client;
 using NaCoDoKina.Api.DataProviders.EntityBuilder;
 using NaCoDoKina.Api.DataProviders.Parsers;
 using NaCoDoKina.Api.Entities.Movies;
@@ -12,19 +11,16 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
 {
     public class GetDetailedMovieDataBuildStep : IBuildStep<Movie>
     {
-        private readonly IHtmlParser<Movie> _htmlParser;
+        private readonly IWebPageMapper<Movie> _webPageMapper;
         private readonly CinemaNetworksSettings _networksSettings;
-        private readonly IWebClient _webClient;
         public string Name => "Detailed information about movie";
 
         public int Position => 2;
 
-        public GetDetailedMovieDataBuildStep(IWebClient webClient, IHtmlParser<Movie> htmlParser, CinemaNetworksSettings networksSettings)
+        public GetDetailedMovieDataBuildStep(IWebPageMapper<Movie> webPageMapper, CinemaNetworksSettings networksSettings)
         {
-            _htmlParser = htmlParser ?? throw new ArgumentNullException(nameof(htmlParser));
+            _webPageMapper = webPageMapper ?? throw new ArgumentNullException(nameof(webPageMapper));
             _networksSettings = networksSettings ?? throw new ArgumentNullException(nameof(networksSettings));
-
-            _webClient = webClient ?? throw new ArgumentNullException(nameof(webClient));
         }
 
         public async Task<Result<Movie[]>> BuildMany(Movie[] entities)
@@ -37,12 +33,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
                     .First(externalMovie => externalMovie.CinemaNetwork.Name == networkName)
                     .MovieUrl;
 
-                var result = await _webClient.MakeGetRequestAsync(movieUrl);
-
-                if (!result.IsSuccess)
-                    return Result.Failure<Movie[]>($"Failed to get details for movie {movie.Title} under url {movieUrl}");
-
-                _htmlParser.Parse(result.Value, movie);
+                await _webPageMapper.MapAsync(movieUrl, movie);
             }
 
             return Result.Success(entities);

@@ -54,6 +54,8 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
 
             var cinemaNetwork = await _cinemaNetworkRepository.GetByNameAsync(_cinemaNetworksSettings.CinemaCityNetwork.Name);
 
+            string AppendToBaseUrl(string url) => $"{cinemaNetwork.CinemaNetworkUrl}{url}";
+
             return deserializedMovies
                 .Body.Films
                 .Select(movie => new Movie
@@ -64,11 +66,11 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
                         {
                             ExternalId = movie.Id,
                             CinemaNetwork = cinemaNetwork,
-                            MovieUrl = $"{cinemaNetwork.CinemaNetworkUrl}{movie.Link}"
+                            MovieUrl = AppendToBaseUrl(movie.Link)
                         }
                     },
-                    PosterUrl = movie.PosterLink,
-                    Title = Name,
+                    PosterUrl = AppendToBaseUrl(movie.PosterLink),
+                    Title = movie.Name,
                     Details = new MovieDetails
                     {
                         Length = TimeSpan.FromMinutes(movie.Length),
@@ -83,7 +85,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
                             new MediaLink
                             {
                                 MediaType = MediaType.Poster,
-                                Url = movie.PosterLink
+                                Url = AppendToBaseUrl(movie.PosterLink)
                             }
                         },
                     },

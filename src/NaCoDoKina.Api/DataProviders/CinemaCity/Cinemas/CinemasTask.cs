@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas
 {
-    public class CinemaCityCinemasTask : TaskBase
+    public class CinemasTask : TaskBase
     {
         private readonly ICinemaRepository _cinemaRepository;
         private readonly IEntitiesBuilder<Cinema> _entitiesBuilder;
 
-        public CinemaCityCinemasTask(ICinemaRepository cinemaRepository, IEntitiesBuilder<Cinema> entitiesBuilder, TasksSettings settings) : base(settings)
+        public CinemasTask(ICinemaRepository cinemaRepository, IEntitiesBuilder<Cinema> entitiesBuilder, TasksSettings settings) : base(settings)
         {
             _cinemaRepository = cinemaRepository ?? throw new ArgumentNullException(nameof(cinemaRepository));
             _entitiesBuilder = entitiesBuilder ?? throw new ArgumentNullException(nameof(entitiesBuilder));

@@ -13,7 +13,7 @@
 
         public virtual string BuildUrl(string resourcePath, string query)
         {
-            return $"{BaseUrl}{resourcePath}?{query}";
+            return $"{BaseUrl}/{resourcePath}?{query}";
         }
 
         public abstract Request Parse();

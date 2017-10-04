@@ -50,15 +50,14 @@ namespace NaCoDoKina.Api.Data.Configurations
 
             builder.Property(movie => movie.Description)
                 .IsRequired()
-                .IsUnicode()
-                .HasMaxLength(1000);
+                .IsUnicode();
 
             builder.Property(movie => movie.AgeLimit)
                 .IsRequired()
                 .HasMaxLength(100);
 
             builder.Property(movie => movie.Language)
-                .IsRequired()
+                .HasDefaultValue(string.Empty)
                 .HasMaxLength(100);
 
             builder.Property(movie => movie.Genre)

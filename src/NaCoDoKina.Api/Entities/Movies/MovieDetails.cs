@@ -66,6 +66,11 @@ namespace NaCoDoKina.Api.Entities.Movies
         public string Director { get; set; }
 
         /// <summary>
+        /// When and by why nationality movie was produced 
+        /// </summary>
+        public string Production { get; set; }
+
+        /// <summary>
         /// Movie crew description 
         /// </summary>
         public string CrewDescription { get; set; }

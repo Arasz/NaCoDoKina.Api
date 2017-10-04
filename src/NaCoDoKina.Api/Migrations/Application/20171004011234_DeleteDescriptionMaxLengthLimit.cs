@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace NaCoDoKina.Api.Migrations.Application
 {
-    public partial class InitializeData : Migration
+    public partial class DeleteDescriptionMaxLengthLimit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,12 +45,13 @@ namespace NaCoDoKina.Api.Migrations.Application
                     Title = table.Column<string>(type: "varchar(80)", maxLength: 80, nullable: false),
                     AgeLimit = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     CrewDescription = table.Column<string>(type: "varchar(300)", maxLength: 300, nullable: true),
-                    Description = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
                     Director = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
                     Genre = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
-                    Language = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    Language = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true, defaultValue: ""),
                     Length = table.Column<TimeSpan>(type: "interval", nullable: false),
                     OriginalTitle = table.Column<string>(type: "varchar(80)", maxLength: 80, nullable: false),
+                    Production = table.Column<string>(type: "text", nullable: true),
                     ReleaseDate = table.Column<DateTime>(type: "timestamp", nullable: false),
                     MovieDetails_Title = table.Column<string>(type: "varchar(80)", maxLength: 80, nullable: false)
                 },

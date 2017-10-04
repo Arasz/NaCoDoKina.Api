@@ -31,6 +31,8 @@
 
   <ItemGroup>
 
+    <PackageReference Include="AngleSharp" Version="0.9.9" />
+
     <PackageReference Include="Autofac" Version="4.6.1" />
 
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />

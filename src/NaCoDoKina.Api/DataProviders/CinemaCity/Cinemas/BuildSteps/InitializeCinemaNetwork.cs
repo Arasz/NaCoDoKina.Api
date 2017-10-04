@@ -23,9 +23,12 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
             if (cinemaNetwork is null)
                 return Result.Failure<Cinema[]>("Can not found cinema network for cinema");
 
+            string AppendToBaseUrl(string url) => $"{cinemaNetwork.CinemaNetworkUrl}{url}";
+
             foreach (var cinema in entities)
             {
                 cinema.CinemaNetwork = cinemaNetwork;
+                cinema.CinemaUrl = AppendToBaseUrl(cinema.CinemaUrl);
             }
 
             return Result.Success(entities);

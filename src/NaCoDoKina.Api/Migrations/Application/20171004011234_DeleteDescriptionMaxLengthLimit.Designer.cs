@@ -12,8 +12,8 @@ using System;
 namespace NaCoDoKina.Api.Migrations.Application
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20171003180208_InitializeData")]
-    partial class InitializeData
+    [Migration("20171004011234_DeleteDescriptionMaxLengthLimit")]
+    partial class DeleteDescriptionMaxLengthLimit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -137,7 +137,6 @@ namespace NaCoDoKina.Api.Migrations.Application
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1000)
                         .IsUnicode(true);
 
                     b.Property<string>("Director")
@@ -148,7 +147,8 @@ namespace NaCoDoKina.Api.Migrations.Application
                         .HasMaxLength(100);
 
                     b.Property<string>("Language")
-                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("")
                         .HasMaxLength(100);
 
                     b.Property<TimeSpan>("Length");
@@ -157,6 +157,8 @@ namespace NaCoDoKina.Api.Migrations.Application
                         .IsRequired()
                         .HasMaxLength(80)
                         .IsUnicode(true);
+
+                    b.Property<string>("Production");
 
                     b.Property<DateTime>("ReleaseDate");
 
