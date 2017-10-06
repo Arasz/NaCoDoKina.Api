@@ -1,8 +1,10 @@
-﻿using NaCoDoKina.Api.DataProviders.CinemaCity.Common;
+﻿using Microsoft.Extensions.Logging;
+using NaCoDoKina.Api.DataProviders.CinemaCity.Common;
 using NaCoDoKina.Api.DataProviders.Client;
 using NaCoDoKina.Api.DataProviders.EntityBuilder;
 using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Entities.Resources;
+using NaCoDoKina.Api.Infrastructure.Extensions;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using NaCoDoKina.Api.Repositories;
 using NaCoDoKina.Api.Services;
@@ -15,8 +17,21 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
 {
     public class GetMovieDataBuildStep : GetDataBuildStep<Movie>
     {
+        private readonly ILogger<GetMovieDataBuildStep> _logger;
         private readonly ICinemaNetworkRepository _cinemaNetworkRepository;
         private readonly CinemaNetworksSettings _cinemaNetworksSettings;
+
+        private Entities.Cinemas.CinemaNetwork _cinemaNetwork;
+
+        private async Task<Entities.Cinemas.CinemaNetwork> GetCinemaNetwork()
+        {
+            if (_cinemaNetwork is null)
+            {
+                _cinemaNetwork = await _cinemaNetworkRepository.GetByNameAsync(_cinemaNetworksSettings.CinemaCityNetwork.Name);
+            }
+
+            return _cinemaNetwork;
+        }
 
         public override string Name => "Get movie data from service";
 
@@ -48,54 +63,86 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
             public Movie[] Films { get; set; }
         }
 
+        private Movie MapCinemaMovieToMovie(Body.Movie movie, Entities.Cinemas.CinemaNetwork cinemaNetwork)
+        {
+            var cinemaNetworkUrl = cinemaNetwork.CinemaNetworkUrl;
+
+            string BuildResourcePath(string baseUrl, string resourceUrl)
+            {
+                if (resourceUrl.IsNullOrEmpty())
+                {
+                    _logger.LogInformation("Resource url for movie {@movie} from cinema network {@cinemaNetwork} was null or empty", movie, cinemaNetwork);
+                    return string.Empty;
+                }
+
+                return $"{baseUrl}{resourceUrl}";
+            }
+
+            var movieDetails = new MovieDetails
+            {
+                Length = TimeSpan.FromMinutes(movie.Length),
+                Title = movie.Name,
+                MediaResources = new List<MediaLink>()
+            };
+
+            var movieVideoUrl = BuildResourcePath(string.Empty, movie.VideoLink);
+
+            if (!movieVideoUrl.IsNullOrEmpty())
+            {
+                movieDetails.MediaResources.Add(new MediaLink
+                {
+                    MediaType = MediaType.Video,
+                    Url = movieVideoUrl
+                });
+            }
+
+            var posterUrl = BuildResourcePath(cinemaNetworkUrl, movie.PosterLink);
+
+            if (!posterUrl.IsNullOrEmpty())
+            {
+                movieDetails.MediaResources.Add(new MediaLink
+                {
+                    MediaType = MediaType.Poster,
+                    Url = posterUrl
+                });
+            }
+
+            return new Movie
+            {
+                ExternalMovies = new List<ExternalMovie>
+                {
+                    new ExternalMovie
+                    {
+                        ExternalId = movie.Id,
+                        CinemaNetwork = cinemaNetwork,
+                        MovieUrl =  BuildResourcePath(cinemaNetworkUrl, movie.Link)
+                    }
+                },
+                PosterUrl = posterUrl,
+                Details = movieDetails
+            };
+        }
+
         protected override async Task<Movie[]> BuildModelsFromResponseContent(string content)
         {
             var deserializedMovies = SerializationService.Deserialize<CinemaCityResponse<Body>>(content);
 
-            var cinemaNetwork = await _cinemaNetworkRepository.GetByNameAsync(_cinemaNetworksSettings.CinemaCityNetwork.Name);
+            var cinemaNetwork = await GetCinemaNetwork();
 
-            string AppendToBaseUrl(string url) => $"{cinemaNetwork.CinemaNetworkUrl}{url}";
-
-            return deserializedMovies
-                .Body.Films
-                .Select(movie => new Movie
-                {
-                    ExternalMovies = new List<ExternalMovie>
-                    {
-                        new ExternalMovie
-                        {
-                            ExternalId = movie.Id,
-                            CinemaNetwork = cinemaNetwork,
-                            MovieUrl = AppendToBaseUrl(movie.Link)
-                        }
-                    },
-                    PosterUrl = AppendToBaseUrl(movie.PosterLink),
-                    Title = movie.Name,
-                    Details = new MovieDetails
-                    {
-                        Length = TimeSpan.FromMinutes(movie.Length),
-                        Title = movie.Name,
-                        MediaResources = new List<MediaLink>
-                        {
-                            new MediaLink
-                            {
-                                MediaType = MediaType.Video,
-                                Url = movie.VideoLink,
-                            },
-                            new MediaLink
-                            {
-                                MediaType = MediaType.Poster,
-                                Url = AppendToBaseUrl(movie.PosterLink)
-                            }
-                        },
-                    },
-                }).ToArray();
+            using (_logger.BeginScope(nameof(GetMovieDataBuildStep)))
+            {
+                return deserializedMovies
+                    .Body.Films
+                    .Select(movie => MapCinemaMovieToMovie(movie, cinemaNetwork)).ToArray();
+            }
         }
 
         public GetMovieDataBuildStep(IWebClient webClient, MovieRequestData parsableRequestData, ISerializationService serializationService,
-            ICinemaNetworkRepository cinemaNetworkRepository, CinemaNetworksSettings cinemaNetworksSettings)
+            ICinemaNetworkRepository cinemaNetworkRepository, CinemaNetworksSettings cinemaNetworksSettings,
+            ILogger<GetMovieDataBuildStep> logger)
             : base(webClient, parsableRequestData, serializationService)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _cinemaNetworkRepository = cinemaNetworkRepository ?? throw new ArgumentNullException(nameof(cinemaNetworkRepository));
             _cinemaNetworksSettings = cinemaNetworksSettings ?? throw new ArgumentNullException(nameof(cinemaNetworksSettings));
         }

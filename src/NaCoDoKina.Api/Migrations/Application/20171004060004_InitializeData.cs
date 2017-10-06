@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace NaCoDoKina.Api.Migrations.Application
 {
-    public partial class DeleteDescriptionMaxLengthLimit : Migration
+    public partial class InitializeData : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

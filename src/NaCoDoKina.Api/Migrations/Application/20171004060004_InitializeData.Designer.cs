@@ -12,8 +12,8 @@ using System;
 namespace NaCoDoKina.Api.Migrations.Application
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20171004011234_DeleteDescriptionMaxLengthLimit")]
-    partial class DeleteDescriptionMaxLengthLimit
+    [Migration("20171004060004_InitializeData")]
+    partial class InitializeData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
