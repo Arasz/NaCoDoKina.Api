@@ -109,6 +109,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
 
             return new Movie
             {
+                Title = movie.Name,
                 ExternalMovies = new List<ExternalMovie>
                 {
                     new ExternalMovie
