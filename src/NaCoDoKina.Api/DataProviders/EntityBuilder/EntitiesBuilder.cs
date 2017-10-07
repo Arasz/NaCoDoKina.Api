@@ -43,7 +43,13 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
 
                     CurrentStep++;
 
-                    _logger.LogDebug("Build step {@step} number {current}", buildStep, CurrentStep);
+                    if (!buildStep.Enabled)
+                    {
+                        _logger.LogDebug("Build step {StepName} number {CurrentStep} on position {Position} is disabled", buildStep.Name, CurrentStep, buildStep.Position);
+                        continue;
+                    }
+
+                    _logger.LogDebug("Build step {StepName} number {CurrentStep} on position {Position} will run", buildStep.Name, CurrentStep, buildStep.Position);
 
                     var result = await buildStep.BuildMany(entities);
 
@@ -53,7 +59,8 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
                     {
                         Successful = false;
                         BuildFailure = new BuildFailure(result.FailureReason, CurrentStep);
-                        _logger.LogDebug("Build step {@step} number {current} failed with failure {@failure}", buildStep, CurrentStep, result.FailureReason);
+                        _logger.LogDebug("Build step {StepName} number {CurrentStep} on position {Position} failed with failure {@failure}",
+                            buildStep.Name, CurrentStep, buildStep.Position, result.FailureReason);
                         return entities;
                     }
                 }

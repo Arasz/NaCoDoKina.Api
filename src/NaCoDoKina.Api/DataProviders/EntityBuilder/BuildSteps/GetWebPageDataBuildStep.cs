@@ -16,11 +16,14 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
 
         public abstract int Position { get; }
 
+        public virtual bool Enabled => true;
+
         public virtual async Task<Result<TEntity[]>> BuildMany(TEntity[] entities)
         {
             using (Logger.BeginScope(nameof(BuildMany)))
+            using (Logger.BeginScope(WebPageBinder.GetType().Name))
             {
-                Logger.LogDebug("Start binding web page binding with binder {binder} for elements {@elements}", WebPageBinder.GetType().Name, entities);
+                Logger.LogDebug("Start binding to web pages for {ElementsCount} elements of {EntityType}", entities.Length, typeof(TEntity));
 
                 foreach (var entity in entities)
                 {
@@ -30,15 +33,22 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
 
                         var url = await GetWebPageUrl(entity);
 
-                        Logger.LogDebug("Binding page {url}", url);
+                        Logger.LogDebug("Binding page under {Url} to entity {EntityType}", url, typeof(TEntity));
 
-                        await WebPageBinder.BindAsync(entity, url);
+                        var bindingResult = await WebPageBinder.BindAsync(entity, url);
 
-                        Logger.LogDebug("Entity binded");
+                        if (bindingResult.IsSuccess)
+                        {
+                            Logger.LogDebug("Entity {EntityType} binded", typeof(TEntity));
+                        }
+                        else
+                        {
+                            Logger.LogWarning("Entity {EntityType} binding error {BindingError}", typeof(TEntity), bindingResult.FailureReason);
+                        }
                     }
                 }
 
-                Logger.LogDebug("All elements binded successfully");
+                Logger.LogDebug("Binding completed");
 
                 return Result.Success(entities);
             }

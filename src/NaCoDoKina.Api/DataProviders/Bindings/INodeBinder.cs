@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Dom;
+using ApplicationCore.Results;
 using NaCoDoKina.Api.Infrastructure.Settings;
 
 namespace NaCoDoKina.Api.DataProviders.Bindings
@@ -15,6 +16,7 @@ namespace NaCoDoKina.Api.DataProviders.Bindings
         /// <param name="binded"> Mapped object </param>
         /// <param name="node"> Html parent element with data, data source </param>
         /// <param name="propertySelectors"> Property to selector bindings </param>
-        void Bind(TBinded binded, IParentNode node, PropertySelector[] propertySelectors);
+        /// <returns> Binding result </returns>
+        Result Bind(TBinded binded, IParentNode node, PropertySelector[] propertySelectors);
     }
 }

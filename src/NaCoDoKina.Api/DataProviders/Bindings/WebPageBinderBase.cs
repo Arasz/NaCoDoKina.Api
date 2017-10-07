@@ -1,4 +1,5 @@
 ﻿using AngleSharp;
+using ApplicationCore.Results;
 using System;
 using System.Threading.Tasks;
 
@@ -13,6 +14,6 @@ namespace NaCoDoKina.Api.DataProviders.Bindings
             BrowsingContext = browsingContext ?? throw new ArgumentNullException(nameof(browsingContext));
         }
 
-        public abstract Task BindAsync(TBinded binded, string url);
+        public abstract Task<Result> BindAsync(TBinded binded, string url);
     }
 }

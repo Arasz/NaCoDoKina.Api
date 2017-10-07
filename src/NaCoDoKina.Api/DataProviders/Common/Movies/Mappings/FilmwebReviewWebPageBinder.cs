@@ -1,4 +1,5 @@
 ﻿using AngleSharp;
+using ApplicationCore.Results;
 using NaCoDoKina.Api.DataProviders.Bindings;
 using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Entities.Resources;
@@ -11,20 +12,20 @@ namespace NaCoDoKina.Api.DataProviders.Common.Movies.Mappings
 {
     public class FilmwebReviewWebPageBinder : WebPageBinderBase<Movie>
     {
-        private readonly IDocumentBinder<ReviewLink> _reviewDocumentBinder;
+        private readonly INodeBinder<ReviewLink> _reviewNodeBinder;
         private readonly ReviewServicesSettings _reviewServicesSettings;
 
         public FilmwebReviewWebPageBinder(
             IBrowsingContext browsingContext,
-            IDocumentBinder<ReviewLink> reviewDocumentBinder,
+            INodeBinder<ReviewLink> reviewNodeBinder,
             ReviewServicesSettings reviewServicesSettings)
             : base(browsingContext)
         {
-            _reviewDocumentBinder = reviewDocumentBinder;
+            _reviewNodeBinder = reviewNodeBinder;
             _reviewServicesSettings = reviewServicesSettings ?? throw new ArgumentNullException(nameof(reviewServicesSettings));
         }
 
-        public override async Task BindAsync(Movie binded, string url)
+        public override async Task<Result> BindAsync(Movie binded, string url)
         {
             var document = await BrowsingContext.OpenAsync(url);
 
@@ -39,7 +40,7 @@ namespace NaCoDoKina.Api.DataProviders.Common.Movies.Mappings
 
             binded.Details.MovieReviews.Add(newReview);
 
-            _reviewDocumentBinder.Bind(newReview, document, _reviewServicesSettings.Filmweb.ReviewBindingMappings);
+            return _reviewNodeBinder.Bind(newReview, document, _reviewServicesSettings.Filmweb.ReviewBindingMappings);
         }
     }
 }

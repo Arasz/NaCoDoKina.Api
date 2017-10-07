@@ -71,7 +71,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
             {
                 if (resourceUrl.IsNullOrEmpty())
                 {
-                    Logger.LogInformation("Resource url for movie {@movie} from cinema network {@cinemaNetwork} was null or empty", movie, cinemaNetwork);
+                    Logger.LogDebug("Empty resource url for movie {@Movie} in cinema network {@CinemaNetwork}", movie, cinemaNetwork);
                     return string.Empty;
                 }
 

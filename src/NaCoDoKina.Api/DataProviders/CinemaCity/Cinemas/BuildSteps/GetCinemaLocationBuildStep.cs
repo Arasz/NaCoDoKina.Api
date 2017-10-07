@@ -17,6 +17,8 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
 
         public int Position => 3;
 
+        public bool Enabled => true;
+
         public async Task<Result<Cinema[]>> BuildMany(Cinema[] entities)
         {
             foreach (var cinema in entities)

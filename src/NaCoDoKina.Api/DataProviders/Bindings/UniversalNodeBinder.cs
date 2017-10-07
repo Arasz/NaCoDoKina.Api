@@ -1,74 +1,97 @@
 ﻿using AngleSharp.Dom;
+using ApplicationCore.Results;
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.Infrastructure.Extensions;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace NaCoDoKina.Api.DataProviders.Bindings
 {
-    public class UniversalDocumentBinder<TBinded> : IDocumentBinder<TBinded>
+    public class UniversalNodeBinder<TBinded> : INodeBinder<TBinded>
     {
-        private readonly ILogger<UniversalDocumentBinder<TBinded>> _logger;
-        private readonly Dictionary<string, PropertyInfo> _properties;
+        private readonly ILogger<UniversalNodeBinder<TBinded>> _logger;
 
-        public UniversalDocumentBinder(ILogger<UniversalDocumentBinder<TBinded>> logger)
+        private BindingErrors<TBinded> _bindingErrors;
+
+        public UniversalNodeBinder(ILogger<UniversalNodeBinder<TBinded>> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _properties = typeof(TBinded)
-                .GetProperties()
-                .ToDictionary(info => info.Name, info => info);
         }
 
-        public void Bind(TBinded binded, IParentNode parentElement, PropertySelector[] propertySelectors)
+        public Result Bind(TBinded binded, IParentNode node, PropertySelector[] propertySelectors)
         {
+            _bindingErrors = new BindingErrors<TBinded>(propertySelectors);
+
             using (_logger.BeginScope(nameof(Bind)))
             {
                 foreach (var propertySelector in propertySelectors)
                 {
-                    _logger.LogDebug("Read property {property} for type {type}", propertySelector.PropertyName, typeof(TBinded));
+                    _logger.LogDebug("Read property {PropertyName} for type {Type}", propertySelector.PropertyName, typeof(TBinded));
 
-                    var property = _properties[propertySelector.PropertyName];
+                    var (propertyName, selector) = propertySelector;
 
-                    _logger.LogDebug("Select element with selector {selector}", propertySelector.Selector);
+                    if (!binded.HasProperty(propertyName))
+                    {
+                        _logger.LogDebug("Binded {Type} do not has property {PropertyName}", nameof(TBinded), propertyName);
+                        _bindingErrors.AddError(propertySelector.PropertyName, $"Binded type {nameof(TBinded)} do not has property {propertyName}");
+                        continue;
+                    }
 
-                    var element = parentElement.QuerySelector(propertySelector.Selector);
+                    _logger.LogDebug("Select element with selector {selector} from page {Url}", selector, node.FirstElementChild?.BaseUri);
+
+                    var element = node.QuerySelector(selector);
 
                     if (element is null)
                     {
-                        _logger.LogWarning("Wrong CSS selector {selector} defined in property selector {@propertySelector} for binded element {@binded} ", propertySelector.Selector, propertySelector, binded);
-                        return;
+                        _logger.LogWarning("Element specified by selector {Selector} can not be found", selector);
+                        _bindingErrors.AddError(propertyName, $"Element specified by selector {selector} can not be found");
+                        continue;
                     }
 
-                    var value = element.TextContent;
+                    var value = GetValueFromElement(element, propertySelector);
 
-                    if (propertySelector.FromAttribute && !propertySelector.Attribute.IsNullOrEmpty())
-                        value = element.GetAttribute(propertySelector.Attribute);
+                    _logger.LogDebug("{Tag} element value {Value} selected by {@PropertySelector} from page {Url}", element.TagName, value, propertySelector, element.BaseUri);
 
-                    _logger.LogDebug("Read element value value {value}. Details {@selector}", value, propertySelector);
-
-                    switch (property.PropertyType.Name)
-                    {
-                        case nameof(DateTime):
-                            _logger.LogDebug("Set {type} property with value {value}", property.PropertyType.Name, value);
-                            if (DateTime.TryParse(value, out var parsedDate))
-                            {
-                                property.SetValue(binded, parsedDate);
-                            }
-                            break;
-
-                        case nameof(String):
-                            _logger.LogDebug("Set {type} property with value {value}", property.PropertyType.Name, value);
-                            property.SetValue(binded, value);
-                            break;
-
-                        default:
-                            _logger.LogError("Unsupported property type {type}", property.PropertyType.Name);
-                            break;
-                    }
+                    ParsePropertyValueToType(binded, propertyName, value);
                 }
+
+                if (_bindingErrors.HasErrors())
+                    return Result.Failure(_bindingErrors.ToString());
+
+                return Result.Success();
+            }
+        }
+
+        private static string GetValueFromElement(IElement element, PropertySelector propertySelector)
+        {
+            var value = element.TextContent;
+            if (propertySelector.FromAttribute && !propertySelector.Attribute.IsNullOrEmpty())
+                value = element.GetAttribute(propertySelector.Attribute);
+            return value;
+        }
+
+        private void ParsePropertyValueToType(TBinded binded, string propertyName, string value)
+        {
+            var property = binded.GetProperty(propertyName);
+
+            switch (property.PropertyType.Name)
+            {
+                case nameof(DateTime):
+                    if (DateTime.TryParse(value, out var parsedDate))
+                    {
+                        binded.SetPropertyValue(propertyName, parsedDate);
+                    }
+                    break;
+
+                case nameof(String):
+                    binded.SetPropertyValue(propertyName, value);
+                    break;
+
+                default:
+                    _logger.LogError("Unsupported property type {type}", property.PropertyType.Name);
+                    _bindingErrors.AddError(property.Name, "Unsupported property type");
+                    break;
             }
         }
     }

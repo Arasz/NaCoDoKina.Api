@@ -22,6 +22,8 @@ namespace NaCoDoKina.Api.DataProviders.Common.Movies.BuildSteps
 
         public override int Position => 15;
 
+        public override bool Enabled => false;
+
         protected override async Task<string> GetWebPageUrl(Movie entity)
         {
             using (Logger.BeginScope(nameof(GetWebPageUrl)))

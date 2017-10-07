@@ -24,5 +24,11 @@
         /// Should map value from attribute provided in attribute property 
         /// </summary>
         public bool FromAttribute { get; set; }
+
+        public void Deconstruct(out string propertyName, out string selector)
+        {
+            propertyName = PropertyName;
+            selector = Selector;
+        }
     }
 }

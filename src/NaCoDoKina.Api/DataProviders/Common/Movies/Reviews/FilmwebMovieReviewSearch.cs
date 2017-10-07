@@ -50,7 +50,7 @@ namespace NaCoDoKina.Api.DataProviders.Common.Movies.Reviews
                 {
                     if (entity.HasProperty(queryParameter.PropertyName))
                     {
-                        var newValue = entity.PropertyValue<string>(queryParameter.PropertyName);
+                        var newValue = entity.GetPropertyValue<string>(queryParameter.PropertyName);
 
                         Logger.LogDebug("Replacing query parameter {@queryParameter} value with {@newValue}", queryParameter, newValue);
 

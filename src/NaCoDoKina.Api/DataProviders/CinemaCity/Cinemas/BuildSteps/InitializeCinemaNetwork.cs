@@ -16,6 +16,8 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
 
         public int Position => 2;
 
+        public bool Enabled => true;
+
         public async Task<Result<Cinema[]>> BuildMany(Cinema[] entities)
         {
             var cinemaNetwork = await _cinemaNetworkRepository.GetByNameAsync(_cinemaNetworksSettings.CinemaCityNetwork.Name);

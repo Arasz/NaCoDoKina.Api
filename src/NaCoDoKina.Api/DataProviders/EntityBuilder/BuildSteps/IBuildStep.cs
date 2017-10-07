@@ -4,16 +4,9 @@ using System.Threading.Tasks;
 namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
 {
     /// <summary>
-    /// Marker interface 
-    /// </summary>
-    public interface IBuildStep
-    {
-    }
-
-    /// <summary>
     /// Entity build step 
     /// </summary>
-    public interface IBuildStep<TEntity> : IBuildStep
+    public interface IBuildStep<TEntity>
     {
         /// <summary>
         /// Build step name 
@@ -24,6 +17,11 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
         /// Position in build queue 
         /// </summary>
         int Position { get; }
+
+        /// <summary>
+        /// Is build step enabled 
+        /// </summary>
+        bool Enabled { get; }
 
         /// <summary>
         /// Execute part of work to build entities 

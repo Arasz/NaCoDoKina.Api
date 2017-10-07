@@ -16,8 +16,8 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
 
         public override int Position => 2;
 
-        public GetDetailedMovieDataBuildStep(MovieWebPageBinder movieWebPageBinder, CinemaNetworksSettings networksSettings, ILogger<GetDetailedMovieDataBuildStep> logger)
-            : base(movieWebPageBinder, logger)
+        public GetDetailedMovieDataBuildStep(CinemaCityMovieWebPageBinder cinemaCityMovieWebPageBinder, CinemaNetworksSettings networksSettings, ILogger<GetDetailedMovieDataBuildStep> logger)
+            : base(cinemaCityMovieWebPageBinder, logger)
         {
             _networksSettings = networksSettings ?? throw new ArgumentNullException(nameof(networksSettings));
         }

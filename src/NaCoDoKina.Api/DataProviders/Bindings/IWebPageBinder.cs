@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using ApplicationCore.Results;
+using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.Bindings
 {
@@ -13,6 +14,6 @@ namespace NaCoDoKina.Api.DataProviders.Bindings
         /// </summary>
         /// <param name="binded"> Object to fill </param>
         /// <param name="url"> Web page url </param>
-        Task BindAsync(TEntity binded, string url);
+        Task<Result> BindAsync(TEntity binded, string url);
     }
 }

@@ -22,6 +22,8 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
 
         public abstract int Position { get; }
 
+        public virtual bool Enabled => true;
+
         protected GetWebApiDataBuildStep(IWebClient webClient, IParsableRequestData parsableRequestData, ISerializationService serializationService, ILogger<GetWebApiDataBuildStep<TEntity>> logger)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
