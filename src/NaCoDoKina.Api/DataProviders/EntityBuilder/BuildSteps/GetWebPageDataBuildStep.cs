@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
 {
-    public abstract class GetWebPageDataBuildStep<TEntity> : IBuildStep<TEntity>
+    public abstract class GetWebPageDataBuildStep<TEntity, TContext> : IBuildStep<TEntity, TContext>
+        where TContext : IEntityBuilderContext
     {
-        protected ILogger<GetWebPageDataBuildStep<TEntity>> Logger { get; }
+        protected ILogger<GetWebPageDataBuildStep<TEntity, TContext>> Logger { get; }
 
         protected readonly IWebPageBinder<TEntity> WebPageBinder;
 
@@ -18,7 +19,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
 
         public virtual bool Enabled => true;
 
-        public virtual async Task<Result<TEntity[]>> BuildMany(TEntity[] entities)
+        public virtual async Task<Result<TEntity[]>> BuildMany(TEntity[] entities, TContext context)
         {
             using (Logger.BeginScope(nameof(BuildMany)))
             using (Logger.BeginScope(WebPageBinder.GetType().Name))
@@ -54,7 +55,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
             }
         }
 
-        protected GetWebPageDataBuildStep(IWebPageBinder<TEntity> webPageBinder, ILogger<GetWebPageDataBuildStep<TEntity>> logger)
+        protected GetWebPageDataBuildStep(IWebPageBinder<TEntity> webPageBinder, ILogger<GetWebPageDataBuildStep<TEntity, TContext>> logger)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             WebPageBinder = webPageBinder ?? throw new ArgumentNullException(nameof(webPageBinder));

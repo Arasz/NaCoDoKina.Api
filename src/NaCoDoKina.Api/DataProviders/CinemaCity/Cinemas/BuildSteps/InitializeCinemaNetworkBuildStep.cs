@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Results;
 using NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps;
+using NaCoDoKina.Api.DataProviders.EntityBuilder.Context;
 using NaCoDoKina.Api.Entities.Cinemas;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using NaCoDoKina.Api.Repositories;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
 {
-    public class InitializeCinemaNetworkBuildStep : IBuildStep<Cinema>
+    public class InitializeCinemaNetworkBuildStep : IBuildStep<Cinema, EmptyContext>
     {
         private readonly CinemaNetworksSettings _cinemaNetworksSettings;
         private readonly ICinemaNetworkRepository _cinemaNetworkRepository;
@@ -18,7 +19,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
 
         public bool Enabled => true;
 
-        public async Task<Result<Cinema[]>> BuildMany(Cinema[] entities)
+        public async Task<Result<Cinema[]>> BuildMany(Cinema[] entities, EmptyContext context)
         {
             var cinemaNetwork = await _cinemaNetworkRepository.GetByNameAsync(_cinemaNetworksSettings.CinemaCityNetwork.Name);
 

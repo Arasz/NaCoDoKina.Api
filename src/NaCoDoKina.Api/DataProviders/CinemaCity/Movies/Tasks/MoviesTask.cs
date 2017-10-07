@@ -1,4 +1,5 @@
 ﻿using NaCoDoKina.Api.DataProviders.EntityBuilder;
+using NaCoDoKina.Api.DataProviders.EntityBuilder.Context;
 using NaCoDoKina.Api.DataProviders.Tasks;
 using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Infrastructure.Settings;
@@ -11,9 +12,9 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.Tasks
     public class MoviesTask : TaskBase
     {
         private readonly IMovieRepository _movieRepository;
-        private readonly IEntitiesBuilder<Movie> _entitiesBuilder;
+        private readonly IEntitiesBuilder<Movie, EmptyContext> _entitiesBuilder;
 
-        public MoviesTask(IMovieRepository movieRepository, IEntitiesBuilder<Movie> entitiesBuilder, TasksSettings settings) : base(settings)
+        public MoviesTask(IMovieRepository movieRepository, IEntitiesBuilder<Movie, EmptyContext> entitiesBuilder, TasksSettings settings) : base(settings)
         {
             _movieRepository = movieRepository ?? throw new ArgumentNullException(nameof(movieRepository));
             _entitiesBuilder = entitiesBuilder ?? throw new ArgumentNullException(nameof(entitiesBuilder));

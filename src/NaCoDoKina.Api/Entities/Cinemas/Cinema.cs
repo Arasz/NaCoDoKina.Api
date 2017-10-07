@@ -12,6 +12,11 @@
         public string ExternalId { get; set; }
 
         /// <summary>
+        /// Cinema group id 
+        /// </summary>
+        public string GroupId { get; set; }
+
+        /// <summary>
         /// Cinema name 
         /// </summary>
         public string Name { get; set; }

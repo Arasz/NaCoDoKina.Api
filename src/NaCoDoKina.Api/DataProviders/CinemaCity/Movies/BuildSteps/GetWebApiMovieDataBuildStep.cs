@@ -3,6 +3,7 @@ using NaCoDoKina.Api.DataProviders.CinemaCity.Common;
 using NaCoDoKina.Api.DataProviders.CinemaCity.Movies.Requests;
 using NaCoDoKina.Api.DataProviders.Client;
 using NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps;
+using NaCoDoKina.Api.DataProviders.EntityBuilder.Context;
 using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Entities.Resources;
 using NaCoDoKina.Api.Infrastructure.Extensions;
@@ -16,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
 {
-    public class GetWebApiMovieDataBuildStep : GetWebApiDataBuildStep<Movie>
+    public class GetWebApiMovieDataBuildStep : GetWebApiDataBuildStep<Movie, EmptyContext>
     {
         private readonly ICinemaNetworkRepository _cinemaNetworkRepository;
         private readonly CinemaNetworksSettings _cinemaNetworksSettings;

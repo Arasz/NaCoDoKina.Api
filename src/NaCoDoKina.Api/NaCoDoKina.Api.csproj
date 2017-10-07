@@ -24,7 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DataProviders\CinemaCity\Showtimes\" />
+    <Folder Include="DataProviders\CinemaCity\Showtimes\Context\" />
+    <Folder Include="DataProviders\CinemaCity\Showtimes\Tasks\" />
     <Folder Include="Migrations\Application\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.DataProviders.CinemaCity.Movies.Bindings;
 using NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps;
+using NaCoDoKina.Api.DataProviders.EntityBuilder.Context;
 using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
 {
-    public class GetDetailedMovieDataBuildStep : GetWebPageDataBuildStep<Movie>
+    public class GetDetailedMovieDataBuildStep : GetWebPageDataBuildStep<Movie, EmptyContext>
     {
         private readonly CinemaNetworksSettings _networksSettings;
         public override string Name => "Detailed information about movie";

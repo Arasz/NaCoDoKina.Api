@@ -4,13 +4,15 @@ using NaCoDoKina.Api.DataProviders.Client;
 using NaCoDoKina.Api.DataProviders.Requests;
 using NaCoDoKina.Api.Services;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
 {
-    public abstract class GetWebApiDataBuildStep<TEntity> : IBuildStep<TEntity>
+    public abstract class GetWebApiDataBuildStep<TEntity, TContext> : IBuildStep<TEntity, TContext>
+        where TContext : IEntityBuilderContext
     {
-        protected ILogger<GetWebApiDataBuildStep<TEntity>> Logger { get; }
+        protected ILogger<GetWebApiDataBuildStep<TEntity, TContext>> Logger { get; }
 
         protected IParsableRequestData ParsableRequestData { get; }
 
@@ -24,7 +26,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
 
         public virtual bool Enabled => true;
 
-        protected GetWebApiDataBuildStep(IWebClient webClient, IParsableRequestData parsableRequestData, ISerializationService serializationService, ILogger<GetWebApiDataBuildStep<TEntity>> logger)
+        protected GetWebApiDataBuildStep(IWebClient webClient, IParsableRequestData parsableRequestData, ISerializationService serializationService, ILogger<GetWebApiDataBuildStep<TEntity, TContext>> logger)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             ParsableRequestData = parsableRequestData ?? throw new ArgumentNullException(nameof(parsableRequestData));
@@ -32,17 +34,37 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
             WebClient = webClient ?? throw new ArgumentNullException(nameof(webClient));
         }
 
+        /// <summary>
+        /// Parses data received from web api to entities 
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
         protected abstract Task<TEntity[]> ParseDataToEntities(string content);
 
-        public virtual async Task<Result<TEntity[]>> BuildMany(TEntity[] entities)
+        /// <summary>
+        /// Creates dynamic request parameters 
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        protected virtual IRequestParameter[] CreateRequestParameters(TEntity[] entities, TContext context)
+        {
+            return Task.FromResult(Array.Empty<IRequestParameter>());
+        }
+
+        public virtual async Task<Result<TEntity[]>> BuildMany(TEntity[] entities, TContext context)
         {
             using (Logger.BeginScope(nameof(BuildMany)))
             {
-                Logger.LogDebug("Make request to api");
+                var requestParameters = await CreateRequestParameters(entities, context);
 
-                var result = await WebClient.MakeRequestAsync(ParsableRequestData);
+                Logger.LogDebug("Created {ParametersCount} request parameters {@RequestParameters}", requestParameters.Length, requestParameters.Cast<object>());
 
-                Logger.LogDebug("Request result {@result}", result);
+                Logger.LogDebug("Making request with request data {@ParsableRequestData}", ParsableRequestData);
+
+                var result = await WebClient.MakeRequestAsync(ParsableRequestData, requestParameters);
+
+                Logger.LogDebug("Request result {@Result}", result);
 
                 if (!result.IsSuccess)
                     return Result.Failure<TEntity[]>(result.FailureReason);
@@ -51,7 +73,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
 
                 var parsedEntities = await ParseDataToEntities(result.Value);
 
-                Logger.LogDebug("Data parsed {@parsedEntities}", parsedEntities);
+                Logger.LogDebug("Data parsed {@ParsedEntities}", parsedEntities);
 
                 return Result.Success(parsedEntities);
             }

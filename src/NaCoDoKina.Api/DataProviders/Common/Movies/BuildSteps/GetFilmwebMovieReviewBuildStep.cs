@@ -2,13 +2,14 @@
 using NaCoDoKina.Api.DataProviders.Common.Movies.Mappings;
 using NaCoDoKina.Api.DataProviders.Common.Movies.Reviews;
 using NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps;
+using NaCoDoKina.Api.DataProviders.EntityBuilder.Context;
 using NaCoDoKina.Api.Entities.Movies;
 using System;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.Common.Movies.BuildSteps
 {
-    public class GetFilmwebMovieReviewBuildStep : GetWebPageDataBuildStep<Movie>
+    public class GetFilmwebMovieReviewBuildStep : GetWebPageDataBuildStep<Movie, EmptyContext>
     {
         private readonly FilmwebMovieReviewSearch _filmwebMovieReviewSearch;
 

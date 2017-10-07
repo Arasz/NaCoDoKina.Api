@@ -26,14 +26,15 @@ namespace NaCoDoKina.Api.DataProviders.Client
         /// Make request and return response content 
         /// </summary>
         /// <param name="requestData"> Request data </param>
+        /// <param name="requestParameters"> Parameters dynamically supplied to request </param>
         /// <returns> Response content </returns>
-        public virtual async Task<Result<string>> MakeRequestAsync(IParsableRequestData requestData)
+        public virtual async Task<Result<string>> MakeRequestAsync(IParsableRequestData requestData, params IRequestParameter[] requestParameters)
         {
             using (_logger.BeginScope($"{GetType().Name} - {nameof(MakeRequestAsync)}"))
             {
                 _logger.LogDebug("Parsing requestData {@requestData}", requestData);
 
-                var request = requestData.Parse();
+                var request = requestData.Parse(requestParameters);
 
                 HttpResponseMessage httpResponse = null;
                 switch (request)

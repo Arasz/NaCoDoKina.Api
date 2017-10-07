@@ -53,7 +53,14 @@ namespace NaCoDoKina.Api.Infrastructure.IoC.Modules
             builder.RegisterAssemblyTypes(ThisAssembly)
                 .Where(type => type.IsAssignableTo<IParsableRequestData>())
                 .AsSelf()
-                .AsImplementedInterfaces();
+                .AsImplementedInterfaces()
+                .SingleInstance();
+
+            builder.RegisterAssemblyTypes(ThisAssembly)
+                .Where(type => type.IsAssignableTo<RequestParameter>())
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .SingleInstance();
 
             builder.RegisterAssemblyTypes(ThisAssembly)
                 .Where(type => type.IsAssignableTo<ITask>())

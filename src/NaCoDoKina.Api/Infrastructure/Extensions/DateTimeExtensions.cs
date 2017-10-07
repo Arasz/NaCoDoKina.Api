@@ -12,5 +12,10 @@ namespace NaCoDoKina.Api.Infrastructure.Extensions
 
             return time.Ticks / 10000;
         }
+
+        public static string ToChinaDate(this DateTime dateTime)
+        {
+            return dateTime.ToString("yyyy-mm-dd");
+        }
     }
 }

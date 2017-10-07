@@ -6,7 +6,8 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
     /// <summary>
     /// Entity build step 
     /// </summary>
-    public interface IBuildStep<TEntity>
+    public interface IBuildStep<TEntity, in TContext>
+        where TContext : IEntityBuilderContext
     {
         /// <summary>
         /// Build step name 
@@ -27,7 +28,8 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
         /// Execute part of work to build entities 
         /// </summary>
         /// <param name="entities"> Partially built entities </param>
+        /// <param name="buildContext"></param>
         /// <returns> Partially built entities </returns>
-        Task<Result<TEntity[]>> BuildMany(TEntity[] entities);
+        Task<Result<TEntity[]>> BuildMany(TEntity[] entities, TContext buildContext);
     }
 }

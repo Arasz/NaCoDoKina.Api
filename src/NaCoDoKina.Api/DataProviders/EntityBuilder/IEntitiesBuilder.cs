@@ -9,7 +9,9 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
     /// Builds entities of given type from provided steps 
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public interface IEntitiesBuilder<TEntity>
+    /// <typeparam name="TContext"></typeparam>
+    public interface IEntitiesBuilder<TEntity, in TContext>
+        where TContext : IEntityBuilderContext
     {
         /// <summary>
         /// Is entity fully built 
@@ -24,7 +26,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
         /// <summary>
         /// Build steps 
         /// </summary>
-        IReadOnlyList<IBuildStep<TEntity>> BuildSteps { get; }
+        IReadOnlyList<IBuildStep<TEntity, TContext>> BuildSteps { get; }
 
         /// <summary>
         /// Currently executed build step 
@@ -35,6 +37,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
         /// Execute all build steps for entities collection 
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<TEntity>> BuildMany(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<TEntity>> BuildMany(CancellationToken cancellationToken = default(CancellationToken),
+            TContext parameters = default(TContext));
     }
 }

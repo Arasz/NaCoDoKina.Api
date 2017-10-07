@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Results;
 using AutoMapper;
 using NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps;
+using NaCoDoKina.Api.DataProviders.EntityBuilder.Context;
 using NaCoDoKina.Api.Entities;
 using NaCoDoKina.Api.Entities.Cinemas;
 using NaCoDoKina.Api.Services;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
 {
-    public class GetCinemaLocationBuildStep : IBuildStep<Cinema>
+    public class GetCinemaLocationBuildStep : IBuildStep<Cinema, EmptyContext>
     {
         private readonly IMapper _mapper;
         private readonly ITravelService _travelService;
@@ -19,7 +20,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
 
         public bool Enabled => true;
 
-        public async Task<Result<Cinema[]>> BuildMany(Cinema[] entities)
+        public async Task<Result<Cinema[]>> BuildMany(Cinema[] entities, EmptyContext context)
         {
             foreach (var cinema in entities)
             {

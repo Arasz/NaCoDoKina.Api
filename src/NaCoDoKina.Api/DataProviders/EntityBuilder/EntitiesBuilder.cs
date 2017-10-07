@@ -9,27 +9,28 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.EntityBuilder
 {
-    public class EntitiesBuilder<TEntity> : IEntitiesBuilder<TEntity>
+    public class EntitiesBuilder<TEntity, TContext> : IEntitiesBuilder<TEntity, TContext>
         where TEntity : Entities.Entity, new()
+        where TContext : IEntityBuilderContext
     {
-        private readonly ILogger<EntitiesBuilder<TEntity>> _logger;
+        private readonly ILogger<EntitiesBuilder<TEntity, TContext>> _logger;
         public bool Successful { get; private set; }
 
         public BuildFailure BuildFailure { get; private set; }
 
-        public IReadOnlyList<IBuildStep<TEntity>> BuildSteps { get; }
+        public IReadOnlyList<IBuildStep<TEntity, TContext>> BuildSteps { get; }
 
         public int CurrentStep { get; private set; }
 
-        public EntitiesBuilder(IEnumerable<IBuildStep<TEntity>> buildSteps, ILogger<EntitiesBuilder<TEntity>> logger)
+        public EntitiesBuilder(IEnumerable<IBuildStep<TEntity, TContext>> buildSteps, ILogger<EntitiesBuilder<TEntity, TContext>> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             BuildSteps = buildSteps.ToImmutableList() ?? throw new ArgumentNullException(nameof(buildSteps));
         }
 
-        public async Task<IEnumerable<TEntity>> BuildMany(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<TEntity>> BuildMany(CancellationToken cancellationToken = default(CancellationToken), TContext parameters = default(TContext))
         {
-            using (_logger.BeginScope(nameof(EntitiesBuilder<TEntity>)))
+            using (_logger.BeginScope(nameof(EntitiesBuilder<TEntity, TContext>)))
             {
                 var entities = Array.Empty<TEntity>();
 
@@ -51,7 +52,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder
 
                     _logger.LogDebug("Build step {StepName} number {CurrentStep} on position {Position} will run", buildStep.Name, CurrentStep, buildStep.Position);
 
-                    var result = await buildStep.BuildMany(entities);
+                    var result = await buildStep.BuildMany(entities, parameters);
 
                     if (result.IsSuccess)
                         entities = result.Value;

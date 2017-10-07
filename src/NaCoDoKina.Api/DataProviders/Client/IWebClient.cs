@@ -10,8 +10,9 @@ namespace NaCoDoKina.Api.DataProviders.Client
         /// Make request and return response content 
         /// </summary>
         /// <param name="requestData"> Request data </param>
+        /// <param name="requestParameters"></param>
         /// <returns> Response content </returns>
-        Task<Result<string>> MakeRequestAsync(IParsableRequestData requestData);
+        Task<Result<string>> MakeRequestAsync(IParsableRequestData requestData, params IRequestParameter[] requestParameters);
 
         /// <summary>
         /// Makes get request to given url 
