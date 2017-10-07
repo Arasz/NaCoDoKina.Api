@@ -22,7 +22,7 @@ namespace NaCoDoKina.Api.Infrastructure.IoC.Modules
             var settingsTypes = ThisAssembly.DefinedTypes
                 .Where(info => info.Namespace != null)
                 .Where(info => info.Namespace.Contains("Settings"))
-                .Where(info => info.Name.Contains("Settings"))
+                .Where(info => info.Name.EndsWith("Settings"))
                 .ToArray();
 
             foreach (var typeInfo in settingsTypes)

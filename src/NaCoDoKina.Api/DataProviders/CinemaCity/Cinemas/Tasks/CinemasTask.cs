@@ -6,7 +6,7 @@ using NaCoDoKina.Api.Repositories;
 using System;
 using System.Threading.Tasks;
 
-namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas
+namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.Tasks
 {
     public class CinemasTask : TaskBase
     {

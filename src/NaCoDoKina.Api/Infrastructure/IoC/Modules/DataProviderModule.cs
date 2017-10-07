@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using AngleSharp;
+using Autofac;
+using NaCoDoKina.Api.DataProviders.Bindings;
 using NaCoDoKina.Api.DataProviders.Client;
 using NaCoDoKina.Api.DataProviders.EntityBuilder;
 using NaCoDoKina.Api.DataProviders.Requests;
@@ -14,6 +16,30 @@ namespace NaCoDoKina.Api.Infrastructure.IoC.Modules
 
         protected override void Load(ContainerBuilder builder)
         {
+            var angleSharpConfiguration = Configuration.Default
+                .WithDefaultLoader(setup => setup.IsResourceLoadingEnabled = true)
+                .WithJavaScript()
+                .WithCss();
+
+            builder
+                .Register(context => BrowsingContext.New(angleSharpConfiguration))
+                .AsImplementedInterfaces();
+
+            builder
+                .RegisterAssemblyTypes(ThisAssembly)
+                .Where(type => type.Name.EndsWith("WebPageBinder"))
+                .AsImplementedInterfaces()
+                .AsSelf();
+
+            builder
+                .RegisterGeneric(typeof(CollectionNodeBinder<>))
+                .AsSelf()
+                .AsImplementedInterfaces();
+            builder
+                .RegisterGeneric(typeof(UniversalNodeBinder<>))
+                .AsSelf()
+                .AsImplementedInterfaces();
+
             builder.RegisterGeneric(typeof(EntitiesBuilder<>))
                 .AsImplementedInterfaces();
 
@@ -31,6 +57,12 @@ namespace NaCoDoKina.Api.Infrastructure.IoC.Modules
 
             builder.RegisterAssemblyTypes(ThisAssembly)
                 .Where(type => type.IsAssignableTo<ITask>())
+                .AsSelf();
+
+            builder
+                .RegisterAssemblyTypes(ThisAssembly)
+                .Where(type => type.Name.EndsWith("ReviewSearch"))
+                .AsImplementedInterfaces()
                 .AsSelf();
         }
     }

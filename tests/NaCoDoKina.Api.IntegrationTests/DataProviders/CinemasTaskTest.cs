@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NaCoDoKina.Api.Data;
-using NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas;
+using NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.Tasks;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using System.Linq;
 using System.Threading.Tasks;

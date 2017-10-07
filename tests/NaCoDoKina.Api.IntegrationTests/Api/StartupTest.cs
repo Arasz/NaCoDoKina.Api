@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas;
+using NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.Tasks;
 using NaCoDoKina.Api.Infrastructure.Services.Identity;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using NaCoDoKina.Api.Repositories;

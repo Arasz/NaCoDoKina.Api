@@ -1,7 +1,7 @@
 ﻿using ApplicationCore.Results;
 using System.Threading.Tasks;
 
-namespace NaCoDoKina.Api.DataProviders.EntityBuilder
+namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
 {
     /// <summary>
     /// Marker interface 

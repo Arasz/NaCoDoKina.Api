@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.DataProviders.CinemaCity.Common;
+using NaCoDoKina.Api.DataProviders.CinemaCity.Movies.Requests;
 using NaCoDoKina.Api.DataProviders.Client;
-using NaCoDoKina.Api.DataProviders.EntityBuilder;
+using NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps;
 using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Entities.Resources;
 using NaCoDoKina.Api.Infrastructure.Extensions;
@@ -15,9 +16,8 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
 {
-    public class GetMovieDataBuildStep : GetDataBuildStep<Movie>
+    public class GetWebApiMovieDataBuildStep : GetWebApiDataBuildStep<Movie>
     {
-        private readonly ILogger<GetMovieDataBuildStep> _logger;
         private readonly ICinemaNetworkRepository _cinemaNetworkRepository;
         private readonly CinemaNetworksSettings _cinemaNetworksSettings;
 
@@ -71,7 +71,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
             {
                 if (resourceUrl.IsNullOrEmpty())
                 {
-                    _logger.LogInformation("Resource url for movie {@movie} from cinema network {@cinemaNetwork} was null or empty", movie, cinemaNetwork);
+                    Logger.LogInformation("Resource url for movie {@movie} from cinema network {@cinemaNetwork} was null or empty", movie, cinemaNetwork);
                     return string.Empty;
                 }
 
@@ -124,13 +124,13 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
             };
         }
 
-        protected override async Task<Movie[]> BuildModelsFromResponseContent(string content)
+        protected override async Task<Movie[]> ParseDataToEntities(string content)
         {
             var deserializedMovies = SerializationService.Deserialize<CinemaCityResponse<Body>>(content);
 
             var cinemaNetwork = await GetCinemaNetwork();
 
-            using (_logger.BeginScope(nameof(GetMovieDataBuildStep)))
+            using (Logger.BeginScope(nameof(ParseDataToEntities)))
             {
                 return deserializedMovies
                     .Body.Films
@@ -138,12 +138,11 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
             }
         }
 
-        public GetMovieDataBuildStep(IWebClient webClient, MovieRequestData parsableRequestData, ISerializationService serializationService,
+        public GetWebApiMovieDataBuildStep(IWebClient webClient, MovieRequestData parsableRequestData, ISerializationService serializationService,
             ICinemaNetworkRepository cinemaNetworkRepository, CinemaNetworksSettings cinemaNetworksSettings,
-            ILogger<GetMovieDataBuildStep> logger)
-            : base(webClient, parsableRequestData, serializationService)
+            ILogger<GetWebApiMovieDataBuildStep> logger)
+            : base(webClient, parsableRequestData, serializationService, logger)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _cinemaNetworkRepository = cinemaNetworkRepository ?? throw new ArgumentNullException(nameof(cinemaNetworkRepository));
             _cinemaNetworksSettings = cinemaNetworksSettings ?? throw new ArgumentNullException(nameof(cinemaNetworksSettings));
         }

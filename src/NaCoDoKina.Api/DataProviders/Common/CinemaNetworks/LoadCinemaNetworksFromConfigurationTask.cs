@@ -15,7 +15,7 @@ namespace NaCoDoKina.Api.DataProviders.Common.CinemaNetworks
 
         public override async Task Execute()
         {
-            var allNetworks = _cinemaNetworksSettings.GetAllNetworks();
+            var allNetworks = _cinemaNetworksSettings.GetAllElements();
 
             foreach (var cinemaNetwork in allNetworks)
             {

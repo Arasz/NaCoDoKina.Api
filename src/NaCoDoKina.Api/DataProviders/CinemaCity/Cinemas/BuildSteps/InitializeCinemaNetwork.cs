@@ -1,5 +1,5 @@
 ﻿using ApplicationCore.Results;
-using NaCoDoKina.Api.DataProviders.EntityBuilder;
+using NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps;
 using NaCoDoKina.Api.Entities.Cinemas;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using NaCoDoKina.Api.Repositories;

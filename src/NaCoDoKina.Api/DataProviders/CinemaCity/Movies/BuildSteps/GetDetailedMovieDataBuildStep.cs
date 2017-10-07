@@ -1,6 +1,6 @@
-﻿using ApplicationCore.Results;
-using NaCoDoKina.Api.DataProviders.EntityBuilder;
-using NaCoDoKina.Api.DataProviders.Parsers;
+﻿using Microsoft.Extensions.Logging;
+using NaCoDoKina.Api.DataProviders.CinemaCity.Movies.Bindings;
+using NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps;
 using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using System;
@@ -9,34 +9,29 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
 {
-    public class GetDetailedMovieDataBuildStep : IBuildStep<Movie>
+    public class GetDetailedMovieDataBuildStep : GetWebPageDataBuildStep<Movie>
     {
-        private readonly IWebPageMapper<Movie> _webPageMapper;
         private readonly CinemaNetworksSettings _networksSettings;
-        public string Name => "Detailed information about movie";
+        public override string Name => "Detailed information about movie";
 
-        public int Position => 2;
+        public override int Position => 2;
 
-        public GetDetailedMovieDataBuildStep(IWebPageMapper<Movie> webPageMapper, CinemaNetworksSettings networksSettings)
+        public GetDetailedMovieDataBuildStep(MovieWebPageBinder movieWebPageBinder, CinemaNetworksSettings networksSettings, ILogger<GetDetailedMovieDataBuildStep> logger)
+            : base(movieWebPageBinder, logger)
         {
-            _webPageMapper = webPageMapper ?? throw new ArgumentNullException(nameof(webPageMapper));
             _networksSettings = networksSettings ?? throw new ArgumentNullException(nameof(networksSettings));
         }
 
-        public async Task<Result<Movie[]>> BuildMany(Movie[] entities)
+        /// <inheritdoc/>
+        protected override Task<string> GetWebPageUrl(Movie entity)
         {
-            var (networkName, _) = _networksSettings.CinemaCityNetwork;
+            var networkName = _networksSettings.CinemaCityNetwork.Name;
 
-            foreach (var movie in entities)
-            {
-                var movieUrl = movie.ExternalMovies
-                    .First(externalMovie => externalMovie.CinemaNetwork.Name == networkName)
-                    .MovieUrl;
+            var url = entity.ExternalMovies
+                .First(externalMovie => externalMovie.CinemaNetwork.Name == networkName)
+                .MovieUrl;
 
-                await _webPageMapper.MapAsync(movieUrl, movie);
-            }
-
-            return Result.Success(entities);
+            return Task.FromResult(url);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using ApplicationCore.Results;
 using AutoMapper;
-using NaCoDoKina.Api.DataProviders.EntityBuilder;
+using NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps;
 using NaCoDoKina.Api.Entities;
 using NaCoDoKina.Api.Entities.Cinemas;
 using NaCoDoKina.Api.Services;
