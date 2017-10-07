@@ -162,6 +162,7 @@ namespace NaCoDoKina.Api
         {
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
+                .Destructure.ByTransforming<Type>(type => type.Name)
                 .CreateLogger();
         }
 
