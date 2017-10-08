@@ -17,9 +17,7 @@ namespace NaCoDoKina.Api.Infrastructure.IoC.Modules
         protected override void Load(ContainerBuilder builder)
         {
             var angleSharpConfiguration = Configuration.Default
-                .WithDefaultLoader(setup => setup.IsResourceLoadingEnabled = true)
-                .WithJavaScript()
-                .WithCss();
+                .WithDefaultLoader();
 
             builder
                 .Register(context => BrowsingContext.New(angleSharpConfiguration))
