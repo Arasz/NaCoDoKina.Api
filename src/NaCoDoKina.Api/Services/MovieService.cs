@@ -14,14 +14,17 @@ namespace NaCoDoKina.Api.Services
 {
     public class MovieService : IMovieService
     {
+        private readonly IDisabledMovieService _disabledMovieService;
         private readonly ILogger<IMovieService> _logger;
         private readonly IRatingService _ratingService;
         private readonly IMapper _mapper;
         private readonly IMovieRepository _movieRepository;
         private readonly ICinemaService _cinemaService;
 
-        public MovieService(IMovieRepository movieRepository, ICinemaService cinemaService, IRatingService ratingService, IMapper mapper, ILogger<IMovieService> logger)
+        public MovieService(IMovieRepository movieRepository, IDisabledMovieService disabledMovieService,
+            ICinemaService cinemaService, IRatingService ratingService, IMapper mapper, ILogger<IMovieService> logger)
         {
+            _disabledMovieService = disabledMovieService ?? throw new ArgumentNullException(nameof(disabledMovieService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _ratingService = ratingService ?? throw new ArgumentNullException(nameof(ratingService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -29,7 +32,7 @@ namespace NaCoDoKina.Api.Services
             _cinemaService = cinemaService ?? throw new ArgumentNullException(nameof(cinemaService));
         }
 
-        public async Task<IEnumerable<long>> GetAllMoviesAsync(SearchArea searchArea)
+        public async Task<ICollection<long>> GetAllMoviesAsync(SearchArea searchArea)
         {
             var cinemas = await _cinemaService.GetCinemasInSearchAreaAsync(searchArea);
 
@@ -45,16 +48,17 @@ namespace NaCoDoKina.Api.Services
         {
             var currentDate = DateTime.Now;
 
-            DateTime DateAfterTravel(Cinema cinema)
-            {
-                return currentDate.Add(cinema.CinemaTravelInformation.Duration);
-            }
+            DateTime CalculateArrivalTime(Cinema cinema) => currentDate
+                .Add(cinema.CinemaTravelInformation.Duration);
 
             var availableMoviesIds = new List<long>();
             foreach (var cinema in cinemas)
             {
-                var movies = await _movieRepository.GetMoviesIdsPlayedInCinemaAsync(cinema.Id, DateAfterTravel(cinema));
-                availableMoviesIds.AddRange(movies);
+                var arrivalTime = CalculateArrivalTime(cinema);
+                var movies = await _movieRepository.GetMoviesForCinemaAsync(cinema.Id, arrivalTime);
+                var notDisabledMovies = await _disabledMovieService.FilterDisabledMoviesForCurrentUserAsync(movies);
+
+                availableMoviesIds.AddRange(notDisabledMovies);
             }
 
             var movieRatings = new List<(long MovieId, double Rating)>();
@@ -74,7 +78,9 @@ namespace NaCoDoKina.Api.Services
         {
             var movie = await _movieRepository.GetMovieAsync(id);
 
-            if (movie is null)
+            var isMovieDisabled = await _disabledMovieService.IsMovieDisabledForGivenUserAsync(id);
+
+            if (movie is null || isMovieDisabled)
                 throw new MovieNotFoundException(id);
 
             var mappedMovie = _mapper.Map<Movie>(movie);
@@ -84,17 +90,16 @@ namespace NaCoDoKina.Api.Services
 
         public async Task DeleteMovieAsync(long id)
         {
-            var deleted = await _movieRepository.SoftDeleteMovieAsync(id);
-
-            if (!deleted)
-                throw new MovieNotFoundException(id);
+            await _disabledMovieService.DisableMovieForCurrentUserAsync(id);
         }
 
         public async Task<MovieDetails> GetMovieDetailsAsync(long id)
         {
             var movieDetails = await _movieRepository.GetMovieDetailsAsync(id);
 
-            if (movieDetails is null)
+            var isMovieDisabled = await _disabledMovieService.IsMovieDisabledForGivenUserAsync(id);
+
+            if (movieDetails is null || isMovieDisabled)
                 throw new MovieDetailsNotFoundException(id);
 
             var mappedDetails = _mapper.Map<MovieDetails>(movieDetails);
@@ -106,7 +111,7 @@ namespace NaCoDoKina.Api.Services
             }
             catch (RatingNotFoundException e)
             {
-                _logger.LogWarning("Rating for movie {id} not found when getting a movie details. {@e}", id, e);
+                _logger.LogWarning("Rating for movie {MovieID} not found when getting a movie details. {@Exception}", id, e);
             }
 
             return mappedDetails;

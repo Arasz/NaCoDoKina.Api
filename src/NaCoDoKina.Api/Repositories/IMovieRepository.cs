@@ -8,13 +8,6 @@ namespace NaCoDoKina.Api.Repositories
     public interface IMovieRepository
     {
         /// <summary>
-        /// Marks movie as deleted for current user 
-        /// </summary>
-        /// <param name="movieId"> Movie id </param>
-        /// <returns> True if movie was marked as deleted </returns>
-        Task<bool> SoftDeleteMovieAsync(long movieId);
-
-        /// <summary>
         /// Deletes movie 
         /// </summary>
         /// <param name="movieId"> Movie id </param>
@@ -31,17 +24,9 @@ namespace NaCoDoKina.Api.Repositories
         /// <summary>
         /// Gets basic movie information by external id 
         /// </summary>
-        /// <param name="id"> Id in external system </param>
+        /// <param name="externalId"> Id in external system </param>
         /// <returns> Movie </returns>
-        Task<Movie> GetMovieByExternalIdAsync(string id);
-
-        /// <summary>
-        /// Gets movies played in cinema after date specified in parameter 
-        /// </summary>
-        /// <param name="cinemaId"> Cinema movieId </param>
-        /// <param name="laterThan"> Earlier show time </param>
-        /// <returns> Movies ids </returns>
-        Task<IEnumerable<long>> GetMoviesIdsPlayedInCinemaAsync(long cinemaId, DateTime laterThan);
+        Task<Movie> GetMovieByExternalIdAsync(string externalId);
 
         /// <summary>
         /// Gets movie details 
@@ -70,5 +55,13 @@ namespace NaCoDoKina.Api.Repositories
         /// <param name="movieDetails"></param>
         /// <returns> Movie details movieId (equal to movie movieId) </returns>
         Task<long> CreateMovieDetailsAsync(MovieDetails movieDetails);
+
+        /// <summary>
+        /// Gets movies played in cinema after specified date 
+        /// </summary>
+        /// <param name="cinemaId"> Cinema in which movies are played </param>
+        /// <param name="laterThan"> Earlier show time </param>
+        /// <returns> Movies ids </returns>
+        Task<IEnumerable<long>> GetMoviesForCinemaAsync(long cinemaId, DateTime laterThan);
     }
 }

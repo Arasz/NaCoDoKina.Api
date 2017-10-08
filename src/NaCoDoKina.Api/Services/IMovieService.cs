@@ -15,7 +15,7 @@ namespace NaCoDoKina.Api.Services
         /// </summary>
         /// <param name="searchArea"> Are in which movies are played </param>
         /// <returns> Shows ids sorted by estimated user rating </returns>
-        Task<IEnumerable<long>> GetAllMoviesAsync(SearchArea searchArea);
+        Task<ICollection<long>> GetAllMoviesAsync(SearchArea searchArea);
 
         /// <summary>
         /// Get movies basic information 

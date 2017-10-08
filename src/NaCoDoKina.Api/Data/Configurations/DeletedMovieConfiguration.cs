@@ -4,9 +4,9 @@ using NaCoDoKina.Api.Entities.Movies;
 
 namespace NaCoDoKina.Api.Data.Configurations
 {
-    public class DeletedMovieConfiguration : IEntityTypeConfiguration<DeletedMovies>
+    public class DeletedMovieConfiguration : IEntityTypeConfiguration<DisabledMovie>
     {
-        public void Configure(EntityTypeBuilder<DeletedMovies> builder)
+        public void Configure(EntityTypeBuilder<DisabledMovie> builder)
         {
             builder
                 .HasKey(mark => new { mark.MovieId, mark.UserId });
