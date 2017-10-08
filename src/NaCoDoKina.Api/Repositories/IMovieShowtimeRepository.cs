@@ -33,15 +33,23 @@ namespace NaCoDoKina.Api.Repositories
         /// <param name="movieId"> Movie id </param>
         /// <param name="laterThan"> Minimal show time </param>
         /// <returns> List of movie show times played in all cinemas </returns>
-        Task<IEnumerable<MovieShowtime>> GetMovieShowtimesAsync(long movieId, DateTime laterThan);
+        Task<IEnumerable<MovieShowtime>> GetShowtimesForMovieAsync(long movieId, DateTime laterThan);
+
+        /// <summary>
+        /// Returns all movie showtimes for cinema 
+        /// </summary>
+        /// <param name="cinemaId"> Movies are played in this cinema </param>
+        /// <param name="laterThan"> Minimal show time </param>
+        /// <returns> List of movie show times played in all cinemas </returns>
+        Task<IEnumerable<MovieShowtime>> GetShowtimesForCinemaAsync(long cinemaId, DateTime laterThan);
 
         /// <summary>
         /// Returns all show times for movie in given cinema 
         /// </summary>
-        /// <param name="movieId"> Movie id </param>
-        /// <param name="cinemaId"> Cinema id </param>
+        /// <param name="movieId"> Showtimes for this movie are retrieved </param>
+        /// <param name="cinemaId"> Movie is played in this cinema </param>
         /// <param name="laterThan"> Minimal show time </param>
         /// <returns> List of movie show times played in given cinema </returns>
-        Task<IEnumerable<MovieShowtime>> GetMovieShowtimesForCinemaAsync(long movieId, long cinemaId, DateTime laterThan);
+        Task<IEnumerable<MovieShowtime>> GetShowtimesForCinemaAndMovieAsync(long movieId, long cinemaId, DateTime laterThan);
     }
 }

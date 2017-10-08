@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using NaCoDoKina.Api.Data;
 using NaCoDoKina.Api.Entities.Movies;
-using NaCoDoKina.Api.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +11,17 @@ namespace NaCoDoKina.Api.Repositories
 {
     public class MovieRepository : IMovieRepository
     {
+        private readonly ICacheManager<MovieDetails> _movieDetailsCacheManager;
+        private readonly IMovieShowtimeRepository _movieShowtimeRepository;
         private readonly ICacheManager<Movie> _movieCacheManager;
-        private readonly IUserService _userService;
         private readonly ApplicationContext _applicationContext;
 
-        public MovieRepository(ApplicationContext applicationContext, IUserService userService, ICacheManager<Movie> movieCacheManager)
+        public MovieRepository(ApplicationContext applicationContext, IMovieShowtimeRepository movieShowtimeRepository,
+            ICacheManager<Movie> movieCacheManager, ICacheManager<MovieDetails> movieDetailsCacheManager)
         {
+            _movieDetailsCacheManager = movieDetailsCacheManager ?? throw new ArgumentNullException(nameof(movieDetailsCacheManager));
+            _movieShowtimeRepository = movieShowtimeRepository ?? throw new ArgumentNullException(nameof(movieShowtimeRepository));
             _movieCacheManager = movieCacheManager ?? throw new ArgumentNullException(nameof(movieCacheManager));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
         }
 
@@ -41,56 +43,22 @@ namespace NaCoDoKina.Api.Repositories
             _applicationContext.Remove(movieToDelete);
             _applicationContext.Remove(movieDetails);
 
-            var deletedMovies = _applicationContext.DeletedMovies
+            var deletedMovies = _applicationContext.DisabledMovies
                 .Where(mark => mark.MovieId == movieId);
 
             _applicationContext.RemoveRange(deletedMovies);
 
             await _applicationContext.SaveChangesAsync();
 
-            _movieCacheManager.Remove(movieId.ToString());
+            var stringId = movieId.ToString();
+            _movieCacheManager.Remove(stringId);
+            _movieDetailsCacheManager.Remove(stringId);
 
             return true;
-        }
-
-        public async Task<bool> SoftDeleteMovieAsync(long movieId)
-        {
-            var userId = _userService.GetCurrentUserId();
-
-            var movieExist = await _applicationContext.Movies.AnyAsync(movie => movie.Id == movieId);
-
-            if (!movieExist)
-                return false;
-
-            var markExist = await _applicationContext.DeletedMovies
-                .Where(mark => mark.UserId == userId)
-                .AnyAsync(mark => mark.MovieId == movieId);
-
-            if (markExist)
-                return true;
-
-            _applicationContext.DeletedMovies.Add(new DisabledMovie(movieId, userId));
-            await _applicationContext.SaveChangesAsync();
-
-            return true;
-        }
-
-        private async Task<bool> IsMovieSoftDeletedAsync(long id)
-        {
-            var userId = _userService.GetCurrentUserId();
-
-            return await _applicationContext.DeletedMovies
-                .Where(mark => mark.MovieId == id)
-                .Where(mark => mark.UserId == userId)
-                .AnyAsync();
         }
 
         public async Task<Movie> GetMovieAsync(long id)
         {
-            var isMovieSoftDeleted = await IsMovieSoftDeletedAsync(id);
-            if (isMovieSoftDeleted)
-                return default(Movie);
-
             var movie = _movieCacheManager.Get(id.ToString());
 
             if (movie is null)
@@ -120,36 +88,32 @@ namespace NaCoDoKina.Api.Repositories
             return movie;
         }
 
-        public async Task<IEnumerable<long>> GetMoviesIdsPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
+        public async Task<IEnumerable<long>> GetMoviesForCinemaAsync(long cinemaId, DateTime laterThan)
         {
-            var userId = _userService.GetCurrentUserId();
+            var showtimes = await _movieShowtimeRepository
+                .GetShowtimesForCinemaAsync(cinemaId, laterThan);
 
-            var markedAsDeletedMoviesIds = _applicationContext.DeletedMovies
-                .Where(mark => mark.UserId == userId)
-                .Select(mark => mark.MovieId)
-                .Distinct()
-                .ToHashSet();
+            var movies = showtimes
+                .Select(showtime => showtime.Movie.Id);
 
-            var allMoviesPlayedInCinema = await _applicationContext.MovieShowtimes
-                 .Where(showtime => showtime.ShowTime > laterThan)
-                 .Where(showtime => showtime.Cinema.Id == cinemaId)
-                 .Select(showtime => showtime.Movie.Id)
-                 .Except(markedAsDeletedMoviesIds)
-                 .ToArrayAsync();
-
-            return allMoviesPlayedInCinema;
+            return movies;
         }
 
         public async Task<MovieDetails> GetMovieDetailsAsync(long id)
         {
-            var isMovieSoftDeleted = await IsMovieSoftDeletedAsync(id);
-            if (isMovieSoftDeleted)
-                return default(MovieDetails);
+            var movieDetails = _movieDetailsCacheManager.Get(id.ToString());
 
-            return await _applicationContext.MovieDetails
-                .Include(details => details.MediaResources)
-                .Include(details => details.MovieReviews)
-                .SingleOrDefaultAsync(details => details.Id == id);
+            if (movieDetails is null)
+            {
+                movieDetails = await _applicationContext.MovieDetails
+                    .Include(details => details.MediaResources)
+                    .Include(details => details.MovieReviews)
+                    .SingleOrDefaultAsync(details => details.Id == id);
+
+                _movieDetailsCacheManager.Put(id.ToString(), movieDetails);
+            }
+
+            return movieDetails;
         }
 
         public async Task CreateMoviesAsync(IEnumerable<Movie> movies)

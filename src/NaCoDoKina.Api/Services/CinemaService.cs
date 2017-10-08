@@ -27,7 +27,7 @@ namespace NaCoDoKina.Api.Services
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<IEnumerable<Cinema>> GetCinemasPlayingMovieInSearchArea(long movieId, SearchArea searchArea)
+        public async Task<ICollection<Cinema>> GetCinemasPlayingMovieInSearchArea(long movieId, SearchArea searchArea)
         {
             var cinemas = await _cinemaRepository.GetAllCinemasForMovieAsync(movieId);
 
@@ -75,7 +75,7 @@ namespace NaCoDoKina.Api.Services
             return mappedCinemas;
         }
 
-        public async Task<IEnumerable<Cinema>> GetCinemasInSearchAreaAsync(SearchArea searchArea)
+        public async Task<ICollection<Cinema>> GetCinemasInSearchAreaAsync(SearchArea searchArea)
         {
             var cinemas = await _cinemaRepository.GetAllCinemas();
 

@@ -1,4 +1,5 @@
 ﻿using NaCoDoKina.Api.Data;
+using NaCoDoKina.Api.Repository.Database;
 
 namespace NaCoDoKina.Api.Repository
 {
@@ -10,5 +11,12 @@ namespace NaCoDoKina.Api.Repository
     public class ApplicationRepositoryTestBase<TRepository>
         : RepositoryTestBase<TRepository, ApplicationContext>
     {
+        protected override DbContextScope<ApplicationContext> CreateContextScope()
+        {
+            var contextScope = new DbContextScope<ApplicationContext>(InMemoryDatabaseScope);
+            Mock.Provide(contextScope.DbContext);
+            RepositoryUnderTest = Mock.Create<TRepository>();
+            return contextScope;
+        }
     }
 }

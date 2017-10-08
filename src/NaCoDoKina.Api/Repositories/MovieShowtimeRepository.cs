@@ -59,7 +59,7 @@ namespace NaCoDoKina.Api.Repositories
             await _applicationContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<MovieShowtime>> GetMovieShowtimesAsync(long movieId, DateTime laterThan)
+        public async Task<IEnumerable<MovieShowtime>> GetShowtimesForMovieAsync(long movieId, DateTime laterThan)
         {
             var showtimes = await _applicationContext.MovieShowtimes
                  .Include(showtime => showtime.Movie)
@@ -71,7 +71,7 @@ namespace NaCoDoKina.Api.Repositories
             return showtimes;
         }
 
-        public async Task<IEnumerable<MovieShowtime>> GetMovieShowtimesForCinemaAsync(long movieId, long cinemaId, DateTime laterThan)
+        public async Task<IEnumerable<MovieShowtime>> GetShowtimesForCinemaAndMovieAsync(long movieId, long cinemaId, DateTime laterThan)
         {
             var showtimes = await _applicationContext.MovieShowtimes
                 .Include(showtime => showtime.Movie)

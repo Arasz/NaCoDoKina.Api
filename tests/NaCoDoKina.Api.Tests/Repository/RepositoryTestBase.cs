@@ -18,16 +18,16 @@ namespace NaCoDoKina.Api.Repository
 
         protected Mock<ILogger<TRepository>> LoggerMock => Mock.Mock<ILogger<TRepository>>();
 
-        protected InMemoryDatabaseScope DatabaseScope { get; }
+        protected InMemoryDatabaseScope InMemoryDatabaseScope { get; }
 
-        protected DbContextScope<TDbContext> CreateContextScope()
+        protected virtual DbContextScope<TDbContext> CreateContextScope()
         {
-            return new DbContextScope<TDbContext>(DatabaseScope);
+            return new DbContextScope<TDbContext>(InMemoryDatabaseScope);
         }
 
         protected RepositoryTestBase()
         {
-            DatabaseScope = new InMemoryDatabaseScope();
+            InMemoryDatabaseScope = new InMemoryDatabaseScope();
             EnsureCreated();
         }
 
@@ -37,7 +37,7 @@ namespace NaCoDoKina.Api.Repository
 
             if (disposing)
             {
-                DatabaseScope.Dispose();
+                InMemoryDatabaseScope.Dispose();
             }
         }
 

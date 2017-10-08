@@ -52,7 +52,7 @@ namespace NaCoDoKina.Api.Services
                     .ToArray();
 
                 RepositoryMock
-                    .Setup(repository => repository.GetMovieShowtimesForCinemaAsync(movieId, cinemaId, laterThan))
+                    .Setup(repository => repository.GetShowtimesForCinemaAndMovieAsync(movieId, cinemaId, laterThan))
                     .ReturnsAsync(movieShowtimes);
 
                 InitializeMapping();
@@ -80,7 +80,7 @@ namespace NaCoDoKina.Api.Services
                 var movieShowtimes = Fixture.CreateMany<Entities.Movies.MovieShowtime>(0);
 
                 RepositoryMock
-                    .Setup(repository => repository.GetMovieShowtimesForCinemaAsync(movieId, cinemaId, laterThan))
+                    .Setup(repository => repository.GetShowtimesForCinemaAndMovieAsync(movieId, cinemaId, laterThan))
                     .ReturnsAsync(movieShowtimes);
 
                 InitializeMapping();
@@ -112,7 +112,7 @@ namespace NaCoDoKina.Api.Services
                     .ToArray();
 
                 RepositoryMock
-                    .Setup(repository => repository.GetMovieShowtimesAsync(movieId, laterThan))
+                    .Setup(repository => repository.GetShowtimesForMovieAsync(movieId, laterThan))
                     .ReturnsAsync(movieShowtimes);
 
                 InitializeMapping();
@@ -140,7 +140,7 @@ namespace NaCoDoKina.Api.Services
                 var movieShowtimes = Fixture.CreateMany<Entities.Movies.MovieShowtime>(0);
 
                 RepositoryMock
-                    .Setup(repository => repository.GetMovieShowtimesAsync(movieId, laterThan))
+                    .Setup(repository => repository.GetShowtimesForMovieAsync(movieId, laterThan))
                     .ReturnsAsync(movieShowtimes);
 
                 InitializeMapping();

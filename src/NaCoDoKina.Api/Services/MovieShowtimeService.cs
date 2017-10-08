@@ -26,7 +26,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<IEnumerable<MovieShowtime>> GetMovieShowtimesAsync(long movieId, DateTime laterThan)
         {
-            var showtimes = await _movieShowtimeRepository.GetMovieShowtimesAsync(movieId, laterThan);
+            var showtimes = await _movieShowtimeRepository.GetShowtimesForMovieAsync(movieId, laterThan);
 
             if (showtimes is null || !showtimes.Any())
                 throw new MovieShowtimeNotFoundException(movieId);
@@ -36,7 +36,7 @@ namespace NaCoDoKina.Api.Services
 
         public async Task<IEnumerable<MovieShowtime>> GetMovieShowtimesForCinemaAsync(long movieId, long cinemaId, DateTime laterThan)
         {
-            var showtimes = await _movieShowtimeRepository.GetMovieShowtimesForCinemaAsync(movieId, cinemaId, laterThan);
+            var showtimes = await _movieShowtimeRepository.GetShowtimesForCinemaAndMovieAsync(movieId, cinemaId, laterThan);
 
             if (showtimes is null || !showtimes.Any())
                 throw new MovieShowtimeNotFoundException(movieId);

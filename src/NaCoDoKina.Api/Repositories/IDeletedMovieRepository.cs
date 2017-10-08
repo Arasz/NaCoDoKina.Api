@@ -22,13 +22,22 @@ namespace NaCoDoKina.Api.Repositories
         /// </summary>
         /// <param name="userId"> User id </param>
         /// <returns> Disabled movies ids </returns>
-        Task<IEnumerable<long>> GetDisabledMoviesIdsForUser(long userId);
+        Task<IEnumerable<long>> GetDisabledMoviesIdsForUserAsync(long userId);
 
         /// <summary>
+        /// Deletes disabled movie (DisabledMovie entity) 
         /// </summary>
-        /// <param name="movieId"></param>
-        /// <param name="userId"></param>
+        /// <param name="movieId"> Movie disabled by user </param>
+        /// <param name="userId"> User which disabled movie </param>
         /// <returns></returns>
         Task<bool> DeleteDisabledMovieAsync(long movieId, long userId);
+
+        /// <summary>
+        /// Checks if user disabled given movie 
+        /// </summary>
+        /// <param name="movieId"> Movie disabled by user </param>
+        /// <param name="userId"> User which disabled movie </param>
+        /// <returns></returns>
+        Task<bool> IsMovieDisabledAsync(long movieId, long userId);
     }
 }
