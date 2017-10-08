@@ -9,7 +9,7 @@ using Xunit;
 
 namespace NaCoDoKina.Api.Repository
 {
-    public class DisabledMovieRepositoryTest : ApplicationRepositoryTestBase<IDisabledMovieRepository>
+    public class DisabledMovieRepositoryTest : ApplicationRepositoryTestBase<DisabledMovieRepository>
     {
         public class CreateDisabledMovieAsync : DisabledMovieRepositoryTest
         {

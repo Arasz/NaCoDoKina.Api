@@ -31,8 +31,7 @@ namespace NaCoDoKina.Api.Services
             RatingServiceMock = Mock.Mock<IRatingService>();
             CinemaServiceMock = Mock.Mock<ICinemaService>();
 
-            ServiceUnderTest = new MovieService(RepositoryMockObject, CinemaServiceMock.Object,
-                RatingServiceMock.Object, MapperMock.Object, LoggerMock.Object);
+            ServiceUnderTest = Mock.Create<MovieService>();
 
             PreConfigureMocks();
         }
@@ -51,6 +50,10 @@ namespace NaCoDoKina.Api.Services
                     Id = movie.Id,
                     Title = movie.Title,
                 }));
+
+            Mock.Mock<IDisabledMovieService>()
+                .Setup(service => service.FilterDisabledMoviesForCurrentUserAsync(It.IsAny<IEnumerable<long>>()))
+                .ReturnsAsync(new Func<IEnumerable<long>, ICollection<long>>(ids => ids.ToArray()));
 
             MapperMock
                 .Setup(mapper => mapper.Map<Entities.Movies.Movie>(It.IsAny<Movie>()))
@@ -146,6 +149,13 @@ namespace NaCoDoKina.Api.Services
                 {
                     return Task.FromResult(movieDetails.Id);
                 }
+
+                public async Task<IEnumerable<long>> GetMoviesForCinemaAsync(long cinemaId, DateTime laterThan)
+                {
+                    return _movieShowtimes
+                        .Where(showtime => showtime.Cinema.Id == cinemaId)
+                        .Select(showtime => showtime.Movie.Id);
+                }
             }
 
             protected readonly MovieRepositoryFake _movieRepositoryFake;
@@ -161,8 +171,9 @@ namespace NaCoDoKina.Api.Services
             {
                 _movieRepositoryFake = new MovieRepositoryFake();
 
-                ServiceUnderTest = new MovieService(_movieRepositoryFake, CinemaServiceMock.Object,
-                    RatingServiceMock.Object, MapperMock.Object, LoggerMock.Object);
+                Mock.Provide<IMovieRepository>(_movieRepositoryFake);
+
+                ServiceUnderTest = Mock.Create<MovieService>();
 
                 PreConfigureMocks();
             }
@@ -214,7 +225,7 @@ namespace NaCoDoKina.Api.Services
 
                 CinemaServiceMock
                     .Setup(service => service.GetCinemasInSearchAreaAsync(SearchArea))
-                    .Returns(() => Task.FromResult(Cinemas.AsEnumerable()));
+                    .ReturnsAsync(Cinemas);
 
                 //Act
                 var allMoviesId = await ServiceUnderTest.GetAllMoviesAsync(SearchArea);
@@ -233,10 +244,10 @@ namespace NaCoDoKina.Api.Services
 
                 CinemaServiceMock
                     .Setup(service => service.GetCinemasInSearchAreaAsync(SearchArea))
-                    .Returns(() => Task.FromResult(Cinemas.AsEnumerable()));
+                    .ReturnsAsync(Cinemas);
 
                 //Act
-                Func<Task<IEnumerable<long>>> action = () => ServiceUnderTest.GetAllMoviesAsync(SearchArea);
+                Func<Task<ICollection<long>>> action = () => ServiceUnderTest.GetAllMoviesAsync(SearchArea);
 
                 //Assert
                 action.ShouldThrow<MoviesNotFoundException>();
@@ -252,7 +263,7 @@ namespace NaCoDoKina.Api.Services
                     .Throws(new CinemasNotFoundException(SearchArea));
 
                 //Act
-                Func<Task<IEnumerable<long>>> action = () => ServiceUnderTest.GetAllMoviesAsync(SearchArea);
+                Func<Task<ICollection<long>>> action = () => ServiceUnderTest.GetAllMoviesAsync(SearchArea);
 
                 //Assert
                 action.ShouldThrow<CinemasNotFoundException>();
@@ -266,14 +277,14 @@ namespace NaCoDoKina.Api.Services
 
                 CinemaServiceMock
                     .Setup(service => service.GetCinemasInSearchAreaAsync(SearchArea))
-                    .Returns(() => Task.FromResult(Cinemas.AsEnumerable()));
+                    .ReturnsAsync(Cinemas);
 
                 RatingServiceMock
                     .Setup(service => service.GetMovieRating(It.IsAny<long>()))
                     .Throws(new RatingNotFoundException(1, 1));
 
                 //Act
-                Func<Task<IEnumerable<long>>> action = () => ServiceUnderTest.GetAllMoviesAsync(SearchArea);
+                Func<Task<ICollection<long>>> action = () => ServiceUnderTest.GetAllMoviesAsync(SearchArea);
 
                 //Assert
                 action.ShouldThrow<RatingNotFoundException>();
@@ -327,9 +338,10 @@ namespace NaCoDoKina.Api.Services
                 //Arrange
                 var movieId = 404L;
 
-                RepositoryMock
-                    .Setup(repository => repository.DisableMovieForUserAsync(movieId, TODO))
-                    .ReturnsAsync(true);
+                Mock.Mock<IDisabledMovieService>()
+                    .Setup(service => service.DisableMovieForCurrentUserAsync(movieId))
+                    .Returns(Task.CompletedTask)
+                    .Verifiable();
 
                 RepositoryMock
                     .Setup(repository => repository.GetMovieAsync(movieId))
@@ -341,23 +353,8 @@ namespace NaCoDoKina.Api.Services
 
                 //Assert
                 action.ShouldThrow<MovieNotFoundException>();
-            }
-
-            [Fact]
-            public void Should_throw_movie_not_found_exception_when_not_deleted()
-            {
-                //Arrange
-                var movieId = 404L;
-
-                RepositoryMock
-                    .Setup(repository => repository.DisableMovieForUserAsync(movieId, TODO))
-                    .Returns(() => Task.FromResult(false));
-
-                //Act
-                Func<Task> action = () => ServiceUnderTest.DeleteMovieAsync(movieId);
-
-                //Assert
-                action.ShouldThrow<MovieNotFoundException>();
+                Mock.Mock<IDisabledMovieService>()
+                    .Verify(s => s.DisableMovieForCurrentUserAsync(movieId));
             }
         }
 

@@ -158,7 +158,7 @@ namespace NaCoDoKina.Api.Services
                         .Returns(() => Task.FromResult(new List<Entities.Cinemas.Cinema>().AsEnumerable()));
 
                     //Act
-                    Func<Task<IEnumerable<Cinema>>> action = () =>
+                    Func<Task<ICollection<Cinema>>> action = () =>
                         ServiceUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, searchArea);
 
                     //Assert
@@ -174,7 +174,7 @@ namespace NaCoDoKina.Api.Services
                     var movieId = 69;
 
                     //Act
-                    Func<Task<IEnumerable<Cinema>>> action = () =>
+                    Func<Task<ICollection<Cinema>>> action = () =>
                         ServiceUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, searchArea);
 
                     //Assert
@@ -234,7 +234,7 @@ namespace NaCoDoKina.Api.Services
                     var searchArea = new SearchArea(location, 100);
 
                     //Act
-                    Func<Task<IEnumerable<Cinema>>> action = () => ServiceUnderTest.GetCinemasInSearchAreaAsync(searchArea);
+                    Func<Task<ICollection<Cinema>>> action = () => ServiceUnderTest.GetCinemasInSearchAreaAsync(searchArea);
 
                     //Assert
                     action.ShouldThrow<CinemasNotFoundException>();

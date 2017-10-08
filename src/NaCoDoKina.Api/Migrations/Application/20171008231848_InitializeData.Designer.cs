@@ -12,7 +12,7 @@ using System;
 namespace NaCoDoKina.Api.Migrations.Application
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20171004060004_InitializeData")]
+    [Migration("20171008231848_InitializeData")]
     partial class InitializeData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,6 +36,8 @@ namespace NaCoDoKina.Api.Migrations.Application
                     b.Property<string>("CinemaUrl");
 
                     b.Property<string>("ExternalId");
+
+                    b.Property<string>("GroupId");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -70,7 +72,7 @@ namespace NaCoDoKina.Api.Migrations.Application
                     b.ToTable("CinemaNetworks");
                 });
 
-            modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.DeletedMovies", b =>
+            modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.DisabledMovie", b =>
                 {
                     b.Property<long>("MovieId");
 
@@ -78,7 +80,7 @@ namespace NaCoDoKina.Api.Migrations.Application
 
                     b.HasKey("MovieId", "UserId");
 
-                    b.ToTable("DeletedMovies");
+                    b.ToTable("DisabledMovies");
                 });
 
             modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.ExternalMovie", b =>
@@ -129,6 +131,8 @@ namespace NaCoDoKina.Api.Migrations.Application
 
                     b.Property<string>("AgeLimit")
                         .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(null)
                         .HasMaxLength(100);
 
                     b.Property<string>("CrewDescription")
@@ -177,6 +181,10 @@ namespace NaCoDoKina.Api.Migrations.Application
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Available");
+
+                    b.Property<string>("BookingLink");
 
                     b.Property<long?>("CinemaId")
                         .IsRequired();

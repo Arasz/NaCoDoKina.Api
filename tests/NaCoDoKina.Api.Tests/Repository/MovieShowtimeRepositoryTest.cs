@@ -11,7 +11,7 @@ using Xunit;
 
 namespace NaCoDoKina.Api.Repository
 {
-    public class MovieShowtimeRepositoryTest : ApplicationRepositoryTestBase<IMovieShowtimeRepository>
+    public class MovieShowtimeRepositoryTest : ApplicationRepositoryTestBase<MovieShowtimeRepository>
     {
         public class CreateMovieShowtimesAsync : MovieShowtimeRepositoryTest
         {
@@ -57,10 +57,8 @@ namespace NaCoDoKina.Api.Repository
                     showtimes[i].Cinema = cinemas[i % 3];
                 }
 
-                using (var contextScope = CreateContextScope())
+                using (CreateContextScope())
                 {
-                    RepositoryUnderTest = new MovieShowtimeRepository(contextScope.DbContext, LoggerMock.Object);
-
                     //Act
                     await RepositoryUnderTest.CreateMovieShowtimesAsync(showtimes);
                 }
@@ -516,10 +514,8 @@ namespace NaCoDoKina.Api.Repository
                     await contextScope.DbContext.SaveChangesAsync();
                 }
 
-                using (var contextScope = CreateContextScope())
+                using (CreateContextScope())
                 {
-                    RepositoryUnderTest = new MovieShowtimeRepository(contextScope.DbContext, LoggerMock.Object);
-
                     //Act
                     var movieShowtimeId = await RepositoryUnderTest.CreateMovieShowtimeAsync(movieShowtime);
 

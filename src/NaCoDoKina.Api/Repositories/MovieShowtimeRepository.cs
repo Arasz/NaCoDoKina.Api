@@ -68,7 +68,7 @@ namespace NaCoDoKina.Api.Repositories
             var cacheKey = $"{nameof(movieId)}{movieId}";
             var showtimes = _cacheManager.Get(cacheKey);
 
-            if (showtimes is null)
+            if (showtimes is null || !showtimes.Any())
             {
                 showtimes = await GetShowtimesWithMovieAndCinema()
                     .Where(showtime => showtime.Movie.Id == movieId)
@@ -76,7 +76,7 @@ namespace NaCoDoKina.Api.Repositories
                     .ToArrayAsync();
 
                 _cacheManager.Put(cacheKey, showtimes);
-                _cacheManager.Expire(cacheKey, ExpirationMode.Absolute, TimeSpan.FromMinutes(5));
+                SetCacheExpireForShowtimes(cacheKey);
             }
 
             return showtimes;
@@ -94,18 +94,23 @@ namespace NaCoDoKina.Api.Repositories
             var cacheKey = $"{nameof(cinemaId)}{cinemaId}";
             var showtimes = _cacheManager.Get(cacheKey);
 
-            if (showtimes is null)
+            if (showtimes is null || !showtimes.Any())
             {
                 showtimes = await GetShowtimesWithMovieAndCinema()
                     .Where(showtime => showtime.Cinema.Id == cinemaId)
                     .Where(showtime => showtime.ShowTime > laterThan)
                     .ToArrayAsync();
 
-                _cacheManager.Put($"{nameof(cinemaId)}{cinemaId}", showtimes);
-                _cacheManager.Expire(cacheKey, ExpirationMode.Absolute, TimeSpan.FromMinutes(5));
+                _cacheManager.Put(cacheKey, showtimes);
+                SetCacheExpireForShowtimes(cacheKey);
             }
 
             return showtimes;
+        }
+
+        private void SetCacheExpireForShowtimes(string cacheKey)
+        {
+            _cacheManager.Expire(cacheKey, ExpirationMode.Absolute, TimeSpan.FromMinutes(5));
         }
 
         public async Task<IEnumerable<MovieShowtime>> GetShowtimesForCinemaAndMovieAsync(long movieId, long cinemaId, DateTime laterThan)
@@ -113,7 +118,7 @@ namespace NaCoDoKina.Api.Repositories
             var cacheKey = $"{nameof(cinemaId)}{cinemaId}{nameof(movieId)}{movieId}";
             var showtimes = _cacheManager.Get(cacheKey);
 
-            if (showtimes is null)
+            if (showtimes is null || !showtimes.Any())
             {
                 showtimes = await GetShowtimesWithMovieAndCinema()
                     .Where(showtime => showtime.Cinema.Id == cinemaId)
@@ -122,7 +127,7 @@ namespace NaCoDoKina.Api.Repositories
                     .ToArrayAsync();
 
                 _cacheManager.Put(cacheKey, showtimes);
-                _cacheManager.Expire(cacheKey, ExpirationMode.Absolute, TimeSpan.FromMinutes(5));
+                SetCacheExpireForShowtimes(cacheKey);
             }
 
             return showtimes;

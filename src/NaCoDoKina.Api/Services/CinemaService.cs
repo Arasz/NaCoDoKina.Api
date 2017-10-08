@@ -34,7 +34,7 @@ namespace NaCoDoKina.Api.Services
             return await MapAndFilter(searchArea, cinemas);
         }
 
-        private async Task<IEnumerable<Cinema>> MapAndFilter(SearchArea searchArea, IEnumerable<Entities.Cinemas.Cinema> cinemas)
+        private async Task<ICollection<Cinema>> MapAndFilter(SearchArea searchArea, IEnumerable<Entities.Cinemas.Cinema> cinemas)
         {
             var mappedCinemas = MapCinemas(cinemas);
 
@@ -82,7 +82,7 @@ namespace NaCoDoKina.Api.Services
             return await MapAndFilter(searchArea, cinemas);
         }
 
-        private async Task<IEnumerable<Cinema>> ExcludeOutsideCinemas(SearchArea searchArea, Cinema[] cinemas)
+        private async Task<ICollection<Cinema>> ExcludeOutsideCinemas(SearchArea searchArea, Cinema[] cinemas)
         {
             var travelInformationForCinemas = await GetTravelInformationForCinemasAsync(searchArea, cinemas);
 

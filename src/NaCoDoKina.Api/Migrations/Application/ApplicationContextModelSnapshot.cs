@@ -71,7 +71,7 @@ namespace NaCoDoKina.Api.Migrations.Application
                     b.ToTable("CinemaNetworks");
                 });
 
-            modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.DeletedMovies", b =>
+            modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.DisabledMovie", b =>
                 {
                     b.Property<long>("MovieId");
 
@@ -79,7 +79,7 @@ namespace NaCoDoKina.Api.Migrations.Application
 
                     b.HasKey("MovieId", "UserId");
 
-                    b.ToTable("DeletedMovies");
+                    b.ToTable("DisabledMovies");
                 });
 
             modelBuilder.Entity("NaCoDoKina.Api.Entities.Movies.ExternalMovie", b =>

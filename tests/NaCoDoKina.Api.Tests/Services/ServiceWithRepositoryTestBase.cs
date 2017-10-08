@@ -11,6 +11,11 @@ namespace NaCoDoKina.Api.Services
         protected Mock<ILogger<TService>> LoggerMock => Mock.Mock<ILogger<TService>>();
 
         protected Mock<IMapper> MapperMock => Mock.Mock<IMapper>();
+
+        protected ServiceTestBase()
+        {
+            ServiceUnderTest = Mock.Create<TService>();
+        }
     }
 
     public abstract class ServiceWithRepositoryTestBase<TService, TRepository> : ServiceTestBase<TService>

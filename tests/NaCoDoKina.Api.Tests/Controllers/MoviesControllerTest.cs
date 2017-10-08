@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using ApplicationCore.Results;
+using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,9 +11,7 @@ using NaCoDoKina.Api.Services;
 using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using ApplicationCore.Results;
 using Xunit;
 using Cinema = NaCoDoKina.Api.DataContracts.Cinemas.Cinema;
 using Location = NaCoDoKina.Api.DataContracts.Location;
@@ -166,7 +165,7 @@ namespace NaCoDoKina.Api.Controllers
 
             MovieServiceMock
                 .Setup(service => service.GetAllMoviesAsync(modelSearchArea))
-                .Returns(() => Task.FromResult(expectedShowsIds.AsEnumerable()));
+                .ReturnsAsync(expectedShowsIds);
 
             //Act
             var result = await ControllerUnderTest.GetAllMoviesAsync(apiSearchArea);
@@ -239,7 +238,7 @@ namespace NaCoDoKina.Api.Controllers
 
             CinemaServiceMock
                 .Setup(service => service.GetCinemasPlayingMovieInSearchArea(movieId, modelSearchArea))
-                .Returns(() => Task.FromResult(modelCinemas.AsEnumerable()));
+                .ReturnsAsync(modelCinemas);
 
             //Act
             var result = await ControllerUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, apiSearchArea);

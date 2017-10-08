@@ -77,7 +77,7 @@ namespace NaCoDoKina.Api
         private void ConfigureCache(IServiceCollection services)
         {
             services.AddCacheManagerConfiguration(builder => builder
-                .WithMicrosoftLogging(services)
+                .WithMicrosoftLogging(factory => factory.AddSerilog())
                 .WithMicrosoftMemoryCacheHandle()
                 .EnablePerformanceCounters()
                 .EnableStatistics()

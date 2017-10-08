@@ -24,7 +24,7 @@ namespace NaCoDoKina.Api.Migrations.Application
                 });
 
             migrationBuilder.CreateTable(
-                name: "DeletedMovies",
+                name: "DisabledMovies",
                 columns: table => new
                 {
                     MovieId = table.Column<long>(type: "int8", nullable: false),
@@ -32,7 +32,7 @@ namespace NaCoDoKina.Api.Migrations.Application
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DeletedMovies", x => new { x.MovieId, x.UserId });
+                    table.PrimaryKey("PK_DisabledMovies", x => new { x.MovieId, x.UserId });
                 });
 
             migrationBuilder.CreateTable(
@@ -70,6 +70,7 @@ namespace NaCoDoKina.Api.Migrations.Application
                     CinemaNetworkId = table.Column<long>(type: "int8", nullable: true),
                     CinemaUrl = table.Column<string>(type: "text", nullable: true),
                     ExternalId = table.Column<string>(type: "text", nullable: true),
+                    GroupId = table.Column<string>(type: "text", nullable: true),
                     Name = table.Column<string>(type: "varchar(80)", maxLength: 80, nullable: false),
                     Location_Latitude = table.Column<double>(type: "float8", nullable: false),
                     Location_Longitude = table.Column<double>(type: "float8", nullable: false)
@@ -163,6 +164,8 @@ namespace NaCoDoKina.Api.Migrations.Application
                 {
                     Id = table.Column<long>(type: "int8", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Available = table.Column<bool>(type: "bool", nullable: false),
+                    BookingLink = table.Column<string>(type: "text", nullable: true),
                     CinemaId = table.Column<long>(type: "int8", nullable: false),
                     Language = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     MovieId = table.Column<long>(type: "int8", nullable: false),
@@ -254,7 +257,7 @@ namespace NaCoDoKina.Api.Migrations.Application
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DeletedMovies");
+                name: "DisabledMovies");
 
             migrationBuilder.DropTable(
                 name: "ExternalMovie");
