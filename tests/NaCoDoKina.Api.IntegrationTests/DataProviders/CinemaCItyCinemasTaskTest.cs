@@ -10,7 +10,7 @@ using CinemaNetwork = NaCoDoKina.Api.Entities.Cinemas.CinemaNetwork;
 
 namespace NaCoDoKina.Api.IntegrationTests.DataProviders
 {
-    public class CinemasTaskTest : TaskTestBase<CinemasTask>
+    public class CinemaCityCinemasTaskTest : TaskTestBase<CinemaCityCinemasTask>
     {
         [Fact]
         public async Task Should_execute_task_and_save_all_cinemas_from_cinema_city_to_database()

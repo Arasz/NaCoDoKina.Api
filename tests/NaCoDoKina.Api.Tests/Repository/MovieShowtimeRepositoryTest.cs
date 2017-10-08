@@ -13,6 +13,66 @@ namespace NaCoDoKina.Api.Repository
 {
     public class MovieShowtimeRepositoryTest : ApplicationRepositoryTestBase<IMovieShowtimeRepository>
     {
+        public class CreateMovieShowtimesAsync : MovieShowtimeRepositoryTest
+        {
+            [Fact]
+            public async Task Should_add_showtimes()
+            {
+                //Arrange
+                var cinemas = Fixture
+                    .Build<Cinema>()
+                    .Without(cinema => cinema.Id)
+                    .CreateMany(3)
+                    .ToArray();
+
+                Fixture.Customize<MovieDetails>(composer =>
+                {
+                    return composer.Without(details => details.Id);
+                });
+
+                var movies = Fixture
+                    .Build<Movie>()
+                    .Without(movie => movie.Id)
+                    .CreateMany(5)
+                    .ToArray();
+
+                var showtimes = Fixture
+                    .Build<MovieShowtime>()
+                    .Without(showtime => showtime.Id)
+                    .Without(showtime => showtime.Cinema)
+                    .Without(showtime => showtime.Movie)
+                    .CreateMany(15)
+                    .ToArray();
+
+                for (var i = 0; i < showtimes.Length; i++)
+                {
+                    showtimes[i].Movie = movies[i % 5];
+                    showtimes[i].Cinema = cinemas[i % 3];
+                }
+
+                using (var contextScope = CreateContextScope())
+                {
+                    RepositoryUnderTest = new MovieShowtimeRepository(contextScope.DbContext, LoggerMock.Object);
+
+                    //Act
+                    await RepositoryUnderTest.CreateMovieShowtimesAsync(showtimes);
+                }
+
+                // Assert
+                using (var contextScope = CreateContextScope())
+                {
+                    contextScope.DbContext.MovieShowtimes
+                        .Should().HaveSameCount(showtimes);
+
+                    contextScope.DbContext.Movies
+                        .Should().HaveSameCount(movies);
+
+                    contextScope.DbContext.Cinemas
+                        .Should().HaveSameCount(cinemas);
+                }
+            }
+        }
+
         public class GetMovieShowtimesAsync : MovieShowtimeRepositoryTest
         {
             [Fact]
@@ -420,7 +480,7 @@ namespace NaCoDoKina.Api.Repository
             }
         }
 
-        public class AddMovieShowtimeAsync : MovieShowtimeRepositoryTest
+        public class CreateMovieShowtimeAsync : MovieShowtimeRepositoryTest
         {
             [Fact]
             public async Task Should_add_showtime_and_return_id()
@@ -454,7 +514,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = new MovieShowtimeRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
-                    var movieShowtimeId = await RepositoryUnderTest.AddMovieShowtimeAsync(movieShowtime);
+                    var movieShowtimeId = await RepositoryUnderTest.CreateMovieShowtimeAsync(movieShowtime);
 
                     //Assert
                     movieShowtimeId.Should().BePositive();

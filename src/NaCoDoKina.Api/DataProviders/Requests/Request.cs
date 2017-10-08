@@ -2,13 +2,13 @@
 {
     public class Request
     {
-        public string BaseUrl { get; }
+        public string Url { get; }
 
-        public Request(string baseUrl)
+        public Request(string url)
         {
-            BaseUrl = baseUrl;
+            Url = url;
         }
 
-        public virtual string BuildUrl() => BaseUrl;
+        public virtual string BuildUrl() => Url;
     }
 }

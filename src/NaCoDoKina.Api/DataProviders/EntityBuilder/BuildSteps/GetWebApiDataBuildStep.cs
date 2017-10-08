@@ -49,14 +49,14 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
         /// <returns></returns>
         protected virtual IRequestParameter[] CreateRequestParameters(TEntity[] entities, TContext context)
         {
-            return Task.FromResult(Array.Empty<IRequestParameter>());
+            return Array.Empty<IRequestParameter>();
         }
 
         public virtual async Task<Result<TEntity[]>> BuildMany(TEntity[] entities, TContext context)
         {
             using (Logger.BeginScope(nameof(BuildMany)))
             {
-                var requestParameters = await CreateRequestParameters(entities, context);
+                var requestParameters = CreateRequestParameters(entities, context);
 
                 Logger.LogDebug("Created {ParametersCount} request parameters {@RequestParameters}", requestParameters.Length, requestParameters.Cast<object>());
 

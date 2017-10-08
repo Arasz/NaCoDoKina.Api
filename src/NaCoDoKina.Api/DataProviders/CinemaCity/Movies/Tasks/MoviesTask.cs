@@ -2,7 +2,7 @@
 using NaCoDoKina.Api.DataProviders.EntityBuilder.Context;
 using NaCoDoKina.Api.DataProviders.Tasks;
 using NaCoDoKina.Api.Entities.Movies;
-using NaCoDoKina.Api.Infrastructure.Settings;
+using NaCoDoKina.Api.Infrastructure.Settings.Tasks;
 using NaCoDoKina.Api.Repositories;
 using System;
 using System.Threading.Tasks;

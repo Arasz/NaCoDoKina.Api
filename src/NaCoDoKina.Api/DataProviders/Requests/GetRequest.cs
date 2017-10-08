@@ -2,12 +2,8 @@
 {
     public class GetRequest : Request
     {
-        public string QueryString { get; set; }
-
-        public GetRequest(string baseUrl) : base(baseUrl)
+        public GetRequest(string url) : base(url)
         {
         }
-
-        public override string BuildUrl() => $"{BaseUrl}?{QueryString}";
     }
 }

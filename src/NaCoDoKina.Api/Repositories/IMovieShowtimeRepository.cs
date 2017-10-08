@@ -12,7 +12,14 @@ namespace NaCoDoKina.Api.Repositories
         /// </summary>
         /// <param name="showtime"> Movie showtime </param>
         /// <returns> Movie showtime id </returns>
-        Task<long> AddMovieShowtimeAsync(MovieShowtime showtime);
+        Task<long> CreateMovieShowtimeAsync(MovieShowtime showtime);
+
+        /// <summary>
+        /// Adds movie showtimes in one transaction 
+        /// </summary>
+        /// <param name="showtimes"> Movie showtimes </param>
+        /// <returns></returns>
+        Task CreateMovieShowtimesAsync(IEnumerable<MovieShowtime> showtimes);
 
         /// <summary>
         /// Deletes all showtimes before date given in parameter 

@@ -15,7 +15,7 @@ namespace NaCoDoKina.Api.Infrastructure.Extensions
 
         public static string ToChinaDate(this DateTime dateTime)
         {
-            return dateTime.ToString("yyyy-mm-dd");
+            return dateTime.ToString("yyyy-MM-dd");
         }
     }
 }

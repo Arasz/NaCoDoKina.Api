@@ -6,7 +6,7 @@ namespace NaCoDoKina.Api.DataProviders.Requests
     {
         public HttpContent Body { get; }
 
-        public PostRequest(string baseUrl, HttpContent body) : base(baseUrl)
+        public PostRequest(string url, HttpContent body) : base(url)
         {
             Body = body;
         }

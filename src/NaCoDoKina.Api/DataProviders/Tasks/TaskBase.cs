@@ -1,4 +1,4 @@
-﻿using NaCoDoKina.Api.Infrastructure.Settings;
+﻿using NaCoDoKina.Api.Infrastructure.Settings.Tasks;
 using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.Tasks

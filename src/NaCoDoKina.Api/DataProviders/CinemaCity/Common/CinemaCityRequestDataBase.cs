@@ -54,7 +54,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Common
 
                 Logger.LogDebug("Parsing completed with url {Url}", completeUrl);
 
-                return new GetRequest(completeUrl);
+                return new GetRequest(AbsoluteUrl(completeUrl));
             }
         }
     }

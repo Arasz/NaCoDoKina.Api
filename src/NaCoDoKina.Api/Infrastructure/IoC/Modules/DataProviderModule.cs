@@ -40,7 +40,12 @@ namespace NaCoDoKina.Api.Infrastructure.IoC.Modules
                 .AsSelf()
                 .AsImplementedInterfaces();
 
-            builder.RegisterGeneric(typeof(EntitiesBuilder<>))
+            builder.RegisterAssemblyTypes(ThisAssembly)
+                .Where(type => type.IsAssignableTo<IEntityBuilderContext>())
+                .AsImplementedInterfaces()
+                .AsSelf();
+
+            builder.RegisterGeneric(typeof(EntitiesBuilder<,>))
                 .AsImplementedInterfaces();
 
             builder.RegisterAssemblyTypes(ThisAssembly)
@@ -57,7 +62,8 @@ namespace NaCoDoKina.Api.Infrastructure.IoC.Modules
                 .SingleInstance();
 
             builder.RegisterAssemblyTypes(ThisAssembly)
-                .Where(type => type.IsAssignableTo<RequestParameter>())
+                .Where(type => type.IsAssignableTo<IRequestParameter>())
+                .Where(type => type != typeof(RequestParameter))
                 .AsSelf()
                 .AsImplementedInterfaces()
                 .SingleInstance();

@@ -20,7 +20,7 @@ namespace NaCoDoKina.Api.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<long> AddMovieShowtimeAsync(MovieShowtime showtime)
+        public async Task<long> CreateMovieShowtimeAsync(MovieShowtime showtime)
         {
             _applicationContext.Cinemas.Attach(showtime.Cinema);
             _applicationContext.Movies.Attach(showtime.Movie);
@@ -30,6 +30,23 @@ namespace NaCoDoKina.Api.Repositories
             await _applicationContext.SaveChangesAsync();
 
             return entityEntry.Entity.Id;
+        }
+
+        public async Task CreateMovieShowtimesAsync(IEnumerable<MovieShowtime> showtimes)
+        {
+            var cinemas = showtimes
+                .Select(showtime => showtime.Cinema)
+                .Distinct();
+            var movies = showtimes
+                .Select(showtime => showtime.Movie)
+                .Distinct();
+
+            _applicationContext.Cinemas.AttachRange(cinemas);
+            _applicationContext.Movies.AttachRange(movies);
+
+            _applicationContext.MovieShowtimes.AddRange(showtimes);
+
+            await _applicationContext.SaveChangesAsync();
         }
 
         public async Task DeleteAllBeforeDateAsync(DateTime limitDateTime)
