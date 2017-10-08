@@ -9,7 +9,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Showtimes.Requests
     public class GetMoviesPlayedInCinemaRequestData : CinemaCityRequestDataBase
     {
         public GetMoviesPlayedInCinemaRequestData(CinemaNetworksSettings cinemaNetworksSettings, IEnumerable<IRequestParameter> defaultRequestParameters, ILogger<GetMoviesPlayedInCinemaRequestData> logger)
-            : base("film-events/in-cinema/{CinemaId}/at-date/{ShowtimeDate}", defaultRequestParameters, cinemaNetworksSettings, logger)
+            : base("film-events/in-cinema/{Cinema}/at-date/{ShowtimeDate}", defaultRequestParameters, cinemaNetworksSettings, logger)
         {
         }
     }

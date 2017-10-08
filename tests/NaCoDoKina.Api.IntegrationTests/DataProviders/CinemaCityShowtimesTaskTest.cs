@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NaCoDoKina.Api.Data;
 using NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.Tasks;
+using NaCoDoKina.Api.DataProviders.CinemaCity.Movies.Tasks;
 using NaCoDoKina.Api.DataProviders.CinemaCity.Showtimes.Tasks;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using System.Linq;
@@ -35,7 +36,10 @@ namespace NaCoDoKina.Api.IntegrationTests.DataProviders
 
             var getCinemasTask = Services.GetService<CinemaCityCinemasTask>();
 
+            var getMoviesTask = Services.GetService<CinemaCityMoviesTask>();
+
             await getCinemasTask.Execute();
+            await getMoviesTask.Execute();
 
             var showtimesCount = context.MovieShowtimes.Count();
 
