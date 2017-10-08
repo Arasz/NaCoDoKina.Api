@@ -66,6 +66,9 @@ namespace NaCoDoKina.Api.Repositories
                 movie = await _applicationContext.Movies
                     .FindAsync(id);
 
+                if (movie is null)
+                    return default(Movie);
+
                 _movieCacheManager.Put(id.ToString(), movie);
             }
 
@@ -81,6 +84,9 @@ namespace NaCoDoKina.Api.Repositories
                     .Include(m => m.ExternalMovies)
                     .Where(m => m.ExternalMovies.Any(externalMovie => externalMovie.ExternalId == externalId))
                     .SingleOrDefaultAsync();
+
+                if (movie is null)
+                    return default(Movie);
 
                 _movieCacheManager.Put(externalId, movie);
             }
@@ -109,6 +115,9 @@ namespace NaCoDoKina.Api.Repositories
                     .Include(details => details.MediaResources)
                     .Include(details => details.MovieReviews)
                     .SingleOrDefaultAsync(details => details.Id == id);
+
+                if (movieDetails is null)
+                    return default(MovieDetails);
 
                 _movieDetailsCacheManager.Put(id.ToString(), movieDetails);
             }

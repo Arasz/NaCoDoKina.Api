@@ -69,7 +69,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Recommendation
             public async Task Should_return_failure_result_when_user_do_not_exist()
             {
                 //Arrange
-                var request = new RecommendationApiRequest(-55, 1);
+                var request = new RecommendationApiRequest(-9999999999, 1);
 
                 //Act
                 var result = await ServiceUnderTest.GetMovieRating(request);
