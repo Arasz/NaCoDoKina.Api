@@ -31,9 +31,9 @@ namespace NaCoDoKina.Api.Repositories
         /// <summary>
         /// Gets basic movie information by external id 
         /// </summary>
-        /// <param name="id"> Id in external system </param>
+        /// <param name="externalId"> Id in external system </param>
         /// <returns> Movie </returns>
-        Task<Movie> GetMovieByExternalIdAsync(string id);
+        Task<Movie> GetMovieByExternalIdAsync(string externalId);
 
         /// <summary>
         /// Gets movies played in cinema after date specified in parameter 

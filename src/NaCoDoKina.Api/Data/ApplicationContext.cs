@@ -16,7 +16,7 @@ namespace NaCoDoKina.Api.Data
 
         public DbSet<MovieShowtime> MovieShowtimes { get; set; }
 
-        public DbSet<DeletedMovies> DeletedMovies { get; set; }
+        public DbSet<DisabledMovie> DeletedMovies { get; set; }
 
         public DbSet<MovieDetails> MovieDetails { get; set; }
 

@@ -69,7 +69,7 @@ namespace NaCoDoKina.Api.Repositories
             if (markExist)
                 return true;
 
-            _applicationContext.DeletedMovies.Add(new DeletedMovies(movieId, userId));
+            _applicationContext.DeletedMovies.Add(new DisabledMovie(movieId, userId));
             await _applicationContext.SaveChangesAsync();
 
             return true;
