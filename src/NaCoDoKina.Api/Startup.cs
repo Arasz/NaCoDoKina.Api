@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
+using CacheManager.Core;
 using FluentValidation.AspNetCore;
 using Hangfire;
 using Hangfire.MemoryStorage;
@@ -57,6 +58,8 @@ namespace NaCoDoKina.Api
 
             ConfigureAutoMapper(services);
 
+            ConfigureCache(services);
+
             ConfigureHangfire(services);
 
             var builder = new ContainerBuilder();
@@ -65,6 +68,22 @@ namespace NaCoDoKina.Api
             ApplicationContainer = builder.Build();
 
             return new AutofacServiceProvider(ApplicationContainer);
+        }
+
+        /// <summary>
+        /// Cache configuration 
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureCache(IServiceCollection services)
+        {
+            services.AddCacheManagerConfiguration(builder => builder
+                .WithMicrosoftLogging(services)
+                .WithMicrosoftMemoryCacheHandle()
+                .EnablePerformanceCounters()
+                .EnableStatistics()
+                .WithExpiration(ExpirationMode.Sliding, TimeSpan.FromSeconds(5)));
+
+            services.AddCacheManager();
         }
 
         /// <summary>

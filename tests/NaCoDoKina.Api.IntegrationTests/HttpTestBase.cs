@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
+using NaCoDoKina.Api.IntegrationTests.Api;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture;
 using Serilog;
@@ -13,7 +14,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Text;
 
-namespace NaCoDoKina.Api.IntegrationTests.Api
+namespace NaCoDoKina.Api.IntegrationTests
 {
     /// <inheritdoc/>
     /// <summary>
