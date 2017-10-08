@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using CacheManager.Core;
+using Microsoft.EntityFrameworkCore;
 using NaCoDoKina.Api.Data;
 using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Services;
@@ -12,15 +12,15 @@ namespace NaCoDoKina.Api.Repositories
 {
     public class MovieRepository : IMovieRepository
     {
+        private readonly ICacheManager<Movie> _movieCacheManager;
         private readonly IUserService _userService;
         private readonly ApplicationContext _applicationContext;
-        private readonly ILogger<IMovieRepository> _logger;
 
-        public MovieRepository(ApplicationContext applicationContext, IUserService userService, ILogger<IMovieRepository> logger)
+        public MovieRepository(ApplicationContext applicationContext, IUserService userService, ICacheManager<Movie> movieCacheManager)
         {
+            _movieCacheManager = movieCacheManager ?? throw new ArgumentNullException(nameof(movieCacheManager));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<bool> DeleteMovieAsync(long movieId)
@@ -47,6 +47,9 @@ namespace NaCoDoKina.Api.Repositories
             _applicationContext.RemoveRange(deletedMovies);
 
             await _applicationContext.SaveChangesAsync();
+
+            _movieCacheManager.Remove(movieId.ToString());
+
             return true;
         }
 
@@ -88,18 +91,33 @@ namespace NaCoDoKina.Api.Repositories
             if (isMovieSoftDeleted)
                 return default(Movie);
 
-            return await _applicationContext.Movies
-                .FindAsync(id);
+            var movie = _movieCacheManager.Get(id.ToString());
+
+            if (movie is null)
+            {
+                movie = await _applicationContext.Movies
+                    .FindAsync(id);
+
+                _movieCacheManager.Put(id.ToString(), movie);
+            }
+
+            return movie;
         }
 
-        public async Task<Movie> GetMovieByExternalIdAsync(string id)
+        public async Task<Movie> GetMovieByExternalIdAsync(string externalId)
         {
-            var foundMovie = await _applicationContext.Movies
-                .Include(movie => movie.ExternalMovies)
-                .Where(movie => movie.ExternalMovies.Any(externalMovie => externalMovie.ExternalId == id))
-                .SingleOrDefaultAsync();
+            var movie = _movieCacheManager.Get(externalId);
+            if (movie is null)
+            {
+                movie = await _applicationContext.Movies
+                    .Include(m => m.ExternalMovies)
+                    .Where(m => m.ExternalMovies.Any(externalMovie => externalMovie.ExternalId == externalId))
+                    .SingleOrDefaultAsync();
 
-            return foundMovie;
+                _movieCacheManager.Put(externalId, movie);
+            }
+
+            return movie;
         }
 
         public async Task<IEnumerable<long>> GetMoviesIdsPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
