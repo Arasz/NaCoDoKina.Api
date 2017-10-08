@@ -44,7 +44,7 @@ namespace NaCoDoKina.Api.Repository
                 using (var contextScope = CreateContextScope())
                 {
                     RepositoryUnderTest =
-                        new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                        new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
                     movieId = await RepositoryUnderTest.CreateMovieAsync(movie);
@@ -76,7 +76,7 @@ namespace NaCoDoKina.Api.Repository
                 using (var contextScope = CreateContextScope())
                 {
                     RepositoryUnderTest =
-                        new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                        new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
                     await RepositoryUnderTest.CreateMoviesAsync(movies);
@@ -114,7 +114,7 @@ namespace NaCoDoKina.Api.Repository
                 using (var contextScope = CreateContextScope())
                 {
                     RepositoryUnderTest =
-                        new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                        new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
                     var addedDetailsId = await RepositoryUnderTest.CreateMovieDetailsAsync(movieDetails);
@@ -163,7 +163,7 @@ namespace NaCoDoKina.Api.Repository
                 using (var contextScope = CreateContextScope())
                 {
                     RepositoryUnderTest =
-                        new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                        new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
                     var addedDetailsId = await RepositoryUnderTest.CreateMovieDetailsAsync(movieDetails);
@@ -204,10 +204,10 @@ namespace NaCoDoKina.Api.Repository
                 using (var contextScope = CreateContextScope())
                 {
                     RepositoryUnderTest =
-                        new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                        new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
-                    var deleted = await RepositoryUnderTest.SoftDeleteMovieAsync(movie.Id);
+                    var deleted = await RepositoryUnderTest.DisableMovieForUserAsync(movie.Id, TODO);
 
                     //Assert
                     deleted.Should().BeTrue();
@@ -218,9 +218,9 @@ namespace NaCoDoKina.Api.Repository
                     contextScope.DbContext.Movies
                         .Any(m => m.Id == movie.Id)
                         .Should().BeTrue();
-                    contextScope.DbContext.DeletedMovies
+                    contextScope.DbContext.DisabledMovies
                         .Should().HaveCount(1);
-                    contextScope.DbContext.DeletedMovies
+                    contextScope.DbContext.DisabledMovies
                         .Should().ContainSingle(mark => mark.MovieId == movie.Id && mark.UserId == DefaultUserId);
                 }
             }
@@ -245,10 +245,10 @@ namespace NaCoDoKina.Api.Repository
                 using (var contextScope = CreateContextScope())
                 {
                     RepositoryUnderTest =
-                        new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                        new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
-                    var deleted = await RepositoryUnderTest.SoftDeleteMovieAsync(nonExistingId);
+                    var deleted = await RepositoryUnderTest.DisableMovieForUserAsync(nonExistingId, TODO);
 
                     //Assert
                     deleted.Should().BeFalse();
@@ -259,7 +259,7 @@ namespace NaCoDoKina.Api.Repository
                     contextScope.DbContext.Movies
                         .Any(m => m.Id == movie.Id)
                         .Should().BeTrue();
-                    contextScope.DbContext.DeletedMovies
+                    contextScope.DbContext.DisabledMovies
                         .Should().BeEmpty();
                 }
             }
@@ -278,21 +278,21 @@ namespace NaCoDoKina.Api.Repository
                     await contextScope.DbContext.SaveChangesAsync();
                 }
 
-                var deletedMovieMark = new DeletedMovies(movie.Id, DefaultUserId);
+                var deletedMovieMark = new DisabledMovie(movie.Id, DefaultUserId);
 
                 using (var contextScope = CreateContextScope())
                 {
-                    contextScope.DbContext.DeletedMovies.Add(deletedMovieMark);
+                    contextScope.DbContext.DisabledMovies.Add(deletedMovieMark);
                     await contextScope.DbContext.SaveChangesAsync();
                 }
 
                 using (var contextScope = CreateContextScope())
                 {
                     RepositoryUnderTest =
-                        new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                        new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                     //Act
-                    var deleted = await RepositoryUnderTest.SoftDeleteMovieAsync(movie.Id);
+                    var deleted = await RepositoryUnderTest.DisableMovieForUserAsync(movie.Id, TODO);
 
                     //Assert
                     deleted.Should().BeTrue();
@@ -303,9 +303,9 @@ namespace NaCoDoKina.Api.Repository
                     contextScope.DbContext.Movies
                         .Any(m => m.Id == movie.Id)
                         .Should().BeTrue();
-                    contextScope.DbContext.DeletedMovies
+                    contextScope.DbContext.DisabledMovies
                         .Should().HaveCount(1);
-                    contextScope.DbContext.DeletedMovies
+                    contextScope.DbContext.DisabledMovies
                         .Should()
                         .ContainSingle(mark =>
                             mark.MovieId == deletedMovieMark.MovieId && mark.UserId == DefaultUserId);
@@ -342,7 +342,7 @@ namespace NaCoDoKina.Api.Repository
             using (var contextScope = CreateContextScope())
             {
                 RepositoryUnderTest =
-                    new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                    new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                 //Act
                 var movieFromDb = await RepositoryUnderTest.GetMovieByExternalIdAsync(externalMovie.ExternalId);
@@ -379,7 +379,7 @@ namespace NaCoDoKina.Api.Repository
             using (var contextScope = CreateContextScope())
             {
                 RepositoryUnderTest =
-                    new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                    new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                 //Act
                 var movieFromDb = await RepositoryUnderTest.GetMovieByExternalIdAsync(nonExistingMovieId);
@@ -410,7 +410,7 @@ namespace NaCoDoKina.Api.Repository
             using (var contextScope = CreateContextScope())
             {
                 RepositoryUnderTest =
-                    new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                    new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                 //Act
                 var movieFromDb = await RepositoryUnderTest.GetMovieAsync(movie.Id);
@@ -442,7 +442,7 @@ namespace NaCoDoKina.Api.Repository
             using (var contextScope = CreateContextScope())
             {
                 RepositoryUnderTest =
-                    new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                    new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                 //Act
                 var movieFromDb = await RepositoryUnderTest.GetMovieAsync(nonExistingMovieId);
@@ -459,19 +459,19 @@ namespace NaCoDoKina.Api.Repository
             var movie = Fixture.Create<Movie>();
             var movieId = movie.Id;
 
-            var deletedMovieMark = new DeletedMovies(movieId, DefaultUserId);
+            var deletedMovieMark = new DisabledMovie(movieId, DefaultUserId);
 
             using (var contextScope = CreateContextScope())
             {
                 contextScope.DbContext.Movies.Add(movie);
-                contextScope.DbContext.DeletedMovies.Add(deletedMovieMark);
+                contextScope.DbContext.DisabledMovies.Add(deletedMovieMark);
                 await contextScope.DbContext.SaveChangesAsync();
             }
 
             using (var contextScope = CreateContextScope())
             {
                 RepositoryUnderTest =
-                    new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                    new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                 //Act
                 var movieFromDb = await RepositoryUnderTest.GetMovieAsync(movieId);
@@ -502,7 +502,7 @@ namespace NaCoDoKina.Api.Repository
             using (var contextScope = CreateContextScope())
             {
                 RepositoryUnderTest =
-                    new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                    new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                 //Act
                 var movieFromDb = await RepositoryUnderTest.GetMovieDetailsAsync(movie.Id);
@@ -532,7 +532,7 @@ namespace NaCoDoKina.Api.Repository
             using (var contextScope = CreateContextScope())
             {
                 RepositoryUnderTest =
-                    new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                    new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                 //Act
                 var movieFromDb = await RepositoryUnderTest.GetMovieDetailsAsync(nonExistingMovieId);
@@ -549,19 +549,19 @@ namespace NaCoDoKina.Api.Repository
             var movie = Fixture.Create<Movie>();
             var movieId = movie.Id;
 
-            var deletedMovieMark = new DeletedMovies(movieId, DefaultUserId);
+            var deletedMovieMark = new DisabledMovie(movieId, DefaultUserId);
 
             using (var contextScope = CreateContextScope())
             {
                 contextScope.DbContext.Movies.Add(movie);
-                contextScope.DbContext.DeletedMovies.Add(deletedMovieMark);
+                contextScope.DbContext.DisabledMovies.Add(deletedMovieMark);
                 await contextScope.DbContext.SaveChangesAsync();
             }
 
             using (var contextScope = CreateContextScope())
             {
                 RepositoryUnderTest =
-                    new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                    new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                 //Act
                 var movieFromDb = await RepositoryUnderTest.GetMovieDetailsAsync(movieId);
@@ -585,7 +585,7 @@ namespace NaCoDoKina.Api.Repository
             var deletedMovie = Fixture.Create<Movie>();
             var deletedMovieId = deletedMovie.Id;
 
-            var deleteMovieMark = new DeletedMovies(deletedMovieId, DefaultUserId);
+            var deleteMovieMark = new DisabledMovie(deletedMovieId, DefaultUserId);
 
             var cinema = Fixture.Create<Cinema>();
             var cinemaId = cinema.Id;
@@ -605,7 +605,7 @@ namespace NaCoDoKina.Api.Repository
                 contextScope.DbContext.MovieShowtimes.Add(movieShowtime);
                 contextScope.DbContext.Movies.Add(movie);
                 contextScope.DbContext.Movies.Add(deletedMovie);
-                contextScope.DbContext.DeletedMovies.Add(deleteMovieMark);
+                contextScope.DbContext.DisabledMovies.Add(deleteMovieMark);
 
                 await contextScope.DbContext.SaveChangesAsync();
             }
@@ -613,11 +613,11 @@ namespace NaCoDoKina.Api.Repository
             using (var contextScope = CreateContextScope())
             {
                 RepositoryUnderTest =
-                    new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                    new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                 //Act
                 var playedMoviesIds =
-                    await RepositoryUnderTest.GetMoviesIdsPlayedInCinemaAsync(cinemaId, DateTime.Now);
+                    await RepositoryUnderTest.GetNotDisabledMoviesForUserAndCinemaAsync(cinemaId, DateTime.Now);
 
                 //Assert
                 playedMoviesIds.Should().HaveCount(1);
@@ -650,11 +650,11 @@ namespace NaCoDoKina.Api.Repository
                 await contextScope.DbContext.SaveChangesAsync();
             }
 
-            var movieDeletedMark = new DeletedMovies(movie.Id, DefaultUserId);
+            var movieDeletedMark = new DisabledMovie(movie.Id, DefaultUserId);
 
             using (var contextScope = CreateContextScope())
             {
-                contextScope.DbContext.DeletedMovies.Add(movieDeletedMark);
+                contextScope.DbContext.DisabledMovies.Add(movieDeletedMark);
 
                 await contextScope.DbContext.SaveChangesAsync();
             }
@@ -662,7 +662,7 @@ namespace NaCoDoKina.Api.Repository
             using (var contextScope = CreateContextScope())
             {
                 RepositoryUnderTest =
-                    new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                    new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                 //Act
                 var deleted = await RepositoryUnderTest.DeleteMovieAsync(movie.Id);
@@ -677,7 +677,7 @@ namespace NaCoDoKina.Api.Repository
                     .Should().BeEmpty();
                 contextScope.DbContext.MovieDetails
                     .Should().BeEmpty();
-                contextScope.DbContext.DeletedMovies
+                contextScope.DbContext.DisabledMovies
                     .Should().BeEmpty();
             }
         }
@@ -699,7 +699,7 @@ namespace NaCoDoKina.Api.Repository
             using (var contextScope = CreateContextScope())
             {
                 RepositoryUnderTest =
-                    new MovieRepository(contextScope.DbContext, UserServiceMock.Object, LoggerMock.Object);
+                    new MovieRepository(contextScope.DbContext, LoggerMock.Object);
 
                 //Act
                 var deleted = await RepositoryUnderTest.DeleteMovieAsync(nonExistingMovie);

@@ -92,7 +92,7 @@ namespace NaCoDoKina.Api.Services
                     _movieShowtimes = data as List<MovieShowtime> ?? data.ToList();
                 }
 
-                public Task<bool> SoftDeleteMovieAsync(long movieId)
+                public Task<bool> DisableMovieForUserAsync(long movieId, long userId)
                 {
                     throw new NotImplementedException();
                 }
@@ -107,7 +107,7 @@ namespace NaCoDoKina.Api.Services
                     throw new NotImplementedException();
                 }
 
-                public async Task<Entities.Movies.Movie> GetMovieByExternalIdAsync(string id)
+                public async Task<Entities.Movies.Movie> GetMovieByExternalIdAsync(string externalId)
                 {
                     throw new NotImplementedException();
                 }
@@ -117,7 +117,7 @@ namespace NaCoDoKina.Api.Services
                     throw new NotImplementedException();
                 }
 
-                public Task<IEnumerable<long>> GetMoviesIdsPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
+                public Task<IEnumerable<long>> GetNotDisabledMoviesForUserAndCinemaAsync(long cinemaId, DateTime laterThan)
                 {
                     var moviesIds = _movieShowtimes
                         .Where(showtime => showtime.Cinema.Id == cinemaId)
@@ -328,7 +328,7 @@ namespace NaCoDoKina.Api.Services
                 var movieId = 404L;
 
                 RepositoryMock
-                    .Setup(repository => repository.SoftDeleteMovieAsync(movieId))
+                    .Setup(repository => repository.DisableMovieForUserAsync(movieId, TODO))
                     .ReturnsAsync(true);
 
                 RepositoryMock
@@ -350,7 +350,7 @@ namespace NaCoDoKina.Api.Services
                 var movieId = 404L;
 
                 RepositoryMock
-                    .Setup(repository => repository.SoftDeleteMovieAsync(movieId))
+                    .Setup(repository => repository.DisableMovieForUserAsync(movieId, TODO))
                     .Returns(() => Task.FromResult(false));
 
                 //Act

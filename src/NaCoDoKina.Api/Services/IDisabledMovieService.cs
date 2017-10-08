@@ -12,20 +12,20 @@ namespace NaCoDoKina.Api.Services
         /// Disables movie for current user 
         /// </summary>
         /// <param name="movieId"> Deleted movie id </param>
-        Task DisableMovieForCurrentUser(long movieId);
+        Task DisableMovieForCurrentUserAsync(long movieId);
 
         /// <summary>
         /// Returns only movies ids that are not disabled by current user 
         /// </summary>
         /// <param name="moviesIds"></param>
         /// <returns> Disabled movies ids </returns>
-        Task<IEnumerable<long>> FilterDisabledMoviesForCurrentUser(IEnumerable<long> moviesIds);
+        Task<ICollection<long>> FilterDisabledMoviesForCurrentUserAsync(IEnumerable<long> moviesIds);
 
         /// <summary>
         /// Checks if user disabled given movie 
         /// </summary>
         /// <param name="movieId"> Movie disabled by user </param>
         /// <returns></returns>
-        Task<bool> IsMovieDisabledForGivenUser(long movieId);
+        Task<bool> IsMovieDisabledForGivenUserAsync(long movieId);
     }
 }

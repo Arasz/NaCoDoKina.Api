@@ -56,7 +56,7 @@ namespace NaCoDoKina.Api.Services
             {
                 var arrivalTime = CalculateArrivalTime(cinema);
                 var movies = await _movieRepository.GetMoviesForCinemaAsync(cinema.Id, arrivalTime);
-                var notDisabledMovies = await _disabledMovieService.FilterDisabledMoviesForCurrentUser(movies);
+                var notDisabledMovies = await _disabledMovieService.FilterDisabledMoviesForCurrentUserAsync(movies);
 
                 availableMoviesIds.AddRange(notDisabledMovies);
             }
@@ -78,7 +78,7 @@ namespace NaCoDoKina.Api.Services
         {
             var movie = await _movieRepository.GetMovieAsync(id);
 
-            var isMovieDisabled = await _disabledMovieService.IsMovieDisabledForGivenUser(id);
+            var isMovieDisabled = await _disabledMovieService.IsMovieDisabledForGivenUserAsync(id);
 
             if (movie is null || isMovieDisabled)
                 throw new MovieNotFoundException(id);
@@ -90,14 +90,14 @@ namespace NaCoDoKina.Api.Services
 
         public async Task DeleteMovieAsync(long id)
         {
-            await _disabledMovieService.DisableMovieForCurrentUser(id);
+            await _disabledMovieService.DisableMovieForCurrentUserAsync(id);
         }
 
         public async Task<MovieDetails> GetMovieDetailsAsync(long id)
         {
             var movieDetails = await _movieRepository.GetMovieDetailsAsync(id);
 
-            var isMovieDisabled = await _disabledMovieService.IsMovieDisabledForGivenUser(id);
+            var isMovieDisabled = await _disabledMovieService.IsMovieDisabledForGivenUserAsync(id);
 
             if (movieDetails is null || isMovieDisabled)
                 throw new MovieDetailsNotFoundException(id);

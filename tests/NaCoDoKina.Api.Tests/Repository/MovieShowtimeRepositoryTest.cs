@@ -112,7 +112,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesAsync(movieId, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForMovieAsync(movieId, laterThan);
 
                     // Assert
                     result.Should().HaveCount(1);
@@ -153,7 +153,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesAsync(movieId, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForMovieAsync(movieId, laterThan);
 
                     // Assert
                     result.Should().HaveCount(0);
@@ -191,7 +191,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesAsync(movieId, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForMovieAsync(movieId, laterThan);
 
                     // Assert
                     result.Should().HaveCount(0);
@@ -237,7 +237,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesAsync(movie.Id, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForMovieAsync(movie.Id, laterThan);
 
                     // Assert
                     result.Should().HaveCount(showtimeCount);
@@ -288,7 +288,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesForCinemaAsync(movie.Id, cinema.Id, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForCinemaAndMovieAsync(movie.Id, cinema.Id, laterThan);
 
                     // Assert
                     result.Should().HaveCount(1);
@@ -338,7 +338,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesForCinemaAsync(movie.Id, cinema.Id, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForCinemaAndMovieAsync(movie.Id, cinema.Id, laterThan);
 
                     // Assert
                     result.Should().HaveCount(0);
@@ -378,7 +378,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesForCinemaAsync(movie.Id, cinema.Id, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForCinemaAndMovieAsync(movie.Id, cinema.Id, laterThan);
 
                     // Assert
                     result.Should().HaveCount(0);
@@ -427,7 +427,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesForCinemaAsync(movie.Id, cinema.Id, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForCinemaAndMovieAsync(movie.Id, cinema.Id, laterThan);
 
                     // Assert
                     result.Should().HaveCount(showtimeCount);
