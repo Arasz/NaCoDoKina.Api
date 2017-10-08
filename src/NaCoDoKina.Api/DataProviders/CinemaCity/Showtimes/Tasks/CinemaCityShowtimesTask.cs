@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.CinemaCity.Showtimes.Tasks
 {
-    public class ShowtimesTask : TaskBase
+    public class CinemaCityShowtimesTask : TaskBase
     {
         private readonly IMovieShowtimeRepository _movieShowtimeRepository;
         private readonly IEntitiesBuilder<MovieShowtime, MovieShowtimesContext> _entitiesBuilder;
         private readonly ICinemaRepository _cinemaRepository;
 
-        public ShowtimesTask(ICinemaRepository cinemaRepository, IMovieShowtimeRepository movieShowtimeRepository, IEntitiesBuilder<MovieShowtime, MovieShowtimesContext> entitiesBuilder, TasksSettings settings)
+        public CinemaCityShowtimesTask(ICinemaRepository cinemaRepository, IMovieShowtimeRepository movieShowtimeRepository, IEntitiesBuilder<MovieShowtime, MovieShowtimesContext> entitiesBuilder, TasksSettings settings)
             : base(settings)
         {
             _movieShowtimeRepository = movieShowtimeRepository ?? throw new ArgumentNullException(nameof(movieShowtimeRepository));
@@ -30,7 +30,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Showtimes.Tasks
 
             var allShowtimes = new List<MovieShowtime>();
 
-            var dateOfNextTaskRun = Settings.MovieShowtimeTask.NextOccurrence();
+            var dateOfNextTaskRun = Settings.ShowtimesTask.NextOccurrence();
 
             var showtimeDate = DateTime.Today;
 
@@ -38,7 +38,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Showtimes.Tasks
             {
                 foreach (var cinema in cinemas)
                 {
-                    var context = new MovieShowtimesContext(cinema.ExternalId, showtimeDate);
+                    var context = new MovieShowtimesContext(cinema, showtimeDate);
                     var showtimes = await _entitiesBuilder
                         .BuildMany(parameters: context);
                     allShowtimes.AddRange(showtimes);

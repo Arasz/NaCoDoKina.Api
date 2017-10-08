@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.Tasks
 {
-    public class MoviesTask : TaskBase
+    public class CinemaCityMoviesTask : TaskBase
     {
         private readonly IMovieRepository _movieRepository;
         private readonly IEntitiesBuilder<Movie, EmptyContext> _entitiesBuilder;
 
-        public MoviesTask(IMovieRepository movieRepository, IEntitiesBuilder<Movie, EmptyContext> entitiesBuilder, TasksSettings settings) : base(settings)
+        public CinemaCityMoviesTask(IMovieRepository movieRepository, IEntitiesBuilder<Movie, EmptyContext> entitiesBuilder, TasksSettings settings) : base(settings)
         {
             _movieRepository = movieRepository ?? throw new ArgumentNullException(nameof(movieRepository));
             _entitiesBuilder = entitiesBuilder ?? throw new ArgumentNullException(nameof(entitiesBuilder));

@@ -30,6 +30,16 @@ namespace NaCoDoKina.Api.Entities.Movies
         public Cinema Cinema { get; set; }
 
         /// <summary>
+        /// Link to booking page 
+        /// </summary>
+        public string BookingLink { get; set; }
+
+        /// <summary>
+        /// Are tickets for showtime available 
+        /// </summary>
+        public bool Available { get; set; }
+
+        /// <summary>
         /// Played movie 
         /// </summary>
         public Movie Movie { get; set; }

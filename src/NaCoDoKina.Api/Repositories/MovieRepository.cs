@@ -92,6 +92,16 @@ namespace NaCoDoKina.Api.Repositories
                 .FindAsync(id);
         }
 
+        public async Task<Movie> GetMovieByExternalIdAsync(string id)
+        {
+            var foundMovie = await _applicationContext.Movies
+                .Include(movie => movie.ExternalMovies)
+                .Where(movie => movie.ExternalMovies.Any(externalMovie => externalMovie.ExternalId == id))
+                .SingleOrDefaultAsync();
+
+            return foundMovie;
+        }
+
         public async Task<IEnumerable<long>> GetMoviesIdsPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
         {
             var userId = _userService.GetCurrentUserId();

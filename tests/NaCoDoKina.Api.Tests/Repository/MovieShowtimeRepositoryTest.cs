@@ -44,6 +44,13 @@ namespace NaCoDoKina.Api.Repository
                     .CreateMany(15)
                     .ToArray();
 
+                using (var contextScope = CreateContextScope())
+                {
+                    contextScope.DbContext.Movies.AddRange(movies);
+                    contextScope.DbContext.Cinemas.AddRange(cinemas);
+                    await contextScope.DbContext.SaveChangesAsync();
+                }
+
                 for (var i = 0; i < showtimes.Length; i++)
                 {
                     showtimes[i].Movie = movies[i % 5];

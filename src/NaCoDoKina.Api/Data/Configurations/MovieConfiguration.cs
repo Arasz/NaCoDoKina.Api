@@ -53,6 +53,7 @@ namespace NaCoDoKina.Api.Data.Configurations
                 .IsUnicode();
 
             builder.Property(movie => movie.AgeLimit)
+                .HasDefaultValue()
                 .IsRequired()
                 .HasMaxLength(100);
 

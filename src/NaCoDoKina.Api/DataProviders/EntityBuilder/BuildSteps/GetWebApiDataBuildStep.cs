@@ -38,8 +38,9 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
         /// Parses data received from web api to entities 
         /// </summary>
         /// <param name="content"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        protected abstract Task<TEntity[]> ParseDataToEntities(string content);
+        protected abstract Task<TEntity[]> ParseDataToEntities(string content, TContext context);
 
         /// <summary>
         /// Creates dynamic request parameters 
@@ -71,7 +72,7 @@ namespace NaCoDoKina.Api.DataProviders.EntityBuilder.BuildSteps
 
                 Logger.LogDebug("Parse received data to entities");
 
-                var parsedEntities = await ParseDataToEntities(result.Value);
+                var parsedEntities = await ParseDataToEntities(result.Value, context);
 
                 Logger.LogDebug("Data parsed {@ParsedEntities}", parsedEntities);
 

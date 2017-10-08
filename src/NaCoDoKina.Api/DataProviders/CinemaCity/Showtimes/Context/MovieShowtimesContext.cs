@@ -1,4 +1,5 @@
 ﻿using NaCoDoKina.Api.DataProviders.EntityBuilder;
+using NaCoDoKina.Api.Entities.Cinemas;
 using System;
 
 namespace NaCoDoKina.Api.DataProviders.CinemaCity.Showtimes.Context
@@ -8,13 +9,13 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Showtimes.Context
     /// </summary>
     public class MovieShowtimesContext : IEntityBuilderContext
     {
-        public MovieShowtimesContext(string cinemaId, DateTime showtimeDate)
+        public MovieShowtimesContext(Cinema cinema, DateTime showtimeDate)
         {
-            CinemaId = cinemaId;
+            Cinema = cinema;
             ShowtimeDate = showtimeDate;
         }
 
-        public string CinemaId { get; }
+        public Cinema Cinema { get; }
 
         public DateTime ShowtimeDate { get; }
     }

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using NaCoDoKina.Api.Data;
 using NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.Tasks;
-using NaCoDoKina.Api.DataProviders.CinemaCity.Showtimes.Tasks;
 using NaCoDoKina.Api.Infrastructure.Settings;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,10 +10,10 @@ using CinemaNetwork = NaCoDoKina.Api.Entities.Cinemas.CinemaNetwork;
 
 namespace NaCoDoKina.Api.IntegrationTests.DataProviders
 {
-    public class CinemaCityGetMovieShowtimeTaskTest : TaskTestBase<ShowtimesTask>
+    public class CinemaCityCinemasTaskTest : TaskTestBase<CinemaCityCinemasTask>
     {
         [Fact]
-        public async Task Should_save_all_showtimes_for_cinema_city_cinemas_in_provided_time_period()
+        public async Task Should_execute_task_and_save_all_cinemas_from_cinema_city_to_database()
         {
             // Arrange
             var context = GetDbContext<ApplicationContext>();
@@ -30,14 +29,7 @@ namespace NaCoDoKina.Api.IntegrationTests.DataProviders
 
             await context.SaveChangesAsync();
 
-            context.Cinemas.RemoveRange(context.Cinemas);
-            await context.SaveChangesAsync();
-
-            var getCinemasTask = Services.GetService<CinemaCityCinemasTask>();
-
-            await getCinemasTask.Execute();
-
-            var showtimesCount = context.MovieShowtimes.Count();
+            var cinemasCount = context.Cinemas.Count();
 
             // Act
 
@@ -45,9 +37,11 @@ namespace NaCoDoKina.Api.IntegrationTests.DataProviders
 
             // Assert
 
-            var newShowtimesCount = context.MovieShowtimes.Count();
+            var newCount = context.Cinemas.Count();
 
-            newShowtimesCount.Should().BeGreaterThan(showtimesCount);
+            newCount.Should().BeGreaterThan(cinemasCount);
+
+            //var id = BackgroundJob.Enqueue(() => task.Execute());
         }
     }
 }

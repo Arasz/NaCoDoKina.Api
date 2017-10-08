@@ -44,7 +44,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.BuildSteps
             public Cinema[] Cinemas { get; set; }
         }
 
-        protected override Task<Cinema[]> ParseDataToEntities(string responseContent)
+        protected override Task<Cinema[]> ParseDataToEntities(string responseContent, EmptyContext context)
         {
             var deserializedCinemas = SerializationService.Deserialize<CinemaCityResponse<Body>>(responseContent);
 

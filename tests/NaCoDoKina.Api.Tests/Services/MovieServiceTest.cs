@@ -107,6 +107,16 @@ namespace NaCoDoKina.Api.Services
                     throw new NotImplementedException();
                 }
 
+                public async Task<Entities.Movies.Movie> GetMovieByExternalIdAsync(string id)
+                {
+                    throw new NotImplementedException();
+                }
+
+                public async Task<IEnumerable<Entities.Movies.Movie>> GetMoviesByExternalIdsAsync(HashSet<string> externalIds)
+                {
+                    throw new NotImplementedException();
+                }
+
                 public Task<IEnumerable<long>> GetMoviesIdsPlayedInCinemaAsync(long cinemaId, DateTime laterThan)
                 {
                     var moviesIds = _movieShowtimes

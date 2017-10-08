@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using NaCoDoKina.Api.Infrastructure.Settings;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NaCoDoKina.Api.Infrastructure.Settings;
 
 namespace NaCoDoKina.Api.DataProviders.Bindings
 {
@@ -25,7 +25,7 @@ namespace NaCoDoKina.Api.DataProviders.Bindings
 
         public override string ToString()
         {
-            var errorBuilder = new StringBuilder($"Binding errors for type {nameof(TBinded)}");
+            var errorBuilder = new StringBuilder($"Binding errors for type {typeof(TBinded)}");
             errorBuilder.AppendLine();
 
             foreach (var propertySelector in _selectors)
@@ -33,7 +33,7 @@ namespace NaCoDoKina.Api.DataProviders.Bindings
                 var propertyName = propertySelector.PropertyName;
                 if (_bindingErrors.ContainsKey(propertyName))
                 {
-                    var errorLine = $"{propertyName} - {_bindingErrors[propertyName]} - {propertySelector.Selector}";
+                    var errorLine = $"{propertyName} - {_bindingErrors[propertyName]}";
                     errorBuilder.AppendLine(errorLine);
                 }
             }

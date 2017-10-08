@@ -125,7 +125,7 @@ namespace NaCoDoKina.Api.DataProviders.CinemaCity.Movies.BuildSteps
             };
         }
 
-        protected override async Task<Movie[]> ParseDataToEntities(string content)
+        protected override async Task<Movie[]> ParseDataToEntities(string content, EmptyContext context)
         {
             var deserializedMovies = SerializationService.Deserialize<CinemaCityResponse<Body>>(content);
 
