@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using CacheManager.Core;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using NaCoDoKina.Api.Data;
+using NaCoDoKina.Api.Entities.Cinemas;
 using NaCoDoKina.Api.Entities.Movies;
 using System;
 using System.Collections.Generic;
@@ -11,13 +13,13 @@ namespace NaCoDoKina.Api.Repositories
 {
     public class MovieShowtimeRepository : IMovieShowtimeRepository
     {
+        private readonly ICacheManager<MovieShowtime[]> _cacheManager;
         private readonly ApplicationContext _applicationContext;
-        private readonly ILogger<IMovieShowtimeRepository> _logger;
 
-        public MovieShowtimeRepository(ApplicationContext applicationContext, ILogger<IMovieShowtimeRepository> logger)
+        public MovieShowtimeRepository(ApplicationContext applicationContext, ICacheManager<MovieShowtime[]> cacheManager)
         {
+            _cacheManager = cacheManager ?? throw new ArgumentNullException(nameof(cacheManager));
             _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<long> CreateMovieShowtimeAsync(MovieShowtime showtime)
@@ -57,29 +59,71 @@ namespace NaCoDoKina.Api.Repositories
 
             _applicationContext.MovieShowtimes.RemoveRange(showtimesToDelete);
             await _applicationContext.SaveChangesAsync();
+
+            _cacheManager.Clear();
         }
 
         public async Task<IEnumerable<MovieShowtime>> GetShowtimesForMovieAsync(long movieId, DateTime laterThan)
         {
-            var showtimes = await _applicationContext.MovieShowtimes
-                 .Include(showtime => showtime.Movie)
-                 .Include(showtime => showtime.Cinema)
-                 .Where(showtime => showtime.Movie.Id == movieId)
-                 .Where(showtime => showtime.ShowTime > laterThan)
-                 .ToListAsync();
+            var cacheKey = $"{nameof(movieId)}{movieId}";
+            var showtimes = _cacheManager.Get(cacheKey);
+
+            if (showtimes is null)
+            {
+                showtimes = await GetShowtimesWithMovieAndCinema()
+                    .Where(showtime => showtime.Movie.Id == movieId)
+                    .Where(showtime => showtime.ShowTime > laterThan)
+                    .ToArrayAsync();
+
+                _cacheManager.Put(cacheKey, showtimes);
+                _cacheManager.Expire(cacheKey, ExpirationMode.Absolute, TimeSpan.FromMinutes(5));
+            }
+
+            return showtimes;
+        }
+
+        private IIncludableQueryable<MovieShowtime, Cinema> GetShowtimesWithMovieAndCinema()
+        {
+            return _applicationContext.MovieShowtimes
+                .Include(showtime => showtime.Movie)
+                .Include(showtime => showtime.Cinema);
+        }
+
+        public async Task<IEnumerable<MovieShowtime>> GetShowtimesForCinemaAsync(long cinemaId, DateTime laterThan)
+        {
+            var cacheKey = $"{nameof(cinemaId)}{cinemaId}";
+            var showtimes = _cacheManager.Get(cacheKey);
+
+            if (showtimes is null)
+            {
+                showtimes = await GetShowtimesWithMovieAndCinema()
+                    .Where(showtime => showtime.Cinema.Id == cinemaId)
+                    .Where(showtime => showtime.ShowTime > laterThan)
+                    .ToArrayAsync();
+
+                _cacheManager.Put($"{nameof(cinemaId)}{cinemaId}", showtimes);
+                _cacheManager.Expire(cacheKey, ExpirationMode.Absolute, TimeSpan.FromMinutes(5));
+            }
 
             return showtimes;
         }
 
         public async Task<IEnumerable<MovieShowtime>> GetShowtimesForCinemaAndMovieAsync(long movieId, long cinemaId, DateTime laterThan)
         {
-            var showtimes = await _applicationContext.MovieShowtimes
-                .Include(showtime => showtime.Movie)
-                .Include(showtime => showtime.Cinema)
-                .Where(showtime => showtime.Cinema.Id == cinemaId)
-                .Where(showtime => showtime.Movie.Id == movieId)
-                .Where(showtime => showtime.ShowTime > laterThan)
-                .ToListAsync();
+            var cacheKey = $"{nameof(cinemaId)}{cinemaId}{nameof(movieId)}{movieId}";
+            var showtimes = _cacheManager.Get(cacheKey);
+
+            if (showtimes is null)
+            {
+                showtimes = await GetShowtimesWithMovieAndCinema()
+                    .Where(showtime => showtime.Cinema.Id == cinemaId)
+                    .Where(showtime => showtime.Movie.Id == movieId)
+                    .Where(showtime => showtime.ShowTime > laterThan)
+                    .ToArrayAsync();
+
+                _cacheManager.Put(cacheKey, showtimes);
+                _cacheManager.Expire(cacheKey, ExpirationMode.Absolute, TimeSpan.FromMinutes(5));
+            }
 
             return showtimes;
         }
