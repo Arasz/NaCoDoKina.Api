@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
-namespace NaCoDoKina.Api
+namespace HangfireHost
 {
     public class Program
     {

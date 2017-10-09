@@ -4,9 +4,6 @@ using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using CacheManager.Core;
 using FluentValidation.AspNetCore;
-using Hangfire;
-using Hangfire.MemoryStorage;
-using Hangfire.PostgreSql;
 using Infrastructure.Data;
 using Infrastructure.Extensions;
 using Infrastructure.Identity;
@@ -61,8 +58,6 @@ namespace NaCoDoKina.Api
 
             ConfigureCache(services);
 
-            ConfigureHangfire(services);
-
             var builder = new ContainerBuilder();
             builder.Populate(services);
             builder.RegisterModule(new ApplicationModule(Configuration));
@@ -83,26 +78,6 @@ namespace NaCoDoKina.Api
                 .WithExpiration(ExpirationMode.Sliding, TimeSpan.FromMinutes(5)));
 
             services.AddCacheManager();
-        }
-
-        /// <summary>
-        /// Configuration for hangfire job system 
-        /// </summary>
-        /// <param name="services"></param>
-        private void ConfigureHangfire(IServiceCollection services)
-        {
-            var connectionString = ConnectionString("Jobs");
-            services.AddHangfire(cfg =>
-            {
-                if (Env.IsDevelopment())
-                {
-                    cfg.UseMemoryStorage();
-                }
-                else
-                {
-                    cfg.UseStorage(new PostgreSqlStorage(connectionString));
-                }
-            });
         }
 
         /// <summary>
@@ -245,12 +220,6 @@ namespace NaCoDoKina.Api
                 options.RoutePrefix = "documentation";
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "NaCoDoKina.APi V1");
             });
-
-            if (!Env.IsDevelopment())
-            {
-                app.UseHangfireDashboard();
-                app.UseHangfireServer();
-            }
 
             app.UseAuthentication();
             app.UseMvc();
