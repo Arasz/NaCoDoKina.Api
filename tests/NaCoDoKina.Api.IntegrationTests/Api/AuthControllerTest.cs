@@ -1,11 +1,11 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NaCoDoKina.Api.DataContracts.Authentication;
-using NaCoDoKina.Api.Infrastructure.Identity;
 using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
+using Infrastructure.Identity;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api

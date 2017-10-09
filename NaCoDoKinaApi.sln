@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaCoDoKina.Api.Tests", "tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationCore", "src\ApplicationCore\ApplicationCore.csproj", "{CDD4707F-CF1A-4BFD-9D52-D28BA83E5C43}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{8553B57F-1078-491B-8C8D-EA60370ADC8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{CDD4707F-CF1A-4BFD-9D52-D28BA83E5C43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDD4707F-CF1A-4BFD-9D52-D28BA83E5C43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDD4707F-CF1A-4BFD-9D52-D28BA83E5C43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8553B57F-1078-491B-8C8D-EA60370ADC8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8553B57F-1078-491B-8C8D-EA60370ADC8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8553B57F-1078-491B-8C8D-EA60370ADC8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8553B57F-1078-491B-8C8D-EA60370ADC8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{A106F4A4-FF6A-47DB-BEE6-401A68C62A2F} = {E68676EF-2369-4772-8B7B-03F9D303BEB4}
 		{A0047E98-7E91-46AD-A6C3-2B24D3D89729} = {E68676EF-2369-4772-8B7B-03F9D303BEB4}
 		{CDD4707F-CF1A-4BFD-9D52-D28BA83E5C43} = {1240A5F6-6AF4-43A9-823C-A3E95C552489}
+		{8553B57F-1078-491B-8C8D-EA60370ADC8D} = {1240A5F6-6AF4-43A9-823C-A3E95C552489}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3953E5A7-1708-45C4-BBCD-90E51615BB3B}

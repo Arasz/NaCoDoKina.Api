@@ -1,19 +1,18 @@
 ﻿using Autofac;
 using FluentAssertions;
 using NaCoDoKina.Api.IntegrationTests.Modules;
-using NaCoDoKina.Api.Models;
-using NaCoDoKina.Api.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Response;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding;
-using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
-using NaCoDoKina.Api.Infrastructure.Settings;
-using NaCoDoKina.Api.Models.Travel;
+using Infrastructure.Models.Travel;
+using Infrastructure.Services;
+using Infrastructure.Services.Google.DataContract.Directions;
+using Infrastructure.Services.Google.DataContract.Directions.Response;
+using Infrastructure.Services.Google.DataContract.Geocoding;
+using Infrastructure.Services.Google.Services;
+using Infrastructure.Settings;
 using Xunit;
-using Location = NaCoDoKina.Api.Models.Location;
+using Location = Infrastructure.Models.Location;
 
 namespace NaCoDoKina.Api.IntegrationTests.Services
 {

@@ -1,4 +1,4 @@
-﻿using NaCoDoKina.Api.Data;
+﻿using Infrastructure.Data;
 using NaCoDoKina.Api.Repository.Database;
 
 namespace NaCoDoKina.Api.Repository

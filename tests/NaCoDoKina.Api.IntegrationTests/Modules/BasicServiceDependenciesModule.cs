@@ -2,7 +2,6 @@
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Debug;
-using NaCoDoKina.Api.Services;
 using System.Net.Http;
 
 namespace NaCoDoKina.Api.IntegrationTests.Modules
@@ -26,7 +25,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Modules
 
             containerBuilder.Register(context => new MapperConfiguration(cfg =>
                 {
-                    cfg.AddProfiles(typeof(ITravelService).Assembly);
+                    cfg.AddProfiles(typeof(Startup).Assembly);
                 }))
                 .As<IConfigurationProvider>()
                 .AsSelf();

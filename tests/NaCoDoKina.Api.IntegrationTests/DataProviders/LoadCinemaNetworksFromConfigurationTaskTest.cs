@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using NaCoDoKina.Api.Data;
-using NaCoDoKina.Api.DataProviders.Common.CinemaNetworks;
 using System.Linq;
 using System.Threading.Tasks;
+using Infrastructure.Data;
+using Infrastructure.DataProviders.Common.CinemaNetworks;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.DataProviders

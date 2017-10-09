@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using NaCoDoKina.Api.DataProviders.Tasks;
+﻿using Infrastructure.DataProviders.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using NaCoDoKina.Api.IntegrationTests.Api;
 
 namespace NaCoDoKina.Api.IntegrationTests.DataProviders

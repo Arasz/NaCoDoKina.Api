@@ -3,7 +3,6 @@ using NaCoDoKina.Api.DataContracts;
 using NaCoDoKina.Api.DataContracts.Authentication;
 using NaCoDoKina.Api.DataContracts.Cinemas;
 using NaCoDoKina.Api.DataContracts.Movies;
-using NaCoDoKina.Api.Infrastructure.Identity;
 using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
 using Ploeh.AutoFixture;
 using System;
@@ -14,6 +13,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.Identity;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api

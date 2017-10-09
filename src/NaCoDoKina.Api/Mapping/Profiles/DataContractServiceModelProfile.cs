@@ -1,4 +1,8 @@
 ﻿using AutoMapper;
+using Infrastructure.Models;
+using Infrastructure.Models.Cinemas;
+using Infrastructure.Models.Movies;
+using Infrastructure.Models.Resources;
 
 namespace NaCoDoKina.Api.Mapping.Profiles
 {
@@ -10,28 +14,28 @@ namespace NaCoDoKina.Api.Mapping.Profiles
     {
         public DataContractServiceModelProfile()
         {
-            CreateMap<Models.Location, DataContracts.Location>()
+            CreateMap<Location, DataContracts.Location>()
                 .ReverseMap();
 
-            CreateMap<Models.Cinemas.Cinema, DataContracts.Cinemas.Cinema>()
+            CreateMap<Cinema, DataContracts.Cinemas.Cinema>()
                 .ReverseMap();
 
-            CreateMap<Models.Resources.ReviewLink, DataContracts.Resources.ReviewLink>()
+            CreateMap<ReviewLink, DataContracts.Resources.ReviewLink>()
                 .ReverseMap();
 
-            CreateMap<Models.Resources.MediaLink, DataContracts.Resources.MediaLink>()
+            CreateMap<MediaLink, DataContracts.Resources.MediaLink>()
                 .ReverseMap();
 
-            CreateMap<Models.Movies.Movie, DataContracts.Movies.Movie>()
+            CreateMap<Movie, DataContracts.Movies.Movie>()
                 .ReverseMap();
 
-            CreateMap<Models.Movies.MovieDetails, DataContracts.Movies.MovieDetails>()
+            CreateMap<MovieDetails, DataContracts.Movies.MovieDetails>()
                 .ReverseMap();
 
-            CreateMap<Models.Movies.MovieShowtime, DataContracts.Movies.MovieShowtime>()
+            CreateMap<MovieShowtime, DataContracts.Movies.MovieShowtime>()
                 .ReverseMap();
 
-            CreateMap<Models.SearchArea, DataContracts.SearchArea>()
+            CreateMap<SearchArea, DataContracts.SearchArea>()
                 .ReverseMap();
         }
     }

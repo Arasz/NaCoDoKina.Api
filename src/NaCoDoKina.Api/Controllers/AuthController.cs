@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.DataContracts.Authentication;
-using NaCoDoKina.Api.Models.Users;
-using NaCoDoKina.Api.Services;
 using System;
 using System.Threading.Tasks;
+using Infrastructure.Models.Users;
+using Infrastructure.Services;
 
 namespace NaCoDoKina.Api.Controllers
 {

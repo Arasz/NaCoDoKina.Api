@@ -1,9 +1,10 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NaCoDoKina.Api.Entities.Cinemas;
-using NaCoDoKina.Api.Repositories;
 using Ploeh.AutoFixture;
 using System.Threading.Tasks;
+using ApplicationCore.Entities.Cinemas;
+using ApplicationCore.Repositories;
+using Infrastructure.Repositories;
 using Xunit;
 
 namespace NaCoDoKina.Api.Repository

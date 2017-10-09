@@ -1,18 +1,18 @@
 ﻿using FluentAssertions;
 using Moq;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Response;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Response;
-using NaCoDoKina.Api.Infrastructure.Services.Google.Exceptions;
-using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
-using NaCoDoKina.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NaCoDoKina.Api.Models.Travel;
+using Infrastructure.Models.Travel;
+using Infrastructure.Services;
+using Infrastructure.Services.Google.DataContract.Directions.Request;
+using Infrastructure.Services.Google.DataContract.Directions.Response;
+using Infrastructure.Services.Google.DataContract.Geocoding.Request;
+using Infrastructure.Services.Google.DataContract.Geocoding.Response;
+using Infrastructure.Services.Google.Exceptions;
+using Infrastructure.Services.Google.Services;
 using Xunit;
-using Location = NaCoDoKina.Api.Models.Location;
+using Location = Infrastructure.Models.Location;
 
 namespace NaCoDoKina.Api.Services
 {
@@ -35,7 +35,7 @@ namespace NaCoDoKina.Api.Services
             {
                 Geometry = new Geometry
                 {
-                    Location = new Infrastructure.Services.Google.DataContract.Common.Location(longitude, latitude)
+                    Location = new global::Infrastructure.Services.Google.DataContract.Common.Location(longitude, latitude)
                 }
             };
 

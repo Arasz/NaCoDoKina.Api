@@ -1,12 +1,12 @@
 ﻿using CacheManager.Core;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NaCoDoKina.Api.Entities.Movies;
-using NaCoDoKina.Api.Repositories;
 using Ploeh.AutoFixture;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApplicationCore.Entities.Movies;
+using Infrastructure.Repositories;
 using Xunit;
 
 namespace NaCoDoKina.Api.Repository

@@ -1,12 +1,12 @@
 ﻿using Autofac;
 using FluentAssertions;
-using NaCoDoKina.Api.Infrastructure.Services.Recommendation;
-using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
-using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services;
-using NaCoDoKina.Api.Infrastructure.Settings;
 using NaCoDoKina.Api.IntegrationTests.Modules;
 using Ploeh.AutoFixture;
 using System.Threading.Tasks;
+using Infrastructure.Services.Recommendation;
+using Infrastructure.Services.Recommendation.DataContract;
+using Infrastructure.Services.Recommendation.Services;
+using Infrastructure.Settings;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Recommendation

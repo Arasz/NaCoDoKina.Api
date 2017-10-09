@@ -1,8 +1,8 @@
-﻿using FluentAssertions;
+﻿using ApplicationCore.Entities.Cinemas;
+using ApplicationCore.Entities.Movies;
+using FluentAssertions;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using NaCoDoKina.Api.Entities.Cinemas;
-using NaCoDoKina.Api.Entities.Movies;
-using NaCoDoKina.Api.Repositories;
 using Ploeh.AutoFixture;
 using System;
 using System.Linq;

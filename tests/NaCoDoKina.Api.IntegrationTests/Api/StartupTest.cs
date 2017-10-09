@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+﻿using ApplicationCore.Repositories;
+using AutoMapper;
 using FluentAssertions;
+using Infrastructure.DataProviders.CinemaCity.Cinemas.Tasks;
+using Infrastructure.Services;
+using Infrastructure.Services.Identity;
+using Infrastructure.Settings;
 using Microsoft.Extensions.DependencyInjection;
-using NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.Tasks;
-using NaCoDoKina.Api.Infrastructure.Services.Identity;
-using NaCoDoKina.Api.Infrastructure.Settings;
-using NaCoDoKina.Api.Repositories;
-using NaCoDoKina.Api.Services;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api

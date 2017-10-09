@@ -1,9 +1,9 @@
-﻿using NaCoDoKina.Api.Entities;
-using NaCoDoKina.Api.Entities.Cinemas;
-using NaCoDoKina.Api.Entities.Movies;
-using NaCoDoKina.Api.Entities.Resources;
-using Ploeh.AutoFixture;
+﻿using Ploeh.AutoFixture;
 using System;
+using ApplicationCore.Entities;
+using ApplicationCore.Entities.Cinemas;
+using ApplicationCore.Entities.Movies;
+using ApplicationCore.Entities.Resources;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
 {

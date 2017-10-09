@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.DataContracts.Authentication;
-using NaCoDoKina.Api.Infrastructure.Identity;
-using NaCoDoKina.Api.Repositories;
 using Ploeh.AutoFixture;
 using System;
 using System.Linq;
+using ApplicationCore.Repositories;
+using Infrastructure.Identity;
+using Infrastructure.Repositories;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
 {

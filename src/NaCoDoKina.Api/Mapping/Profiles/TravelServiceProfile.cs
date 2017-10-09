@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;
-using NaCoDoKina.Api.Models;
+using Infrastructure.Models;
+using Infrastructure.Models.Travel;
+using Infrastructure.Services.Google.DataContract.Directions.Request;
+using Infrastructure.Services.Google.DataContract.Geocoding.Request;
 using System.Linq;
-using NaCoDoKina.Api.Models.Travel;
-using TravelMode = NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request.TravelMode;
+using TravelMode = Infrastructure.Services.Google.DataContract.Directions.Request.TravelMode;
 
 namespace NaCoDoKina.Api.Mapping.Profiles
 {
@@ -12,7 +12,7 @@ namespace NaCoDoKina.Api.Mapping.Profiles
     {
         public TravelServiceProfile()
         {
-            CreateMap<Models.Travel.TravelMode, TravelMode>()
+            CreateMap<Infrastructure.Models.Travel.TravelMode, TravelMode>()
                 .ReverseMap();
 
             CreateMap<Location, Infrastructure.Services.Google.DataContract.Common.Location>()
@@ -26,7 +26,8 @@ namespace NaCoDoKina.Api.Mapping.Profiles
                         .ToArray();
 
                     return new Location(longitude: lngLat[0], latitude: lngLat[1]);
-                });
+                })
+                ;
 
             CreateMap<string, GeocodingApiRequest>()
                 .ConstructUsing(address => new GeocodingApiRequest(address));

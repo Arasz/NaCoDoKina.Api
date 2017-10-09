@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using ApplicationCore.Entities.Movies;
+using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using CacheManager.Core;
@@ -6,6 +7,11 @@ using FluentValidation.AspNetCore;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Hangfire.PostgreSql;
+using Infrastructure.Data;
+using Infrastructure.Extensions;
+using Infrastructure.Identity;
+using Infrastructure.IoC;
+using Infrastructure.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,11 +21,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
 using NaCoDoKina.Api.ActionFilters;
-using NaCoDoKina.Api.Data;
-using NaCoDoKina.Api.Infrastructure.Extensions;
-using NaCoDoKina.Api.Infrastructure.Identity;
-using NaCoDoKina.Api.Infrastructure.IoC;
-using NaCoDoKina.Api.Infrastructure.Settings;
 using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
@@ -130,7 +131,7 @@ namespace NaCoDoKina.Api
         /// <param name="services"></param>
         private void ConfigureAutoMapper(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(Movie), typeof(DataContracts.Movies.Movie), typeof(Infrastructure.Models.Movies.Movie));
         }
 
         /// <summary>

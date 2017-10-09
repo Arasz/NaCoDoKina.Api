@@ -1,12 +1,13 @@
 ﻿using FluentAssertions;
 using Moq;
-using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
-using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services;
-using NaCoDoKina.Api.Infrastructure.Settings;
 using Ploeh.AutoFixture;
 using System;
 using System.Threading.Tasks;
 using ApplicationCore.Results;
+using Infrastructure.Services;
+using Infrastructure.Services.Recommendation.DataContract;
+using Infrastructure.Services.Recommendation.Services;
+using Infrastructure.Settings;
 using Xunit;
 
 namespace NaCoDoKina.Api.Services

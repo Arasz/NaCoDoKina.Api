@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using NaCoDoKina.Api.Models;
+using Infrastructure.Models;
 
 namespace NaCoDoKina.Api.Validators
 {

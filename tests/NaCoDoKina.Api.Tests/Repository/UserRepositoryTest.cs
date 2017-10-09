@@ -6,11 +6,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NaCoDoKina.Api.Infrastructure.Identity;
-using NaCoDoKina.Api.Repositories;
 using Ploeh.AutoFixture;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ApplicationCore.Repositories;
+using Infrastructure.Identity;
+using Infrastructure.Repositories;
 using Xunit;
 
 namespace NaCoDoKina.Api.Repository

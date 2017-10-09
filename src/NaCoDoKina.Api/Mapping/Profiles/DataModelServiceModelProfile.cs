@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+﻿using ApplicationCore.Entities;
+using ApplicationCore.Entities.Cinemas;
+using ApplicationCore.Entities.Movies;
+using ApplicationCore.Entities.Resources;
+using AutoMapper;
 
 namespace NaCoDoKina.Api.Mapping.Profiles
 {
@@ -10,41 +14,41 @@ namespace NaCoDoKina.Api.Mapping.Profiles
     {
         public DataModelServiceModelProfile()
         {
-            CreateMap<Models.Location, Entities.Location>()
+            CreateMap<Infrastructure.Models.Location, Location>()
                  .ReverseMap();
 
-            CreateMap<string, Entities.Cinemas.CinemaNetwork>()
-                .ConstructUsing((networkName, context) => new Entities.Cinemas.CinemaNetwork
+            CreateMap<string, CinemaNetwork>()
+                .ConstructUsing((networkName, context) => new CinemaNetwork
                 {
                     Name = networkName
                 })
                 .ReverseMap()
                 .ConstructUsing(network => network.Name);
 
-            CreateMap<Models.Cinemas.Cinema, Entities.Cinemas.Cinema>()
+            CreateMap<Infrastructure.Models.Cinemas.Cinema, Cinema>()
                 .ReverseMap()
                 .ForMember(cinema => cinema.CinemaTravelInformation, cfg => cfg.Ignore())
                 .ForMember(cinema => cinema.NetworkName, cfg => cfg.MapFrom(cinema => cinema.CinemaNetwork.Name));
 
-            CreateMap<Models.Resources.ReviewLink, Entities.Resources.ReviewLink>()
+            CreateMap<Infrastructure.Models.Resources.ReviewLink, ReviewLink>()
                 .ReverseMap();
 
-            CreateMap<Models.Resources.MediaLink, Entities.Resources.MediaLink>()
+            CreateMap<Infrastructure.Models.Resources.MediaLink, MediaLink>()
                 .ReverseMap();
 
-            CreateMap<Models.Movies.Movie, Entities.Movies.Movie>()
+            CreateMap<Infrastructure.Models.Movies.Movie, Movie>()
                 .ForMember(movie => movie.ExternalMovies, cfg => cfg.Ignore())
                 .ReverseMap();
 
-            CreateMap<Models.Movies.MovieDetails, Entities.Movies.MovieDetails>()
+            CreateMap<Infrastructure.Models.Movies.MovieDetails, MovieDetails>()
                 .ReverseMap();
 
-            CreateMap<Models.Movies.MovieShowtime, Entities.Movies.MovieShowtime>()
-                .ForMember(showtime => showtime.Cinema, cfg => cfg.ResolveUsing((showtime, movieShowtime) => new Entities.Cinemas.Cinema
+            CreateMap<Infrastructure.Models.Movies.MovieShowtime, MovieShowtime>()
+                .ForMember(showtime => showtime.Cinema, cfg => cfg.ResolveUsing((showtime, movieShowtime) => new Cinema
                 {
                     Id = showtime.CinemaId,
                 }))
-                .ForMember(showtime => showtime.Movie, cfg => cfg.ResolveUsing((showtime, movieShowtime) => new Entities.Movies.Movie
+                .ForMember(showtime => showtime.Movie, cfg => cfg.ResolveUsing((showtime, movieShowtime) => new Movie
                 {
                     Id = showtime.MovieId,
                 }))

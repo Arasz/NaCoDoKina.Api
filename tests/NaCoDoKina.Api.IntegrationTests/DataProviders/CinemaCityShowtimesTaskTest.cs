@@ -1,14 +1,14 @@
 ﻿using FluentAssertions;
+using Infrastructure.Data;
+using Infrastructure.Settings;
 using Microsoft.Extensions.DependencyInjection;
-using NaCoDoKina.Api.Data;
-using NaCoDoKina.Api.DataProviders.CinemaCity.Cinemas.Tasks;
-using NaCoDoKina.Api.DataProviders.CinemaCity.Movies.Tasks;
-using NaCoDoKina.Api.DataProviders.CinemaCity.Showtimes.Tasks;
-using NaCoDoKina.Api.Infrastructure.Settings;
 using System.Linq;
 using System.Threading.Tasks;
+using Infrastructure.DataProviders.CinemaCity.Cinemas.Tasks;
+using Infrastructure.DataProviders.CinemaCity.Movies.Tasks;
+using Infrastructure.DataProviders.CinemaCity.Showtimes.Tasks;
 using Xunit;
-using CinemaNetwork = NaCoDoKina.Api.Entities.Cinemas.CinemaNetwork;
+using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 
 namespace NaCoDoKina.Api.IntegrationTests.DataProviders
 {

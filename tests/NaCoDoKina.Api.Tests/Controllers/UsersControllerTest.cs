@@ -3,13 +3,13 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NaCoDoKina.Api.DataContracts.Authentication;
-using NaCoDoKina.Api.Models;
 using NaCoDoKina.Api.Services;
 using Ploeh.AutoFixture;
 using System;
 using System.Threading.Tasks;
 using ApplicationCore.Results;
-using NaCoDoKina.Api.Models.Users;
+using Infrastructure.Models.Users;
+using Infrastructure.Services;
 using Xunit;
 
 namespace NaCoDoKina.Api.Controllers

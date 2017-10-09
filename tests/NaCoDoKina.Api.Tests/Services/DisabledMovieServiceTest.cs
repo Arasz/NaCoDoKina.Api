@@ -1,7 +1,8 @@
-﻿using FluentAssertions;
+﻿using ApplicationCore.Entities.Movies;
+using ApplicationCore.Repositories;
+using FluentAssertions;
+using Infrastructure.Services;
 using Moq;
-using NaCoDoKina.Api.Entities.Movies;
-using NaCoDoKina.Api.Repositories;
 using Ploeh.AutoFixture;
 using System;
 using System.Linq;
