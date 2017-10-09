@@ -1,8 +1,10 @@
-﻿using FluentAssertions;
+﻿using CacheManager.Core;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NaCoDoKina.Api.Entities.Movies;
 using NaCoDoKina.Api.Repositories;
 using Ploeh.AutoFixture;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -210,6 +212,40 @@ namespace NaCoDoKina.Api.Repository
                     result
                         .Should()
                         .BeFalse();
+                }
+            }
+
+            [Fact]
+            public async Task If_is_in_cache_should_return_from_cache()
+            {
+                // Arrange
+                var userId = Fixture.Create<long>();
+
+                var disabledMovies = Fixture.Build<DisabledMovie>()
+                    .With(movie => movie.UserId, userId)
+                    .CreateMany(5)
+                    .ToArray();
+
+                var disabledMoviesIds = disabledMovies
+                    .Select(movie => movie.MovieId)
+                    .ToHashSet();
+
+                Mock.Mock<ICacheManager<HashSet<long>>>()
+                    .Setup(manager => manager.Get(userId.ToString()))
+                    .Returns(disabledMoviesIds);
+
+                var movieId = disabledMoviesIds.First();
+
+                // Act
+
+                using (CreateContextScope())
+                {
+                    var result = await RepositoryUnderTest.IsMovieDisabledAsync(movieId, userId);
+
+                    // Assert
+                    result
+                        .Should()
+                        .BeTrue();
                 }
             }
         }

@@ -79,9 +79,7 @@ namespace NaCoDoKina.Api
             services.AddCacheManagerConfiguration(builder => builder
                 .WithMicrosoftLogging(factory => factory.AddSerilog())
                 .WithMicrosoftMemoryCacheHandle()
-                .EnablePerformanceCounters()
-                .EnableStatistics()
-                .WithExpiration(ExpirationMode.Sliding, TimeSpan.FromSeconds(5)));
+                .WithExpiration(ExpirationMode.Sliding, TimeSpan.FromMinutes(5)));
 
             services.AddCacheManager();
         }
