@@ -1,14 +1,14 @@
 ﻿using FluentAssertions;
-using NaCoDoKina.Api.Entities.Resources;
-using NaCoDoKina.Api.Mapping.Profiles;
 using Ploeh.AutoFixture;
 using System.Linq;
+using ApplicationCore.Entities.Resources;
+using Infrastructure.Mappings;
 using Xunit;
-using Cinema = NaCoDoKina.Api.Entities.Cinemas.Cinema;
-using Location = NaCoDoKina.Api.Models.Location;
-using Movie = NaCoDoKina.Api.Entities.Movies.Movie;
-using MovieDetails = NaCoDoKina.Api.Entities.Movies.MovieDetails;
-using MovieShowtime = NaCoDoKina.Api.Entities.Movies.MovieShowtime;
+using Cinema = ApplicationCore.Entities.Cinemas.Cinema;
+using Location = Infrastructure.Models.Location;
+using Movie = ApplicationCore.Entities.Movies.Movie;
+using MovieDetails = ApplicationCore.Entities.Movies.MovieDetails;
+using MovieShowtime = ApplicationCore.Entities.Movies.MovieShowtime;
 
 namespace NaCoDoKina.Api.Mappings
 {
@@ -23,10 +23,10 @@ namespace NaCoDoKina.Api.Mappings
                 var location = Fixture.Create<Location>();
 
                 //Act
-                var result = Mapper.Map<Entities.Location>(location);
+                var result = Mapper.Map<ApplicationCore.Entities.Location>(location);
 
                 //Assert
-                result.Should().BeOfType<Entities.Location>();
+                result.Should().BeOfType<ApplicationCore.Entities.Location>();
                 result.Longitude.Should().Be(location.Longitude);
                 result.Latitude.Should().Be(location.Latitude);
             }
@@ -35,7 +35,7 @@ namespace NaCoDoKina.Api.Mappings
             public void Should_return_model_location_given_entity_location()
             {
                 //Arrange
-                var location = new Entities.Location(1, 9);
+                var location = new ApplicationCore.Entities.Location(1, 9);
 
                 //Act
                 var result = Mapper.Map<Location>(location);
@@ -56,10 +56,10 @@ namespace NaCoDoKina.Api.Mappings
                 var movieDetails = Fixture.Create<MovieDetails>();
 
                 //Act
-                var result = Mapper.Map<Models.Movies.MovieDetails>(movieDetails);
+                var result = Mapper.Map<global::Infrastructure.Models.Movies.MovieDetails>(movieDetails);
 
                 //Assert
-                result.Should().BeOfType<Models.Movies.MovieDetails>();
+                result.Should().BeOfType<global::Infrastructure.Models.Movies.MovieDetails>();
                 result.Rating.Should().Be(0);
                 result.AgeLimit.Should().Be(movieDetails.AgeLimit);
                 result.Length.Should().Be(movieDetails.Length);
@@ -74,7 +74,7 @@ namespace NaCoDoKina.Api.Mappings
             public void Should_return_data_model_movie_details_given_model_movie_details()
             {
                 //Arrange
-                var movieDetails = Fixture.Create<Models.Movies.MovieDetails>();
+                var movieDetails = Fixture.Create<global::Infrastructure.Models.Movies.MovieDetails>();
 
                 //Act
                 var result = Mapper.Map<MovieDetails>(movieDetails);
@@ -100,10 +100,10 @@ namespace NaCoDoKina.Api.Mappings
                 var movieShowtime = Fixture.Create<MovieShowtime>();
 
                 //Act
-                var result = Mapper.Map<Models.Movies.MovieShowtime>(movieShowtime);
+                var result = Mapper.Map<global::Infrastructure.Models.Movies.MovieShowtime>(movieShowtime);
 
                 //Assert
-                result.Should().BeOfType<Models.Movies.MovieShowtime>();
+                result.Should().BeOfType<global::Infrastructure.Models.Movies.MovieShowtime>();
 
                 result.Language.Should().Be(movieShowtime.Language);
                 result.ShowType.Should().Be(movieShowtime.ShowType);
@@ -113,7 +113,7 @@ namespace NaCoDoKina.Api.Mappings
             public void Should_return_data_model_movie_showtime_given_model_movie_showtime()
             {
                 //Arrange
-                var movieShowtime = Fixture.Create<Models.Movies.MovieShowtime>();
+                var movieShowtime = Fixture.Create<global::Infrastructure.Models.Movies.MovieShowtime>();
 
                 //Act
                 var result = Mapper.Map<MovieShowtime>(movieShowtime);
@@ -136,20 +136,20 @@ namespace NaCoDoKina.Api.Mappings
                 var movie = Fixture.Create<Movie>();
 
                 //Act
-                var result = Mapper.Map<Models.Movies.Movie>(movie);
+                var result = Mapper.Map<global::Infrastructure.Models.Movies.Movie>(movie);
 
                 //Assert
-                result.Should().BeOfType<Models.Movies.Movie>();
+                result.Should().BeOfType<global::Infrastructure.Models.Movies.Movie>();
                 result.Title.Should().Be(movie.Title);
                 result.Id.Should().Be(movie.Id);
-                result.PosterUrl.Should().Be(movie.PosterUrl.Url);
+                result.PosterUrl.Should().Be(movie.PosterUrl);
             }
 
             [Fact]
             public void Should_return_data_model_movie_given_model_movie()
             {
                 //Arrange
-                var movie = Fixture.Create<Models.Movies.Movie>();
+                var movie = Fixture.Create<global::Infrastructure.Models.Movies.Movie>();
 
                 //Act
                 var result = Mapper.Map<Movie>(movie);
@@ -158,7 +158,7 @@ namespace NaCoDoKina.Api.Mappings
                 result.Should().BeOfType<Movie>();
                 result.Title.Should().Be(movie.Title);
                 result.Id.Should().Be(movie.Id);
-                result.PosterUrl.Url.Should().Be(movie.PosterUrl);
+                result.PosterUrl.Should().Be(movie.PosterUrl);
             }
         }
 
@@ -171,12 +171,12 @@ namespace NaCoDoKina.Api.Mappings
                 var reviewLink = Fixture.Create<ReviewLink>();
 
                 //Act
-                var result = Mapper.Map<Models.Resources.ReviewLink>(reviewLink);
+                var result = Mapper.Map<global::Infrastructure.Models.Resources.ReviewLink>(reviewLink);
 
                 //Assert
-                result.Should().BeOfType<Models.Resources.ReviewLink>();
+                result.Should().BeOfType<global::Infrastructure.Models.Resources.ReviewLink>();
                 result.Url.Should().Be(reviewLink.Url);
-                result.Logo.Url.Should().Be(reviewLink.Logo.Url);
+                result.LogoUrl.Should().Be(reviewLink.LogoUrl);
                 result.Rating.Should().Be(reviewLink.Rating);
             }
 
@@ -184,7 +184,7 @@ namespace NaCoDoKina.Api.Mappings
             public void Should_return_data_model_review_link_given_model_review_link()
             {
                 //Arrange
-                var reviewLink = Fixture.Create<Models.Resources.ReviewLink>();
+                var reviewLink = Fixture.Create<global::Infrastructure.Models.Resources.ReviewLink>();
 
                 //Act
                 var result = Mapper.Map<ReviewLink>(reviewLink);
@@ -193,7 +193,7 @@ namespace NaCoDoKina.Api.Mappings
                 result.Should().BeOfType<ReviewLink>();
                 result.Url.Should().Be(reviewLink.Url);
                 result.Url.Should().Be(reviewLink.Url);
-                result.Logo.Url.Should().Be(reviewLink.Logo.Url);
+                result.LogoUrl.Should().Be(reviewLink.LogoUrl);
                 result.Rating.Should().Be(reviewLink.Rating);
             }
         }
@@ -207,20 +207,20 @@ namespace NaCoDoKina.Api.Mappings
                 var mediaLink = Fixture.Create<MediaLink>();
 
                 //Act
-                var result = Mapper.Map<Models.Resources.MediaLink>(mediaLink);
+                var result = Mapper.Map<global::Infrastructure.Models.Resources.MediaLink>(mediaLink);
 
                 //Assert
-                result.Should().BeOfType<Models.Resources.MediaLink>();
+                result.Should().BeOfType<global::Infrastructure.Models.Resources.MediaLink>();
                 result.Url.Should().Be(mediaLink.Url);
                 result.MediaType.Should()
-                    .HaveFlag(Mapper.Map<Models.Resources.MediaType>(mediaLink.MediaType));
+                    .HaveFlag(Mapper.Map<global::Infrastructure.Models.Resources.MediaType>(mediaLink.MediaType));
             }
 
             [Fact]
             public void Should_return_data_model_resource_link_given_model_resource_link()
             {
                 //Arrange
-                var mediaLink = Fixture.Create<Models.Resources.MediaLink>();
+                var mediaLink = Fixture.Create<global::Infrastructure.Models.Resources.MediaLink>();
 
                 //Act
                 var result = Mapper.Map<MediaLink>(mediaLink);
@@ -229,37 +229,6 @@ namespace NaCoDoKina.Api.Mappings
                 result.Should().BeOfType<MediaLink>();
                 result.Url.Should().Be(mediaLink.Url);
                 result.MediaType.Should().HaveFlag(Mapper.Map<MediaType>(mediaLink.MediaType));
-            }
-        }
-
-        public class ResourceLinkTest : DataModelServiceModelProfileTest
-        {
-            [Fact]
-            public void Should_return_model_resource_link_given_data_resource_link()
-            {
-                //Arrange
-                var resourceLink = Fixture.Create<ResourceLink>();
-
-                //Act
-                var result = Mapper.Map<Models.Resources.ResourceLink>(resourceLink);
-
-                //Assert
-                result.Should().BeOfType<Models.Resources.ResourceLink>();
-                result.Url.Should().Be(resourceLink.Url);
-            }
-
-            [Fact]
-            public void Should_return_data_model_resource_link_given_model_resource_link()
-            {
-                //Arrange
-                var resourceLink = Fixture.Create<Models.Resources.ResourceLink>();
-
-                //Act
-                var result = Mapper.Map<ResourceLink>(resourceLink);
-
-                //Assert
-                result.Should().BeOfType<ResourceLink>();
-                result.Url.Should().Be(resourceLink.Url);
             }
         }
 
@@ -272,26 +241,25 @@ namespace NaCoDoKina.Api.Mappings
                 var cinema = Fixture.Create<Cinema>();
 
                 //Act
-                var result = Mapper.Map<Models.Cinemas.Cinema>(cinema);
+                var result = Mapper.Map<global::Infrastructure.Models.Cinemas.Cinema>(cinema);
 
                 //Assert
-                result.Should().BeOfType<Models.Cinemas.Cinema>();
+                result.Should().BeOfType<global::Infrastructure.Models.Cinemas.Cinema>();
                 result.Name.Should().Be(cinema.Name);
                 result.Address.Should().Be(cinema.Address);
                 result.Id.Should().Be(cinema.Id);
-                result.Website.Should().NotBeNull();
+                result.CinemaUrl.Should()
+                    .NotBeNullOrEmpty()
+                    .And
+                    .Be(cinema.CinemaUrl);
                 result.NetworkName.Should().Be(cinema.CinemaNetwork.Name);
-                //result.Website.Should()
-                //    .Match<ServiceUrl>(url => url.Name == cinema.Website.Name)
-                //    .And
-                //    .Match<ServiceUrl>(url => url.Website == cinema.Website.Website);
             }
 
             [Fact]
             public void Should_return_data_model_cinema_given_model_cinema()
             {
                 //Arrange
-                var cinema = Fixture.Create<Models.Cinemas.Cinema>();
+                var cinema = Fixture.Create<global::Infrastructure.Models.Cinemas.Cinema>();
 
                 //Act
                 var result = Mapper.Map<Cinema>(cinema);

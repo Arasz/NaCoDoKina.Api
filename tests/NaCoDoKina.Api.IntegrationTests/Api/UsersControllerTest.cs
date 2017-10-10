@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
+using IntegrationTestsCore;
+using IntegrationTestsCore.Extensions;
 using NaCoDoKina.Api.DataContracts.Authentication;
-using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
 using Ploeh.AutoFixture;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,7 +10,7 @@ using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api
 {
-    public class UsersControllerTest : HttpTestWithDatabase
+    public class UsersControllerTest : HttpTestWithDatabase<Startup>
     {
         public class CreateUser : UsersControllerTest
         {

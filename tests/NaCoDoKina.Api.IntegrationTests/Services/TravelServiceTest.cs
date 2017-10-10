@@ -1,55 +1,22 @@
-﻿using Autofac;
-using FluentAssertions;
-using NaCoDoKina.Api.IntegrationTests.Modules;
-using NaCoDoKina.Api.Models;
-using NaCoDoKina.Api.Services;
+﻿using FluentAssertions;
+using Infrastructure.Models.Travel;
+using Infrastructure.Services;
+using Infrastructure.Services.Google.DataContract.Directions.Response;
+using IntegrationTestsCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Response;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding;
-using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
-using NaCoDoKina.Api.Infrastructure.Settings;
-using NaCoDoKina.Api.Models.Travel;
 using Xunit;
-using Location = NaCoDoKina.Api.Models.Location;
+using Location = Infrastructure.Models.Location;
 
 namespace NaCoDoKina.Api.IntegrationTests.Services
 {
-    public class TravelServiceTest
+    public class TravelServiceTest : HttpTestBase<Startup>
     {
-        private readonly IContainer _container;
-
         public TravelServiceTest()
         {
-            var containerBuilder = new ContainerBuilder();
-
-            containerBuilder.RegisterAssemblyModules<BasicServiceDependenciesModule>(typeof(TravelServiceTest).Assembly);
-
-            containerBuilder.RegisterType<OnlyRequiredDirectionsRequestParser>()
-                .AsImplementedInterfaces();
-            containerBuilder.RegisterType<OnlyRequiredGeocodingRequestParser>()
-                .AsImplementedInterfaces();
-
-            containerBuilder.RegisterType<GoogleApiSettings>()
-                .AsSelf();
-
-            containerBuilder.RegisterGeneric(typeof(GoogleServiceDependencies<>))
-                .AsSelf();
-
-            containerBuilder.RegisterType<GoogleDirectionsService>()
-                .AsImplementedInterfaces();
-
-            containerBuilder.RegisterType<GoogleGeocodingService>()
-                .AsImplementedInterfaces();
-
-            containerBuilder.RegisterType<TravelService>()
-                .AsImplementedInterfaces();
-
-            _container = containerBuilder.Build();
-
-            ServiceUnderTest = _container.Resolve<ITravelService>();
+            ServiceUnderTest = Services.GetService<ITravelService>();
         }
 
         public ITravelService ServiceUnderTest { get; set; }

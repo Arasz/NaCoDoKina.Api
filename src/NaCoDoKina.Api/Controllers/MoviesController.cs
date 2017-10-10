@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Infrastructure.Exceptions;
+using Infrastructure.Extensions;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,9 +9,6 @@ using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.DataContracts;
 using NaCoDoKina.Api.DataContracts.Cinemas;
 using NaCoDoKina.Api.DataContracts.Movies;
-using NaCoDoKina.Api.Exceptions;
-using NaCoDoKina.Api.Infrastructure.Extensions;
-using NaCoDoKina.Api.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +54,7 @@ namespace NaCoDoKina.Api.Controllers
 
             try
             {
-                var modelSearchArea = _mapper.Map<Models.SearchArea>(searchArea);
+                var modelSearchArea = _mapper.Map<Infrastructure.Models.SearchArea>(searchArea);
                 var movies = await _movieService.GetAllMoviesAsync(modelSearchArea);
                 return Ok(movies);
             }
@@ -126,7 +126,7 @@ namespace NaCoDoKina.Api.Controllers
 
             try
             {
-                var modelSearchArea = _mapper.Map<Models.SearchArea>(searchArea);
+                var modelSearchArea = _mapper.Map<Infrastructure.Models.SearchArea>(searchArea);
 
                 var nearestCinemas = await _cinemaService.GetCinemasPlayingMovieInSearchArea(id, modelSearchArea);
 
@@ -165,7 +165,7 @@ namespace NaCoDoKina.Api.Controllers
                 var showtimes = await _movieShowtimeService.GetMovieShowtimesForCinemaAsync(movieId, cinemaId, minimalShowTime);
 
                 var mappedShowtimes = showtimes
-                    .Map<Models.Movies.MovieShowtime, MovieShowtime>(_mapper)
+                    .Map<Infrastructure.Models.Movies.MovieShowtime, MovieShowtime>(_mapper)
                     .ToArray();
 
                 return Ok(mappedShowtimes);

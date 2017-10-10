@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;
+using Infrastructure.Services.Google.DataContract.Geocoding;
+using Infrastructure.Services.Google.DataContract.Geocoding.Request;
 using Xunit;
 
 namespace NaCoDoKina.Api.Infrastructure.Google

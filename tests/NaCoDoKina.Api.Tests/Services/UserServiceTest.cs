@@ -1,28 +1,26 @@
 ﻿using AutoMapper;
 using FluentAssertions;
+using Infrastructure.Exceptions;
+using Infrastructure.Identity;
+using Infrastructure.Models.Users;
+using Infrastructure.Repositories;
+using Infrastructure.Services;
+using Infrastructure.Services.Identity;
 using Microsoft.AspNetCore.Identity;
 using Moq;
-using NaCoDoKina.Api.Exceptions;
-using NaCoDoKina.Api.Infrastructure.Identity;
-using NaCoDoKina.Api.Infrastructure.Services.Identity;
-using NaCoDoKina.Api.Models;
-using NaCoDoKina.Api.Repositories;
 using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NaCoDoKina.Api.Models.Users;
 using Xunit;
 
 namespace NaCoDoKina.Api.Services
 {
-    public class UserServiceTest : ServiceTestBase<IUserService>
+    public class UserServiceTest : ServiceTestBase<UserService>
     {
         public UserServiceTest()
         {
-            ServiceUnderTest = Mock.Create<UserService>();
-
             CreateUserMappingsMock();
         }
 

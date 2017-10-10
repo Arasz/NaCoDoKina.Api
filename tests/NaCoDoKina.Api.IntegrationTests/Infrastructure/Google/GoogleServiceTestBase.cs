@@ -1,9 +1,8 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
-using NaCoDoKina.Api.Infrastructure;
+﻿using Infrastructure.Services;
+using Infrastructure.Services.Google.Services;
+using Infrastructure.Settings;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Net.Http;
-using NaCoDoKina.Api.Infrastructure.Services;
-using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
-using NaCoDoKina.Api.Infrastructure.Settings;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
 {

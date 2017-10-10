@@ -1,6 +1,4 @@
-﻿using NaCoDoKina.Api.DataContracts.Resources;
-
-namespace NaCoDoKina.Api.DataContracts.Cinemas
+﻿namespace NaCoDoKina.Api.DataContracts.Cinemas
 {
     /// <summary>
     /// Information about cinema 
@@ -23,9 +21,9 @@ namespace NaCoDoKina.Api.DataContracts.Cinemas
         public string Address { get; set; }
 
         /// <summary>
-        /// Cinema website 
+        /// Cinema site url 
         /// </summary>
-        public ResourceLink Website { get; set; }
+        public string CinemaUrl { get; set; }
 
         /// <summary>
         /// Network name to which cinema belongs 

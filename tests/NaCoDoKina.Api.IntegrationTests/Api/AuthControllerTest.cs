@@ -1,8 +1,9 @@
 ﻿using FluentAssertions;
+using Infrastructure.Identity;
+using IntegrationTestsCore;
+using IntegrationTestsCore.Extensions;
 using Microsoft.EntityFrameworkCore;
 using NaCoDoKina.Api.DataContracts.Authentication;
-using NaCoDoKina.Api.Infrastructure.Identity;
-using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api
 {
-    public class AuthControllerTest : HttpTestWithDatabase
+    public class AuthControllerTest : HttpTestWithDatabase<Startup>
     {
         public class GetUserToken : AuthControllerTest
         {
@@ -33,7 +34,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Assert
                 response.EnsureSuccessStatusCode();
 
-                var token = await response.Content.ReadAsJsonObjectAsync<JwtToken>();
+                var token = await HttpContentExtensions.ReadAsJsonObjectAsync<JwtToken>(response.Content);
                 token.Token.Should().NotBeNullOrEmpty();
 
                 var parsedToken = tokenHandler.ReadJwtToken(token.Token);

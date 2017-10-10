@@ -25,12 +25,6 @@ namespace NaCoDoKina.Api
                     {
                         builder.AddUserSecrets<Startup>();
                     }
-
-                    //var configuration = builder.Build();
-
-                    //var keyVaultSettings = configuration.GetSettings<KeyVaultSettings>();
-                    //builder.AddAzureKeyVault(keyVaultSettings.VaultUrl, keyVaultSettings.ClientId,
-                    //    keyVaultSettings.ClientSecret);
                 })
                 .UseStartup<Startup>()
                 .UseSerilog()
