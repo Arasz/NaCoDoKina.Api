@@ -13,11 +13,10 @@ notifications:
     on_success: never
     on_failure: always
 deploy:
-  - provider: azure_web_apps
-    site: nacodokina
-    on: production
-    skip_cleanup: false
-    verbose: true
+  provider: script
+  script: ./scripts/deploy.sh
+  on:
+    branch: production
 services:
   - postgresql
 env:
@@ -27,6 +26,7 @@ before_script:
   - chmod a+x ./scripts/run-unit-tests.sh
   - chmod a+x ./scripts/run-integration-tests.sh
   - chmod a+x ./scripts/migrations.sh
+  - chmod a+x ./scripts/deploy.sh
 script:
   - ./scripts/build.sh
   - ./scripts/run-unit-tests.sh
