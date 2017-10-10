@@ -1,6 +1,7 @@
 ﻿using Autofac;
+using HangfireHost.Tasks;
 
-namespace HangfireHost.Tasks
+namespace HangfireHost.IoC
 {
     public class TasksModule : Module
     {

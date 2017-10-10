@@ -14,14 +14,8 @@ notifications:
     on_failure: always
 deploy:
   - provider: azure_web_apps
-    site: nacodokinaapi
+    site: nacodokina
     on: production
-    skip_cleanup: false
-    verbose: true
-  - provider: azure_web_apps
-    site: nacodokinaapi-staging
-    slot: nacodokinaapi-staging
-    on: staging
     skip_cleanup: false
     verbose: true
 services:

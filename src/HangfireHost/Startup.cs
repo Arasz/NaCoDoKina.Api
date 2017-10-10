@@ -4,8 +4,10 @@ using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using CacheManager.Core;
 using Hangfire;
+using Hangfire.Dashboard;
 using Hangfire.MemoryStorage;
 using Hangfire.PostgreSql;
+using HangfireHost.IoC;
 using HangfireHost.Tasks;
 using Infrastructure.Data;
 using Infrastructure.Identity;
@@ -17,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace HangfireHost
@@ -52,6 +55,7 @@ namespace HangfireHost
             var builder = new ContainerBuilder();
             builder.Populate(services);
             builder.RegisterModule<TasksModule>();
+            builder.RegisterModule<AuthorizationModule>();
             builder.RegisterModule(new ApplicationModule(Configuration));
             ApplicationContainer = builder.Build();
 
@@ -116,7 +120,10 @@ namespace HangfireHost
 
         public void Configure(IApplicationBuilder app)
         {
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard(options: new DashboardOptions
+            {
+                Authorization = ApplicationContainer.Resolve<IEnumerable<IDashboardAuthorizationFilter>>()
+            });
 
             app.UseHangfireServer();
 
@@ -129,6 +136,14 @@ namespace HangfireHost
             else
             {
                 new FireCinemaCityTasks().Schedule();
+            }
+        }
+
+        public class AuthorizationFilter : IDashboardAuthorizationFilter
+        {
+            public bool Authorize(DashboardContext context)
+            {
+                return true;
             }
         }
 
