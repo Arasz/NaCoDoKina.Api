@@ -12,7 +12,7 @@ using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 
 namespace NaCoDoKina.Api.IntegrationTests.DataProviders
 {
-    public class CinemaCityShowtimesTaskTest : TaskTestBase<CinemaCityShowtimesTask>
+    public class CinemaCityShowtimesTaskTest : TaskTestBase<LoadCinemaCityShowtimesTask>
     {
         [Fact]
         public async Task Should_save_all_showtimes_for_cinema_city_cinemas_in_provided_time_period()
@@ -34,9 +34,9 @@ namespace NaCoDoKina.Api.IntegrationTests.DataProviders
             context.Cinemas.RemoveRange(context.Cinemas);
             await context.SaveChangesAsync();
 
-            var getCinemasTask = Services.GetService<CinemaCityCinemasTask>();
+            var getCinemasTask = Services.GetService<LoadCinemaCityCinemasTask>();
 
-            var getMoviesTask = Services.GetService<CinemaCityMoviesTask>();
+            var getMoviesTask = Services.GetService<LoadCinemaCityMoviesTask>();
 
             await getCinemasTask.Execute();
             await getMoviesTask.Execute();

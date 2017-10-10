@@ -9,12 +9,12 @@ using Infrastructure.Settings.Tasks;
 
 namespace Infrastructure.DataProviders.CinemaCity.Movies.Tasks
 {
-    public class CinemaCityMoviesTask : TaskBase
+    public class LoadCinemaCityMoviesTask : TaskBase
     {
         private readonly IMovieRepository _movieRepository;
         private readonly IEntitiesBuilder<Movie, EmptyContext> _entitiesBuilder;
 
-        public CinemaCityMoviesTask(IMovieRepository movieRepository, IEntitiesBuilder<Movie, EmptyContext> entitiesBuilder, TasksSettings settings) : base(settings)
+        public LoadCinemaCityMoviesTask(IMovieRepository movieRepository, IEntitiesBuilder<Movie, EmptyContext> entitiesBuilder, TasksSettings settings) : base(settings)
         {
             _movieRepository = movieRepository ?? throw new ArgumentNullException(nameof(movieRepository));
             _entitiesBuilder = entitiesBuilder ?? throw new ArgumentNullException(nameof(entitiesBuilder));

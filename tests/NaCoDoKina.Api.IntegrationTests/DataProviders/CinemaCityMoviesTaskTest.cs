@@ -10,7 +10,7 @@ using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 
 namespace NaCoDoKina.Api.IntegrationTests.DataProviders
 {
-    public class CinemaCityMoviesTaskTest : TaskTestBase<CinemaCityMoviesTask>
+    public class CinemaCityMoviesTaskTest : TaskTestBase<LoadCinemaCityMoviesTask>
     {
         [Fact]
         public async Task Should_execute_task_and_save_all_movies_from_cinema_city_to_database()

@@ -1,14 +1,23 @@
-﻿using Autofac;
+﻿using ApplicationCore.Entities.Movies;
+using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
+using CacheManager.Core;
 using Hangfire;
+using Hangfire.MemoryStorage;
 using Hangfire.PostgreSql;
+using HangfireHost.Tasks;
+using Infrastructure.Data;
+using Infrastructure.Identity;
 using Infrastructure.IoC;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace HangfireHost
 {
@@ -32,6 +41,11 @@ namespace HangfireHost
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             ConfigureHangfire(services);
+            ConfigureApplicationDataAccess(services);
+            ConfigureIdentity(services);
+
+            ConfigureCache(services);
+            ConfigureAutoMapper(services);
 
             var builder = new ContainerBuilder();
             builder.Populate(services);
@@ -43,9 +57,58 @@ namespace HangfireHost
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
+        /// <summary>
+        /// Cache configuration 
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureCache(IServiceCollection services)
+        {
+            services.AddCacheManagerConfiguration(builder => builder
+                .WithMicrosoftLogging(factory => factory.AddSerilog())
+                .WithMicrosoftMemoryCacheHandle()
+                .WithExpiration(ExpirationMode.Sliding, TimeSpan.FromMinutes(5)));
+
+            services.AddCacheManager();
+        }
+
         private void AddAutofacContainerToHangfire()
         {
             GlobalConfiguration.Configuration.UseAutofacActivator(ApplicationContainer);
+        }
+
+        /// <summary>
+        /// Configuration of user authentication 
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureIdentity(IServiceCollection services)
+        {
+            var connectionString = ConnectionString("Identity");
+
+            services.AddDbContext<ApplicationIdentityContext>(builder =>
+            {
+                builder.UseNpgsql(connectionString);
+            });
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+                    options.ClaimsIdentity.UserIdClaimType = JwtRegisteredClaimNames.UniqueName;
+                })
+                .AddEntityFrameworkStores<ApplicationIdentityContext>();
+        }
+
+        /// <summary>
+        /// Configure data access 
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureApplicationDataAccess(IServiceCollection services)
+        {
+            var connectionString = ConnectionString("NaCoDoKina");
+
+            services.AddDbContext<ApplicationContext>(builder =>
+            {
+                builder.UseNpgsql(connectionString);
+            });
         }
 
         public void Configure(IApplicationBuilder app)
@@ -57,6 +120,18 @@ namespace HangfireHost
 
             app.UseHangfireDashboard();
             app.UseHangfireServer();
+
+            new FireCinemaCityTasks().Schedule();
+        }
+
+        /// <summary>
+        /// Adds auto mapper as dependency and imports all possible extension from assembly 
+        /// </summary>
+        /// <see cref="https://github.com/AutoMapper/AutoMapper.Extensions.Microsoft.DependencyInjection"/>
+        /// <param name="services"></param>
+        private void ConfigureAutoMapper(IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(Movie), typeof(Infrastructure.Models.Movies.Movie));
         }
 
         /// <summary>
@@ -90,8 +165,10 @@ namespace HangfireHost
 
             services.AddHangfire(cfg =>
             {
-                //cfg.UseMemoryStorage();
-                cfg.UseStorage(new PostgreSqlStorage(connectionString));
+                if (Env.IsDevelopment())
+                    cfg.UseMemoryStorage();
+                else
+                    cfg.UseStorage(new PostgreSqlStorage(connectionString));
             });
         }
     }

@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Infrastructure.Settings.Tasks;
+﻿using Infrastructure.Settings.Tasks;
+using System.Threading.Tasks;
 
 namespace Infrastructure.DataProviders.Tasks
 {
@@ -13,7 +13,10 @@ namespace Infrastructure.DataProviders.Tasks
         protected TaskBase(TasksSettings settings)
         {
             Settings = settings;
+            Id = GetType().FullName;
         }
+
+        public string Id { get; }
 
         public abstract Task Execute();
     }

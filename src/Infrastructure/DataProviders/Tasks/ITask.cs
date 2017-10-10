@@ -7,6 +7,8 @@ namespace Infrastructure.DataProviders.Tasks
     /// </summary>
     public interface ITask
     {
+        string Id { get; }
+
         /// <summary>
         /// Executes task 
         /// </summary>

@@ -10,13 +10,13 @@ using Infrastructure.Settings.Tasks;
 
 namespace Infrastructure.DataProviders.CinemaCity.Showtimes.Tasks
 {
-    public class CinemaCityShowtimesTask : TaskBase
+    public class LoadCinemaCityShowtimesTask : TaskBase
     {
         private readonly IMovieShowtimeRepository _movieShowtimeRepository;
         private readonly IEntitiesBuilder<MovieShowtime, MovieShowtimesContext> _entitiesBuilder;
         private readonly ICinemaRepository _cinemaRepository;
 
-        public CinemaCityShowtimesTask(ICinemaRepository cinemaRepository, IMovieShowtimeRepository movieShowtimeRepository, IEntitiesBuilder<MovieShowtime, MovieShowtimesContext> entitiesBuilder, TasksSettings settings)
+        public LoadCinemaCityShowtimesTask(ICinemaRepository cinemaRepository, IMovieShowtimeRepository movieShowtimeRepository, IEntitiesBuilder<MovieShowtime, MovieShowtimesContext> entitiesBuilder, TasksSettings settings)
             : base(settings)
         {
             _movieShowtimeRepository = movieShowtimeRepository ?? throw new ArgumentNullException(nameof(movieShowtimeRepository));

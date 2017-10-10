@@ -1,16 +1,16 @@
 ﻿using FluentAssertions;
 using Infrastructure.Data;
+using Infrastructure.DataProviders.CinemaCity.Cinemas.Tasks;
 using Infrastructure.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using System.Threading.Tasks;
-using Infrastructure.DataProviders.CinemaCity.Cinemas.Tasks;
 using Xunit;
 using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 
 namespace NaCoDoKina.Api.IntegrationTests.DataProviders
 {
-    public class CinemaCityCinemasTaskTest : TaskTestBase<CinemaCityCinemasTask>
+    public class CinemaCityCinemasTaskTest : TaskTestBase<LoadCinemaCityCinemasTask>
     {
         [Fact]
         public async Task Should_execute_task_and_save_all_cinemas_from_cinema_city_to_database()
