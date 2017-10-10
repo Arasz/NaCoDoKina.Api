@@ -4,7 +4,7 @@ using Infrastructure.Models.Authentication;
 using Infrastructure.Models.Users;
 using NaCoDoKina.Api.DataContracts.Authentication;
 
-namespace NaCoDoKina.Api.Mapping.Profiles
+namespace NaCoDoKina.Api.Mappings
 {
     public class IdentityProfile : Profile
     {

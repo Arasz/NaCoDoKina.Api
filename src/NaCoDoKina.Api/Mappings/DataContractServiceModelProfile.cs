@@ -1,10 +1,10 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Infrastructure.Models;
 using Infrastructure.Models.Cinemas;
 using Infrastructure.Models.Movies;
 using Infrastructure.Models.Resources;
 
-namespace NaCoDoKina.Api.Mapping.Profiles
+namespace NaCoDoKina.Api.Mappings
 {
     /// <inheritdoc/>
     /// <summary>

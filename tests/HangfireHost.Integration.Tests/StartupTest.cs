@@ -11,6 +11,7 @@ using Xunit;
 
 namespace HangfireHost.Integration.Tests
 {
+    [Collection("Tests with hangfire")]
     public class StartupTest : HttpTestBase<Startup>
     {
         public class ConfigureServicesTest : StartupTest

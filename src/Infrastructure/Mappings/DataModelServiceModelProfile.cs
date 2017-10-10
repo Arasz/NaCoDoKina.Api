@@ -4,7 +4,7 @@ using ApplicationCore.Entities.Movies;
 using ApplicationCore.Entities.Resources;
 using AutoMapper;
 
-namespace NaCoDoKina.Api.Mapping.Profiles
+namespace Infrastructure.Mappings
 {
     /// <inheritdoc/>
     /// <summary>

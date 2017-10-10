@@ -13,8 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\HangfireHost\HangfireHost.csproj" />
-    <ProjectReference Include="..\tests\IntegrationTestsCore\IntegrationTestsCore.csproj" />
+    <ProjectReference Include="..\..\src\HangfireHost\HangfireHost.csproj" />
+    <ProjectReference Include="..\IntegrationTestsCore\IntegrationTestsCore.csproj" />
   </ItemGroup>
-
 </Project>

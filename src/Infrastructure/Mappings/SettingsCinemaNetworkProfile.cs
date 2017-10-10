@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Infrastructure.Settings;
 
-namespace NaCoDoKina.Api.Mapping.Profiles
+namespace Infrastructure.Mappings
 {
     public class SettingsCinemaNetworkProfile : Profile
     {

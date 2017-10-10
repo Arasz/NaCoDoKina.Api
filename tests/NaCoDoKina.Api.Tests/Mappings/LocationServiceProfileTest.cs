@@ -1,6 +1,6 @@
 using FluentAssertions;
-using NaCoDoKina.Api.Mapping.Profiles;
 using System;
+using Infrastructure.Mappings;
 using Infrastructure.Models.Travel;
 using Infrastructure.Services.Google.DataContract.Directions.Request;
 using Infrastructure.Services.Google.DataContract.Geocoding.Request;

@@ -2,7 +2,6 @@
 using NaCoDoKina.Api.DataContracts;
 using NaCoDoKina.Api.DataContracts.Cinemas;
 using NaCoDoKina.Api.DataContracts.Movies;
-using NaCoDoKina.Api.Mapping.Profiles;
 using Ploeh.AutoFixture;
 using System.Linq;
 using ApplicationCore.Entities.Resources;

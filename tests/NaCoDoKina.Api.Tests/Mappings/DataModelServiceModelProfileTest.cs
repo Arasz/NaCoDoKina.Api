@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using NaCoDoKina.Api.Mapping.Profiles;
 using Ploeh.AutoFixture;
 using System.Linq;
 using ApplicationCore.Entities.Resources;
+using Infrastructure.Mappings;
 using Xunit;
 using Cinema = ApplicationCore.Entities.Cinemas.Cinema;
 using Location = Infrastructure.Models.Location;

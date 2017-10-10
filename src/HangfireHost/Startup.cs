@@ -113,15 +113,18 @@ namespace HangfireHost
 
         public void Configure(IApplicationBuilder app)
         {
+            app.UseHangfireDashboard();
+
+            app.UseHangfireServer();
+
             if (Env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHangfireDashboard();
-            app.UseHangfireServer();
-
-            new FireCinemaCityTasks().Schedule();
+            else
+            {
+                new FireCinemaCityTasks().Schedule();
+            }
         }
 
         /// <summary>
