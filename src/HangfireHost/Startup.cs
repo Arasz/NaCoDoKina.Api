@@ -40,6 +40,8 @@ namespace HangfireHost
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
+
             ConfigureHangfire(services);
             ConfigureApplicationDataAccess(services);
             ConfigureIdentity(services);
@@ -49,6 +51,7 @@ namespace HangfireHost
 
             var builder = new ContainerBuilder();
             builder.Populate(services);
+            builder.RegisterModule<TasksModule>();
             builder.RegisterModule(new ApplicationModule(Configuration));
             ApplicationContainer = builder.Build();
 
@@ -116,6 +119,8 @@ namespace HangfireHost
             app.UseHangfireDashboard();
 
             app.UseHangfireServer();
+
+            app.UseMvc();
 
             if (Env.IsDevelopment())
             {

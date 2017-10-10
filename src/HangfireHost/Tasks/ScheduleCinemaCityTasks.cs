@@ -17,6 +17,8 @@ namespace HangfireHost.Tasks
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
+        public string Name => "Schedule tasks";
+
         public void Schedule()
         {
             RecurringJob

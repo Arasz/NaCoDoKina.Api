@@ -8,6 +8,8 @@ namespace HangfireHost.Tasks
 {
     public class FireCinemaCityTasks : ITasksSchedule
     {
+        public string Name => "Fire tasks once";
+
         public void Schedule()
         {
             var cinemaNetworksTaskId = BackgroundJob
