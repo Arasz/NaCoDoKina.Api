@@ -1,15 +1,14 @@
-﻿using FluentAssertions;
+﻿using ApplicationCore.Entities.Cinemas;
+using FluentAssertions;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Ploeh.AutoFixture;
 using System.Threading.Tasks;
-using ApplicationCore.Entities.Cinemas;
-using ApplicationCore.Repositories;
-using Infrastructure.Repositories;
 using Xunit;
 
 namespace NaCoDoKina.Api.Repository
 {
-    public class CinemaNetworkRepositoryTest : ApplicationRepositoryTestBase<ICinemaNetworkRepository>
+    public class CinemaNetworkRepositoryTest : ApplicationRepositoryTestBase<CinemaNetworkRepository>
     {
         public class ExistAsync : CinemaNetworkRepositoryTest
         {

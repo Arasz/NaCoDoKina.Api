@@ -18,7 +18,7 @@ using SearchArea = Infrastructure.Models.SearchArea;
 
 namespace NaCoDoKina.Api.Services
 {
-    public class MovieServiceTest : ServiceWithRepositoryTestBase<IMovieService, IMovieRepository>
+    public class MovieServiceTest : ServiceWithRepositoryTestBase<MovieService, IMovieRepository>
     {
         protected Mock<ICinemaService> CinemaServiceMock { get; set; }
 
@@ -31,8 +31,6 @@ namespace NaCoDoKina.Api.Services
             UserServiceMock = Mock.Mock<IUserService>();
             RatingServiceMock = Mock.Mock<IRatingService>();
             CinemaServiceMock = Mock.Mock<ICinemaService>();
-
-            ServiceUnderTest = Mock.Create<MovieService>();
 
             PreConfigureMocks();
         }
@@ -173,8 +171,6 @@ namespace NaCoDoKina.Api.Services
                 _movieRepositoryFake = new MovieRepositoryFake();
 
                 Mock.Provide<IMovieRepository>(_movieRepositoryFake);
-
-                ServiceUnderTest = Mock.Create<MovieService>();
 
                 PreConfigureMocks();
             }

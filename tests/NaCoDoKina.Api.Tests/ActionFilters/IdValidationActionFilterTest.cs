@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using NaCoDoKina.Api.Controllers;
 using System.Collections.Generic;
+using TestsCore;
 using Xunit;
 
 namespace NaCoDoKina.Api.ActionFilters

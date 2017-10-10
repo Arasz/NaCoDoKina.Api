@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using NaCoDoKina.Api.Repository.Database;
+using TestsCore;
 
 namespace NaCoDoKina.Api.Repository
 {

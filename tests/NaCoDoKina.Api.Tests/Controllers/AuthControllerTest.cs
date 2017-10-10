@@ -11,6 +11,7 @@ using ApplicationCore.Results;
 using Infrastructure.Models.Authentication;
 using Infrastructure.Models.Users;
 using Infrastructure.Services;
+using TestsCore;
 using Xunit;
 using JwtToken = NaCoDoKina.Api.DataContracts.Authentication.JwtToken;
 

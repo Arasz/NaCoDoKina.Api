@@ -1,6 +1,6 @@
-﻿namespace NaCoDoKina.Api.IntegrationTests.Api
+﻿namespace IntegrationTestsCore
 {
-    public class IntegrationTestApiSettings
+    public class IntegrationTestsSettings
     {
         public string DefaultUserPassword { get; set; } = "Aw23_ffdD3df_ddw!efefdewww";
 

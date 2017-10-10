@@ -1,11 +1,11 @@
-﻿using Ploeh.AutoFixture;
-using System;
-using ApplicationCore.Entities;
+﻿using ApplicationCore.Entities;
 using ApplicationCore.Entities.Cinemas;
 using ApplicationCore.Entities.Movies;
 using ApplicationCore.Entities.Resources;
+using Ploeh.AutoFixture;
+using System;
 
-namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
+namespace IntegrationTestsCore.DatabaseSeed
 {
     public class MovieDatabaseFixtureCustomization : ICustomization
     {

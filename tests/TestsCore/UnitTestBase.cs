@@ -2,7 +2,7 @@
 using Ploeh.AutoFixture;
 using System;
 
-namespace NaCoDoKina.Api
+namespace TestsCore
 {
     /// <inheritdoc/>
     /// <summary>

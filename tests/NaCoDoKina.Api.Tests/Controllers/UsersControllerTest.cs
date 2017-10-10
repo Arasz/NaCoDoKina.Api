@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using ApplicationCore.Results;
 using Infrastructure.Models.Users;
 using Infrastructure.Services;
+using TestsCore;
 using Xunit;
 
 namespace NaCoDoKina.Api.Controllers

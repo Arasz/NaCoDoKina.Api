@@ -5,12 +5,13 @@ using Infrastructure.DataProviders.CinemaCity.Cinemas.Tasks;
 using Infrastructure.Services;
 using Infrastructure.Services.Identity;
 using Infrastructure.Settings;
+using IntegrationTestsCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace NaCoDoKina.Api.IntegrationTests.Api
+namespace NaCoDoKina.Api.IntegrationTests
 {
-    public class StartupTest : HttpTestBase
+    public class StartupTest : HttpTestBase<Startup>
     {
         public class ConfigureServicesTest : StartupTest
         {

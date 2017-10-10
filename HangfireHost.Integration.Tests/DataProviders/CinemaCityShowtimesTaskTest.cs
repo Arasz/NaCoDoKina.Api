@@ -1,16 +1,16 @@
 ﻿using FluentAssertions;
 using Infrastructure.Data;
+using Infrastructure.DataProviders.CinemaCity.Cinemas.Tasks;
+using Infrastructure.DataProviders.CinemaCity.Movies.Tasks;
+using Infrastructure.DataProviders.CinemaCity.Showtimes.Tasks;
 using Infrastructure.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using System.Threading.Tasks;
-using Infrastructure.DataProviders.CinemaCity.Cinemas.Tasks;
-using Infrastructure.DataProviders.CinemaCity.Movies.Tasks;
-using Infrastructure.DataProviders.CinemaCity.Showtimes.Tasks;
 using Xunit;
 using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 
-namespace NaCoDoKina.Api.IntegrationTests.DataProviders
+namespace HangfireHost.Integration.Tests.DataProviders
 {
     public class CinemaCityShowtimesTaskTest : TaskTestBase<LoadCinemaCityShowtimesTask>
     {

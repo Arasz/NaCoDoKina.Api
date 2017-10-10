@@ -1,11 +1,11 @@
 ﻿using FluentAssertions;
-using System.Linq;
-using System.Threading.Tasks;
 using Infrastructure.Data;
 using Infrastructure.DataProviders.Common.CinemaNetworks;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace NaCoDoKina.Api.IntegrationTests.DataProviders
+namespace HangfireHost.Integration.Tests.DataProviders
 {
     public class LoadCinemaNetworksFromConfigurationTaskTest : TaskTestBase<LoadCinemaNetworksFromConfigurationTask>
     {

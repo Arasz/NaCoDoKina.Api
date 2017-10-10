@@ -1,9 +1,11 @@
 ﻿using FluentAssertions;
+using Infrastructure.Identity;
+using IntegrationTestsCore;
+using IntegrationTestsCore.Extensions;
 using NaCoDoKina.Api.DataContracts;
 using NaCoDoKina.Api.DataContracts.Authentication;
 using NaCoDoKina.Api.DataContracts.Cinemas;
 using NaCoDoKina.Api.DataContracts.Movies;
-using NaCoDoKina.Api.IntegrationTests.Api.Extensions;
 using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
@@ -13,12 +15,11 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Infrastructure.Identity;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Api
 {
-    public class MoviesControllerTest : HttpTestWithDatabase
+    public class MoviesControllerTest : HttpTestWithDatabase<Startup>
     {
         /// <summary>
         /// Login as user determined by its position and add authorization header with token 
@@ -43,7 +44,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
             var response = await Client.PostAsync(url, GetPayload(payload));
 
-            var token = await response.Content.ReadAsJsonObjectAsync<JwtToken>();
+            var token = await HttpContentExtensions.ReadAsJsonObjectAsync<JwtToken>(response.Content);
 
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
         }
@@ -95,7 +96,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 response.EnsureSuccessStatusCode();
 
-                var responseContent = await response.Content.ReadAsJsonObjectAsync<long[]>();
+                var responseContent = await HttpContentExtensions.ReadAsJsonObjectAsync<long[]>(response.Content);
                 responseContent
                     .Should()
                     .NotBeNullOrEmpty().And
@@ -119,7 +120,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 // Assert
                 response.EnsureSuccessStatusCode();
-                var movie = await response.Content.ReadAsJsonObjectAsync<Movie>();
+                var movie = await HttpContentExtensions.ReadAsJsonObjectAsync<Movie>(response.Content);
 
                 movie.Id.Should().Be(movieId);
                 movie.Title.Should().NotBeNullOrEmpty();
@@ -167,7 +168,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 var movieResponse = await Client.GetAsync(url);
 
                 movieResponse.EnsureSuccessStatusCode();
-                var movie = await movieResponse.Content.ReadAsJsonObjectAsync<Movie>();
+                var movie = await HttpContentExtensions.ReadAsJsonObjectAsync<Movie>(movieResponse.Content);
 
                 movie.Id.Should().Be(movieId);
                 movie.Title.Should().NotBeNullOrEmpty();
@@ -189,7 +190,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 // Assert
                 response.EnsureSuccessStatusCode();
-                var movieDetails = await response.Content.ReadAsJsonObjectAsync<MovieDetails>();
+                var movieDetails = await HttpContentExtensions.ReadAsJsonObjectAsync<MovieDetails>(response.Content);
 
                 movieDetails.Id.Should().Be(movieId);
                 movieDetails.Title.Should().NotBeNullOrEmpty();
@@ -231,7 +232,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Assert
                 response.StatusCode.Should().HaveFlag(HttpStatusCode.Created);
 
-                var returnedRating = await response.Content.ReadAsJsonObjectAsync<double>();
+                var returnedRating = await HttpContentExtensions.ReadAsJsonObjectAsync<double>(response.Content);
 
                 returnedRating.Should().Be(returnedRating);
             }
@@ -256,7 +257,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Assert
                 response.EnsureSuccessStatusCode();
 
-                var movieShowtimes = await response.Content.ReadAsJsonObjectAsync<MovieShowtime[]>();
+                var movieShowtimes = await HttpContentExtensions.ReadAsJsonObjectAsync<MovieShowtime[]>(response.Content);
 
                 movieShowtimes.Should().NotBeNullOrEmpty();
                 movieShowtimes.Should().Match(showtimes => showtimes.All(showtime => showtime.MovieId == movieId));
@@ -280,7 +281,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Assert
                 response.EnsureSuccessStatusCode();
 
-                var movieShowtimes = await response.Content.ReadAsJsonObjectAsync<MovieShowtime[]>();
+                var movieShowtimes = await HttpContentExtensions.ReadAsJsonObjectAsync<MovieShowtime[]>(response.Content);
 
                 movieShowtimes.Should().NotBeNullOrEmpty();
                 movieShowtimes.Should().Match(showtimes => showtimes.All(showtime => showtime.MovieId == movieId));
@@ -310,7 +311,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 response.EnsureSuccessStatusCode();
 
-                var responseContent = await response.Content.ReadAsJsonObjectAsync<List<Cinema>>();
+                var responseContent = await HttpContentExtensions.ReadAsJsonObjectAsync<List<Cinema>>(response.Content);
 
                 responseContent
                     .Should()

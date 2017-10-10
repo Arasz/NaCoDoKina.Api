@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using TestsCore;
 
 namespace NaCoDoKina.Api.Mappings
 {

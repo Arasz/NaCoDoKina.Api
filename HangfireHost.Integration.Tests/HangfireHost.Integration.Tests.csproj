@@ -1,19 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\NaCoDoKina.Api\NaCoDoKina.Api.csproj" />
-    <ProjectReference Include="..\IntegrationTestsCore\IntegrationTestsCore.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="xunit" Version="2.3.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\HangfireHost\HangfireHost.csproj" />
+    <ProjectReference Include="..\tests\IntegrationTestsCore\IntegrationTestsCore.csproj" />
+  </ItemGroup>
+
 </Project>

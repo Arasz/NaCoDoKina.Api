@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
+namespace IntegrationTestsCore.DatabaseSeed
 {
     /// <inheritdoc/>
     /// <summary>

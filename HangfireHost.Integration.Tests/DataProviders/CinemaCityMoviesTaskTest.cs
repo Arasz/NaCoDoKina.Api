@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Infrastructure.Data;
-using Infrastructure.DataProviders.CinemaCity.Cinemas.Tasks;
+using Infrastructure.DataProviders.CinemaCity.Movies.Tasks;
 using Infrastructure.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
@@ -8,15 +8,17 @@ using System.Threading.Tasks;
 using Xunit;
 using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 
-namespace NaCoDoKina.Api.IntegrationTests.DataProviders
+namespace HangfireHost.Integration.Tests.DataProviders
 {
-    public class CinemaCityCinemasTaskTest : TaskTestBase<LoadCinemaCityCinemasTask>
+    public class CinemaCityMoviesTaskTest : TaskTestBase<LoadCinemaCityMoviesTask>
     {
         [Fact]
-        public async Task Should_execute_task_and_save_all_cinemas_from_cinema_city_to_database()
+        public async Task Should_execute_task_and_save_all_movies_from_cinema_city_to_database()
         {
             // Arrange
             var context = GetDbContext<ApplicationContext>();
+
+            var moviesCount = context.Movies.Count();
 
             var networksSettings = Services.GetService<CinemaNetworksSettings>();
             var cinemaCityNetwork = new CinemaNetwork
@@ -26,10 +28,7 @@ namespace NaCoDoKina.Api.IntegrationTests.DataProviders
             };
 
             context.CinemaNetworks.Add(cinemaCityNetwork);
-
             await context.SaveChangesAsync();
-
-            var cinemasCount = context.Cinemas.Count();
 
             // Act
 
@@ -37,11 +36,9 @@ namespace NaCoDoKina.Api.IntegrationTests.DataProviders
 
             // Assert
 
-            var newCount = context.Cinemas.Count();
+            var newCount = context.Movies.Count();
 
-            newCount.Should().BeGreaterThan(cinemasCount);
-
-            //var id = BackgroundJob.Enqueue(() => task.Execute());
+            newCount.Should().BeGreaterThan(moviesCount);
         }
     }
 }

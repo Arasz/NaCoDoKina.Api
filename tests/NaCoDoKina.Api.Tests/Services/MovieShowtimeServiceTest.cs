@@ -1,26 +1,21 @@
-﻿using FluentAssertions;
+﻿using ApplicationCore.Repositories;
+using FluentAssertions;
+using Infrastructure.Exceptions;
+using Infrastructure.Models.Movies;
+using Infrastructure.Services;
 using Moq;
 using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ApplicationCore.Repositories;
-using Infrastructure.Exceptions;
-using Infrastructure.Models.Movies;
-using Infrastructure.Services;
 using Xunit;
 using Movie = ApplicationCore.Entities.Movies.Movie;
 
 namespace NaCoDoKina.Api.Services
 {
-    public class MovieShowtimeServiceTest : ServiceWithRepositoryTestBase<IMovieShowtimeService, IMovieShowtimeRepository>
+    public class MovieShowtimeServiceTest : ServiceWithRepositoryTestBase<MovieShowtimeService, IMovieShowtimeRepository>
     {
-        public MovieShowtimeServiceTest()
-        {
-            ServiceUnderTest = new MovieShowtimeService(RepositoryMockObject, LoggerMock.Object, MapperMock.Object);
-        }
-
         protected void InitializeMapping()
         {
             MapperMock

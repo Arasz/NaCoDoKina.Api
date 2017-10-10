@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Xunit;
 using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 
-namespace NaCoDoKina.Api.IntegrationTests.DataProviders
+namespace HangfireHost.Integration.Tests.DataProviders
 {
     public class CinemaCityCinemasTaskTest : TaskTestBase<LoadCinemaCityCinemasTask>
     {

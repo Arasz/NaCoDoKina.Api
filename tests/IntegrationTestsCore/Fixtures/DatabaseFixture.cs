@@ -1,8 +1,8 @@
-﻿using System;
+﻿using IntegrationTestsCore.DatabaseSeed;
+using System;
 using System.Collections.Generic;
-using NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed;
 
-namespace NaCoDoKina.Api.IntegrationTests.Api.Fixtures
+namespace IntegrationTestsCore.Fixtures
 {
     public class DatabaseFixture : IDisposable
     {

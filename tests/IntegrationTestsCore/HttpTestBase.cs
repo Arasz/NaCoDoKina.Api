@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
-using NaCoDoKina.Api.IntegrationTests.Api;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture;
 using Serilog;
@@ -13,30 +12,28 @@ using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using TestsCore;
 
-namespace NaCoDoKina.Api.IntegrationTests
+namespace IntegrationTestsCore
 {
     /// <inheritdoc/>
     /// <summary>
     /// Base class for all integration test using in memory test server implementation 
     /// </summary>
-    public abstract class HttpTestBase : IDisposable
+    public abstract class HttpTestBase<TStartup> : UnitTestBase
+        where TStartup : class
     {
-        protected IntegrationTestApiSettings ApiSettings { get; set; }
+        protected IntegrationTestsSettings ApiSettings { get; set; }
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
+
             if (!disposing)
                 return;
 
             Server?.Dispose();
             Client?.Dispose();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         protected TestServer Server { get; }
@@ -45,13 +42,11 @@ namespace NaCoDoKina.Api.IntegrationTests
 
         public IServiceProvider Services { get; }
 
-        public IFixture Fixture { get; }
-
         protected HttpTestBase()
         {
             LoadTestConfiguration();
 
-            var contentRoot = GetProjectPath("src", typeof(Startup).Assembly);
+            var contentRoot = GetProjectPath("src", typeof(TStartup).Assembly);
 
             var builder = WebHost.CreateDefaultBuilder()
                 .UseEnvironment(ApiSettings.Environment)
@@ -60,12 +55,12 @@ namespace NaCoDoKina.Api.IntegrationTests
                 {
                     if (context.HostingEnvironment.IsProduction())
                     {
-                        configurationBuilder.AddUserSecrets<Startup>();
+                        configurationBuilder.AddUserSecrets<TStartup>();
                     }
                 })
                 .ConfigureServices(ConfigureServices)
                 .UseSerilog()
-                .UseStartup<Startup>();
+                .UseStartup<TStartup>();
 
             Server = new TestServer(builder);
 
@@ -73,7 +68,6 @@ namespace NaCoDoKina.Api.IntegrationTests
             Client.BaseAddress = new Uri(ApiSettings.BaseAddress);
 
             Services = Server.Host.Services;
-            Fixture = Services.GetService<IFixture>();
         }
 
         private void LoadTestConfiguration()
@@ -83,7 +77,7 @@ namespace NaCoDoKina.Api.IntegrationTests
                 .SetBasePath(testContentRoot)
                 .AddJsonFile("appsettings.test.json", false)
                 .Build();
-            ApiSettings = testConfiguration.Get<IntegrationTestApiSettings>();
+            ApiSettings = testConfiguration.Get<IntegrationTestsSettings>();
         }
 
         /// <summary>

@@ -1,31 +1,24 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.Identity;
+using Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using NaCoDoKina.Api.DataContracts.Authentication;
-using Ploeh.AutoFixture;
 using System;
 using System.Linq;
-using ApplicationCore.Repositories;
-using Infrastructure.Identity;
-using Infrastructure.Repositories;
 
-namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
+namespace IntegrationTestsCore.DatabaseSeed
 {
     public class IdentityDataSeed : IDatabaseSeed
     {
         private readonly IUserRepository _userRepository;
-        private readonly IntegrationTestApiSettings _apiSettings;
+        private readonly IntegrationTestsSettings _apiSettings;
 
-        private int _userCounter = 1;
-
-        private readonly IFixture _fixture;
         private readonly ILogger<IdentityDataSeed> _logger;
         public ApplicationIdentityContext DbContext { get; }
 
-        public IdentityDataSeed(ApplicationIdentityContext identityContext, IUserRepository userRepository, ILogger<IdentityDataSeed> logger, IFixture fixture, IntegrationTestApiSettings apiSettings)
+        public IdentityDataSeed(ApplicationIdentityContext identityContext, IUserRepository userRepository, ILogger<IdentityDataSeed> logger, IntegrationTestsSettings apiSettings)
         {
             _userRepository = userRepository;
             _apiSettings = apiSettings ?? throw new ArgumentNullException(nameof(apiSettings));
-            _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             DbContext = identityContext ?? throw new ArgumentNullException(nameof(identityContext));
         }
@@ -38,24 +31,18 @@ namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
                 DbContext.Database.Migrate();
                 _logger.LogInformation("Migration completed");
 
-                _logger.LogInformation("Create users data");
-                _fixture.Register(() => new RegisterUser
-                {
-                    Email = $"{_apiSettings.DefaultUserName}{_userCounter++}",
-                    Password = _apiSettings.DefaultUserPassword,
-                });
-
                 _logger.LogInformation("Create users");
 
-                var applicationUserWithPassword = _fixture.CreateMany<RegisterUser>(15)
-                    .Select(user =>
+                var applicationUserWithPassword = Enumerable.Range(1, 15)
+                    .Select(i =>
                     {
-                        _logger.LogInformation("Create user {@user} task", user);
-                        return (User: new ApplicationUser
+                        var user = new ApplicationUser
                         {
-                            Email = user.Email,
-                            UserName = user.Email
-                        }, Password: user.Password);
+                            Email = $"{_apiSettings.DefaultUserName}{i}",
+                            UserName = $"{_apiSettings.DefaultUserName}{i}"
+                        };
+                        _logger.LogInformation("Create user {@user} task", user);
+                        return (User: user, Password: _apiSettings.DefaultUserPassword);
                     });
 
                 foreach (var userWithPassword in applicationUserWithPassword)

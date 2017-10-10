@@ -12,6 +12,7 @@ using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TestsCore;
 using Xunit;
 using Cinema = NaCoDoKina.Api.DataContracts.Cinemas.Cinema;
 using Location = NaCoDoKina.Api.DataContracts.Location;

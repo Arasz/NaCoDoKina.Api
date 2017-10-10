@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
-namespace NaCoDoKina.Api.IntegrationTests.Api.Extensions
+namespace IntegrationTestsCore.Extensions
 {
     public static class HttpResponseMessageExtensions
     {

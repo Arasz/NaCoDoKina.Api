@@ -7,7 +7,7 @@ using Ploeh.AutoFixture;
 using System;
 using System.Linq;
 
-namespace NaCoDoKina.Api.IntegrationTests.Api.DatabaseSeed
+namespace IntegrationTestsCore.DatabaseSeed
 {
     public class ApplicationDataSeed : IDatabaseSeed
     {

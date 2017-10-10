@@ -1,10 +1,10 @@
-﻿using Infrastructure.DataProviders.Tasks;
+using Infrastructure.DataProviders.Tasks;
+using IntegrationTestsCore;
 using Microsoft.Extensions.DependencyInjection;
-using NaCoDoKina.Api.IntegrationTests.Api;
 
-namespace NaCoDoKina.Api.IntegrationTests.DataProviders
+namespace HangfireHost.Integration.Tests
 {
-    public class TaskTestBase<TTask> : HttpTestWithDatabase
+    public class TaskTestBase<TTask> : HttpTestWithDatabase<Startup>
         where TTask : ITask
     {
         protected ITask TaskUnderTest { get; }

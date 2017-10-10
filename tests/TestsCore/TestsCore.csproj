@@ -2,19 +2,24 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <RootNamespace>NaCoDoKina.Api</RootNamespace>
+
+    <IsPackable>false</IsPackable>
+
+    <ApplicationIcon />
+
+    <OutputType>Library</OutputType>
+
+    <StartupObject />
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Extras.Moq" Version="4.2.0" />
+    <PackageReference Include="AutoFixture" Version="3.51.0" />
     <PackageReference Include="FluentAssertions" Version="4.19.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="Moq" Version="4.7.137" />
     <PackageReference Include="xunit" Version="2.3.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0" />
-    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.0-beta4-build3742" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\NaCoDoKina.Api\NaCoDoKina.Api.csproj" />
-    <ProjectReference Include="..\TestsCore\TestsCore.csproj" />
-  </ItemGroup>
 </Project>

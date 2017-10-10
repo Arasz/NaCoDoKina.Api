@@ -14,18 +14,14 @@ using Xunit;
 
 namespace NaCoDoKina.Api.Services
 {
-    public class CinemaServiceTest : ServiceWithRepositoryTestBase<ICinemaService, ICinemaRepository>
+    public class CinemaServiceTest : ServiceWithRepositoryTestBase<CinemaService, ICinemaRepository>
     {
-        protected Mock<ITravelService> TravelServiceMock { get; }
-
         protected ITravelService TravelServiceFake { get; }
 
         public CinemaServiceTest()
         {
             TravelServiceFake = new TravelServiceFakeImpl();
-            TravelServiceMock = Mock.Mock<ITravelService>();
-
-            ServiceUnderTest = new CinemaService(RepositoryMockObject, TravelServiceFake, LoggerMock.Object, MapperMock.Object);
+            Mock.Provide(TravelServiceFake);
         }
 
         private class TravelServiceFakeImpl : ITravelService
