@@ -51,6 +51,7 @@ namespace Infrastructure.Repositories
         public async Task CreateCinemasAsync(IEnumerable<Cinema> cinemas)
         {
             _applicationContext.Cinemas.AddRange(cinemas);
+
             await _applicationContext.SaveChangesAsync();
         }
 
