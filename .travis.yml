@@ -36,8 +36,8 @@ before_deploy:
 - chmod 600 /tmp/travis_rsa
 - ssh-add /tmp/travis_rsa
 deploy:
-  provider: script
-  script: "./scripts/deploy.sh"
+  provider: azure_web_apps
+  site: nacodokina
   skip_cleanup: true
   on:
     branch: production
