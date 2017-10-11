@@ -5,32 +5,35 @@ mono: none
 dotnet: 2.0.0
 branches:
   only:
-    - production
-    - staging
-    - develop
+  - production
+  - staging
+  - develop
 notifications:
   email:
     on_success: never
     on_failure: always
 deploy:
   provider: script
-  script: ./scripts/deploy.sh
+  script: "./scripts/deploy.sh"
+  skip_cleanup: true
   on:
     branch: production
 services:
-  - postgresql
+- postgresql
 env:
-  - ASPNETCORE_ENVIRONMENT=${TRAVIS_BRANCH}
+- ASPNETCORE_ENVIRONMENT=${TRAVIS_BRANCH}
 before_script:
-  - chmod a+x ./scripts/build.sh
-  - chmod a+x ./scripts/run-unit-tests.sh
-  - chmod a+x ./scripts/run-integration-tests.sh
-  - chmod a+x ./scripts/migrations.sh
-  - chmod a+x ./scripts/deploy.sh
+- chmod a+x ./scripts/build.sh
+- chmod a+x ./scripts/run-unit-tests.sh
+- chmod a+x ./scripts/run-integration-tests.sh
+- chmod a+x ./scripts/migrations.sh
+- chmod a+x ./scripts/deploy.sh
 script:
-  - ./scripts/build.sh
-  - ./scripts/run-unit-tests.sh
-  - ./scripts/run-integration-tests.sh
+- "./scripts/build.sh"
+- "./scripts/run-unit-tests.sh"
+- "./scripts/run-integration-tests.sh"
 after_success:
-  - ./scripts/migrations.sh
-
+- "./scripts/migrations.sh"
+before_install:
+- openssl aes-256-cbc -K $encrypted_72404ae70bed_key -iv $encrypted_72404ae70bed_iv
+  -in travis_rsa.enc -out travis_rsa -d
