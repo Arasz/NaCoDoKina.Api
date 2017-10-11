@@ -39,5 +39,6 @@ deploy:
   provider: azure_web_apps
   site: nacodokina
   skip_cleanup: true
+  verbose: true
   on:
     branch: production
