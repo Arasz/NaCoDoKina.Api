@@ -17,7 +17,7 @@ services:
 env:
 - ASPNETCORE_ENVIRONMENT=${TRAVIS_BRANCH}
 addons:
-  ssh_known_hosts: 139.59.157.1 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+RPG3siF7Yeu9S34SkxjFIvtho4qS+mLgNwTMT7UHphMjbLKrhoLxZmF1ASS4lYbIfVsCJSSmLa0T57G8EODF/QyUJStbvyZ2oaVhk7N3nY+T9pTtWmNzRJM2P1VQEP22SqH2VFsnweE20KF45/vZnc/j5UK14ijXWxlp/09ywlupfSo2ODj3JrretL3C6r09RZLVhqG33M6Bafb4/fvxsLnctz+Dj0n0gWQbMrilQzBdE4x1pBZbZCBsy+bVrIgzRncUe4r72uZdaWOIY1UnsF++KwlWx2PNAFrceZRCt74f75F35nRJDTnONFqwPct0ni0YSM7+y3jZym5Y9ZJB
+  ssh_known_hosts: 139.59.157.1
 before_script:
 - chmod a+x ./scripts/build.sh
 - chmod a+x ./scripts/run-unit-tests.sh
