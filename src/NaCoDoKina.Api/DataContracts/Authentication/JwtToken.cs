@@ -16,5 +16,10 @@ namespace NaCoDoKina.Api.DataContracts.Authentication
         /// Expiration date 
         /// </summary>
         public DateTime Expires { get; set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(Token)}: {Token}, {nameof(Expires)}: {Expires}";
+        }
     }
 }

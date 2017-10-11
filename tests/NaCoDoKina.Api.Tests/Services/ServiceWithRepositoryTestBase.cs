@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Moq;
+using TestsCore;
 
 namespace NaCoDoKina.Api.Services
 {
     public abstract class ServiceTestBase<TService> : UnitTestBase
     {
-        protected TService ServiceUnderTest { get; set; }
+        protected TService ServiceUnderTest => Mock.Create<TService>();
 
         protected Mock<ILogger<TService>> LoggerMock => Mock.Mock<ILogger<TService>>();
 
@@ -17,7 +18,5 @@ namespace NaCoDoKina.Api.Services
         where TRepository : class
     {
         protected Mock<TRepository> RepositoryMock => Mock.Mock<TRepository>();
-
-        protected TRepository RepositoryMockObject => RepositoryMock.Object;
     }
 }

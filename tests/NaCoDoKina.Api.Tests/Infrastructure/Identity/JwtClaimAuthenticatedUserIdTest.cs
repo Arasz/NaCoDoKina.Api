@@ -1,10 +1,11 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using NaCoDoKina.Api.Infrastructure.Services.Identity;
 using Ploeh.AutoFixture;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Infrastructure.Services.Identity;
+using TestsCore;
 using Xunit;
 
 namespace NaCoDoKina.Api.Infrastructure.Identity

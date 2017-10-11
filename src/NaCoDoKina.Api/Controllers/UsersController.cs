@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.DataContracts.Authentication;
-using NaCoDoKina.Api.Models;
-using NaCoDoKina.Api.Services;
 using System;
 using System.Threading.Tasks;
+using Infrastructure.Models.Users;
+using Infrastructure.Services;
 
 namespace NaCoDoKina.Api.Controllers
 {
@@ -26,7 +26,7 @@ namespace NaCoDoKina.Api.Controllers
         }
 
         /// <summary>
-        /// Creates new registerUser 
+        /// Creates new user 
         /// </summary>
         /// <param name="registerUser"> New user data </param>
         [HttpPost]

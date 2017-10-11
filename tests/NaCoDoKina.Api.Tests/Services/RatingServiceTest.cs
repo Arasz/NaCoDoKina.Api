@@ -1,9 +1,10 @@
-﻿using FluentAssertions;
+﻿using ApplicationCore.Results;
+using FluentAssertions;
+using Infrastructure.Services;
+using Infrastructure.Services.Recommendation.DataContract;
+using Infrastructure.Services.Recommendation.Services;
+using Infrastructure.Settings;
 using Moq;
-using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
-using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services;
-using NaCoDoKina.Api.Infrastructure.Settings;
-using NaCoDoKina.Api.Results;
 using Ploeh.AutoFixture;
 using System;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ using Xunit;
 
 namespace NaCoDoKina.Api.Services
 {
-    public class RatingServiceTest : ServiceTestBase<IRatingService>
+    public class RatingServiceTest : ServiceTestBase<RatingService>
     {
         protected Mock<IRecommendationService> RecommendationServiceMock { get; }
 
@@ -23,7 +24,6 @@ namespace NaCoDoKina.Api.Services
             RecommendationServiceMock = Mock.Mock<IRecommendationService>();
 
             Mock.Provide(new RatingSettings { UnratedMovieRating = 6 });
-            ServiceUnderTest = Mock.Create<RatingService>();
         }
 
         private Task<Result<RecommendationApiResponse>> MapRequestToResponse(RecommendationApiRequest request, double expectedRating) => Task.FromResult(Result.Success(new RecommendationApiResponse

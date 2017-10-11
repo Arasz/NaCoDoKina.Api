@@ -1,7 +1,8 @@
-﻿using FluentAssertions;
+﻿using ApplicationCore.Entities.Cinemas;
+using ApplicationCore.Entities.Movies;
+using FluentAssertions;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using NaCoDoKina.Api.Entities;
-using NaCoDoKina.Api.Repositories;
 using Ploeh.AutoFixture;
 using System;
 using System.Linq;
@@ -10,25 +11,90 @@ using Xunit;
 
 namespace NaCoDoKina.Api.Repository
 {
-    public class MovieShowtimeRepositoryTest : ApplicationRepositoryTestBase<IMovieShowtimeRepository>
+    public class MovieShowtimeRepositoryTest : ApplicationRepositoryTestBase<MovieShowtimeRepository>
     {
+        public class CreateMovieShowtimesAsync : MovieShowtimeRepositoryTest
+        {
+            [Fact]
+            public async Task Should_add_showtimes()
+            {
+                //Arrange
+                var cinemas = Fixture
+                    .Build<Cinema>()
+                    .Without(cinema => cinema.Id)
+                    .CreateMany(3)
+                    .ToArray();
+
+                Fixture.Customize<MovieDetails>(composer =>
+                {
+                    return composer.Without(details => details.Id);
+                });
+
+                var movies = Fixture
+                    .Build<Movie>()
+                    .Without(movie => movie.Id)
+                    .CreateMany(5)
+                    .ToArray();
+
+                var showtimes = Fixture
+                    .Build<MovieShowtime>()
+                    .Without(showtime => showtime.Id)
+                    .Without(showtime => showtime.Cinema)
+                    .Without(showtime => showtime.Movie)
+                    .CreateMany(15)
+                    .ToArray();
+
+                using (var contextScope = CreateContextScope())
+                {
+                    contextScope.DbContext.Movies.AddRange(movies);
+                    contextScope.DbContext.Cinemas.AddRange(cinemas);
+                    await contextScope.DbContext.SaveChangesAsync();
+                }
+
+                for (var i = 0; i < showtimes.Length; i++)
+                {
+                    showtimes[i].Movie = movies[i % 5];
+                    showtimes[i].Cinema = cinemas[i % 3];
+                }
+
+                using (CreateContextScope())
+                {
+                    //Act
+                    await RepositoryUnderTest.CreateMovieShowtimesAsync(showtimes);
+                }
+
+                // Assert
+                using (var contextScope = CreateContextScope())
+                {
+                    contextScope.DbContext.MovieShowtimes
+                        .Should().HaveSameCount(showtimes);
+
+                    contextScope.DbContext.Movies
+                        .Should().HaveSameCount(movies);
+
+                    contextScope.DbContext.Cinemas
+                        .Should().HaveSameCount(cinemas);
+                }
+            }
+        }
+
         public class GetMovieShowtimesAsync : MovieShowtimeRepositoryTest
         {
             [Fact]
             public async Task Should_return_movie_showtime_when_movie_with_id_exist_and_is_later_than_now()
             {
                 // Arrange
-                var movieId = Fixture.Create<long>();
                 var laterThan = DateTime.Now;
                 var showtimeCount = 15;
 
                 var showtimes = Fixture.Build<MovieShowtime>()
+                    .Without(showtime => showtime.Id)
                     .With(showtime => showtime.ShowTime, laterThan.Add(TimeSpan.FromMinutes(1)))
                     .CreateMany(showtimeCount)
                     .ToArray();
+
                 var selectedShowtime = showtimes.First();
                 selectedShowtime.ShowTime = laterThan.AddMinutes(100);
-                movieId = selectedShowtime.Movie.Id;
 
                 using (var scope = CreateContextScope())
                 {
@@ -36,13 +102,15 @@ namespace NaCoDoKina.Api.Repository
                     await scope.DbContext.SaveChangesAsync();
                 }
 
+                var movieId = selectedShowtime.Movie.Id;
+
                 using (var scope = CreateContextScope())
                 {
                     Mock.Provide(scope.DbContext);
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesAsync(movieId, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForMovieAsync(movieId, laterThan);
 
                     // Assert
                     result.Should().HaveCount(1);
@@ -83,7 +151,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesAsync(movieId, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForMovieAsync(movieId, laterThan);
 
                     // Assert
                     result.Should().HaveCount(0);
@@ -121,7 +189,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesAsync(movieId, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForMovieAsync(movieId, laterThan);
 
                     // Assert
                     result.Should().HaveCount(0);
@@ -167,7 +235,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesAsync(movie.Id, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForMovieAsync(movie.Id, laterThan);
 
                     // Assert
                     result.Should().HaveCount(showtimeCount);
@@ -218,7 +286,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesForCinemaAsync(movie.Id, cinema.Id, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForCinemaAndMovieAsync(movie.Id, cinema.Id, laterThan);
 
                     // Assert
                     result.Should().HaveCount(1);
@@ -268,7 +336,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesForCinemaAsync(movie.Id, cinema.Id, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForCinemaAndMovieAsync(movie.Id, cinema.Id, laterThan);
 
                     // Assert
                     result.Should().HaveCount(0);
@@ -308,7 +376,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesForCinemaAsync(movie.Id, cinema.Id, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForCinemaAndMovieAsync(movie.Id, cinema.Id, laterThan);
 
                     // Assert
                     result.Should().HaveCount(0);
@@ -357,7 +425,7 @@ namespace NaCoDoKina.Api.Repository
                     RepositoryUnderTest = Mock.Create<MovieShowtimeRepository>();
 
                     // Act
-                    var result = await RepositoryUnderTest.GetMovieShowtimesForCinemaAsync(movie.Id, cinema.Id, laterThan);
+                    var result = await RepositoryUnderTest.GetShowtimesForCinemaAndMovieAsync(movie.Id, cinema.Id, laterThan);
 
                     // Assert
                     result.Should().HaveCount(showtimeCount);
@@ -417,7 +485,7 @@ namespace NaCoDoKina.Api.Repository
             }
         }
 
-        public class AddMovieShowtimeAsync : MovieShowtimeRepositoryTest
+        public class CreateMovieShowtimeAsync : MovieShowtimeRepositoryTest
         {
             [Fact]
             public async Task Should_add_showtime_and_return_id()
@@ -425,25 +493,17 @@ namespace NaCoDoKina.Api.Repository
                 //Arrange
                 var showtimeId = 1;
 
-                var movie = new Movie
-                {
-                    Name = nameof(Movie),
-                    Details = new MovieDetails(),
-                    PosterUrl = nameof(Movie.PosterUrl),
-                };
+                var movie = Fixture.Create<Movie>();
 
-                var cinema = new Cinema
-                {
-                    Name = nameof(Cinema),
-                    Address = nameof(Cinema.Address),
-                    Location = new Location(1, 1)
-                };
+                var cinema = Fixture.Create<Cinema>();
 
                 var movieShowtime = new MovieShowtime
                 {
                     Cinema = cinema,
                     Movie = movie,
-                    ShowTime = DateTime.Now.AddHours(2)
+                    ShowTime = DateTime.Now.AddHours(2),
+                    Language = "",
+                    ShowType = "",
                 };
 
                 using (var contextScope = CreateContextScope())
@@ -454,12 +514,10 @@ namespace NaCoDoKina.Api.Repository
                     await contextScope.DbContext.SaveChangesAsync();
                 }
 
-                using (var contextScope = CreateContextScope())
+                using (CreateContextScope())
                 {
-                    RepositoryUnderTest = new MovieShowtimeRepository(contextScope.DbContext, LoggerMock.Object);
-
                     //Act
-                    var movieShowtimeId = await RepositoryUnderTest.AddMovieShowtimeAsync(movieShowtime);
+                    var movieShowtimeId = await RepositoryUnderTest.CreateMovieShowtimeAsync(movieShowtime);
 
                     //Assert
                     movieShowtimeId.Should().BePositive();

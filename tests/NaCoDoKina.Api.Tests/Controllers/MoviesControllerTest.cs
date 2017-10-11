@@ -1,20 +1,21 @@
-﻿using AutoMapper;
+﻿using ApplicationCore.Results;
+using AutoMapper;
 using FluentAssertions;
+using Infrastructure.Exceptions;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NaCoDoKina.Api.DataContracts;
 using NaCoDoKina.Api.DataContracts.Movies;
-using NaCoDoKina.Api.Exceptions;
-using NaCoDoKina.Api.Results;
-using NaCoDoKina.Api.Services;
 using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using TestsCore;
 using Xunit;
-using Cinema = NaCoDoKina.Api.DataContracts.Movies.Cinema;
-using Location = NaCoDoKina.Api.DataContracts.Movies.Location;
+using Cinema = NaCoDoKina.Api.DataContracts.Cinemas.Cinema;
+using Location = NaCoDoKina.Api.DataContracts.Location;
 using Movie = NaCoDoKina.Api.DataContracts.Movies.Movie;
 using MovieDetails = NaCoDoKina.Api.DataContracts.Movies.MovieDetails;
 
@@ -56,25 +57,26 @@ namespace NaCoDoKina.Api.Controllers
             {
                 // Arrange
                 var movieId = Fixture.Create<long>();
+                var cinemaId = Fixture.Create<long>();
                 var moviesCount = 5;
-                var movieShowtimes = Fixture.CreateMany<Models.MovieShowtime>(moviesCount);
+                var movieShowtimes = Fixture.CreateMany<global::Infrastructure.Models.Movies.MovieShowtime>(moviesCount);
                 var laterThan = Fixture.Create<DateTime>();
 
-                MapperMock.Setup(mapper => mapper.Map<MovieShowtime>(It.IsAny<Models.MovieShowtime>()))
-                    .Returns(new Func<Models.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
+                MapperMock.Setup(mapper => mapper.Map<MovieShowtime>(It.IsAny<global::Infrastructure.Models.Movies.MovieShowtime>()))
+                    .Returns(new Func<global::Infrastructure.Models.Movies.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
                     {
                         ShowType = showtime.ShowType,
-                        CinemaName = showtime.CinemaName,
+
                         Language = showtime.Language,
                         ShowTime = showtime.ShowTime,
                     }));
 
                 MovieShowtimeServiceMock
-                    .Setup(service => service.GetMovieShowtimesAsync(movieId, laterThan))
+                    .Setup(service => service.GetMovieShowtimesForCinemaAsync(movieId, cinemaId, laterThan))
                     .ReturnsAsync(movieShowtimes);
 
                 // Act
-                var result = await ControllerUnderTest.GetMovieShowtimesAsync(movieId, laterThan: laterThan);
+                var result = await ControllerUnderTest.GetMovieShowtimesAsync(movieId, cinemaId, laterThan);
 
                 //Assert
                 result.Should().BeOfType<OkObjectResult>();
@@ -91,13 +93,13 @@ namespace NaCoDoKina.Api.Controllers
                 var movieId = Fixture.Create<long>();
                 var moviesCount = 5;
                 var laterThan = Fixture.Create<DateTime>();
-                var movieShowtimes = Fixture.CreateMany<Models.MovieShowtime>(moviesCount);
+                var movieShowtimes = Fixture.CreateMany<global::Infrastructure.Models.Movies.MovieShowtime>(moviesCount);
 
-                MapperMock.Setup(mapper => mapper.Map<MovieShowtime>(It.IsAny<Models.MovieShowtime>()))
-                    .Returns(new Func<Models.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
+                MapperMock.Setup(mapper => mapper.Map<MovieShowtime>(It.IsAny<global::Infrastructure.Models.Movies.MovieShowtime>()))
+                    .Returns(new Func<global::Infrastructure.Models.Movies.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
                     {
                         ShowType = showtime.ShowType,
-                        CinemaName = showtime.CinemaName,
+
                         Language = showtime.Language,
                         ShowTime = showtime.ShowTime,
                     }));
@@ -125,20 +127,20 @@ namespace NaCoDoKina.Api.Controllers
                 var laterThan = Fixture.Create<DateTime>();
 
                 MapperMock.Setup(mapper => mapper.Map<MovieShowtime>(It.IsAny<MovieShowtime>()))
-                    .Returns(new Func<Models.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
+                    .Returns(new Func<global::Infrastructure.Models.Movies.MovieShowtime, MovieShowtime>(showtime => new MovieShowtime
                     {
                         ShowType = showtime.ShowType,
-                        CinemaName = showtime.CinemaName,
+
                         Language = showtime.Language,
                         ShowTime = showtime.ShowTime,
                     }));
 
                 MovieShowtimeServiceMock
-                    .Setup(service => service.GetMovieShowtimesAsync(movieId, laterThan))
+                    .Setup(service => service.GetMovieShowtimesForCinemaAsync(movieId, cinemaId, laterThan))
                     .ThrowsAsync(new MovieShowtimeNotFoundException(movieId, cinemaId));
 
                 // Act
-                var result = await ControllerUnderTest.GetMovieShowtimesAsync(movieId, laterThan: laterThan);
+                var result = await ControllerUnderTest.GetMovieShowtimesAsync(movieId, cinemaId, laterThan);
 
                 //Assert
                 result.Should().BeOfType<NotFoundObjectResult>();
@@ -153,18 +155,18 @@ namespace NaCoDoKina.Api.Controllers
         {
             //Arrange
             var expectedShowsIds = new[] { 1L, 2L, 3L };
-            var modelLocation = new Models.Location(1, 1);
-            var modelSearchArea = new Models.SearchArea(modelLocation, 500);
+            var modelLocation = new global::Infrastructure.Models.Location(1, 1);
+            var modelSearchArea = new global::Infrastructure.Models.SearchArea(modelLocation, 500);
             var apiLocation = new Location(1, 1);
             var apiSearchArea = new SearchArea(apiLocation, 500);
 
             MapperMock
-                .Setup(mapper => mapper.Map<Models.SearchArea>(apiSearchArea))
+                .Setup(mapper => mapper.Map<global::Infrastructure.Models.SearchArea>(apiSearchArea))
                 .Returns(modelSearchArea);
 
             MovieServiceMock
                 .Setup(service => service.GetAllMoviesAsync(modelSearchArea))
-                .Returns(() => Task.FromResult(expectedShowsIds.AsEnumerable()));
+                .ReturnsAsync(expectedShowsIds);
 
             //Act
             var result = await ControllerUnderTest.GetAllMoviesAsync(apiSearchArea);
@@ -193,13 +195,13 @@ namespace NaCoDoKina.Api.Controllers
         {
             //Arrange
             var expectedShowsIds = new[] { 1L, 2L, 3L };
-            var modelLocation = new Models.Location(1, 1);
-            var modelSearchArea = new Models.SearchArea(modelLocation, 500);
+            var modelLocation = new global::Infrastructure.Models.Location(1, 1);
+            var modelSearchArea = new global::Infrastructure.Models.SearchArea(modelLocation, 500);
             var apiLocation = new Location(1, 1);
             var apiSearchArea = new SearchArea(apiLocation, 500);
 
             MapperMock
-                .Setup(mapper => mapper.Map<Models.SearchArea>(apiSearchArea))
+                .Setup(mapper => mapper.Map<global::Infrastructure.Models.SearchArea>(apiSearchArea))
                 .Returns(modelSearchArea);
 
             MovieServiceMock
@@ -214,33 +216,33 @@ namespace NaCoDoKina.Api.Controllers
         }
     }
 
-    public class GetNearestCinemasForMovie : MoviesControllerTest
+    public class GetCinemasPlayingMovieInSearchArea : MoviesControllerTest
     {
         [Fact]
         public async void Should_return_OkObjectResult_and_Cinemas()
         {
             //Arrange
             var movieId = 1;
-            var modelCinemas = new List<Models.Cinema> { new Models.Cinema() };
-            var modelLocation = new Models.Location(1, 1);
-            var modelSearchArea = new Models.SearchArea(modelLocation, 500);
+            var modelCinemas = new List<global::Infrastructure.Models.Cinemas.Cinema> { new global::Infrastructure.Models.Cinemas.Cinema() };
+            var modelLocation = new global::Infrastructure.Models.Location(1, 1);
+            var modelSearchArea = new global::Infrastructure.Models.SearchArea(modelLocation, 500);
             var apiLocation = new Location(1, 1);
             var apiSearchArea = new SearchArea(apiLocation, 500);
 
             MapperMock
-                .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Models.Cinema>()))
+                .Setup(mapper => mapper.Map<Cinema>(It.IsAny<global::Infrastructure.Models.Cinemas.Cinema>()))
                 .Returns(new Cinema());
 
             MapperMock
-                .Setup(mapper => mapper.Map<Models.SearchArea>(apiSearchArea))
+                .Setup(mapper => mapper.Map<global::Infrastructure.Models.SearchArea>(apiSearchArea))
                 .Returns(modelSearchArea);
 
             CinemaServiceMock
-                .Setup(service => service.GetNearestCinemasForMovieAsync(movieId, modelSearchArea))
-                .Returns(() => Task.FromResult(modelCinemas.AsEnumerable()));
+                .Setup(service => service.GetCinemasPlayingMovieInSearchArea(movieId, modelSearchArea))
+                .ReturnsAsync(modelCinemas);
 
             //Act
-            var result = await ControllerUnderTest.GetNearestCinemasForMovie(movieId, apiSearchArea);
+            var result = await ControllerUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, apiSearchArea);
 
             //Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -257,7 +259,7 @@ namespace NaCoDoKina.Api.Controllers
             //Arrange
             var movieId = 1;
             //Act
-            var result = await ControllerUnderTest.GetNearestCinemasForMovie(movieId, null);
+            var result = await ControllerUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, null);
 
             //Assert
             result.Should().BeOfType<BadRequestResult>();
@@ -268,21 +270,21 @@ namespace NaCoDoKina.Api.Controllers
         {
             //Arrange
             var movieId = -5;
-            var modelLocation = new Models.Location(1, 1);
-            var modelSearchArea = new Models.SearchArea(modelLocation, 500);
+            var modelLocation = new global::Infrastructure.Models.Location(1, 1);
+            var modelSearchArea = new global::Infrastructure.Models.SearchArea(modelLocation, 500);
             var apiLocation = new Location(1, 1);
             var apiSearchArea = new SearchArea(apiLocation, 500);
 
             MapperMock
-                .Setup(mapper => mapper.Map<Models.SearchArea>(apiSearchArea))
+                .Setup(mapper => mapper.Map<global::Infrastructure.Models.SearchArea>(apiSearchArea))
                 .Returns(modelSearchArea);
 
             CinemaServiceMock
-                .Setup(service => service.GetNearestCinemasForMovieAsync(movieId, modelSearchArea))
+                .Setup(service => service.GetCinemasPlayingMovieInSearchArea(movieId, modelSearchArea))
                 .Throws(new CinemasNotFoundException(movieId, modelSearchArea));
 
             //Act
-            var result = await ControllerUnderTest.GetNearestCinemasForMovie(movieId, apiSearchArea);
+            var result = await ControllerUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, apiSearchArea);
 
             //Assert
             result.Should().BeOfType<NotFoundObjectResult>();
@@ -299,12 +301,12 @@ namespace NaCoDoKina.Api.Controllers
             var movie = new Movie();
 
             MapperMock
-                .Setup(mapper => mapper.Map<Movie>(It.IsAny<Models.Movie>()))
+                .Setup(mapper => mapper.Map<Movie>(It.IsAny<global::Infrastructure.Models.Movies.Movie>()))
                 .Returns(movie);
 
             MovieServiceMock
                 .Setup(service => service.GetMovieAsync(showId))
-                .Returns(() => Task.FromResult(new Models.Movie()));
+                .Returns(() => Task.FromResult(new global::Infrastructure.Models.Movies.Movie()));
 
             //Act
             var result = await ControllerUnderTest.GetMovieAsync(showId);
@@ -388,12 +390,12 @@ namespace NaCoDoKina.Api.Controllers
             var movieDetails = new MovieDetails();
 
             MapperMock
-                .Setup(mapper => mapper.Map<MovieDetails>(It.IsAny<Models.MovieDetails>()))
+                .Setup(mapper => mapper.Map<MovieDetails>(It.IsAny<global::Infrastructure.Models.Movies.MovieDetails>()))
                 .Returns(movieDetails);
 
             MovieServiceMock
                 .Setup(service => service.GetMovieDetailsAsync(showId))
-                .Returns(() => Task.FromResult(new Models.MovieDetails()));
+                .Returns(() => Task.FromResult(new global::Infrastructure.Models.Movies.MovieDetails()));
 
             //Act
             var result = await ControllerUnderTest.GetMovieDetailsAsync(showId);
@@ -451,7 +453,7 @@ namespace NaCoDoKina.Api.Controllers
 
             RatingServiceMock
                 .Setup(service => service.SetMovieRating(movieId, rating))
-                .Throws(new MovieNotFoundException(movieId));
+                .ReturnsAsync(Result.Failure());
 
             //Act
             var result = await ControllerUnderTest.SetRatingForMovie(movieId, rating);

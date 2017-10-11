@@ -1,6 +1,9 @@
-﻿using FluentAssertions;
-using NaCoDoKina.Api.Entities;
-using NaCoDoKina.Api.Repositories;
+﻿using ApplicationCore.Entities;
+using ApplicationCore.Entities.Cinemas;
+using ApplicationCore.Entities.Movies;
+using FluentAssertions;
+using Infrastructure.Repositories;
+using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +12,7 @@ using Xunit;
 
 namespace NaCoDoKina.Api.Repository
 {
-    public class CinemaRepositoryTest : ApplicationRepositoryTestBase<ICinemaRepository>
+    public class CinemaRepositoryTest : ApplicationRepositoryTestBase<CinemaRepository>
     {
         public class GetAllCinemasForMovie : CinemaRepositoryTest
         {
@@ -42,19 +45,19 @@ namespace NaCoDoKina.Api.Repository
 
                 var movie1 = new Movie
                 {
-                    Name = $"{nameof(Movie)}1",
-                    Details = new MovieDetails
-                    {
-                        Description = nameof(MovieDetails),
-                    },
+                    Title = $"{nameof(Movie)}1",
+                    Details = Fixture.Build<MovieDetails>()
+                        .Without(details => details.Id)
+                        .Create(),
+                    PosterUrl = Fixture.Create<string>()
                 };
                 var movie2 = new Movie
                 {
-                    Name = $"{nameof(Movie)}2",
-                    Details = new MovieDetails
-                    {
-                        Description = nameof(MovieDetails),
-                    },
+                    Title = $"{nameof(Movie)}2",
+                    Details = Fixture.Build<MovieDetails>()
+                        .Without(details => details.Id)
+                        .Create(),
+                    PosterUrl = Fixture.Create<string>()
                 };
 
                 var movies = new List<Movie> { movie1, movie2 };
@@ -66,18 +69,24 @@ namespace NaCoDoKina.Api.Repository
                             Cinema = cinema1,
                             ShowTime = DateTime.Now.AddHours(1),
                             Movie = movie1,
+                            Language = "",
+                            ShowType = ""
                         },
                         new MovieShowtime
                         {
                             Cinema = cinema1,
                             ShowTime = DateTime.Now,
                             Movie = movie1,
+                            Language = "",
+                            ShowType = ""
                         },
                         new MovieShowtime
                         {
                             Cinema = cinema2,
                             Movie = movie2,
                             ShowTime = DateTime.Now.AddHours(1),
+                            Language = "",
+                            ShowType = ""
                         }
                     };
 
@@ -89,14 +98,12 @@ namespace NaCoDoKina.Api.Repository
 
                     foreach (var movie in contextScope.DbContext.Movies)
                     {
-                        movies.Single(m => m.Name == movie.Name).Id = movie.Id;
+                        movies.Single(m => m.Title == movie.Title).Id = movie.Id;
                     }
                 }
 
-                using (var contextScope = CreateContextScope())
+                using (CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
-
                     //Act
                     var returnedCinemas = await RepositoryUnderTest.GetAllCinemasForMovieAsync(movie1.Id);
 
@@ -113,7 +120,36 @@ namespace NaCoDoKina.Api.Repository
             }
         }
 
-        public class AddCinema : CinemaRepositoryTest
+        public class CreateCinemasAsync : CinemaRepositoryTest
+        {
+            [Fact]
+            public async Task Should_add_cinemas_to_database()
+            {
+                //Arrange
+                var cinemasCount = 5;
+                var cinemaNetwork = Fixture.Build<CinemaNetwork>()
+                    .Without(network => network.Id)
+                    .Create();
+
+                var cinemas = Fixture.Build<Cinema>()
+                    .Without(cinema => cinema.Id)
+                    .With(cinema => cinema.CinemaNetwork, cinemaNetwork)
+                    .CreateMany(cinemasCount);
+
+                using (CreateContextScope())
+                {
+                    //Act
+                    await RepositoryUnderTest.CreateCinemasAsync(cinemas);
+                }
+
+                using (var contextScope = CreateContextScope())
+                {
+                    contextScope.DbContext.Cinemas.Count().Should().Be(cinemasCount);
+                }
+            }
+        }
+
+        public class CreateCinemaAsync : CinemaRepositoryTest
         {
             [Fact]
             public async Task Should_add_cinema_to_database()
@@ -135,12 +171,10 @@ namespace NaCoDoKina.Api.Repository
 
                 cinema.CinemaNetwork = cinemaNetwork;
 
-                using (var contextScope = CreateContextScope())
+                using (CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
-
                     //Act
-                    var returnedCinema = await RepositoryUnderTest.AddCinema(cinema);
+                    var returnedCinema = await RepositoryUnderTest.CreateCinemaAsync(cinema);
 
                     //Assert
                     returnedCinema.Id.Should().BeGreaterThan(0);
@@ -188,12 +222,10 @@ namespace NaCoDoKina.Api.Repository
                     await contextScope.DbContext.SaveChangesAsync();
                 }
 
-                using (var contextScope = CreateContextScope())
+                using (CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
-
                     //Act
-                    Func<Task<Cinema>> action = () => RepositoryUnderTest.AddCinema(cinema);
+                    Func<Task<Cinema>> action = () => RepositoryUnderTest.CreateCinemaAsync(cinema);
 
                     //Assert
                     action.ShouldThrow<Exception>();
@@ -244,10 +276,8 @@ namespace NaCoDoKina.Api.Repository
                 }
 
                 IEnumerable<Cinema> returnedCinemas;
-                using (var contextScope = CreateContextScope())
+                using (CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
-
                     //Act
                     returnedCinemas = await RepositoryUnderTest.GetAllCinemas();
                 }
@@ -307,12 +337,10 @@ namespace NaCoDoKina.Api.Repository
                     await contextScope.DbContext.SaveChangesAsync();
                 }
 
-                using (var contextScope = CreateContextScope())
+                using (CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
-
                     //Act
-                    var returnedCinema = await RepositoryUnderTest.GetCinemaAsync(cinema1Id);
+                    var returnedCinema = await RepositoryUnderTest.GetCinemaByIdAsync(cinema1Id);
 
                     returnedCinema.Should().NotBeNull();
                     returnedCinema.Name.Should().Be(cinema1.Name);
@@ -356,12 +384,10 @@ namespace NaCoDoKina.Api.Repository
                     await contextScope.DbContext.SaveChangesAsync();
                 }
 
-                using (var contextScope = CreateContextScope())
+                using (CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
-
                     //Act
-                    var returnedCinema = await RepositoryUnderTest.GetCinemaAsync(cinema1.Name);
+                    var returnedCinema = await RepositoryUnderTest.GetCinemaByNameAsync(cinema1.Name);
 
                     returnedCinema.Should().NotBeNull();
                     returnedCinema.Name.Should().Be(cinema1.Name);
@@ -405,12 +431,10 @@ namespace NaCoDoKina.Api.Repository
                     await contextScope.DbContext.SaveChangesAsync();
                 }
 
-                using (var contextScope = CreateContextScope())
+                using (CreateContextScope())
                 {
-                    RepositoryUnderTest = new CinemaRepository(contextScope.DbContext, LoggerMock.Object);
-
                     //Act
-                    var returnedCinema = await RepositoryUnderTest.GetCinemaAsync(nonExistingId);
+                    var returnedCinema = await RepositoryUnderTest.GetCinemaByIdAsync(nonExistingId);
 
                     returnedCinema.Should().BeNull();
                 }

@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Request;
+using Infrastructure.Services.Google.DataContract.Directions;
+using Infrastructure.Services.Google.DataContract.Directions.Request;
 using Xunit;
 
 namespace NaCoDoKina.Api.Infrastructure.Google
