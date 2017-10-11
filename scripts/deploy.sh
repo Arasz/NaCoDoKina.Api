@@ -4,11 +4,9 @@ FRAMEWORK_VERSION=netcoreapp2.0
 CONFIGURATION=Release
 
 dotnet publish src/NaCoDoKina.Api/NaCoDoKina.Api.csproj -c $CONFIGURATION -f $FRAMEWORK_VERSION
-
-scp -r src/NaCoDoKina.Api/bin/$CONFIGURATION/$FRAMEWORK_VERSION/ arasz@$SERVER_ADDRESS:/var/www/nacodokinaapi/
+rsync -r --delete-after src/NaCoDoKina.Api/bin/$CONFIGURATION/$FRAMEWORK_VERSION/ arasz@$SERVER_ADDRESS:/var/www/nacodokinaapi/
 
 
 dotnet publish src/HangfireHost/HangfireHost.csproj -c $CONFIGURATION -f $FRAMEWORK_VERSION
-
-scp -r src/HangfireHost/bin/$CONFIGURATION/$FRAMEWORK_VERSION/ arasz@$SERVER_ADDRESS:/var/www/hangfirehost/
+rsync -r --delete-after src/HangfireHost/bin/$CONFIGURATION/$FRAMEWORK_VERSION/  arasz@$SERVER_ADDRESS:/var/www/hangfirehost/
 
