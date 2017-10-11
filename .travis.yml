@@ -34,6 +34,8 @@ script:
 - "./scripts/run-integration-tests.sh"
 after_success:
 - "./scripts/migrations.sh"
-before_install:
-- openssl aes-256-cbc -K $encrypted_72404ae70bed_key -iv $encrypted_72404ae70bed_iv
-  -in travis_rsa.enc -out travis_rsa -d
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_72404ae70bed_key -iv $encrypted_72404ae70bed_iv -in travis_rsa.enc -out /tmp/travis_rsa -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/travis_rsa
+- ssh-add /tmp/travis_rsa
