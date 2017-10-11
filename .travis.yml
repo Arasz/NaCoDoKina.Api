@@ -38,7 +38,7 @@ before_deploy:
 deploy:
   provider: azure_web_apps
   site: nacodokina
-  skip_cleanup: true
+  skip_cleanup: false
   verbose: true
   on:
     branch: production
