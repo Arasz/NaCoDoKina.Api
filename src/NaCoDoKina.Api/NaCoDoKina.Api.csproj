@@ -4,7 +4,6 @@
     <UserSecretsId>e2f014f3-af6a-49f1-839d-22621ec57309</UserSecretsId>
     <ApplicationInsightsResourceId>/subscriptions/334b404c-20cc-4bfb-957c-5a58a41aed55/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/NaCoDoKina.Api</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/334b404c-20cc-4bfb-957c-5a58a41aed55/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/NaCoDoKina.Api</ApplicationInsightsAnnotationResourceId>
-    <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
