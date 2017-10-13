@@ -22,8 +22,7 @@ namespace Infrastructure.Data.Configurations
 
             builder
                 .Property(movie => movie.PosterUrl)
-                .HasMaxLength(200)
-                .IsRequired();
+                .HasMaxLength(200);
 
             builder
                 .HasMany(movie => movie.ExternalMovies)
@@ -54,7 +53,6 @@ namespace Infrastructure.Data.Configurations
 
             builder.Property(movie => movie.AgeLimit)
                 .HasDefaultValue()
-                .IsRequired()
                 .HasMaxLength(100);
 
             builder.Property(movie => movie.Language)
