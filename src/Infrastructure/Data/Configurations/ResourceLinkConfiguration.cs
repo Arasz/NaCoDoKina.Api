@@ -9,8 +9,7 @@ namespace Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<MediaLink> builder)
         {
             builder
-                .HasIndex(link => link.Url)
-                .IsUnique();
+                .HasIndex(link => link.Url);
 
             builder
                 .Property(link => link.Url)
@@ -28,8 +27,7 @@ namespace Infrastructure.Data.Configurations
                 .HasIndex(link => link.Name);
 
             builder
-                .HasIndex(link => link.Url)
-                .IsUnique();
+                .HasIndex(link => link.Url);
 
             builder
                 .Property(link => link.Url)
