@@ -96,7 +96,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 response.EnsureSuccessStatusCode();
 
-                var responseContent = await HttpContentExtensions.ReadAsJsonObjectAsync<long[]>(response.Content);
+                var responseContent = await response.Content.ReadAsJsonObjectAsync<long[]>();
                 responseContent
                     .Should()
                     .NotBeNullOrEmpty().And
