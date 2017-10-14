@@ -8,7 +8,6 @@ using Hangfire.Dashboard;
 using Hangfire.MemoryStorage;
 using Hangfire.PostgreSql;
 using HangfireHost.IoC;
-using HangfireHost.Tasks;
 using Infrastructure.Data;
 using Infrastructure.Identity;
 using Infrastructure.IoC;
@@ -132,10 +131,6 @@ namespace HangfireHost
             if (Env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                new FireCinemaCityTasks().Schedule();
             }
         }
 
