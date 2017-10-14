@@ -40,13 +40,9 @@ namespace Infrastructure.Services
                     .Select(leg => new TravelInformation(travelPlan, leg.Distance.Value, TimeSpan.FromSeconds(leg.Duration.Value)))
                     .Max();
             }
-            catch (GoogleApiException exception) when (exception.Status != GoogleApiStatus.Unspecifed)
+            catch (GoogleApiException exception)
             {
-                _logger.LogError("FailureReason during travel time calculation {@Exception}.", exception);
-                return null;
-            }
-            catch (GoogleApiException)
-            {
+                _logger.LogError("Failure during travel time calculation {@Exception}.", exception);
                 return null;
             }
         }
@@ -68,10 +64,6 @@ namespace Infrastructure.Services
             catch (GoogleApiException exception) when (exception.Status != GoogleApiStatus.Unspecifed)
             {
                 _logger.LogError("Failure during address location {@Exception}.", exception);
-                return null;
-            }
-            catch (GoogleApiException)
-            {
                 return null;
             }
         }

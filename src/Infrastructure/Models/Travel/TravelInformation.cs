@@ -20,6 +20,11 @@ namespace Infrastructure.Models.Travel
             Distance = distance;
             Duration = duration;
         }
+
+        public static TravelInformation CreateEmpty(TravelPlan travelPlan)
+        {
+            return new TravelInformation(travelPlan, 0, TimeSpan.Zero);
+        }
     }
 
     public partial class TravelInformation

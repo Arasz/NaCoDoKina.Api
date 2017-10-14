@@ -87,7 +87,8 @@ namespace Infrastructure.Services
             var travelInformationForCinemas = await GetTravelInformationForCinemasAsync(searchArea, cinemas);
 
             var nearestCinemas = cinemas
-                .Join(travelInformationForCinemas, cinema => cinema.Location,
+                .Join(travelInformationForCinemas,
+                    cinema => cinema.Location,
                     information => information.TravelPlan.Destination,
                     (cinema, information) =>
                     {
