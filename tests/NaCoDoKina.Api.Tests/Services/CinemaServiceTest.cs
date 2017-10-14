@@ -104,7 +104,7 @@ namespace NaCoDoKina.Api.Services
                     var location = new Location(1, 2);
                     var searchArea = new SearchArea(location, 1000);
                     var movieId = 69;
-                    var cinemas = new List<ApplicationCore.Entities.Cinemas.Cinema>
+                    var cinemas = new[]
                     {
                         new ApplicationCore.Entities.Cinemas.Cinema
                         {
@@ -128,13 +128,13 @@ namespace NaCoDoKina.Api.Services
 
                     RepositoryMock
                         .Setup(repository => repository.GetAllCinemasForMovieAsync(movieId))
-                        .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
+                        .ReturnsAsync(cinemas);
 
                     //Act
                     var result = await ServiceUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, searchArea);
 
                     //Assert
-                    result.Should().HaveCount(cinemas.Count - 1);
+                    result.Should().HaveCount(cinemas.Length - 1);
                     result.SingleOrDefault(cinema => cinema.Name == "NearCinema")
                         .Should()
                         .NotBeNull();
@@ -152,7 +152,7 @@ namespace NaCoDoKina.Api.Services
 
                     RepositoryMock
                         .Setup(repository => repository.GetAllCinemasForMovieAsync(movieId))
-                        .Returns(() => Task.FromResult(new List<ApplicationCore.Entities.Cinemas.Cinema>().AsEnumerable()));
+                        .ReturnsAsync(Array.Empty<ApplicationCore.Entities.Cinemas.Cinema>());
 
                     //Act
                     Func<Task<ICollection<Cinema>>> action = () =>
@@ -211,7 +211,7 @@ namespace NaCoDoKina.Api.Services
 
                     RepositoryMock
                         .Setup(repository => repository.GetAllCinemas())
-                        .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
+                        .ReturnsAsync(cinemas);
 
                     //Act
                     var result = await ServiceUnderTest.GetCinemasInSearchAreaAsync(searchArea);

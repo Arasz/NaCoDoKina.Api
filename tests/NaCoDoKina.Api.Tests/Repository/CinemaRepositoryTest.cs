@@ -239,6 +239,48 @@ namespace NaCoDoKina.Api.Repository
             }
         }
 
+        public class GetAllCinemasByCity : CinemaRepositoryTest
+        {
+            [Fact]
+            public async Task Should_return_all_cinemas()
+            {
+                //Arrange
+
+                IEnumerable<Cinema> BuildCinemas(string city)
+                {
+                    return Fixture.Build<Cinema>()
+                        .With(cinema => cinema.Address, $"ul. Zakopiańska 62, 30-418, {city}")
+                        .Without(cinema => cinema.Id)
+                        .CreateMany(3);
+                }
+
+                var chosenCity = "Kraków";
+                var cinemas = BuildCinemas(chosenCity)
+                    .ToList();
+
+                cinemas.AddRange(BuildCinemas("Poznań"));
+
+                using (var context = CreateContextScope())
+                {
+                    context.DbContext.Cinemas.AddRange(cinemas);
+                    await context.DbContext.SaveChangesAsync();
+                }
+
+                using (CreateContextScope())
+                {
+                    //Act
+                    var returnCinemas = await RepositoryUnderTest.GetAllCinemas();
+
+                    //Assert
+                    returnCinemas
+                        .Should()
+                        .Match(c => c.All(cinema => cinema.Address.EndsWith(chosenCity)))
+                        .And
+                        .HaveCount(3);
+                }
+            }
+        }
+
         public class GetAllCinemas : CinemaRepositoryTest
         {
             [Fact]
