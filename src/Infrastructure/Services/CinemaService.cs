@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Repositories;
 using AutoMapper;
 using Infrastructure.Exceptions;
+using Infrastructure.Extensions;
 using Infrastructure.Models;
 using Infrastructure.Models.Cinemas;
 using Infrastructure.Models.Travel;
@@ -60,8 +61,8 @@ namespace Infrastructure.Services
             var travelInformation = new List<TravelInformation>(travelPlans.Length);
             foreach (var travelPlan in travelPlans)
             {
-                var information = await _travelService.CalculateInformationForTravelAsync(travelPlan);
-                travelInformation.Add(information);
+                var travelInfo = await _travelService.GetInformationForTravelAsync(travelPlan);
+                travelInformation.Add(travelInfo);
             }
 
             return travelInformation;
@@ -77,7 +78,10 @@ namespace Infrastructure.Services
 
         public async Task<ICollection<Cinema>> GetCinemasInSearchAreaAsync(SearchArea searchArea)
         {
-            var cinemas = await _cinemaRepository.GetAllCinemas();
+            var cinemas = searchArea.City.IsNullOrEmpty() ?
+                await _cinemaRepository.GetAllCinemas()
+                :
+                await _cinemaRepository.GetCinemasByCityAsync(searchArea.City);
 
             return await MapAndFilter(searchArea, cinemas);
         }

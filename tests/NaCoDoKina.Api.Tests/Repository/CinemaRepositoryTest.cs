@@ -269,7 +269,7 @@ namespace NaCoDoKina.Api.Repository
                 using (CreateContextScope())
                 {
                     //Act
-                    var returnCinemas = await RepositoryUnderTest.GetAllCinemas();
+                    var returnCinemas = await RepositoryUnderTest.GetCinemasByCityAsync(chosenCity);
 
                     //Assert
                     returnCinemas

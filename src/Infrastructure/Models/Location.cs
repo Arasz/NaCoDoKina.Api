@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace Infrastructure.Models
 {
@@ -12,6 +13,20 @@ namespace Infrastructure.Models
         {
             Longitude = longitude;
             Latitude = latitude;
+        }
+
+        public Location LowerPrecision(int places)
+        {
+            double Truncate(double number)
+            {
+                var multiplicand = Math.Pow(10, places);
+
+                var tmp = Math.Truncate(number * multiplicand);
+
+                return tmp / multiplicand;
+            }
+
+            return new Location(Truncate(Longitude), Truncate(Latitude));
         }
 
         public double Longitude { get; set; }

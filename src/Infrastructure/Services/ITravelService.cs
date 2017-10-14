@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using Infrastructure.Models;
+﻿using Infrastructure.Models;
 using Infrastructure.Models.Travel;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Services
 {
@@ -16,7 +16,7 @@ namespace Infrastructure.Services
         /// <returns>
         /// Time needed to reach point B from point A. Returns min value when time couldnt be calculated
         /// </returns>
-        Task<TravelInformation> CalculateInformationForTravelAsync(TravelPlan travelPlan);
+        Task<TravelInformation> GetInformationForTravelAsync(TravelPlan travelPlan);
 
         /// <summary>
         /// Translates address to location (geocoding) 

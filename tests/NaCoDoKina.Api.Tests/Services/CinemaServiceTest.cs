@@ -26,7 +26,7 @@ namespace NaCoDoKina.Api.Services
 
         private class TravelServiceFakeImpl : ITravelService
         {
-            public Task<TravelInformation> CalculateInformationForTravelAsync(TravelPlan travelPlan)
+            public Task<TravelInformation> GetInformationForTravelAsync(TravelPlan travelPlan)
             {
                 var distance = CalculateEuclideanDistance(travelPlan);
 
@@ -179,8 +179,63 @@ namespace NaCoDoKina.Api.Services
                 }
             }
 
-            public class GetNearestCinemasAsync : CinemaServiceTest
+            public class GetCinemasInSearchAreaAsync : CinemaServiceTest
             {
+                [Fact]
+                public async Task Should_return_cinemas_in_search_are_inside_given_city()
+                {
+                    //Arrange
+                    var location = new Location(1, 2);
+                    var city = "Poznań";
+                    var searchArea = new SearchArea(location, 1000)
+                    {
+                        City = city
+                    };
+
+                    var cinemas = new List<ApplicationCore.Entities.Cinemas.Cinema>
+                    {
+                        new ApplicationCore.Entities.Cinemas.Cinema
+                        {
+                            Name = "NearCinema",
+                            Location = new ApplicationCore.Entities.Location(15, 32),
+                            Address = $"address {city}"
+                        },
+                        new ApplicationCore.Entities.Cinemas.Cinema
+                        {
+                            Name = "NearCinema2",
+                            Location = new ApplicationCore.Entities.Location(15, 32),
+                            Address = $"address Kraków"
+                        },
+                        new ApplicationCore.Entities.Cinemas.Cinema
+                        {
+                            Name = "FarCinema",
+                            Location = new ApplicationCore.Entities.Location(1333, 4322),
+                            Address = $"address {city}"
+                        }
+                    };
+
+                    MapperMock
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<ApplicationCore.Entities.Cinemas.Cinema>()))
+                        .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(cinema => new Cinema
+                        {
+                            Name = cinema.Name,
+                            Location = new Location(cinema.Location.Longitude, cinema.Location.Latitude)
+                        }));
+
+                    RepositoryMock
+                        .Setup(repository => repository.GetAllCinemas())
+                        .ReturnsAsync(cinemas);
+
+                    //Act
+                    var result = await ServiceUnderTest.GetCinemasInSearchAreaAsync(searchArea);
+
+                    //Assert
+                    result.Should().HaveCount(cinemas.Count - 2);
+                    result.SingleOrDefault(cinema => cinema.Name == "NearCinema")
+                        .Should()
+                        .NotBeNull();
+                }
+
                 [Fact]
                 public async Task Should_return_nearest_cinemas_for_correct_parameters()
                 {

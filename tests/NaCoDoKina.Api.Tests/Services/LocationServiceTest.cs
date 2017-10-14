@@ -144,7 +144,7 @@ namespace NaCoDoKina.Api.Services
                     .Returns(() => Task.FromResult(apiResponse));
 
                 //act
-                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
                 travelInformation.TravelPlan.Should().Be(travelPlan);
@@ -180,7 +180,7 @@ namespace NaCoDoKina.Api.Services
                     .Returns(() => Task.FromResult(apiResponse));
 
                 //act
-                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
                 travelInformation.TravelPlan.Should().Be(travelPlan);
@@ -206,7 +206,7 @@ namespace NaCoDoKina.Api.Services
                     .Throws(new GoogleApiException("INVALID_REQUEST", String.Empty));
 
                 //act
-                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
                 travelInformation.Should().BeNull();
@@ -228,7 +228,7 @@ namespace NaCoDoKina.Api.Services
                     .Throws(new GoogleApiException(new Exception()));
 
                 //act
-                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
                 travelInformation.Should().BeNull();

@@ -13,10 +13,10 @@ namespace Infrastructure.Repositories
     public class CinemaRepository : ICinemaRepository
     {
         private readonly ICacheManager<Cinema> _cinemaCacheManager;
-        private readonly ICacheManager<Cinema[]> _cinemasCacheManager;
+        private readonly ICacheManager<ICollection<Cinema>> _cinemasCacheManager;
         private readonly ApplicationContext _applicationContext;
 
-        public CinemaRepository(ApplicationContext applicationContext, ICacheManager<Cinema[]> cinemasCache, ICacheManager<Cinema> cinemaCache)
+        public CinemaRepository(ApplicationContext applicationContext, ICacheManager<ICollection<Cinema>> cinemasCache, ICacheManager<Cinema> cinemaCache)
         {
             _cinemaCacheManager = cinemaCache ?? throw new ArgumentNullException(nameof(cinemaCache));
             _cinemasCacheManager = cinemasCache ?? throw new ArgumentNullException(nameof(cinemasCache));

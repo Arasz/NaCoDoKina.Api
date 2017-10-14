@@ -64,7 +64,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
-                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
                 travelInformation.TravelPlan.Should().Be(travelPlan);
@@ -81,7 +81,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
-                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
                 travelInformation.TravelPlan.Should().Be(travelPlan);
@@ -98,7 +98,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
-                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
                 travelInformation.Should().BeNull();
