@@ -18,15 +18,15 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             public async Task Should_create_new_user_and_login()
             {
                 // Arrange
-                var registerUrl = $"{ApiSettings.Version}/users";
-                var loginUrl = $"{ApiSettings.Version}/auth/token";
+                var registerUrl = $"{TestsSettings.Version}/users";
+                var loginUrl = $"{TestsSettings.Version}/auth/token";
                 var email = "test@kmail.com";
 
                 var registerPayload = new RegisterUser
                 {
                     UserName = Fixture.Create<string>(),
                     Email = email,
-                    Password = ApiSettings.DefaultUserPassword,
+                    Password = TestsSettings.DefaultUserPassword,
                 };
 
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -39,7 +39,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 registerResponse.EnsureSuccessStatusCode();
 
                 var credentials = await registerResponse.Content.ReadAsJsonObjectAsync<Credentials>();
-                credentials.Password = ApiSettings.DefaultUserPassword;
+                credentials.Password = TestsSettings.DefaultUserPassword;
 
                 var loginResponse = await Client.PostAsync(loginUrl, GetPayload(credentials));
 

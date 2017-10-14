@@ -35,11 +35,11 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             if (user is null)
                 throw new ArgumentException($"There is no user at position {userPosition}");
 
-            var url = $"{ApiSettings.Version}/auth/token";
+            var url = $"{TestsSettings.Version}/auth/token";
             var payload = new Credentials
             {
                 UserName = user.UserName,
-                Password = ApiSettings.DefaultUserPassword
+                Password = TestsSettings.DefaultUserPassword
             };
 
             var response = await Client.PostAsync(url, GetPayload(payload));
@@ -73,7 +73,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
         /// <summary>
         /// Base url for movie controller 
         /// </summary>
-        protected string BaseUrl => $"{ApiSettings.Version}/movies/";
+        protected string BaseUrl => $"{TestsSettings.Version}/movies/";
 
         public class GetAllMoviesAsync : MoviesControllerTest
         {

@@ -23,7 +23,7 @@ namespace IntegrationTestsCore
     public abstract class HttpTestBase<TStartup> : UnitTestBase
         where TStartup : class
     {
-        protected IntegrationTestsSettings ApiSettings { get; set; }
+        protected IntegrationTestsSettings TestsSettings { get; set; }
 
         protected override void Dispose(bool disposing)
         {
@@ -49,7 +49,7 @@ namespace IntegrationTestsCore
             var contentRoot = GetProjectPath("src", typeof(TStartup).Assembly);
 
             var builder = WebHost.CreateDefaultBuilder()
-                .UseEnvironment(ApiSettings.Environment)
+                .UseEnvironment(TestsSettings.Environment)
                 .UseContentRoot(contentRoot)
                 .ConfigureAppConfiguration((context, configurationBuilder) =>
                 {
@@ -65,9 +65,17 @@ namespace IntegrationTestsCore
             Server = new TestServer(builder);
 
             Client = Server.CreateClient();
-            Client.BaseAddress = new Uri(ApiSettings.BaseAddress);
+            Client.BaseAddress = new Uri(TestsSettings.BaseAddress);
 
             Services = Server.Host.Services;
+        }
+
+        /// <summary>
+        /// Called after tests settings are loaded from config file. Allows for per test settings modification 
+        /// </summary>
+        /// <param name="settings"> Loaded settings </param>
+        public virtual void AfterTestsSettingsLoaded(IntegrationTestsSettings settings)
+        {
         }
 
         private void LoadTestConfiguration()
@@ -77,7 +85,9 @@ namespace IntegrationTestsCore
                 .SetBasePath(testContentRoot)
                 .AddJsonFile("appsettings.test.json", false)
                 .Build();
-            ApiSettings = testConfiguration.Get<IntegrationTestsSettings>();
+            TestsSettings = testConfiguration.Get<IntegrationTestsSettings>();
+
+            AfterTestsSettingsLoaded(TestsSettings);
         }
 
         /// <summary>
@@ -129,7 +139,7 @@ namespace IntegrationTestsCore
         protected virtual void ConfigureServices(IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IFixture, Fixture>();
-            serviceCollection.AddSingleton(ApiSettings);
+            serviceCollection.AddSingleton(TestsSettings);
         }
     }
 }
