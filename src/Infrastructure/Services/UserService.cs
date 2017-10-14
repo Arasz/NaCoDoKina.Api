@@ -101,7 +101,7 @@ namespace Infrastructure.Services
             internalUser = await _userRepository.CreateUserWithPasswordAsync(internalUser, password);
 
             if (internalUser is null)
-                return Result<User>.Failure<User>("User creation failed");
+                return Result.Failure<User>("User creation failed");
 
             user = _mapper.Map<User>(internalUser);
             return Result<User>.CreateSucceeded(user);

@@ -20,11 +20,11 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             {
                 // Arrange
                 var user = await GetDbContext<ApplicationIdentityContext>().Users.FirstAsync();
-                var url = $"{ApiSettings.Version}/auth/token";
+                var url = $"{TestsSettings.Version}/auth/token";
                 var payload = new Credentials
                 {
                     UserName = user.UserName,
-                    Password = ApiSettings.DefaultUserPassword
+                    Password = TestsSettings.DefaultUserPassword
                 };
                 var tokenHandler = new JwtSecurityTokenHandler();
 
