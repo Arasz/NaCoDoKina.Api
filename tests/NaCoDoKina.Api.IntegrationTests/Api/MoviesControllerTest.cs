@@ -153,6 +153,24 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             }
 
             [Fact]
+            public async Task Should_return_movie_with_given_id_when_id_is_correct_for_not_logged_in_user()
+            {
+                // Arrange
+                var movieId = 1L;
+                var url = $"{BaseUrl}{movieId}";
+
+                // Act
+                var response = await Client.GetAsync(url);
+
+                // Assert
+                response.EnsureSuccessStatusCode();
+                var movie = await response.Content.ReadAsJsonObjectAsync<Movie>();
+
+                movie.Id.Should().Be(movieId);
+                movie.Title.Should().NotBeNullOrEmpty();
+            }
+
+            [Fact]
             public async Task Should_return_not_found_status_code_when_id_is_incorrect()
             {
                 // Arrange
@@ -198,6 +216,22 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 movie.Id.Should().Be(movieId);
                 movie.Title.Should().NotBeNullOrEmpty();
+            }
+
+            [Fact]
+            public async Task Should_return_unauthorized_when_user_non_logged_in()
+            {
+                // Arrange
+                var movieId = 1L;
+                var url = $"{BaseUrl}{movieId}";
+
+                // Act
+                var response = await Client.DeleteAsync(url);
+
+                // Assert
+                response.StatusCode
+                    .Should()
+                    .HaveFlag(HttpStatusCode.Unauthorized);
             }
         }
 
@@ -261,6 +295,23 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 var returnedRating = await response.Content.ReadAsJsonObjectAsync<double>();
 
                 returnedRating.Should().Be(returnedRating);
+            }
+
+            [Fact]
+            public async Task Should_return_unauthorized_for_not_logged_in_user()
+            {
+                // Arrange
+                var movieId = 1L;
+                var url = $"{BaseUrl}{movieId}/rating";
+                var rating = Fixture.Create<double>();
+
+                // Act
+                var response = await Client.PostAsync(url, GetPayload(rating));
+
+                // Assert
+                response.StatusCode
+                    .Should()
+                    .HaveFlag(HttpStatusCode.Unauthorized);
             }
         }
 
