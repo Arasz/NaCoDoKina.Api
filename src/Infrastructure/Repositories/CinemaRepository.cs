@@ -77,10 +77,12 @@ namespace Infrastructure.Repositories
             foreach (var cinema in cinemas)
             {
                 var exist = await _applicationContext.Cinemas
-                    .Where(c => c.ExternalId == cinema.ExternalId)
+                    .Where(c => c.ExternalId == cinema.ExternalId || c.Name == cinema.Name)
                     .AnyAsync();
+
                 if (exist)
                     continue;
+
                 _applicationContext.Cinemas.Add(cinema);
             }
 
