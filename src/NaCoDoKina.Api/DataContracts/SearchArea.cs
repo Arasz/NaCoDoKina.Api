@@ -26,7 +26,7 @@ namespace NaCoDoKina.Api.DataContracts
         public double Radius { get; set; }
 
         /// <summary>
-        /// City in which search is conducted. 
+        /// City in which search is conducted 
         /// </summary>
         public string City { get; set; }
 

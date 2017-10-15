@@ -44,7 +44,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
             var response = await Client.PostAsync(url, GetPayload(payload));
 
-            var token = await HttpContentExtensions.ReadAsJsonObjectAsync<JwtToken>(response.Content);
+            var token = await response.Content.ReadAsJsonObjectAsync<JwtToken>();
 
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
         }

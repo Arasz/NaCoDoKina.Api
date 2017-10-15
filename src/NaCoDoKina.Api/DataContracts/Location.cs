@@ -3,7 +3,7 @@
 namespace NaCoDoKina.Api.DataContracts
 {
     /// <summary>
-    /// RegisterUser location 
+    /// Location represented by geographic coordinates 
     /// </summary>
     public class Location
     {

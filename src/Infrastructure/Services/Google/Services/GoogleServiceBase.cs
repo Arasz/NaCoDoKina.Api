@@ -44,10 +44,15 @@ namespace Infrastructure.Services.Google.Services
                 if (deserializedResponse.Status != "OK")
                 {
                     parsedRequest = ParseWithoutKey(apiRequest, parsedRequest);
-                    throw new GoogleApiException(parsedRequest, deserializedResponse.Status, deserializedResponse.ErrorMessage);
+                    throw new GoogleApiException(parsedRequest, deserializedResponse.Status,
+                        deserializedResponse.ErrorMessage);
                 }
 
                 return deserializedResponse;
+            }
+            catch (GoogleApiException)
+            {
+                throw;
             }
             catch (Exception unknownException)
             {

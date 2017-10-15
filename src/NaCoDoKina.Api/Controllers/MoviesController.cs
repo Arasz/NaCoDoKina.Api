@@ -40,7 +40,8 @@ namespace NaCoDoKina.Api.Controllers
         }
 
         /// <summary>
-        /// Returns all accessible shows for current user. Shows are sorted by predicted user rating. 
+        /// Returns all accessible shows for current api user sorted by rating. When user is
+        /// anonymous movies are not sorted
         /// </summary>
         /// <returns> Shows ids sorted by estimated user rating </returns>
         [ProducesResponseType(typeof(IEnumerable<long>), StatusCodes.Status200OK)]
