@@ -102,7 +102,7 @@ namespace NaCoDoKina.Api.Services
                 public async Task Should_return_nearest_cinemas_for_correct_parameters()
                 {
                     //Arrange
-                    var location = new Location(1, 2);
+                    var location = new Location(2, 1);
                     var searchArea = new SearchArea(location, 1000);
                     var movieId = 69;
                     var cinemas = new[]
@@ -124,7 +124,7 @@ namespace NaCoDoKina.Api.Services
                         .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(cinema => new Cinema
                         {
                             Name = cinema.Name,
-                            Location = new Location(cinema.Location.Longitude, cinema.Location.Latitude)
+                            Location = new Location(cinema.Location.Latitude, cinema.Location.Longitude)
                         }));
 
                     RepositoryMock
@@ -147,7 +147,7 @@ namespace NaCoDoKina.Api.Services
                 public void Should_throw_CinemasNotFound_when_could_not_find_movie()
                 {
                     //Arrange
-                    var location = new Location(1, 2);
+                    var location = new Location(2, 1);
                     var searchArea = new SearchArea(location, 100);
                     var movieId = -500;
 
@@ -186,7 +186,7 @@ namespace NaCoDoKina.Api.Services
                 public async Task Should_return_cinemas_in_search_are_inside_given_city()
                 {
                     //Arrange
-                    var location = new Location(1, 2);
+                    var location = new Location(2, 1);
                     var city = "Poznań";
                     var searchArea = new SearchArea(location, 1000)
                     {
@@ -220,7 +220,7 @@ namespace NaCoDoKina.Api.Services
                         .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(cinema => new Cinema
                         {
                             Name = cinema.Name,
-                            Location = new Location(cinema.Location.Longitude, cinema.Location.Latitude)
+                            Location = new Location(cinema.Location.Latitude, cinema.Location.Longitude)
                         }));
 
                     RepositoryMock
@@ -241,7 +241,7 @@ namespace NaCoDoKina.Api.Services
                 public async Task Should_return_nearest_cinemas_for_correct_parameters()
                 {
                     //Arrange
-                    var location = new Location(1, 2);
+                    var location = new Location(2, 1);
                     var searchArea = new SearchArea(location, 1000);
                     var cinemas = new List<ApplicationCore.Entities.Cinemas.Cinema>
                     {
@@ -262,7 +262,7 @@ namespace NaCoDoKina.Api.Services
                         .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(cinema => new Cinema
                         {
                             Name = cinema.Name,
-                            Location = new Location(cinema.Location.Longitude, cinema.Location.Latitude)
+                            Location = new Location(cinema.Location.Latitude, cinema.Location.Longitude)
                         }));
 
                     RepositoryMock
@@ -314,7 +314,7 @@ namespace NaCoDoKina.Api.Services
                         {
                             Id = c.Id,
                             Name = c.Name,
-                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                            Location = new Location(c.Location.Latitude, c.Location.Longitude)
                         }));
 
                     RepositoryMock
@@ -349,7 +349,7 @@ namespace NaCoDoKina.Api.Services
                         {
                             Id = c.Id,
                             Name = c.Name,
-                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                            Location = new Location(c.Location.Latitude, c.Location.Longitude)
                         }));
 
                     RepositoryMock
@@ -385,7 +385,7 @@ namespace NaCoDoKina.Api.Services
                         {
                             Id = c.Id,
                             Name = c.Name,
-                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                            Location = new Location(c.Location.Latitude, c.Location.Longitude)
                         }));
 
                     RepositoryMock
@@ -419,7 +419,7 @@ namespace NaCoDoKina.Api.Services
                         {
                             Id = c.Id,
                             Name = c.Name,
-                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                            Location = new Location(c.Location.Latitude, c.Location.Longitude)
                         }));
 
                     RepositoryMock

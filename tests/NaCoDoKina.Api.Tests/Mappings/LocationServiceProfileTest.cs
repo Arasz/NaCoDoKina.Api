@@ -46,8 +46,8 @@ namespace NaCoDoKina.Api.Mappings
             public void Should_return_api_request_for_travel_plan()
             {
                 //Arrange
-                var orign = new Location(0, 1);
-                var destination = new Location(2, 3);
+                var orign = new Location(1, 0);
+                var destination = new Location(3, 2);
                 var travelPlan = new TravelPlan(orign, destination, global::Infrastructure.Models.Travel.TravelMode.Bicycling);
 
                 //Act

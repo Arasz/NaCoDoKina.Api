@@ -25,7 +25,7 @@ namespace Infrastructure.Mappings
                         .Select(double.Parse)
                         .ToArray();
 
-                    return new Location(longitude: lngLat[0], latitude: lngLat[1]);
+                    return new Location(latitude: lngLat[1], longitude: lngLat[0]);
                 })
                 ;
 

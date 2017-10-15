@@ -9,7 +9,7 @@ namespace Infrastructure.Models
         {
         }
 
-        public Location(double longitude, double latitude)
+        public Location(double latitude, double longitude)
         {
             Longitude = longitude;
             Latitude = latitude;
@@ -26,7 +26,7 @@ namespace Infrastructure.Models
                 return tmp / multiplicand;
             }
 
-            return new Location(Truncate(Longitude), Truncate(Latitude));
+            return new Location(Truncate(Latitude), Truncate(Longitude));
         }
 
         public double Longitude { get; set; }

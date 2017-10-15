@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CacheManager.Core;
+using Infrastructure.Extensions;
 using Infrastructure.Models;
 using Infrastructure.Models.Travel;
 using Infrastructure.Services.Google.DataContract.Directions.Request;
@@ -35,7 +36,7 @@ namespace Infrastructure.Services.Travel
 
         public async Task<TravelInformation> GetInformationForTravelAsync(TravelPlan travelPlan)
         {
-            var cacheKey = travelPlan.Origin.LowerPrecision(2).ToString();
+            var cacheKey = $"{travelPlan.Origin.ToCacheKey()}-{travelPlan.Destination.ToCacheKey()}";
             var travelInfo = _travelInfoCacheManager.Get(cacheKey);
 
             if (travelInfo is null)
@@ -48,7 +49,8 @@ namespace Infrastructure.Services.Travel
 
                     travelInfo = response.Routes
                         .SelectMany(route => route.Legs)
-                        .Select(leg => new TravelInformation(travelPlan, leg.Distance.Value, TimeSpan.FromSeconds(leg.Duration.Value)))
+                        .Select(leg => new TravelInformation(travelPlan, leg.Distance.Value,
+                            TimeSpan.FromSeconds(leg.Duration.Value)))
                         .Max();
                 }
                 catch (GoogleApiException exception)
@@ -56,8 +58,10 @@ namespace Infrastructure.Services.Travel
                     _logger.LogError("Failure during travel time calculation {@Exception}.", exception);
                     travelInfo = EstimateTravelInformation(travelPlan);
                 }
-
-                _travelInfoCacheManager.Put(cacheKey, travelInfo);
+                finally
+                {
+                    _travelInfoCacheManager.Put(cacheKey, travelInfo);
+                }
             }
 
             return travelInfo;

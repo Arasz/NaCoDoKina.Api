@@ -28,7 +28,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             {
                 //arrange
                 var testAddress = "Poronińska 3, 60-472 Poznań-Jeżyce, Polska";
-                var expectedLocation = new Location(16.882369, 52.4531839);
+                var expectedLocation = new Location(52.4531839, 16.882369);
 
                 //act
                 var location = await ServiceUnderTest.TranslateAddressToLocationAsync(testAddress);
@@ -59,8 +59,8 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             public async Task Should_return_correct_travel_information()
             {
                 //arrange
-                var destination = new Location(16.919235, 52.44056);
-                var origin = new Location(16.8519869, 52.3846579);
+                var destination = new Location(52.44056, 16.919235);
+                var origin = new Location(52.3846579, 16.8519869);
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
@@ -76,8 +76,8 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             public async Task Should_return_longest_route_time_when_returns_multiple_routes()
             {
                 //arrange
-                var destination = new Location(16.919235, 52.44056);
-                var origin = new Location(16.8519869, 52.3846579);
+                var destination = new Location(52.44056, 16.919235);
+                var origin = new Location(52.3846579, 16.8519869);
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
@@ -90,7 +90,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             }
 
             [Fact]
-            public async Task Should_return_null_and_log_when_api_returns_error()
+            public async Task Should_return_estimated_route_when_api_returns_errors()
             {
                 //arrange
                 var destination = new Location(-99999, -99999);
@@ -101,7 +101,9 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
                 var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
-                travelInformation.Should().BeNull();
+                var estimator = Services.GetService<ITravelInformationEstimator>();
+                travelInformation
+                    .Distance.Should().Be(estimator.Estimate(travelPlan).Distance);
             }
         }
 
