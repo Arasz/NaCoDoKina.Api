@@ -1,5 +1,4 @@
 using FluentAssertions;
-using System;
 using Infrastructure.Mappings;
 using Infrastructure.Models.Travel;
 using Infrastructure.Services.Google.DataContract.Directions.Request;
@@ -14,17 +13,17 @@ namespace NaCoDoKina.Api.Mappings
     {
         public class Map : LocationServiceProfileTest
         {
-            private string ParseTuple(ValueTuple<double, double> locationTuple)
+            private string ParseTuple((double Latitude, double Longitude) locationTuple)
             {
-                return $"{locationTuple.Item1},{locationTuple.Item2}";
+                return $"{locationTuple.Latitude},{locationTuple.Longitude}";
             }
 
             [Fact]
             public void Should_return_travel_plan_for_api_request()
             {
                 //Arrange
-                var orign = (Lng: 0, Lat: 1);
-                var destination = (Lng: 2, Lat: 3);
+                var orign = (Lat: 0, Lng: 1);
+                var destination = (Lat: 2, Lng: 3);
                 var request = new DirectionsApiRequest(ParseTuple(orign), ParseTuple(destination))
                 {
                     TravelMode = TravelMode.Driving,
