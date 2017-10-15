@@ -3,7 +3,7 @@
 namespace NaCoDoKina.Api.DataContracts
 {
     /// <summary>
-    /// RegisterUser location 
+    /// Location represented by geographic coordinates 
     /// </summary>
     public class Location
     {
@@ -11,7 +11,7 @@ namespace NaCoDoKina.Api.DataContracts
         {
         }
 
-        public Location(double longitude, double latitude)
+        public Location(double latitude, double longitude)
         {
             Longitude = longitude;
             Latitude = latitude;
@@ -21,13 +21,13 @@ namespace NaCoDoKina.Api.DataContracts
 
         public double Latitude { get; set; }
 
-        public void Deconstruct(out double longitude, out double latitude)
+        public void Deconstruct(out double latitude, out double longitude)
         {
             longitude = Longitude;
             latitude = Latitude;
         }
 
-        public override string ToString() => $"{Longitude.ToString(CultureInfo.InvariantCulture)}," +
-                                             $"{Latitude.ToString(CultureInfo.InvariantCulture)}";
+        public override string ToString() => $"{Latitude.ToString(CultureInfo.InvariantCulture)}," +
+                                             $"{Longitude.ToString(CultureInfo.InvariantCulture)}";
     }
 }

@@ -44,7 +44,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
             var response = await Client.PostAsync(url, GetPayload(payload));
 
-            var token = await HttpContentExtensions.ReadAsJsonObjectAsync<JwtToken>(response.Content);
+            var token = await response.Content.ReadAsJsonObjectAsync<JwtToken>();
 
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
         }
@@ -103,6 +103,32 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                     .OnlyHaveUniqueItems().And
                     .Subject.Count().Should().BePositive();
             }
+
+            [Fact]
+            public async Task Should_return_all_movies_inside_search_area_without_login()
+            {
+                // Arrange
+
+                var testLocation = new Location(52.3886399802915, 16.8517549802915);
+                var searchArea = new SearchArea(testLocation, 10000);
+                var queryString = ParseSearchAreaToQuery(searchArea);
+
+                // Act
+
+                var url = $"{BaseUrl}{queryString}";
+                var response = await Client.GetAsync(url);
+
+                // Assert
+
+                response.EnsureSuccessStatusCode();
+
+                var responseContent = await response.Content.ReadAsJsonObjectAsync<long[]>();
+                responseContent
+                    .Should()
+                    .NotBeNullOrEmpty().And
+                    .OnlyHaveUniqueItems().And
+                    .Subject.Count().Should().BePositive();
+            }
         }
 
         public class GetMovieAsync : MoviesControllerTest
@@ -120,7 +146,25 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 // Assert
                 response.EnsureSuccessStatusCode();
-                var movie = await HttpContentExtensions.ReadAsJsonObjectAsync<Movie>(response.Content);
+                var movie = await response.Content.ReadAsJsonObjectAsync<Movie>();
+
+                movie.Id.Should().Be(movieId);
+                movie.Title.Should().NotBeNullOrEmpty();
+            }
+
+            [Fact]
+            public async Task Should_return_movie_with_given_id_when_id_is_correct_for_not_logged_in_user()
+            {
+                // Arrange
+                var movieId = 1L;
+                var url = $"{BaseUrl}{movieId}";
+
+                // Act
+                var response = await Client.GetAsync(url);
+
+                // Assert
+                response.EnsureSuccessStatusCode();
+                var movie = await response.Content.ReadAsJsonObjectAsync<Movie>();
 
                 movie.Id.Should().Be(movieId);
                 movie.Title.Should().NotBeNullOrEmpty();
@@ -168,10 +212,26 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 var movieResponse = await Client.GetAsync(url);
 
                 movieResponse.EnsureSuccessStatusCode();
-                var movie = await HttpContentExtensions.ReadAsJsonObjectAsync<Movie>(movieResponse.Content);
+                var movie = await movieResponse.Content.ReadAsJsonObjectAsync<Movie>();
 
                 movie.Id.Should().Be(movieId);
                 movie.Title.Should().NotBeNullOrEmpty();
+            }
+
+            [Fact]
+            public async Task Should_return_unauthorized_when_user_non_logged_in()
+            {
+                // Arrange
+                var movieId = 1L;
+                var url = $"{BaseUrl}{movieId}";
+
+                // Act
+                var response = await Client.DeleteAsync(url);
+
+                // Assert
+                response.StatusCode
+                    .Should()
+                    .HaveFlag(HttpStatusCode.Unauthorized);
             }
         }
 
@@ -190,7 +250,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 // Assert
                 response.EnsureSuccessStatusCode();
-                var movieDetails = await HttpContentExtensions.ReadAsJsonObjectAsync<MovieDetails>(response.Content);
+                var movieDetails = await response.Content.ReadAsJsonObjectAsync<MovieDetails>();
 
                 movieDetails.Id.Should().Be(movieId);
                 movieDetails.Title.Should().NotBeNullOrEmpty();
@@ -232,9 +292,26 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Assert
                 response.StatusCode.Should().HaveFlag(HttpStatusCode.Created);
 
-                var returnedRating = await HttpContentExtensions.ReadAsJsonObjectAsync<double>(response.Content);
+                var returnedRating = await response.Content.ReadAsJsonObjectAsync<double>();
 
                 returnedRating.Should().Be(returnedRating);
+            }
+
+            [Fact]
+            public async Task Should_return_unauthorized_for_not_logged_in_user()
+            {
+                // Arrange
+                var movieId = 1L;
+                var url = $"{BaseUrl}{movieId}/rating";
+                var rating = Fixture.Create<double>();
+
+                // Act
+                var response = await Client.PostAsync(url, GetPayload(rating));
+
+                // Assert
+                response.StatusCode
+                    .Should()
+                    .HaveFlag(HttpStatusCode.Unauthorized);
             }
         }
 
@@ -257,7 +334,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Assert
                 response.EnsureSuccessStatusCode();
 
-                var movieShowtimes = await HttpContentExtensions.ReadAsJsonObjectAsync<MovieShowtime[]>(response.Content);
+                var movieShowtimes = await response.Content.ReadAsJsonObjectAsync<MovieShowtime[]>();
 
                 movieShowtimes.Should().NotBeNullOrEmpty();
                 movieShowtimes.Should().Match(showtimes => showtimes.All(showtime => showtime.MovieId == movieId));
@@ -281,7 +358,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Assert
                 response.EnsureSuccessStatusCode();
 
-                var movieShowtimes = await HttpContentExtensions.ReadAsJsonObjectAsync<MovieShowtime[]>(response.Content);
+                var movieShowtimes = await response.Content.ReadAsJsonObjectAsync<MovieShowtime[]>();
 
                 movieShowtimes.Should().NotBeNullOrEmpty();
                 movieShowtimes.Should().Match(showtimes => showtimes.All(showtime => showtime.MovieId == movieId));
@@ -311,7 +388,35 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 response.EnsureSuccessStatusCode();
 
-                var responseContent = await HttpContentExtensions.ReadAsJsonObjectAsync<List<Cinema>>(response.Content);
+                var responseContent = await response.Content.ReadAsJsonObjectAsync<List<Cinema>>();
+
+                responseContent
+                    .Should()
+                    .NotBeNullOrEmpty().And
+                    .OnlyHaveUniqueItems().And
+                    .Subject.Count().Should().BePositive();
+            }
+
+            [Fact]
+            public async Task Should_return_all_cinemas_inside_search_area_without_login()
+            {
+                // Arrange
+
+                var testLocation = new Location(52.3886399802915, 16.8517549802915);
+                var searchArea = new SearchArea(testLocation, 10000);
+                var queryString = ParseSearchAreaToQuery(searchArea);
+                var movieId = 1L;
+
+                // Act
+
+                var url = $"{BaseUrl}{movieId}/cinemas/{queryString}";
+                var response = await Client.GetAsync(url);
+
+                // Assert
+
+                response.EnsureSuccessStatusCode();
+
+                var responseContent = await response.Content.ReadAsJsonObjectAsync<List<Cinema>>();
 
                 responseContent
                     .Should()

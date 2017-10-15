@@ -1,8 +1,8 @@
-﻿using FluentAssertions;
+﻿using ApplicationCore.Entities.Resources;
+using FluentAssertions;
+using Infrastructure.Mappings;
 using Ploeh.AutoFixture;
 using System.Linq;
-using ApplicationCore.Entities.Resources;
-using Infrastructure.Mappings;
 using Xunit;
 using Cinema = ApplicationCore.Entities.Cinemas.Cinema;
 using Location = Infrastructure.Models.Location;
@@ -35,7 +35,7 @@ namespace NaCoDoKina.Api.Mappings
             public void Should_return_model_location_given_entity_location()
             {
                 //Arrange
-                var location = new ApplicationCore.Entities.Location(1, 9);
+                var location = new ApplicationCore.Entities.Location(9, 1);
 
                 //Act
                 var result = Mapper.Map<Location>(location);
@@ -253,6 +253,31 @@ namespace NaCoDoKina.Api.Mappings
                     .And
                     .Be(cinema.CinemaUrl);
                 result.NetworkName.Should().Be(cinema.CinemaNetwork.Name);
+            }
+
+            [Fact]
+            public void Should_extract_city_from_address_during_mapping()
+            {
+                //Arrange
+                var cinema = Fixture.Build<Cinema>()
+                    .With(c => c.Address, "ul. Zakopiańska 62, 30-418, Kraków")
+                    .Create();
+                var city = "Kraków";
+
+                //Act
+                var result = Mapper.Map<global::Infrastructure.Models.Cinemas.Cinema>(cinema);
+
+                //Assert
+                result.Should().BeOfType<global::Infrastructure.Models.Cinemas.Cinema>();
+                result.Name.Should().Be(cinema.Name);
+                result.Address.Should().Be(cinema.Address);
+                result.Id.Should().Be(cinema.Id);
+                result.CinemaUrl.Should()
+                    .NotBeNullOrEmpty()
+                    .And
+                    .Be(cinema.CinemaUrl);
+                result.NetworkName.Should().Be(cinema.CinemaNetwork.Name);
+                result.City.Should().Be(city);
             }
 
             [Fact]

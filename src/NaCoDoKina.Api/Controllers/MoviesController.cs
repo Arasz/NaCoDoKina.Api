@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace NaCoDoKina.Api.Controllers
 {
     [Route("v1/[controller]")]
-    [Authorize]
+    //[Authorize]
     public class MoviesController : Controller
     {
         private readonly IMovieShowtimeService _movieShowtimeService;
@@ -40,7 +40,8 @@ namespace NaCoDoKina.Api.Controllers
         }
 
         /// <summary>
-        /// Returns all accessible shows for current user. Shows are sorted by predicted user rating. 
+        /// Returns all accessible shows for current api user sorted by rating. When user is
+        /// anonymous movies are not sorted
         /// </summary>
         /// <returns> Shows ids sorted by estimated user rating </returns>
         [ProducesResponseType(typeof(IEnumerable<long>), StatusCodes.Status200OK)]
@@ -95,6 +96,7 @@ namespace NaCoDoKina.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteMovieAsync(long id)
         {
             try
@@ -208,6 +210,7 @@ namespace NaCoDoKina.Api.Controllers
         [ProducesResponseType(typeof(double), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost("{id}/rating")]
+        [Authorize]
         public async Task<IActionResult> SetRatingForMovie(long id, [FromBody]double rating)
         {
             var result = await _ratingService.SetMovieRating(id, rating);

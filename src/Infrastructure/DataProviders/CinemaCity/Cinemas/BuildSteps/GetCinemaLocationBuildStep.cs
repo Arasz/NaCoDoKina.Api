@@ -6,6 +6,7 @@ using Infrastructure.DataProviders.EntityBuilder.Context;
 using Infrastructure.Services;
 using System;
 using System.Threading.Tasks;
+using Infrastructure.Services.Travel;
 
 namespace Infrastructure.DataProviders.CinemaCity.Cinemas.BuildSteps
 {
@@ -27,7 +28,7 @@ namespace Infrastructure.DataProviders.CinemaCity.Cinemas.BuildSteps
                 if (location is null)
                     return Result.Failure<Cinema[]>($"Location not found for cinema {cinema}");
 
-                cinema.Location = new Location(location.Longitude, location.Latitude);
+                cinema.Location = new Location(location.Latitude, location.Longitude);
             }
 
             return Result.Success(entities);

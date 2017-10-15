@@ -5,6 +5,7 @@ using Infrastructure.Models;
 using Infrastructure.Models.Cinemas;
 using Infrastructure.Models.Travel;
 using Infrastructure.Services;
+using Infrastructure.Services.Travel;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace NaCoDoKina.Api.Services
 
         private class TravelServiceFakeImpl : ITravelService
         {
-            public Task<TravelInformation> CalculateInformationForTravelAsync(TravelPlan travelPlan)
+            public Task<TravelInformation> GetInformationForTravelAsync(TravelPlan travelPlan)
             {
                 var distance = CalculateEuclideanDistance(travelPlan);
 
@@ -101,20 +102,20 @@ namespace NaCoDoKina.Api.Services
                 public async Task Should_return_nearest_cinemas_for_correct_parameters()
                 {
                     //Arrange
-                    var location = new Location(1, 2);
+                    var location = new Location(2, 1);
                     var searchArea = new SearchArea(location, 1000);
                     var movieId = 69;
-                    var cinemas = new List<ApplicationCore.Entities.Cinemas.Cinema>
+                    var cinemas = new[]
                     {
                         new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "NearCinema",
-                            Location = new ApplicationCore.Entities.Location(15, 32)
+                            Location = new ApplicationCore.Entities.Location(32, 15)
                         },
                         new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "FarCinema",
-                            Location = new ApplicationCore.Entities.Location(1333, 4322)
+                            Location = new ApplicationCore.Entities.Location(4322, 1333)
                         }
                     };
 
@@ -123,18 +124,18 @@ namespace NaCoDoKina.Api.Services
                         .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(cinema => new Cinema
                         {
                             Name = cinema.Name,
-                            Location = new Location(cinema.Location.Longitude, cinema.Location.Latitude)
+                            Location = new Location(cinema.Location.Latitude, cinema.Location.Longitude)
                         }));
 
                     RepositoryMock
                         .Setup(repository => repository.GetAllCinemasForMovieAsync(movieId))
-                        .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
+                        .ReturnsAsync(cinemas);
 
                     //Act
                     var result = await ServiceUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, searchArea);
 
                     //Assert
-                    result.Should().HaveCount(cinemas.Count - 1);
+                    result.Should().HaveCount(cinemas.Length - 1);
                     result.SingleOrDefault(cinema => cinema.Name == "NearCinema")
                         .Should()
                         .NotBeNull();
@@ -146,13 +147,13 @@ namespace NaCoDoKina.Api.Services
                 public void Should_throw_CinemasNotFound_when_could_not_find_movie()
                 {
                     //Arrange
-                    var location = new Location(1, 2);
+                    var location = new Location(2, 1);
                     var searchArea = new SearchArea(location, 100);
                     var movieId = -500;
 
                     RepositoryMock
                         .Setup(repository => repository.GetAllCinemasForMovieAsync(movieId))
-                        .Returns(() => Task.FromResult(new List<ApplicationCore.Entities.Cinemas.Cinema>().AsEnumerable()));
+                        .ReturnsAsync(Array.Empty<ApplicationCore.Entities.Cinemas.Cinema>());
 
                     //Act
                     Func<Task<ICollection<Cinema>>> action = () =>
@@ -179,25 +180,38 @@ namespace NaCoDoKina.Api.Services
                 }
             }
 
-            public class GetNearestCinemasAsync : CinemaServiceTest
+            public class GetCinemasInSearchAreaAsync : CinemaServiceTest
             {
                 [Fact]
-                public async Task Should_return_nearest_cinemas_for_correct_parameters()
+                public async Task Should_return_cinemas_in_search_are_inside_given_city()
                 {
                     //Arrange
-                    var location = new Location(1, 2);
-                    var searchArea = new SearchArea(location, 1000);
+                    var location = new Location(2, 1);
+                    var city = "Poznań";
+                    var searchArea = new SearchArea(location, 1000)
+                    {
+                        City = city
+                    };
+
                     var cinemas = new List<ApplicationCore.Entities.Cinemas.Cinema>
                     {
                         new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "NearCinema",
-                            Location = new ApplicationCore.Entities.Location(15, 32)
+                            Location = new ApplicationCore.Entities.Location(32, 15),
+                            Address = $"address {city}"
+                        },
+                        new ApplicationCore.Entities.Cinemas.Cinema
+                        {
+                            Name = "NearCinema2",
+                            Location = new ApplicationCore.Entities.Location(32, 15),
+                            Address = $"address Kraków"
                         },
                         new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "FarCinema",
-                            Location = new ApplicationCore.Entities.Location(1333, 4322)
+                            Location = new ApplicationCore.Entities.Location(4322, 1333),
+                            Address = $"address {city}"
                         }
                     };
 
@@ -206,12 +220,54 @@ namespace NaCoDoKina.Api.Services
                         .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(cinema => new Cinema
                         {
                             Name = cinema.Name,
-                            Location = new Location(cinema.Location.Longitude, cinema.Location.Latitude)
+                            Location = new Location(cinema.Location.Latitude, cinema.Location.Longitude)
+                        }));
+
+                    RepositoryMock
+                        .Setup(repository => repository.GetCinemasByCityAsync(city))
+                        .ReturnsAsync(cinemas.Where(cinema => cinema.Address.EndsWith(city)).ToArray);
+
+                    //Act
+                    var result = await ServiceUnderTest.GetCinemasInSearchAreaAsync(searchArea);
+
+                    //Assert
+                    result.Should().HaveCount(cinemas.Count - 2);
+                    result.SingleOrDefault(cinema => cinema.Name == "NearCinema")
+                        .Should()
+                        .NotBeNull();
+                }
+
+                [Fact]
+                public async Task Should_return_nearest_cinemas_for_correct_parameters()
+                {
+                    //Arrange
+                    var location = new Location(2, 1);
+                    var searchArea = new SearchArea(location, 1000);
+                    var cinemas = new List<ApplicationCore.Entities.Cinemas.Cinema>
+                    {
+                        new ApplicationCore.Entities.Cinemas.Cinema
+                        {
+                            Name = "NearCinema",
+                            Location = new ApplicationCore.Entities.Location(32, 15)
+                        },
+                        new ApplicationCore.Entities.Cinemas.Cinema
+                        {
+                            Name = "FarCinema",
+                            Location = new ApplicationCore.Entities.Location(4322, 1333)
+                        }
+                    };
+
+                    MapperMock
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<ApplicationCore.Entities.Cinemas.Cinema>()))
+                        .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(cinema => new Cinema
+                        {
+                            Name = cinema.Name,
+                            Location = new Location(cinema.Location.Latitude, cinema.Location.Longitude)
                         }));
 
                     RepositoryMock
                         .Setup(repository => repository.GetAllCinemas())
-                        .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
+                        .ReturnsAsync(cinemas);
 
                     //Act
                     var result = await ServiceUnderTest.GetCinemasInSearchAreaAsync(searchArea);
@@ -249,7 +305,7 @@ namespace NaCoDoKina.Api.Services
                     {
                         Id = cinemaId,
                         Name = "NearCinema",
-                        Location = new ApplicationCore.Entities.Location(15, 32)
+                        Location = new ApplicationCore.Entities.Location(32, 15)
                     };
 
                     MapperMock
@@ -258,7 +314,7 @@ namespace NaCoDoKina.Api.Services
                         {
                             Id = c.Id,
                             Name = c.Name,
-                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                            Location = new Location(c.Location.Latitude, c.Location.Longitude)
                         }));
 
                     RepositoryMock
@@ -284,7 +340,7 @@ namespace NaCoDoKina.Api.Services
                     {
                         Id = cinemaId,
                         Name = cinemaName,
-                        Location = new ApplicationCore.Entities.Location(15, 32)
+                        Location = new ApplicationCore.Entities.Location(32, 15)
                     };
 
                     MapperMock
@@ -293,7 +349,7 @@ namespace NaCoDoKina.Api.Services
                         {
                             Id = c.Id,
                             Name = c.Name,
-                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                            Location = new Location(c.Location.Latitude, c.Location.Longitude)
                         }));
 
                     RepositoryMock
@@ -320,7 +376,7 @@ namespace NaCoDoKina.Api.Services
                     {
                         Id = cinemaId,
                         Name = cinemaName,
-                        Location = new ApplicationCore.Entities.Location(15, 32)
+                        Location = new ApplicationCore.Entities.Location(32, 15)
                     };
 
                     MapperMock
@@ -329,7 +385,7 @@ namespace NaCoDoKina.Api.Services
                         {
                             Id = c.Id,
                             Name = c.Name,
-                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                            Location = new Location(c.Location.Latitude, c.Location.Longitude)
                         }));
 
                     RepositoryMock
@@ -354,7 +410,7 @@ namespace NaCoDoKina.Api.Services
                     {
                         Id = cinemaId,
                         Name = cinemaName,
-                        Location = new ApplicationCore.Entities.Location(15, 32)
+                        Location = new ApplicationCore.Entities.Location(32, 15)
                     };
 
                     MapperMock
@@ -363,7 +419,7 @@ namespace NaCoDoKina.Api.Services
                         {
                             Id = c.Id,
                             Name = c.Name,
-                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                            Location = new Location(c.Location.Latitude, c.Location.Longitude)
                         }));
 
                     RepositoryMock

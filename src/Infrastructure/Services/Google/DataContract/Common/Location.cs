@@ -6,7 +6,7 @@ namespace Infrastructure.Services.Google.DataContract.Common
     [DataContract]
     public class Location
     {
-        public Location(double longitude, double latitude)
+        public Location(double latitude, double longitude)
         {
             Longitude = longitude;
             Latitude = latitude;
@@ -28,7 +28,7 @@ namespace Infrastructure.Services.Google.DataContract.Common
             latitude = Latitude;
         }
 
-        public override string ToString() => $"{Longitude.ToString(CultureInfo.InvariantCulture)}," +
-                                             $"{Latitude.ToString(CultureInfo.InvariantCulture)}";
+        public override string ToString() => $"{Latitude.ToString(CultureInfo.InvariantCulture)}," +
+                                             $"{Longitude.ToString(CultureInfo.InvariantCulture)}";
     }
 }

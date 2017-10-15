@@ -42,7 +42,11 @@ namespace Infrastructure.Services.Google.Services
                 var deserializedResponse = Deserialize<TResponse>(content);
 
                 if (deserializedResponse.Status != "OK")
-                    throw new GoogleApiException(deserializedResponse.Status, deserializedResponse.ErrorMessage);
+                {
+                    parsedRequest = ParseWithoutKey(apiRequest, parsedRequest);
+                    throw new GoogleApiException(parsedRequest, deserializedResponse.Status,
+                        deserializedResponse.ErrorMessage);
+                }
 
                 return deserializedResponse;
             }
@@ -53,8 +57,16 @@ namespace Infrastructure.Services.Google.Services
             catch (Exception unknownException)
             {
                 Logger.LogError("Unknown error during google api interaction: {@unknownException}", unknownException);
-                throw new GoogleApiException(unknownException);
+                parsedRequest = ParseWithoutKey(apiRequest, parsedRequest);
+                throw new GoogleApiException(parsedRequest, unknownException);
             }
+        }
+
+        private string ParseWithoutKey(TRequest apiRequest, string parsedRequest)
+        {
+            apiRequest.Key = string.Empty;
+            parsedRequest = _requestParser.Parse(apiRequest);
+            return parsedRequest;
         }
     }
 }

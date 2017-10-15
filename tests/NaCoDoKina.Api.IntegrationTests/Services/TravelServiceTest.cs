@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Infrastructure.Models.Travel;
-using Infrastructure.Services;
 using Infrastructure.Services.Google.DataContract.Directions.Response;
+using Infrastructure.Services.Travel;
 using IntegrationTestsCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -28,7 +28,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             {
                 //arrange
                 var testAddress = "Poronińska 3, 60-472 Poznań-Jeżyce, Polska";
-                var expectedLocation = new Location(16.882369, 52.4531839);
+                var expectedLocation = new Location(52.4531839, 16.882369);
 
                 //act
                 var location = await ServiceUnderTest.TranslateAddressToLocationAsync(testAddress);
@@ -64,7 +64,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
-                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
                 travelInformation.TravelPlan.Should().Be(travelPlan);
@@ -81,7 +81,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
-                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
                 travelInformation.TravelPlan.Should().Be(travelPlan);
@@ -90,7 +90,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             }
 
             [Fact]
-            public async Task Should_return_null_and_log_when_api_returns_error()
+            public async Task Should_return_estimated_route_when_api_returns_errors()
             {
                 //arrange
                 var destination = new Location(-99999, -99999);
@@ -98,10 +98,12 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
-                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
-                travelInformation.Should().BeNull();
+                var estimator = Services.GetService<ITravelInformationEstimator>();
+                travelInformation
+                    .Distance.Should().Be(estimator.Estimate(travelPlan).Distance);
             }
         }
 
