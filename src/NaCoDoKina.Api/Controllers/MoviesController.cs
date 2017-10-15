@@ -61,7 +61,7 @@ namespace NaCoDoKina.Api.Controllers
             }
             catch (MoviesNotFoundException exception)
             {
-                _logger.LogWarning("Shows not found in @searchArea.", searchArea);
+                _logger.LogWarning("Shows not found in {@searchArea}", searchArea);
                 return NotFound(exception.Message);
             }
         }

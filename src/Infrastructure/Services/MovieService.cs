@@ -46,32 +46,44 @@ namespace Infrastructure.Services
 
         private async Task<long[]> GetMoviesPlayedInCinemas(IEnumerable<Cinema> cinemas)
         {
-            var currentDate = DateTime.Now;
-
-            DateTime CalculateArrivalTime(Cinema cinema) => currentDate
-                .Add(cinema.CinemaTravelInformation.Duration);
-
-            var availableMoviesIds = new List<long>();
-            foreach (var cinema in cinemas)
+            using (_logger.BeginScope(nameof(GetMoviesPlayedInCinemas)))
             {
-                var arrivalTime = CalculateArrivalTime(cinema);
-                var movies = await _movieRepository.GetMoviesForCinemaAsync(cinema.Id, arrivalTime);
-                var notDisabledMovies = await _disabledMovieService.FilterDisabledMoviesForCurrentUserAsync(movies);
+                var currentDate = DateTime.Now;
 
-                availableMoviesIds.AddRange(notDisabledMovies);
+                _logger.LogDebug("Current date {CurrentDate}", currentDate);
+
+                DateTime CalculateArrivalTime(Cinema cinema) => currentDate
+                    .Add(cinema.CinemaTravelInformation.Duration);
+
+                var availableMoviesIds = new List<long>();
+                foreach (var cinema in cinemas)
+                {
+                    var arrivalTime = CalculateArrivalTime(cinema);
+                    _logger.LogDebug("Calculated arrival time {ArrivalTime}", arrivalTime);
+
+                    var movies = await _movieRepository.GetMoviesForCinemaAsync(cinema.Id, arrivalTime);
+                    _logger.LogDebug("Movies {@Movies} played after arrival time for cinema {@Cinema} ", movies, cinema);
+
+                    var notDisabledMovies = await _disabledMovieService.FilterDisabledMoviesForCurrentUserAsync(movies);
+
+                    _logger.LogDebug("Not disabled movies {@Movies} ", movies);
+
+                    availableMoviesIds.AddRange(notDisabledMovies);
+                }
+
+                var movieRatings = new List<(long MovieId, double Rating)>();
+                foreach (var movieId in availableMoviesIds.Distinct())
+                {
+                    var rating = await _ratingService.GetMovieRating(movieId);
+                    _logger.LogDebug("Rating {Rating} for movie {MovieId}", rating, movieId);
+                    movieRatings.Add((movieId, rating));
+                }
+
+                return movieRatings
+                    .OrderByDescending(tuple => tuple.Rating)
+                    .Select(tuple => tuple.MovieId)
+                    .ToArray();
             }
-
-            var movieRatings = new List<(long MovieId, double Rating)>();
-            foreach (var movieId in availableMoviesIds.Distinct())
-            {
-                var rating = await _ratingService.GetMovieRating(movieId);
-                movieRatings.Add((movieId, rating));
-            }
-
-            return movieRatings
-                .OrderByDescending(tuple => tuple.Rating)
-                .Select(tuple => tuple.MovieId)
-                .ToArray();
         }
 
         public async Task<Movie> GetMovieAsync(long id)
