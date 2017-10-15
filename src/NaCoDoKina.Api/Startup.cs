@@ -3,7 +3,6 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using CacheManager.Core;
-using Exceptionless;
 using FluentValidation.AspNetCore;
 using Infrastructure.Data;
 using Infrastructure.Extensions;
@@ -154,12 +153,6 @@ namespace NaCoDoKina.Api
         /// <param name="configuration"> App configuration with logger config section </param>
         private void ConfigureLogger(IConfiguration configuration)
         {
-            if (Env.IsProduction())
-            {
-                var apiKey = configuration["Exceptionless:ApiKey"];
-                ExceptionlessClient.Default.Startup(apiKey);
-            }
-
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
                 .Destructure.ByTransforming<Type>(type => type.Name)
