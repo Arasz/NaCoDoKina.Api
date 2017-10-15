@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using ApplicationCore.Entities.Movies;
+﻿using ApplicationCore.Entities.Movies;
 using ApplicationCore.Repositories;
 using Infrastructure.DataProviders.EntityBuilder;
 using Infrastructure.DataProviders.EntityBuilder.Context;
 using Infrastructure.DataProviders.Tasks;
 using Infrastructure.Settings.Tasks;
+using System;
+using System.Threading.Tasks;
 
 namespace Infrastructure.DataProviders.CinemaCity.Movies.Tasks
 {

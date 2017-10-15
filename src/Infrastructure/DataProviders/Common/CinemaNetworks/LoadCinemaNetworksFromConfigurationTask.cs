@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using ApplicationCore.Repositories;
+﻿using ApplicationCore.Repositories;
 using Infrastructure.DataProviders.Tasks;
 using Infrastructure.Settings;
 using Infrastructure.Settings.Tasks;
+using System;
+using System.Threading.Tasks;
 using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 
 namespace Infrastructure.DataProviders.Common.CinemaNetworks

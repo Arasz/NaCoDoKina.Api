@@ -15,6 +15,8 @@ namespace Infrastructure.Data.Configurations
                 .WithOne()
                 .HasForeignKey<MovieDetails>(details => details.Id);
 
+            builder.HasIndex(movie => movie.Title);
+
             builder.Property(movie => movie.Title)
                 .IsRequired()
                 .IsUnicode()

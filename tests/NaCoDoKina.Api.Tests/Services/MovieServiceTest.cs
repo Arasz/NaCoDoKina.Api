@@ -155,6 +155,11 @@ namespace NaCoDoKina.Api.Services
                         .Where(showtime => showtime.Cinema.Id == cinemaId)
                         .Select(showtime => showtime.Movie.Id);
                 }
+
+                public async Task<ApplicationCore.Entities.Movies.Movie> GetMovieByTitleAsync(string title)
+                {
+                    return new ApplicationCore.Entities.Movies.Movie();
+                }
             }
 
             protected readonly MovieRepositoryFake _movieRepositoryFake;
