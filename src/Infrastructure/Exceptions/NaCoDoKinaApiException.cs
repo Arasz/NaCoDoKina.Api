@@ -8,11 +8,11 @@ namespace Infrastructure.Exceptions
     /// </summary>
     public class NaCoDoKinaApiException : Exception
     {
-        public NaCoDoKinaApiException(string userName) : base(userName)
+        public NaCoDoKinaApiException(string message) : base(message)
         {
         }
 
-        public NaCoDoKinaApiException(string userName, Exception innerException) : base(userName, innerException)
+        public NaCoDoKinaApiException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }

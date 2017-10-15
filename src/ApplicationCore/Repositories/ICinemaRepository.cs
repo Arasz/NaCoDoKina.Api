@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using ApplicationCore.Entities.Cinemas;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApplicationCore.Entities.Cinemas;
 
 namespace ApplicationCore.Repositories
 {
@@ -14,13 +14,13 @@ namespace ApplicationCore.Repositories
         /// </summary>
         /// <param name="movieId"> Movie id </param>
         /// <returns> Collection of cinemas </returns>
-        Task<IEnumerable<Cinema>> GetAllCinemasForMovieAsync(long movieId);
+        Task<ICollection<Cinema>> GetAllCinemasForMovieAsync(long movieId);
 
         /// <summary>
         /// Returns all cinemas 
         /// </summary>
         /// <returns> All existing cinemas </returns>
-        Task<IEnumerable<Cinema>> GetAllCinemas();
+        Task<ICollection<Cinema>> GetAllCinemas();
 
         /// <summary>
         /// Creates cinema 
@@ -49,5 +49,12 @@ namespace ApplicationCore.Repositories
         /// <param name="cinemas"> Cinemas to create </param>
         /// <returns></returns>
         Task CreateCinemasAsync(IEnumerable<Cinema> cinemas);
+
+        /// <summary>
+        /// Returns all cinemas from city 
+        /// </summary>
+        /// <param name="city"> City in which cinemas are located </param>
+        /// <returns> Cinemas in city </returns>
+        Task<ICollection<Cinema>> GetCinemasByCityAsync(string city);
     }
 }

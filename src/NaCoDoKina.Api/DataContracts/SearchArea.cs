@@ -1,7 +1,7 @@
 namespace NaCoDoKina.Api.DataContracts
 {
     /// <summary>
-    /// Cinemas search area 
+    /// Area in which we are are searching for cinemas 
     /// </summary>
     public class SearchArea
     {
@@ -16,7 +16,7 @@ namespace NaCoDoKina.Api.DataContracts
         }
 
         /// <summary>
-        /// User location, search area center 
+        /// User location as geographic coordinates, search area center 
         /// </summary>
         public Location Center { get; set; }
 
@@ -24,6 +24,11 @@ namespace NaCoDoKina.Api.DataContracts
         /// Search radius in meters 
         /// </summary>
         public double Radius { get; set; }
+
+        /// <summary>
+        /// City in which search is conducted 
+        /// </summary>
+        public string City { get; set; }
 
         public override string ToString()
         {

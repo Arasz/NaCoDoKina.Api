@@ -1,19 +1,23 @@
-﻿using System;
-using Infrastructure.Exceptions;
+﻿using Infrastructure.Exceptions;
+using System;
 
 namespace Infrastructure.Services.Google.Exceptions
 {
     public class GoogleApiException : NaCoDoKinaApiException
     {
+        public string Request { get; set; }
+
         public GoogleApiStatus Status { get; set; }
 
-        public GoogleApiException(string status, string userName) : base(userName)
+        public GoogleApiException(string request, string status, string message) : base(message)
         {
+            Request = request;
             Status = Enum.Parse<GoogleApiStatus>(status.Replace("_", ""), true);
         }
 
-        public GoogleApiException(Exception exception) : base(exception.Message, exception)
+        public GoogleApiException(string request, Exception exception) : base(exception.Message, exception)
         {
+            Request = request;
             Status = GoogleApiStatus.Unspecifed;
         }
     }

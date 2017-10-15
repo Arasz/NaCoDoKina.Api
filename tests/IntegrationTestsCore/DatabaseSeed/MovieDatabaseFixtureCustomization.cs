@@ -30,8 +30,8 @@ namespace IntegrationTestsCore.DatabaseSeed
                 .Without(cinemaNetwork => cinemaNetwork.Id));
 
             fixture.Customize<Location>(composer => composer
-                .With(location => location.Longitude, 52.44056)
-                .With(location => location.Latitude, 16.919235));
+                .With(location => location.Longitude, 16.919235)
+                .With(location => location.Latitude, 52.44056));
 
             fixture.Customize<MovieShowtime>(composer => composer
                 .Without(showtime => showtime.Id)

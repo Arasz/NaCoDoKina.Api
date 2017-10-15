@@ -354,7 +354,7 @@ namespace NaCoDoKina.Api.Services
             }
         }
 
-        public class GetCurrentUserIdAsync : UserServiceTest
+        public class GetCurrentUserId : UserServiceTest
         {
             [Fact]
             public void Should_return_current_user_id()

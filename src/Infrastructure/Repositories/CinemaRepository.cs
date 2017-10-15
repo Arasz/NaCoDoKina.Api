@@ -13,17 +13,33 @@ namespace Infrastructure.Repositories
     public class CinemaRepository : ICinemaRepository
     {
         private readonly ICacheManager<Cinema> _cinemaCacheManager;
-        private readonly ICacheManager<Cinema[]> _cacheManager;
+        private readonly ICacheManager<ICollection<Cinema>> _cinemasCacheManager;
         private readonly ApplicationContext _applicationContext;
 
-        public CinemaRepository(ApplicationContext applicationContext, ICacheManager<Cinema[]> cinemasCache, ICacheManager<Cinema> cinemaCache)
+        public CinemaRepository(ApplicationContext applicationContext, ICacheManager<ICollection<Cinema>> cinemasCache, ICacheManager<Cinema> cinemaCache)
         {
             _cinemaCacheManager = cinemaCache ?? throw new ArgumentNullException(nameof(cinemaCache));
-            _cacheManager = cinemasCache ?? throw new ArgumentNullException(nameof(cinemasCache));
+            _cinemasCacheManager = cinemasCache ?? throw new ArgumentNullException(nameof(cinemasCache));
             _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
         }
 
-        public async Task<IEnumerable<Cinema>> GetAllCinemasForMovieAsync(long movieId)
+        public async Task<ICollection<Cinema>> GetCinemasByCityAsync(string city)
+        {
+            var cinemas = _cinemasCacheManager.Get(city);
+
+            if (cinemas is null)
+            {
+                cinemas = await _applicationContext.Cinemas
+                    .Where(cinema => cinema.Address.EndsWith(city))
+                    .ToArrayAsync();
+
+                _cinemasCacheManager.Put(city, cinemas);
+            }
+
+            return cinemas;
+        }
+
+        public async Task<ICollection<Cinema>> GetAllCinemasForMovieAsync(long movieId)
         {
             var cinemaIds = _applicationContext.MovieShowtimes
                 .Where(showtime => showtime.ShowTime > DateTime.Now)
@@ -35,17 +51,25 @@ namespace Infrastructure.Repositories
             var cinemasForMovie = await _applicationContext.Cinemas
                 .Include(cinema => cinema.CinemaNetwork)
                 .Where(cinema => cinemaIds.Contains(cinema.Id))
-                .ToListAsync();
+                .ToArrayAsync();
 
-            return cinemasForMovie.AsEnumerable();
+            return cinemasForMovie;
         }
 
-        public async Task<IEnumerable<Cinema>> GetAllCinemas()
+        public async Task<ICollection<Cinema>> GetAllCinemas()
         {
-            var allCinemas = await _applicationContext.Cinemas
-                .Include(cinema => cinema.CinemaNetwork)
-                .ToListAsync();
-            return allCinemas.AsEnumerable();
+            var cinemas = _cinemasCacheManager.Get(nameof(GetAllCinemas));
+
+            if (cinemas is null)
+            {
+                cinemas = await _applicationContext.Cinemas
+                    .Include(cinema => cinema.CinemaNetwork)
+                    .ToArrayAsync();
+
+                _cinemasCacheManager.Put(nameof(GetAllCinemas), cinemas);
+            }
+
+            return cinemas;
         }
 
         public async Task CreateCinemasAsync(IEnumerable<Cinema> cinemas)

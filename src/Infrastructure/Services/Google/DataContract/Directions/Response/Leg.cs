@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Infrastructure.Services.Google.DataContract.Common;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Infrastructure.Services.Google.DataContract.Common;
 
 namespace Infrastructure.Services.Google.DataContract.Directions.Response
 {
@@ -47,13 +47,13 @@ namespace Infrastructure.Services.Google.DataContract.Directions.Response
         public string EndAddress { get; set; }
 
         /// <summary>
-        /// Indicates the total duration of this leg 
+        /// Indicates the total duration of this leg in seconds 
         /// </summary>
         [DataMember(Name = "duration")]
         public TextValue Duration { get; set; }
 
         /// <summary>
-        /// Indicates the total distance covered by this leg 
+        /// Indicates the total distance covered by this leg in meters 
         /// </summary>
         [DataMember(Name = "distance")]
         public TextValue Distance { get; set; }

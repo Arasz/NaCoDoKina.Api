@@ -2,7 +2,7 @@
 using Infrastructure.Models;
 using Infrastructure.Models.Travel;
 
-namespace Infrastructure.Services
+namespace Infrastructure.Services.Travel
 {
     /// <summary>
     /// Contract for location oriented business logic 
@@ -16,7 +16,7 @@ namespace Infrastructure.Services
         /// <returns>
         /// Time needed to reach point B from point A. Returns min value when time couldnt be calculated
         /// </returns>
-        Task<TravelInformation> CalculateInformationForTravelAsync(TravelPlan travelPlan);
+        Task<TravelInformation> GetInformationForTravelAsync(TravelPlan travelPlan);
 
         /// <summary>
         /// Translates address to location (geocoding) 

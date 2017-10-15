@@ -18,6 +18,11 @@ namespace Infrastructure.Models.Cinemas
         public string Name { get; set; }
 
         /// <summary>
+        /// City where cinema is located 
+        /// </summary>
+        public string City { get; set; }
+
+        /// <summary>
         /// Cinema address 
         /// </summary>
         public string Address { get; set; }
