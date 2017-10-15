@@ -322,7 +322,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             {
                 // Arrange
 
-                var testLocation = new Location(16.8517549802915, 52.3886399802915);
+                var testLocation = new Location(52.3886399802915, 16.8517549802915);
                 var searchArea = new SearchArea(testLocation, 10000);
                 var queryString = ParseSearchAreaToQuery(searchArea);
                 var movieId = 1L;
@@ -330,6 +330,34 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Act
 
                 await Login();
+                var url = $"{BaseUrl}{movieId}/cinemas/{queryString}";
+                var response = await Client.GetAsync(url);
+
+                // Assert
+
+                response.EnsureSuccessStatusCode();
+
+                var responseContent = await response.Content.ReadAsJsonObjectAsync<List<Cinema>>();
+
+                responseContent
+                    .Should()
+                    .NotBeNullOrEmpty().And
+                    .OnlyHaveUniqueItems().And
+                    .Subject.Count().Should().BePositive();
+            }
+
+            [Fact]
+            public async Task Should_return_all_cinemas_inside_search_area_without_login()
+            {
+                // Arrange
+
+                var testLocation = new Location(52.3886399802915, 16.8517549802915);
+                var searchArea = new SearchArea(testLocation, 10000);
+                var queryString = ParseSearchAreaToQuery(searchArea);
+                var movieId = 1L;
+
+                // Act
+
                 var url = $"{BaseUrl}{movieId}/cinemas/{queryString}";
                 var response = await Client.GetAsync(url);
 

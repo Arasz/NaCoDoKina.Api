@@ -21,13 +21,13 @@ namespace NaCoDoKina.Api.DataContracts
 
         public double Latitude { get; set; }
 
-        public void Deconstruct(out double longitude, out double latitude)
+        public void Deconstruct(out double latitude, out double longitude)
         {
             longitude = Longitude;
             latitude = Latitude;
         }
 
-        public override string ToString() => $"{Longitude.ToString(CultureInfo.InvariantCulture)}," +
-                                             $"{Latitude.ToString(CultureInfo.InvariantCulture)}";
+        public override string ToString() => $"{Latitude.ToString(CultureInfo.InvariantCulture)}," +
+                                             $"{Longitude.ToString(CultureInfo.InvariantCulture)}";
     }
 }

@@ -1,17 +1,17 @@
 ﻿using FluentAssertions;
 using Infrastructure.Models.Travel;
-using Infrastructure.Services;
 using Infrastructure.Services.Google.DataContract.Directions.Request;
 using Infrastructure.Services.Google.DataContract.Directions.Response;
 using Infrastructure.Services.Google.DataContract.Geocoding.Request;
 using Infrastructure.Services.Google.DataContract.Geocoding.Response;
 using Infrastructure.Services.Google.Exceptions;
 using Infrastructure.Services.Google.Services;
+using Infrastructure.Services.Travel;
 using Moq;
+using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Infrastructure.Services.Travel;
 using Xunit;
 using Location = Infrastructure.Models.Location;
 
@@ -35,7 +35,7 @@ namespace NaCoDoKina.Api.Services
             {
                 Geometry = new Geometry
                 {
-                    Location = new global::Infrastructure.Services.Google.DataContract.Common.Location(longitude, latitude)
+                    Location = new global::Infrastructure.Services.Google.DataContract.Common.Location(latitude, longitude)
                 }
             };
 
@@ -87,7 +87,7 @@ namespace NaCoDoKina.Api.Services
 
                 GeocodingServiceMock
                     .Setup(service => service.GeocodeAsync(It.IsAny<GeocodingApiRequest>()))
-                    .Throws(new GoogleApiException("INVALID_REQUEST", String.Empty));
+                    .Throws(Fixture.Create<GoogleApiException>());
 
                 //act
                 var location = await ServiceUnderTest.TranslateAddressToLocationAsync(testAddress);
@@ -111,7 +111,7 @@ namespace NaCoDoKina.Api.Services
 
                 GeocodingServiceMock
                     .Setup(service => service.GeocodeAsync(It.IsAny<GeocodingApiRequest>()))
-                    .Throws(new GoogleApiException(new Exception()));
+                    .Throws(Fixture.Create<GoogleApiException>());
 
                 //act
                 var location = await ServiceUnderTest.TranslateAddressToLocationAsync(testAddress);
@@ -204,7 +204,7 @@ namespace NaCoDoKina.Api.Services
 
                 DirectionsServiceMock
                     .Setup(service => service.GetDirections(It.IsAny<DirectionsApiRequest>()))
-                    .Throws(new GoogleApiException("INVALID_REQUEST", String.Empty));
+                    .Throws(Fixture.Create<GoogleApiException>());
 
                 //act
                 var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
@@ -226,7 +226,7 @@ namespace NaCoDoKina.Api.Services
 
                 DirectionsServiceMock
                     .Setup(service => service.GetDirections(It.IsAny<DirectionsApiRequest>()))
-                    .Throws(new GoogleApiException(new Exception()));
+                    .Throws(Fixture.Create<GoogleApiException>());
 
                 //act
                 var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);

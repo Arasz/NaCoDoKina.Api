@@ -7,12 +7,12 @@ namespace Infrastructure.Services.Recommendation.Exceptions
     {
         public HttpStatusCode StatusCode { get; }
 
-        public RecommendationApiException(HttpStatusCode statusCode, string userName) : base(userName)
+        public RecommendationApiException(HttpStatusCode statusCode, string message) : base(message)
         {
             StatusCode = statusCode;
         }
 
-        public RecommendationApiException(string userName) : base(userName)
+        public RecommendationApiException(string message) : base(message)
         {
         }
     }

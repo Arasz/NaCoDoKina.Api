@@ -110,12 +110,12 @@ namespace NaCoDoKina.Api.Services
                         new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "NearCinema",
-                            Location = new ApplicationCore.Entities.Location(15, 32)
+                            Location = new ApplicationCore.Entities.Location(32, 15)
                         },
                         new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "FarCinema",
-                            Location = new ApplicationCore.Entities.Location(1333, 4322)
+                            Location = new ApplicationCore.Entities.Location(4322, 1333)
                         }
                     };
 
@@ -198,19 +198,19 @@ namespace NaCoDoKina.Api.Services
                         new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "NearCinema",
-                            Location = new ApplicationCore.Entities.Location(15, 32),
+                            Location = new ApplicationCore.Entities.Location(32, 15),
                             Address = $"address {city}"
                         },
                         new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "NearCinema2",
-                            Location = new ApplicationCore.Entities.Location(15, 32),
+                            Location = new ApplicationCore.Entities.Location(32, 15),
                             Address = $"address Kraków"
                         },
                         new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "FarCinema",
-                            Location = new ApplicationCore.Entities.Location(1333, 4322),
+                            Location = new ApplicationCore.Entities.Location(4322, 1333),
                             Address = $"address {city}"
                         }
                     };
@@ -248,12 +248,12 @@ namespace NaCoDoKina.Api.Services
                         new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "NearCinema",
-                            Location = new ApplicationCore.Entities.Location(15, 32)
+                            Location = new ApplicationCore.Entities.Location(32, 15)
                         },
                         new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "FarCinema",
-                            Location = new ApplicationCore.Entities.Location(1333, 4322)
+                            Location = new ApplicationCore.Entities.Location(4322, 1333)
                         }
                     };
 
@@ -305,7 +305,7 @@ namespace NaCoDoKina.Api.Services
                     {
                         Id = cinemaId,
                         Name = "NearCinema",
-                        Location = new ApplicationCore.Entities.Location(15, 32)
+                        Location = new ApplicationCore.Entities.Location(32, 15)
                     };
 
                     MapperMock
@@ -340,7 +340,7 @@ namespace NaCoDoKina.Api.Services
                     {
                         Id = cinemaId,
                         Name = cinemaName,
-                        Location = new ApplicationCore.Entities.Location(15, 32)
+                        Location = new ApplicationCore.Entities.Location(32, 15)
                     };
 
                     MapperMock
@@ -376,7 +376,7 @@ namespace NaCoDoKina.Api.Services
                     {
                         Id = cinemaId,
                         Name = cinemaName,
-                        Location = new ApplicationCore.Entities.Location(15, 32)
+                        Location = new ApplicationCore.Entities.Location(32, 15)
                     };
 
                     MapperMock
@@ -410,7 +410,7 @@ namespace NaCoDoKina.Api.Services
                     {
                         Id = cinemaId,
                         Name = cinemaName,
-                        Location = new ApplicationCore.Entities.Location(15, 32)
+                        Location = new ApplicationCore.Entities.Location(32, 15)
                     };
 
                     MapperMock

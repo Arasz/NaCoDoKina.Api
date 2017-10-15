@@ -35,7 +35,7 @@ namespace NaCoDoKina.Api.Mappings
             public void Should_return_model_location_given_entity_location()
             {
                 //Arrange
-                var location = new ApplicationCore.Entities.Location(1, 9);
+                var location = new ApplicationCore.Entities.Location(9, 1);
 
                 //Act
                 var result = Mapper.Map<Location>(location);

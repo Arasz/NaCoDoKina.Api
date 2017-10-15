@@ -15,6 +15,16 @@ namespace Infrastructure.Models
             Latitude = latitude;
         }
 
+        public double Longitude { get; set; }
+
+        public double Latitude { get; set; }
+
+        public void Deconstruct(out double latitude, out double longitude)
+        {
+            longitude = Longitude;
+            latitude = Latitude;
+        }
+
         public Location LowerPrecision(int places)
         {
             double Truncate(double number)
@@ -29,17 +39,7 @@ namespace Infrastructure.Models
             return new Location(Truncate(Latitude), Truncate(Longitude));
         }
 
-        public double Longitude { get; set; }
-
-        public double Latitude { get; set; }
-
-        public void Deconstruct(out double longitude, out double latitude)
-        {
-            longitude = Longitude;
-            latitude = Latitude;
-        }
-
-        public override string ToString() => $"{Longitude.ToString(CultureInfo.InvariantCulture)}," +
-                                             $"{Latitude.ToString(CultureInfo.InvariantCulture)}";
+        public override string ToString() => $"{Latitude.ToString(CultureInfo.InvariantCulture)}," +
+                                             $"{Longitude.ToString(CultureInfo.InvariantCulture)}";
     }
 }

@@ -37,7 +37,7 @@ namespace NaCoDoKina.Api.Services.Travel
             {
                 Geometry = new Geometry
                 {
-                    Location = new global::Infrastructure.Services.Google.DataContract.Common.Location(longitude, latitude)
+                    Location = new global::Infrastructure.Services.Google.DataContract.Common.Location(latitude, longitude)
                 }
             };
 
@@ -89,7 +89,7 @@ namespace NaCoDoKina.Api.Services.Travel
 
                 GeocodingServiceMock
                     .Setup(service => service.GeocodeAsync(It.IsAny<GeocodingApiRequest>()))
-                    .Throws(new GoogleApiException("INVALID_REQUEST", String.Empty));
+                    .Throws(Fixture.Create<GoogleApiException>());
 
                 //act
                 var location = await ServiceUnderTest.TranslateAddressToLocationAsync(testAddress);
@@ -113,7 +113,7 @@ namespace NaCoDoKina.Api.Services.Travel
 
                 GeocodingServiceMock
                     .Setup(service => service.GeocodeAsync(It.IsAny<GeocodingApiRequest>()))
-                    .Throws(new GoogleApiException(new Exception()));
+                    .Throws(Fixture.Create<GoogleApiException>());
 
                 //act
                 var location = await ServiceUnderTest.TranslateAddressToLocationAsync(testAddress);
@@ -211,7 +211,7 @@ namespace NaCoDoKina.Api.Services.Travel
 
                 DirectionsServiceMock
                     .Setup(service => service.GetDirections(It.IsAny<DirectionsApiRequest>()))
-                    .Throws(new GoogleApiException("INVALID_REQUEST", String.Empty));
+                    .Throws(Fixture.Create<GoogleApiException>());
 
                 //act
                 var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
@@ -241,7 +241,7 @@ namespace NaCoDoKina.Api.Services.Travel
 
                 DirectionsServiceMock
                     .Setup(service => service.GetDirections(It.IsAny<DirectionsApiRequest>()))
-                    .Throws(new GoogleApiException(new Exception()));
+                    .Throws(Fixture.Create<GoogleApiException>());
 
                 //act
                 var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);

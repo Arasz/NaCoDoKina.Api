@@ -29,7 +29,7 @@ namespace NaCoDoKina.Api.Repository
                 var cinema2 = new Cinema
                 {
                     Address = nameof(Cinema.Address),
-                    Location = new Location(1, 2),
+                    Location = new Location(2, 1),
                     Name = $"{nameof(Cinema)}2",
                 };
 
@@ -297,7 +297,7 @@ namespace NaCoDoKina.Api.Repository
                 var cinema2 = new Cinema
                 {
                     Address = nameof(Cinema.Address),
-                    Location = new Location(1, 2),
+                    Location = new Location(2, 1),
                     Name = $"{nameof(Cinema)}2",
                 };
 
@@ -359,7 +359,7 @@ namespace NaCoDoKina.Api.Repository
                 var cinema2 = new Cinema
                 {
                     Address = nameof(Cinema.Address),
-                    Location = new Location(1, 2),
+                    Location = new Location(2, 1),
                     Name = $"{nameof(Cinema)}2",
                 };
 
@@ -406,7 +406,7 @@ namespace NaCoDoKina.Api.Repository
                 var cinema2 = new Cinema
                 {
                     Address = nameof(Cinema.Address),
-                    Location = new Location(1, 2),
+                    Location = new Location(2, 1),
                     Name = $"{nameof(Cinema)}2",
                 };
 
@@ -453,7 +453,7 @@ namespace NaCoDoKina.Api.Repository
                 var cinema2 = new Cinema
                 {
                     Address = nameof(Cinema.Address),
-                    Location = new Location(1, 2),
+                    Location = new Location(2, 1),
                     Name = $"{nameof(Cinema)}2",
                 };
 
