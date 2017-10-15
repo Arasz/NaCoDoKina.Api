@@ -18,7 +18,7 @@ namespace NaCoDoKina.Api.Mappings
             public void Should_return_model_location_given_data_contract_location()
             {
                 //Arrange
-                var location = new Location(1, 9);
+                var location = new Location(9, 1);
 
                 //Act
                 var result = Mapper.Map<global::Infrastructure.Models.Location>(location);

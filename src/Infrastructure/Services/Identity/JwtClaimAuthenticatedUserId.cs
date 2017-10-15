@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Infrastructure.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace Infrastructure.Services.Identity
                 var idClaim = httpContext.User
                     .FindFirst(claim => _claimsWithId.Contains(claim.Type));
 
-                _logger.LogDebug("Founded claim {@claim}", idClaim);
+                idClaim.LogDebugInfo(_logger, "Found claim");
 
                 if (idClaim != null && long.TryParse(idClaim.Value, out var id))
                     return id;

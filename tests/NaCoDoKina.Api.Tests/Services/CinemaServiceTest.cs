@@ -5,12 +5,12 @@ using Infrastructure.Models;
 using Infrastructure.Models.Cinemas;
 using Infrastructure.Models.Travel;
 using Infrastructure.Services;
+using Infrastructure.Services.Travel;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Infrastructure.Services.Travel;
 using Xunit;
 
 namespace NaCoDoKina.Api.Services
@@ -224,8 +224,8 @@ namespace NaCoDoKina.Api.Services
                         }));
 
                     RepositoryMock
-                        .Setup(repository => repository.GetAllCinemas())
-                        .ReturnsAsync(cinemas);
+                        .Setup(repository => repository.GetCinemasByCityAsync(city))
+                        .ReturnsAsync(cinemas.Where(cinema => cinema.Address.EndsWith(city)).ToArray);
 
                     //Act
                     var result = await ServiceUnderTest.GetCinemasInSearchAreaAsync(searchArea);

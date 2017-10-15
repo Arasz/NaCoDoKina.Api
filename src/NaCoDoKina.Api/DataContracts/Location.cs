@@ -11,7 +11,7 @@ namespace NaCoDoKina.Api.DataContracts
         {
         }
 
-        public Location(double longitude, double latitude)
+        public Location(double latitude, double longitude)
         {
             Longitude = longitude;
             Latitude = latitude;

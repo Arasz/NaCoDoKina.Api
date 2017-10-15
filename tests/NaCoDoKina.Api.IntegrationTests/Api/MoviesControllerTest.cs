@@ -103,6 +103,32 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                     .OnlyHaveUniqueItems().And
                     .Subject.Count().Should().BePositive();
             }
+
+            [Fact]
+            public async Task Should_return_all_movies_inside_search_area_without_login()
+            {
+                // Arrange
+
+                var testLocation = new Location(52.3886399802915, 16.8517549802915);
+                var searchArea = new SearchArea(testLocation, 10000);
+                var queryString = ParseSearchAreaToQuery(searchArea);
+
+                // Act
+
+                var url = $"{BaseUrl}{queryString}";
+                var response = await Client.GetAsync(url);
+
+                // Assert
+
+                response.EnsureSuccessStatusCode();
+
+                var responseContent = await response.Content.ReadAsJsonObjectAsync<long[]>();
+                responseContent
+                    .Should()
+                    .NotBeNullOrEmpty().And
+                    .OnlyHaveUniqueItems().And
+                    .Subject.Count().Should().BePositive();
+            }
         }
 
         public class GetMovieAsync : MoviesControllerTest
@@ -120,7 +146,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 // Assert
                 response.EnsureSuccessStatusCode();
-                var movie = await HttpContentExtensions.ReadAsJsonObjectAsync<Movie>(response.Content);
+                var movie = await response.Content.ReadAsJsonObjectAsync<Movie>();
 
                 movie.Id.Should().Be(movieId);
                 movie.Title.Should().NotBeNullOrEmpty();
@@ -168,7 +194,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 var movieResponse = await Client.GetAsync(url);
 
                 movieResponse.EnsureSuccessStatusCode();
-                var movie = await HttpContentExtensions.ReadAsJsonObjectAsync<Movie>(movieResponse.Content);
+                var movie = await movieResponse.Content.ReadAsJsonObjectAsync<Movie>();
 
                 movie.Id.Should().Be(movieId);
                 movie.Title.Should().NotBeNullOrEmpty();
@@ -190,7 +216,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 // Assert
                 response.EnsureSuccessStatusCode();
-                var movieDetails = await HttpContentExtensions.ReadAsJsonObjectAsync<MovieDetails>(response.Content);
+                var movieDetails = await response.Content.ReadAsJsonObjectAsync<MovieDetails>();
 
                 movieDetails.Id.Should().Be(movieId);
                 movieDetails.Title.Should().NotBeNullOrEmpty();
@@ -232,7 +258,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Assert
                 response.StatusCode.Should().HaveFlag(HttpStatusCode.Created);
 
-                var returnedRating = await HttpContentExtensions.ReadAsJsonObjectAsync<double>(response.Content);
+                var returnedRating = await response.Content.ReadAsJsonObjectAsync<double>();
 
                 returnedRating.Should().Be(returnedRating);
             }
@@ -257,7 +283,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Assert
                 response.EnsureSuccessStatusCode();
 
-                var movieShowtimes = await HttpContentExtensions.ReadAsJsonObjectAsync<MovieShowtime[]>(response.Content);
+                var movieShowtimes = await response.Content.ReadAsJsonObjectAsync<MovieShowtime[]>();
 
                 movieShowtimes.Should().NotBeNullOrEmpty();
                 movieShowtimes.Should().Match(showtimes => showtimes.All(showtime => showtime.MovieId == movieId));
@@ -281,7 +307,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
                 // Assert
                 response.EnsureSuccessStatusCode();
 
-                var movieShowtimes = await HttpContentExtensions.ReadAsJsonObjectAsync<MovieShowtime[]>(response.Content);
+                var movieShowtimes = await response.Content.ReadAsJsonObjectAsync<MovieShowtime[]>();
 
                 movieShowtimes.Should().NotBeNullOrEmpty();
                 movieShowtimes.Should().Match(showtimes => showtimes.All(showtime => showtime.MovieId == movieId));
@@ -296,7 +322,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             {
                 // Arrange
 
-                var testLocation = new Location(52.3886399802915, 16.8517549802915);
+                var testLocation = new Location(16.8517549802915, 52.3886399802915);
                 var searchArea = new SearchArea(testLocation, 10000);
                 var queryString = ParseSearchAreaToQuery(searchArea);
                 var movieId = 1L;
@@ -311,7 +337,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
 
                 response.EnsureSuccessStatusCode();
 
-                var responseContent = await HttpContentExtensions.ReadAsJsonObjectAsync<List<Cinema>>(response.Content);
+                var responseContent = await response.Content.ReadAsJsonObjectAsync<List<Cinema>>();
 
                 responseContent
                     .Should()
