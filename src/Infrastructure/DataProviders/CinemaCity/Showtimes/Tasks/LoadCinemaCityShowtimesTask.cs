@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ApplicationCore.Entities.Movies;
+﻿using ApplicationCore.Entities.Movies;
 using ApplicationCore.Repositories;
 using Infrastructure.DataProviders.CinemaCity.Showtimes.Context;
 using Infrastructure.DataProviders.EntityBuilder;
 using Infrastructure.DataProviders.Tasks;
 using Infrastructure.Settings.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Infrastructure.DataProviders.CinemaCity.Showtimes.Tasks
 {
@@ -16,7 +16,8 @@ namespace Infrastructure.DataProviders.CinemaCity.Showtimes.Tasks
         private readonly IEntitiesBuilder<MovieShowtime, MovieShowtimesContext> _entitiesBuilder;
         private readonly ICinemaRepository _cinemaRepository;
 
-        public LoadCinemaCityShowtimesTask(ICinemaRepository cinemaRepository, IMovieShowtimeRepository movieShowtimeRepository, IEntitiesBuilder<MovieShowtime, MovieShowtimesContext> entitiesBuilder, TasksSettings settings)
+        public LoadCinemaCityShowtimesTask(ICinemaRepository cinemaRepository, IMovieShowtimeRepository movieShowtimeRepository,
+            IEntitiesBuilder<MovieShowtime, MovieShowtimesContext> entitiesBuilder, TasksSettings settings)
             : base(settings)
         {
             _movieShowtimeRepository = movieShowtimeRepository ?? throw new ArgumentNullException(nameof(movieShowtimeRepository));
@@ -39,8 +40,10 @@ namespace Infrastructure.DataProviders.CinemaCity.Showtimes.Tasks
                 foreach (var cinema in cinemas)
                 {
                     var context = new MovieShowtimesContext(cinema, showtimeDate);
+
                     var showtimes = await _entitiesBuilder
                         .BuildMany(parameters: context);
+
                     allShowtimes.AddRange(showtimes);
                 }
                 showtimeDate = showtimeDate.AddDays(1);
