@@ -24,13 +24,7 @@ namespace Infrastructure.DataProviders.CinemaCity.Movies.Tasks
         {
             var movies = await _entitiesBuilder.BuildMany();
 
-            foreach (var movie in movies)
-            {
-                var title = movie.Title;
-                var existingMovie = await _movieRepository.GetMovieByTitleAsync(title);
-                if (existingMovie is null)
-                    await _movieRepository.CreateMovieAsync(movie);
-            }
+            await _movieRepository.CreateMoviesAsync(movies);
         }
     }
 }
