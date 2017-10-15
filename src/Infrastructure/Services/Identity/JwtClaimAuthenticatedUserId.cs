@@ -30,10 +30,11 @@ namespace Infrastructure.Services.Identity
                 var idClaim = httpContext.User
                     .FindFirst(claim => _claimsWithId.Contains(claim.Type));
 
-                idClaim.LogDebugInfo(_logger, "Found claim");
-
                 if (idClaim != null && long.TryParse(idClaim.Value, out var id))
+                {
+                    idClaim.LogDebugInfo(_logger, "Found claim");
                     return id;
+                }
 
                 var allClaims = httpContext.User.Claims
                     .Select(claim => new { claim.Type, claim.Value });

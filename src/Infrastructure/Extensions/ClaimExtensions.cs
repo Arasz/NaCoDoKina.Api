@@ -7,6 +7,9 @@ namespace Infrastructure.Extensions
     {
         public static void LogDebugInfo(this Claim claim, ILogger logger, string message)
         {
+            if (claim is null)
+                return;
+
             logger.LogDebug(message + " {Issuer}, {Type}, {Value}, {ValueType}, {OriginalIssuer}, {SubjectName}, {SubjectIsAuthenticated}",
                 claim.Issuer, claim.Type, claim.Value, claim.ValueType, claim.OriginalIssuer, claim.Subject?.Name, claim.Subject?.IsAuthenticated);
         }
