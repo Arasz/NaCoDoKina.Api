@@ -20,6 +20,8 @@ namespace Infrastructure.Data.Configurations
                 .IsRequired()
                 .HasMaxLength(80);
 
+            builder.HasIndex(cinema => cinema.ExternalId);
+
             builder.OwnsOne(cinema => cinema.Location);
         }
     }
