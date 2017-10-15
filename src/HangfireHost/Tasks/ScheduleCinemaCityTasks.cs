@@ -31,7 +31,7 @@ namespace HangfireHost.Tasks
                 .AddOrUpdate<LoadCinemaCityMoviesTask>(task => task.Execute(), () => _settings.MoviesTask.Cron);
 
             RecurringJob
-                .AddOrUpdate<LoadCinemaCityShowtimesTask>(task => task.Execute(), () => _settings.ShowtimesTask.Cron);
+                .AddOrUpdate<CinemaCityShowtimesTask>(task => task.Execute(), () => _settings.ShowtimesTask.Cron);
         }
     }
 }

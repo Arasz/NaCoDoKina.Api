@@ -41,8 +41,8 @@ namespace Infrastructure.Repositories
             foreach (var movieShowtime in showtimes)
             {
                 var exist = await _applicationContext.MovieShowtimes
-                    .Where(s => s.Cinema.Id == movieShowtime.Cinema.Id)
-                    .Where(s => s.Movie.Id == movieShowtime.Movie.Id)
+                    .Where(s => Equals(s.Cinema, movieShowtime.Cinema))
+                    .Where(s => Equals(s.Movie, movieShowtime.Movie))
                     .Where(s => s.ShowTime == movieShowtime.ShowTime)
                     .AnyAsync();
 
