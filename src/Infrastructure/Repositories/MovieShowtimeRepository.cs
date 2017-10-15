@@ -3,6 +3,7 @@ using ApplicationCore.Entities.Movies;
 using ApplicationCore.Repositories;
 using CacheManager.Core;
 using Infrastructure.Data;
+using Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using System;
@@ -37,16 +38,6 @@ namespace Infrastructure.Repositories
 
         public async Task CreateMovieShowtimesAsync(IEnumerable<MovieShowtime> showtimes)
         {
-            var cinemas = showtimes
-                .Select(showtime => showtime.Cinema)
-                .Distinct();
-            var movies = showtimes
-                .Select(showtime => showtime.Movie)
-                .Distinct();
-
-            _applicationContext.Cinemas.AttachRange(cinemas);
-            _applicationContext.Movies.AttachRange(movies);
-
             foreach (var movieShowtime in showtimes)
             {
                 var exist = await _applicationContext.MovieShowtimes
@@ -57,6 +48,9 @@ namespace Infrastructure.Repositories
 
                 if (exist)
                     continue;
+
+                _applicationContext.TryAttach(movieShowtime.Cinema);
+                _applicationContext.TryAttach(movieShowtime.Movie);
 
                 _applicationContext.MovieShowtimes.Add(movieShowtime);
             }

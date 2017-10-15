@@ -8,6 +8,16 @@ namespace NaCoDoKina.Api.DataContracts.Movies
     public class MovieShowtime
     {
         /// <summary>
+        /// Link to booking page 
+        /// </summary>
+        public string BookingLink { get; set; }
+
+        /// <summary>
+        /// Are tickets for showtime available 
+        /// </summary>
+        public bool Available { get; set; }
+
+        /// <summary>
         /// Movie show language and presentation type 
         /// </summary>
         public string Language { get; set; }
