@@ -247,7 +247,7 @@ namespace NaCoDoKina.Api.Repository
         public class GetMovieAsync : MovieRepositoryTest
         {
             [Fact]
-            public async Task Should_return_movie_when_exist_and_is_not_marked_as_deleted()
+            public async Task Should_return_movie_when_exist()
             {
                 //Arrange
                 var movie = Fixture.Build<Movie>()
@@ -294,6 +294,63 @@ namespace NaCoDoKina.Api.Repository
                 {
                     //Act
                     var movieFromDb = await RepositoryUnderTest.GetMovieAsync(nonExistingMovieId);
+
+                    //Assert
+                    movieFromDb.Should().BeNull();
+                }
+            }
+        }
+
+        public class GetMovieByTitleAsync : MovieRepositoryTest
+        {
+            [Fact]
+            public async Task Should_return_movie_when_exist()
+            {
+                //Arrange
+                var movie = Fixture.Build<Movie>()
+                    .Without(m => m.Id)
+                    .Create();
+
+                using (var contextScope = CreateContextScope())
+                {
+                    contextScope.DbContext.Movies.Add(movie);
+
+                    await contextScope.DbContext.SaveChangesAsync();
+                }
+
+                using (CreateContextScope())
+                {
+                    //Act
+                    var movieFromDb = await RepositoryUnderTest.GetMovieByTitleAsync(movie.Title);
+
+                    //Assert
+                    movieFromDb.Id.Should().BePositive();
+                    movieFromDb.Details.Should().BeNull("We only get necessary data");
+                    movieFromDb.Title.Should().Be(movie.Title);
+                }
+            }
+
+            [Fact]
+            public async Task Should_return_null_when_movie_do_not_exist()
+            {
+                //Arrange
+                var nonExistingMovieTitle = Fixture.Create<string>();
+
+                var movie = Fixture.Build<Movie>()
+                    .Without(m => m.Id)
+                    .Create();
+
+                using (var contextScope = CreateContextScope())
+                {
+                    contextScope.DbContext.Movies.Add(movie);
+
+                    await contextScope.DbContext.SaveChangesAsync();
+                }
+
+                using (CreateContextScope())
+                {
+                    //Act
+                    var movieFromDb = await RepositoryUnderTest.GetMovieByTitleAsync(nonExistingMovieTitle);
 
                     //Assert
                     movieFromDb.Should().BeNull();

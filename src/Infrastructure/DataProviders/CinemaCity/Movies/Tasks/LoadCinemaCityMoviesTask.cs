@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using ApplicationCore.Entities.Movies;
+﻿using ApplicationCore.Entities.Movies;
 using ApplicationCore.Repositories;
 using Infrastructure.DataProviders.EntityBuilder;
 using Infrastructure.DataProviders.EntityBuilder.Context;
 using Infrastructure.DataProviders.Tasks;
 using Infrastructure.Settings.Tasks;
+using System;
+using System.Threading.Tasks;
 
 namespace Infrastructure.DataProviders.CinemaCity.Movies.Tasks
 {
@@ -24,7 +24,13 @@ namespace Infrastructure.DataProviders.CinemaCity.Movies.Tasks
         {
             var movies = await _entitiesBuilder.BuildMany();
 
-            await _movieRepository.CreateMoviesAsync(movies);
+            foreach (var movie in movies)
+            {
+                var title = movie.Title;
+                var existingMovie = await _movieRepository.GetMovieByTitleAsync(title);
+                if (existingMovie is null)
+                    await _movieRepository.CreateMovieAsync(movie);
+            }
         }
     }
 }

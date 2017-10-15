@@ -74,7 +74,15 @@ namespace Infrastructure.Repositories
 
         public async Task CreateCinemasAsync(IEnumerable<Cinema> cinemas)
         {
-            _applicationContext.Cinemas.AddRange(cinemas);
+            foreach (var cinema in cinemas)
+            {
+                var exist = await _applicationContext.Cinemas
+                    .Where(c => c.ExternalId == cinema.ExternalId)
+                    .AnyAsync();
+                if (exist)
+                    continue;
+                _applicationContext.Cinemas.Add(cinema);
+            }
 
             await _applicationContext.SaveChangesAsync();
         }

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using ApplicationCore.Entities.Movies;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApplicationCore.Entities.Movies;
 
 namespace ApplicationCore.Repositories
 {
@@ -63,5 +63,12 @@ namespace ApplicationCore.Repositories
         /// <param name="laterThan"> Earlier show time </param>
         /// <returns> Movies ids </returns>
         Task<IEnumerable<long>> GetMoviesForCinemaAsync(long cinemaId, DateTime laterThan);
+
+        /// <summary>
+        /// Gets movie with given title 
+        /// </summary>
+        /// <param name="title"> Movie title </param>
+        /// <returns> Movie </returns>
+        Task<Movie> GetMovieByTitleAsync(string title);
     }
 }

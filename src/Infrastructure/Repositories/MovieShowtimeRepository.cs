@@ -47,7 +47,19 @@ namespace Infrastructure.Repositories
             _applicationContext.Cinemas.AttachRange(cinemas);
             _applicationContext.Movies.AttachRange(movies);
 
-            _applicationContext.MovieShowtimes.AddRange(showtimes);
+            foreach (var movieShowtime in showtimes)
+            {
+                var exist = await _applicationContext.MovieShowtimes
+                    .Where(s => s.Cinema.Id == movieShowtime.Cinema.Id)
+                    .Where(s => s.Movie.Id == movieShowtime.Movie.Id)
+                    .Where(s => s.ShowTime == movieShowtime.ShowTime)
+                    .AnyAsync();
+
+                if (exist)
+                    continue;
+
+                _applicationContext.MovieShowtimes.Add(movieShowtime);
+            }
 
             await _applicationContext.SaveChangesAsync();
         }
