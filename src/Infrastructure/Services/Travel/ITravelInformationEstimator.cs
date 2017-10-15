@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Models.Travel;
 
-namespace Infrastructure.Services
+namespace Infrastructure.Services.Travel
 {
     public interface ITravelInformationEstimator
     {

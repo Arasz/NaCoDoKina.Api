@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Infrastructure.Models.Travel;
-using Infrastructure.Services;
 using Infrastructure.Services.Google.DataContract.Directions.Response;
+using Infrastructure.Services.Travel;
 using IntegrationTestsCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -59,8 +59,8 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             public async Task Should_return_correct_travel_information()
             {
                 //arrange
-                var destination = new Location(52.44056, 16.919235);
-                var origin = new Location(52.3846579, 16.8519869);
+                var destination = new Location(16.919235, 52.44056);
+                var origin = new Location(16.8519869, 52.3846579);
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
@@ -76,8 +76,8 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             public async Task Should_return_longest_route_time_when_returns_multiple_routes()
             {
                 //arrange
-                var destination = new Location(52.44056, 16.919235);
-                var origin = new Location(52.3846579, 16.8519869);
+                var destination = new Location(16.919235, 52.44056);
+                var origin = new Location(16.8519869, 52.3846579);
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act

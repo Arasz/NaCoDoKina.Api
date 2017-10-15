@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Infrastructure.Services;
+using Infrastructure.Services.Travel;
 
 namespace Infrastructure.IoC.Modules
 {
@@ -11,7 +11,7 @@ namespace Infrastructure.IoC.Modules
         {
             base.Load(builder);
 
-            builder.RegisterType<EuclideanTravelInformationEstimator>()
+            builder.RegisterType<HaversineTravelInformationEstimator>()
                 .AsImplementedInterfaces()
                 .SingleInstance();
         }

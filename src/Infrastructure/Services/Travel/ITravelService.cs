@@ -1,8 +1,8 @@
-﻿using Infrastructure.Models;
+﻿using System.Threading.Tasks;
+using Infrastructure.Models;
 using Infrastructure.Models.Travel;
-using System.Threading.Tasks;
 
-namespace Infrastructure.Services
+namespace Infrastructure.Services.Travel
 {
     /// <summary>
     /// Contract for location oriented business logic 

@@ -1,20 +1,20 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using FluentAssertions;
 using Infrastructure.Models.Travel;
-using Infrastructure.Services;
 using Infrastructure.Services.Google.DataContract.Directions.Request;
 using Infrastructure.Services.Google.DataContract.Directions.Response;
 using Infrastructure.Services.Google.DataContract.Geocoding.Request;
 using Infrastructure.Services.Google.DataContract.Geocoding.Response;
 using Infrastructure.Services.Google.Exceptions;
 using Infrastructure.Services.Google.Services;
+using Infrastructure.Services.Travel;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 using Location = Infrastructure.Models.Location;
 
-namespace NaCoDoKina.Api.Services
+namespace NaCoDoKina.Api.Services.Travel
 {
     public class TravelServiceTest : ServiceTestBase<TravelService>
     {

@@ -11,6 +11,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Infrastructure.Services.Travel;
 using Xunit;
 using Location = Infrastructure.Models.Location;
 

@@ -11,7 +11,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Services
+namespace Infrastructure.Services.Travel
 {
     public class TravelService : ITravelService
     {
