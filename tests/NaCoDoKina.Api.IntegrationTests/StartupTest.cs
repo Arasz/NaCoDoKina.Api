@@ -13,29 +13,6 @@ namespace NaCoDoKina.Api.IntegrationTests
 {
     public class StartupTest : HttpTestBase<Startup>
     {
-        public class ConfigureLoggerTest : StartupTest
-        {
-            public override void AfterTestsSettingsLoaded(IntegrationTestsSettings settings)
-            {
-                settings.Environment = "production";
-            }
-
-            [Fact]
-            public void Should_load_Exceptionless_settings_and_configure_client()
-            {
-                // Arrange
-                var exceptionlessSettings = Services.GetService<ExceptionlessSettings>();
-
-                // Assert
-                Exceptionless.ExceptionlessClient.Default.Configuration.IsValid
-                    .Should().BeTrue();
-
-                Exceptionless.ExceptionlessClient.Default.Configuration.ApiKey
-                    .Should()
-                    .Be(exceptionlessSettings.ApiKey);
-            }
-        }
-
         public class ConfigureServicesTest : StartupTest
         {
             [Fact]
