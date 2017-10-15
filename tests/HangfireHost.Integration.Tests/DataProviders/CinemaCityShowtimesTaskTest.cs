@@ -12,7 +12,7 @@ using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 
 namespace HangfireHost.Integration.Tests.DataProviders
 {
-    public class CinemaCityShowtimesTaskTest : TaskTestBase<LoadCinemaCityShowtimesTask>
+    public class CinemaCityShowtimesTaskTest : TaskTestBase<CinemaCityShowtimesTask>
     {
         [Fact]
         public async Task Should_save_all_showtimes_for_cinema_city_cinemas_in_provided_time_period()
