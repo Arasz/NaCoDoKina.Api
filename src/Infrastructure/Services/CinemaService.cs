@@ -102,6 +102,7 @@ namespace Infrastructure.Services
                     })
                 .Where(tuple => tuple.Distance <= searchArea.Radius)
                 .Select(tuple => tuple.Cinema)
+                .Distinct()
                 .ToArray();
 
             return nearestCinemas;

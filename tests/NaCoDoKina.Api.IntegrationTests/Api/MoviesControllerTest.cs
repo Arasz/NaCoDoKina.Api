@@ -105,6 +105,51 @@ namespace NaCoDoKina.Api.IntegrationTests.Api
             }
 
             [Fact]
+            public async Task Should_return_all_movies_inside_search_area_two_times_in_row()
+            {
+                // Arrange
+
+                var testLocation = new Location(52.3886399802915, 16.8517549802915);
+                var searchArea = new SearchArea(testLocation, 10000);
+                var queryString = ParseSearchAreaToQuery(searchArea);
+
+                // Act
+
+                await Login();
+                var url = $"{BaseUrl}{queryString}";
+                var response = await Client.GetAsync(url);
+
+                // Assert
+
+                response.EnsureSuccessStatusCode();
+
+                var responseContent = await response.Content.ReadAsJsonObjectAsync<long[]>();
+                responseContent
+                    .Should()
+                    .NotBeNullOrEmpty().And
+                    .OnlyHaveUniqueItems().And
+                    .Subject.Count().Should().BePositive();
+
+                // Act
+
+                response = await Client.GetAsync(url);
+
+                // Assert
+
+                response.EnsureSuccessStatusCode();
+
+                var secondResponseContent = await response.Content.ReadAsJsonObjectAsync<long[]>();
+                secondResponseContent
+                    .Should()
+                    .NotBeNullOrEmpty().And
+                    .OnlyHaveUniqueItems().And
+                    .Subject.Count().Should().BePositive();
+
+                secondResponseContent.Should()
+                    .BeEquivalentTo(responseContent);
+            }
+
+            [Fact]
             public async Task Should_return_all_movies_inside_search_area_without_login()
             {
                 // Arrange
