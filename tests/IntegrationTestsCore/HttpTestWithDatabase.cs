@@ -28,7 +28,7 @@ namespace IntegrationTestsCore
         {
             base.ConfigureServices(serviceCollection);
 
-            serviceCollection.AddSingleton<IDatabaseSeed, ApplicationDataSeed>();
+            //serviceCollection.AddSingleton<IDatabaseSeed, ApplicationDataSeed>();
             serviceCollection.AddSingleton<IDatabaseSeed, IdentityDataSeed>();
             serviceCollection.AddSingleton<DatabaseFixture>();
         }

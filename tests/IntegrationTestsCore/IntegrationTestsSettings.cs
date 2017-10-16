@@ -11,5 +11,7 @@
         public string Environment { get; set; } = "Development";
 
         public string BaseAddress { get; set; } = @"http://localhost:5000";
+
+        public DumpSettings Dump { get; set; }
     }
 }
