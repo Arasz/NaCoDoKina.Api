@@ -72,7 +72,7 @@ namespace Infrastructure.Services
                 }
 
                 var movieRatings = new List<(long MovieId, double Rating)>();
-                foreach (var movieId in availableMoviesIds.Distinct())
+                foreach (var movieId in availableMoviesIds.ToHashSet())
                 {
                     var rating = await _ratingService.GetMovieRating(movieId);
                     _logger.LogDebug("Rating {Rating} for movie {MovieId}", rating, movieId);

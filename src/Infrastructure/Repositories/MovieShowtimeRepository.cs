@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Entities.Cinemas;
+﻿using ApplicationCore.Entities;
+using ApplicationCore.Entities.Cinemas;
 using ApplicationCore.Entities.Movies;
 using ApplicationCore.Repositories;
 using CacheManager.Core;
@@ -38,24 +39,52 @@ namespace Infrastructure.Repositories
 
         public async Task CreateMovieShowtimesAsync(IEnumerable<MovieShowtime> showtimes)
         {
-            foreach (var movieShowtime in showtimes)
+            showtimes = showtimes as MovieShowtime[] ?? showtimes.ToArray();
+
+            var movies = showtimes
+                .Select(s => s.Movie.Id)
+                .ToHashSet();
+
+            var cinemas = showtimes
+                .Select(s => s.Cinema.Id)
+                .ToHashSet();
+
+            _applicationContext.MovieShowtimes
+                .Where(s => movies.Contains(s.Movie.Id))
+                .Where(s => cinemas.Contains(s.Cinema.Id))
+                .Load();
+
+            AttachRelatedEntities(showtimes, showtime => showtime.Movie);
+
+            AttachRelatedEntities(showtimes, showtime => showtime.Cinema);
+
+            foreach (var showtime in showtimes)
             {
                 var exist = await _applicationContext.MovieShowtimes
-                    .Where(s => Equals(s.Cinema, movieShowtime.Cinema))
-                    .Where(s => Equals(s.Movie, movieShowtime.Movie))
-                    .Where(s => s.ShowTime == movieShowtime.ShowTime)
+                    .Where(s => s.Movie.Equals(showtime.Movie))
+                    .Where(s => s.Cinema.Equals(showtime.Cinema))
+                    .Where(s => s.ShowTime.Equals(showtime.ShowTime))
+                    .Where(s => s.ShowType.Equals(showtime.ShowType))
                     .AnyAsync();
 
-                if (exist)
-                    continue;
-
-                _applicationContext.TryAttach(movieShowtime.Cinema);
-                _applicationContext.TryAttach(movieShowtime.Movie);
-
-                _applicationContext.MovieShowtimes.Add(movieShowtime);
+                if (!exist)
+                    _applicationContext.MovieShowtimes.Add(showtime);
             }
 
             await _applicationContext.SaveChangesAsync();
+        }
+
+        private void AttachRelatedEntities<TAttached>(IEnumerable<MovieShowtime> newShowtimes, Func<MovieShowtime, TAttached> selector)
+            where TAttached : Entity
+        {
+            var toAttach = newShowtimes
+                .Select(selector)
+                .Distinct();
+
+            foreach (var entity in toAttach)
+            {
+                _applicationContext.TryAttach(entity);
+            }
         }
 
         public async Task DeleteAllBeforeDateAsync(DateTime limitDateTime)
