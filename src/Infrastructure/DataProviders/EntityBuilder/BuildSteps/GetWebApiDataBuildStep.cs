@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using ApplicationCore.Results;
+﻿using ApplicationCore.Results;
 using Infrastructure.DataProviders.Client;
 using Infrastructure.DataProviders.EntityBuilder.Context;
 using Infrastructure.DataProviders.Requests;
 using Infrastructure.Services;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Infrastructure.DataProviders.EntityBuilder.BuildSteps
 {
@@ -66,16 +66,17 @@ namespace Infrastructure.DataProviders.EntityBuilder.BuildSteps
 
                 var result = await WebClient.MakeRequestAsync(ParsableRequestData, requestParameters);
 
-                Logger.LogDebug("Request result {@Result}", result);
-
                 if (!result.IsSuccess)
+                {
+                    Logger.LogDebug("Request failed because {FailureReason}", result.FailureReason);
                     return Result.Failure<TEntity[]>(result.FailureReason);
+                }
 
-                Logger.LogDebug("Parse received data to entities");
+                Logger.LogDebug("Request succeeded, parse received data to entities");
 
                 var parsedEntities = await ParseDataToEntities(result.Value, context);
 
-                Logger.LogDebug("Data parsed {@ParsedEntities}", parsedEntities);
+                Logger.LogDebug("Data parsed to {@ParsedEntitiesCount} entities", parsedEntities.Length);
 
                 return Result.Success(parsedEntities);
             }

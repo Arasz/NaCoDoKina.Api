@@ -53,7 +53,7 @@ namespace Infrastructure.DataProviders.CinemaCity.Showtimes.Tasks
                     var showtimes = (await EntitiesBuilder.BuildMany(parameters: context))
                         .ToArray();
 
-                    Logger.LogDebug("Added {ShowtimesCount} new showtimes. First: {@FirstShowtime}", showtimes.Count(), showtimes.FirstOrDefault());
+                    Logger.LogDebug("Added {ShowtimesCount} new showtimes", showtimes.Count());
 
                     Results.AddRange(showtimes);
                 }

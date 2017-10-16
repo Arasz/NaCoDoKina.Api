@@ -32,6 +32,8 @@ namespace Infrastructure.Data.Configurations
                 .WithMany()
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasIndex("CinemaId", "MovieId");
         }
     }
 }

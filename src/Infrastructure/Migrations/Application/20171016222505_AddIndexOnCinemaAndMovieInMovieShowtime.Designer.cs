@@ -12,9 +12,10 @@ using System;
 namespace Infrastructure.Migrations.Application
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20171016222505_AddIndexOnCinemaAndMovieInMovieShowtime")]
+    partial class AddIndexOnCinemaAndMovieInMovieShowtime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
