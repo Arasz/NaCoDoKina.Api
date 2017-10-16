@@ -1,8 +1,12 @@
-﻿using FluentAssertions;
+﻿using ApplicationCore.Repositories;
+using FluentAssertions;
+using Infrastructure.Exceptions;
+using Infrastructure.Models;
+using Infrastructure.Models.Cinemas;
+using Infrastructure.Models.Travel;
+using Infrastructure.Services;
+using Infrastructure.Services.Travel;
 using Moq;
-using NaCoDoKina.Api.Exceptions;
-using NaCoDoKina.Api.Models;
-using NaCoDoKina.Api.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,23 +15,19 @@ using Xunit;
 
 namespace NaCoDoKina.Api.Services
 {
-    public class CinemaServiceTest : ServiceWithRepositoryTestBase<ICinemaService, ICinemaRepository>
+    public class CinemaServiceTest : ServiceWithRepositoryTestBase<CinemaService, ICinemaRepository>
     {
-        protected Mock<ITravelService> TravelServiceMock { get; }
-
         protected ITravelService TravelServiceFake { get; }
 
         public CinemaServiceTest()
         {
             TravelServiceFake = new TravelServiceFakeImpl();
-            TravelServiceMock = Mock.Mock<ITravelService>();
-
-            ServiceUnderTest = new CinemaService(RepositoryMockObject, TravelServiceFake, LoggerMock.Object, MapperMock.Object);
+            Mock.Provide(TravelServiceFake);
         }
 
         private class TravelServiceFakeImpl : ITravelService
         {
-            public Task<TravelInformation> CalculateInformationForTravelAsync(TravelPlan travelPlan)
+            public Task<TravelInformation> GetInformationForTravelAsync(TravelPlan travelPlan)
             {
                 var distance = CalculateEuclideanDistance(travelPlan);
 
@@ -59,7 +59,7 @@ namespace NaCoDoKina.Api.Services
                     Name = "A",
                     Address = "Address",
                 };
-                var entityCinema = new Entities.Cinema
+                var entityCinema = new ApplicationCore.Entities.Cinemas.Cinema
                 {
                     Id = modelCinema.Id,
                     Name = modelCinema.Name,
@@ -67,12 +67,12 @@ namespace NaCoDoKina.Api.Services
                 };
 
                 MapperMock
-                    .Setup(mapper => mapper.Map<Entities.Cinema>(modelCinema))
+                    .Setup(mapper => mapper.Map<ApplicationCore.Entities.Cinemas.Cinema>(modelCinema))
                     .Returns(entityCinema);
 
                 MapperMock
                     .Setup(mapper => mapper.Map<Cinema>(entityCinema))
-                    .Returns(new Func<Entities.Cinema, Cinema>(cinema => new Cinema
+                    .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(cinema => new Cinema
                     {
                         Id = cinema.Id,
                         Name = cinema.Name,
@@ -80,7 +80,7 @@ namespace NaCoDoKina.Api.Services
                     }));
 
                 RepositoryMock
-                    .Setup(repository => repository.AddCinema(entityCinema))
+                    .Setup(repository => repository.CreateCinemaAsync(entityCinema))
                     .Returns(() =>
                     {
                         entityCinema.Id++;
@@ -96,46 +96,46 @@ namespace NaCoDoKina.Api.Services
                 addedCinema.Id.Should().BeGreaterThan(0);
             }
 
-            public class GetNearestCinemasForMovieAsync : CinemaServiceTest
+            public class GetCinemasPlayingMovieInSearchAreaAsync : CinemaServiceTest
             {
                 [Fact]
                 public async Task Should_return_nearest_cinemas_for_correct_parameters()
                 {
                     //Arrange
-                    var location = new Location(1, 2);
+                    var location = new Location(2, 1);
                     var searchArea = new SearchArea(location, 1000);
                     var movieId = 69;
-                    var cinemas = new List<Entities.Cinema>
+                    var cinemas = new[]
                     {
-                        new Entities.Cinema
+                        new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "NearCinema",
-                            Location = new Entities.Location(15, 32)
+                            Location = new ApplicationCore.Entities.Location(32, 15)
                         },
-                        new Entities.Cinema
+                        new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "FarCinema",
-                            Location = new Entities.Location(1333, 4322)
+                            Location = new ApplicationCore.Entities.Location(4322, 1333)
                         }
                     };
 
                     MapperMock
-                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Entities.Cinema>()))
-                        .Returns(new Func<Entities.Cinema, Cinema>(cinema => new Cinema
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<ApplicationCore.Entities.Cinemas.Cinema>()))
+                        .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(cinema => new Cinema
                         {
                             Name = cinema.Name,
-                            Location = new Location(cinema.Location.Longitude, cinema.Location.Latitude)
+                            Location = new Location(cinema.Location.Latitude, cinema.Location.Longitude)
                         }));
 
                     RepositoryMock
                         .Setup(repository => repository.GetAllCinemasForMovieAsync(movieId))
-                        .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
+                        .ReturnsAsync(cinemas);
 
                     //Act
-                    var result = await ServiceUnderTest.GetNearestCinemasForMovieAsync(movieId, searchArea);
+                    var result = await ServiceUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, searchArea);
 
                     //Assert
-                    result.Should().HaveCount(cinemas.Count - 1);
+                    result.Should().HaveCount(cinemas.Length - 1);
                     result.SingleOrDefault(cinema => cinema.Name == "NearCinema")
                         .Should()
                         .NotBeNull();
@@ -147,17 +147,17 @@ namespace NaCoDoKina.Api.Services
                 public void Should_throw_CinemasNotFound_when_could_not_find_movie()
                 {
                     //Arrange
-                    var location = new Location(1, 2);
+                    var location = new Location(2, 1);
                     var searchArea = new SearchArea(location, 100);
                     var movieId = -500;
 
                     RepositoryMock
                         .Setup(repository => repository.GetAllCinemasForMovieAsync(movieId))
-                        .Returns(() => Task.FromResult(new List<Entities.Cinema>().AsEnumerable()));
+                        .ReturnsAsync(Array.Empty<ApplicationCore.Entities.Cinemas.Cinema>());
 
                     //Act
-                    Func<Task<IEnumerable<Cinema>>> action = () =>
-                        ServiceUnderTest.GetNearestCinemasForMovieAsync(movieId, searchArea);
+                    Func<Task<ICollection<Cinema>>> action = () =>
+                        ServiceUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, searchArea);
 
                     //Assert
                     action.ShouldThrow<CinemasNotFoundException>();
@@ -172,50 +172,105 @@ namespace NaCoDoKina.Api.Services
                     var movieId = 69;
 
                     //Act
-                    Func<Task<IEnumerable<Cinema>>> action = () =>
-                        ServiceUnderTest.GetNearestCinemasForMovieAsync(movieId, searchArea);
+                    Func<Task<ICollection<Cinema>>> action = () =>
+                        ServiceUnderTest.GetCinemasPlayingMovieInSearchArea(movieId, searchArea);
 
                     //Assert
                     action.ShouldThrow<CinemasNotFoundException>();
                 }
             }
 
-            public class GetNearestCinemasAsync : CinemaServiceTest
+            public class GetCinemasInSearchAreaAsync : CinemaServiceTest
             {
                 [Fact]
-                public async Task Should_return_nearest_cinemas_for_correct_parameters()
+                public async Task Should_return_cinemas_in_search_are_inside_given_city()
                 {
                     //Arrange
-                    var location = new Location(1, 2);
-                    var searchArea = new SearchArea(location, 1000);
-                    var cinemas = new List<Entities.Cinema>
+                    var location = new Location(2, 1);
+                    var city = "Poznań";
+                    var searchArea = new SearchArea(location, 1000)
                     {
-                        new Entities.Cinema
+                        City = city
+                    };
+
+                    var cinemas = new List<ApplicationCore.Entities.Cinemas.Cinema>
+                    {
+                        new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "NearCinema",
-                            Location = new Entities.Location(15, 32)
+                            Location = new ApplicationCore.Entities.Location(32, 15),
+                            Address = $"address {city}"
                         },
-                        new Entities.Cinema
+                        new ApplicationCore.Entities.Cinemas.Cinema
+                        {
+                            Name = "NearCinema2",
+                            Location = new ApplicationCore.Entities.Location(32, 15),
+                            Address = $"address Kraków"
+                        },
+                        new ApplicationCore.Entities.Cinemas.Cinema
                         {
                             Name = "FarCinema",
-                            Location = new Entities.Location(1333, 4322)
+                            Location = new ApplicationCore.Entities.Location(4322, 1333),
+                            Address = $"address {city}"
                         }
                     };
 
                     MapperMock
-                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Entities.Cinema>()))
-                        .Returns(new Func<Entities.Cinema, Cinema>(cinema => new Cinema
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<ApplicationCore.Entities.Cinemas.Cinema>()))
+                        .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(cinema => new Cinema
                         {
                             Name = cinema.Name,
-                            Location = new Location(cinema.Location.Longitude, cinema.Location.Latitude)
+                            Location = new Location(cinema.Location.Latitude, cinema.Location.Longitude)
+                        }));
+
+                    RepositoryMock
+                        .Setup(repository => repository.GetCinemasByCityAsync(city))
+                        .ReturnsAsync(cinemas.Where(cinema => cinema.Address.EndsWith(city)).ToArray);
+
+                    //Act
+                    var result = await ServiceUnderTest.GetCinemasInSearchAreaAsync(searchArea);
+
+                    //Assert
+                    result.Should().HaveCount(cinemas.Count - 2);
+                    result.SingleOrDefault(cinema => cinema.Name == "NearCinema")
+                        .Should()
+                        .NotBeNull();
+                }
+
+                [Fact]
+                public async Task Should_return_nearest_cinemas_for_correct_parameters()
+                {
+                    //Arrange
+                    var location = new Location(2, 1);
+                    var searchArea = new SearchArea(location, 1000);
+                    var cinemas = new List<ApplicationCore.Entities.Cinemas.Cinema>
+                    {
+                        new ApplicationCore.Entities.Cinemas.Cinema
+                        {
+                            Name = "NearCinema",
+                            Location = new ApplicationCore.Entities.Location(32, 15)
+                        },
+                        new ApplicationCore.Entities.Cinemas.Cinema
+                        {
+                            Name = "FarCinema",
+                            Location = new ApplicationCore.Entities.Location(4322, 1333)
+                        }
+                    };
+
+                    MapperMock
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<ApplicationCore.Entities.Cinemas.Cinema>()))
+                        .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(cinema => new Cinema
+                        {
+                            Name = cinema.Name,
+                            Location = new Location(cinema.Location.Latitude, cinema.Location.Longitude)
                         }));
 
                     RepositoryMock
                         .Setup(repository => repository.GetAllCinemas())
-                        .Returns(() => Task.FromResult(cinemas.AsEnumerable()));
+                        .ReturnsAsync(cinemas);
 
                     //Act
-                    var result = await ServiceUnderTest.GetNearestCinemasAsync(searchArea);
+                    var result = await ServiceUnderTest.GetCinemasInSearchAreaAsync(searchArea);
 
                     //Assert
                     result.Should().HaveCount(cinemas.Count - 1);
@@ -232,7 +287,7 @@ namespace NaCoDoKina.Api.Services
                     var searchArea = new SearchArea(location, 100);
 
                     //Act
-                    Func<Task<IEnumerable<Cinema>>> action = () => ServiceUnderTest.GetNearestCinemasAsync(searchArea);
+                    Func<Task<ICollection<Cinema>>> action = () => ServiceUnderTest.GetCinemasInSearchAreaAsync(searchArea);
 
                     //Assert
                     action.ShouldThrow<CinemasNotFoundException>();
@@ -246,24 +301,24 @@ namespace NaCoDoKina.Api.Services
                 {
                     //Arrange
                     var cinemaId = 1;
-                    var cinema = new Entities.Cinema
+                    var cinema = new ApplicationCore.Entities.Cinemas.Cinema
                     {
                         Id = cinemaId,
                         Name = "NearCinema",
-                        Location = new Entities.Location(15, 32)
+                        Location = new ApplicationCore.Entities.Location(32, 15)
                     };
 
                     MapperMock
-                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Entities.Cinema>()))
-                        .Returns(new Func<Entities.Cinema, Cinema>(c => new Cinema
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<ApplicationCore.Entities.Cinemas.Cinema>()))
+                        .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(c => new Cinema
                         {
                             Id = c.Id,
                             Name = c.Name,
-                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                            Location = new Location(c.Location.Latitude, c.Location.Longitude)
                         }));
 
                     RepositoryMock
-                        .Setup(repository => repository.GetCinemaAsync(cinemaId))
+                        .Setup(repository => repository.GetCinemaByIdAsync(cinemaId))
                         .Returns(() => Task.FromResult(cinema));
 
                     //Act
@@ -281,24 +336,24 @@ namespace NaCoDoKina.Api.Services
                     //Arrange
                     var cinemaId = 1;
                     var cinemaName = "NearCinema";
-                    var cinema = new Entities.Cinema
+                    var cinema = new ApplicationCore.Entities.Cinemas.Cinema
                     {
                         Id = cinemaId,
                         Name = cinemaName,
-                        Location = new Entities.Location(15, 32)
+                        Location = new ApplicationCore.Entities.Location(32, 15)
                     };
 
                     MapperMock
-                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Entities.Cinema>()))
-                        .Returns(new Func<Entities.Cinema, Cinema>(c => new Cinema
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<ApplicationCore.Entities.Cinemas.Cinema>()))
+                        .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(c => new Cinema
                         {
                             Id = c.Id,
                             Name = c.Name,
-                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                            Location = new Location(c.Location.Latitude, c.Location.Longitude)
                         }));
 
                     RepositoryMock
-                        .Setup(repository => repository.GetCinemaAsync(cinemaName))
+                        .Setup(repository => repository.GetCinemaByNameAsync(cinemaName))
                         .Returns(() => Task.FromResult(cinema));
 
                     //Act
@@ -317,24 +372,24 @@ namespace NaCoDoKina.Api.Services
                     var cinemaId = 1;
                     var cinemaName = "NearCinema";
                     var nonExistingId = 404;
-                    var cinema = new Entities.Cinema
+                    var cinema = new ApplicationCore.Entities.Cinemas.Cinema
                     {
                         Id = cinemaId,
                         Name = cinemaName,
-                        Location = new Entities.Location(15, 32)
+                        Location = new ApplicationCore.Entities.Location(32, 15)
                     };
 
                     MapperMock
-                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Entities.Cinema>()))
-                        .Returns(new Func<Entities.Cinema, Cinema>(c => new Cinema
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<ApplicationCore.Entities.Cinemas.Cinema>()))
+                        .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(c => new Cinema
                         {
                             Id = c.Id,
                             Name = c.Name,
-                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                            Location = new Location(c.Location.Latitude, c.Location.Longitude)
                         }));
 
                     RepositoryMock
-                        .Setup(repository => repository.GetCinemaAsync(cinemaId))
+                        .Setup(repository => repository.GetCinemaByIdAsync(cinemaId))
                         .Returns(() => Task.FromResult(cinema));
 
                     //Act
@@ -351,24 +406,24 @@ namespace NaCoDoKina.Api.Services
                     var cinemaId = 1;
                     var cinemaName = "NearCinema";
                     var nonExistingName = "wololo";
-                    var cinema = new Entities.Cinema
+                    var cinema = new ApplicationCore.Entities.Cinemas.Cinema
                     {
                         Id = cinemaId,
                         Name = cinemaName,
-                        Location = new Entities.Location(15, 32)
+                        Location = new ApplicationCore.Entities.Location(32, 15)
                     };
 
                     MapperMock
-                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<Entities.Cinema>()))
-                        .Returns(new Func<Entities.Cinema, Cinema>(c => new Cinema
+                        .Setup(mapper => mapper.Map<Cinema>(It.IsAny<ApplicationCore.Entities.Cinemas.Cinema>()))
+                        .Returns(new Func<ApplicationCore.Entities.Cinemas.Cinema, Cinema>(c => new Cinema
                         {
                             Id = c.Id,
                             Name = c.Name,
-                            Location = new Location(c.Location.Longitude, c.Location.Latitude)
+                            Location = new Location(c.Location.Latitude, c.Location.Longitude)
                         }));
 
                     RepositoryMock
-                        .Setup(repository => repository.GetCinemaAsync(cinemaId))
+                        .Setup(repository => repository.GetCinemaByIdAsync(cinemaId))
                         .Returns(() => Task.FromResult(cinema));
 
                     //Act

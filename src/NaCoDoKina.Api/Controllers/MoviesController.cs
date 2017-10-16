@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
+using Infrastructure.Exceptions;
+using Infrastructure.Extensions;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NaCoDoKina.Api.DataContracts;
+using NaCoDoKina.Api.DataContracts.Cinemas;
 using NaCoDoKina.Api.DataContracts.Movies;
-using NaCoDoKina.Api.Exceptions;
-using NaCoDoKina.Api.Infrastructure.Extensions;
-using NaCoDoKina.Api.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +17,7 @@ using System.Threading.Tasks;
 namespace NaCoDoKina.Api.Controllers
 {
     [Route("v1/[controller]")]
-    [Authorize]
+    //[Authorize]
     public class MoviesController : Controller
     {
         private readonly IMovieShowtimeService _movieShowtimeService;
@@ -38,7 +40,8 @@ namespace NaCoDoKina.Api.Controllers
         }
 
         /// <summary>
-        /// Returns all accessible shows for current user. Shows are sorted by predicted user rating. 
+        /// Returns all accessible shows for current api user sorted by rating. When user is
+        /// anonymous movies are not sorted
         /// </summary>
         /// <returns> Shows ids sorted by estimated user rating </returns>
         [ProducesResponseType(typeof(IEnumerable<long>), StatusCodes.Status200OK)]
@@ -52,13 +55,13 @@ namespace NaCoDoKina.Api.Controllers
 
             try
             {
-                var modelSearchArea = _mapper.Map<Models.SearchArea>(searchArea);
+                var modelSearchArea = _mapper.Map<Infrastructure.Models.SearchArea>(searchArea);
                 var movies = await _movieService.GetAllMoviesAsync(modelSearchArea);
                 return Ok(movies);
             }
             catch (MoviesNotFoundException exception)
             {
-                _logger.LogWarning("Shows not found in @searchArea.", searchArea);
+                _logger.LogWarning("Shows not found in {@searchArea}", searchArea);
                 return NotFound(exception.Message);
             }
         }
@@ -89,10 +92,11 @@ namespace NaCoDoKina.Api.Controllers
         /// Deletes (hides) show for current user 
         /// </summary>
         /// <param name="id"> Movie id </param>
-        /// <returns> Basic informations about show </returns>
+        /// <returns> Basic information about show </returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteMovieAsync(long id)
         {
             try
@@ -108,25 +112,31 @@ namespace NaCoDoKina.Api.Controllers
         }
 
         /// <summary>
-        /// Returns list of nearest cinemas which plays movie with given id 
+        /// Returns list of cinemas inside search area playing movie with given id 
         /// </summary>
         /// <param name="id"> Movie id </param>
-        /// <param name="searchArea"> RegisterUser searchArea </param>
-        /// <returns> Detailed informations about show </returns>
+        /// <param name="searchArea"> User search area </param>
+        /// <returns> List of cinemas </returns>
         [ProducesResponseType(typeof(IEnumerable<Cinema>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{id}/cinemas")]
-        public async Task<IActionResult> GetNearestCinemasForMovie(long id, SearchArea searchArea)
+        public async Task<IActionResult> GetCinemasPlayingMovieInSearchArea(long id, [FromQuery]SearchArea searchArea)
         {
             if (searchArea is null)
                 return BadRequest();
 
             try
             {
-                var modelSearchArea = _mapper.Map<Models.SearchArea>(searchArea);
-                var nearestCinemas = await _cinemaService.GetNearestCinemasForMovieAsync(id, modelSearchArea);
-                return Ok(nearestCinemas.Select(_mapper.Map<Location>));
+                var modelSearchArea = _mapper.Map<Infrastructure.Models.SearchArea>(searchArea);
+
+                var nearestCinemas = await _cinemaService.GetCinemasPlayingMovieInSearchArea(id, modelSearchArea);
+
+                var mappedCinemas = nearestCinemas
+                    .Select(_mapper.Map<Cinema>)
+                    .ToArray();
+
+                return Ok(mappedCinemas);
             }
             catch (CinemasNotFoundException exception)
             {
@@ -137,36 +147,30 @@ namespace NaCoDoKina.Api.Controllers
         }
 
         /// <summary>
-        /// Returns movie showtimes for given cinema. If no cinema is given, all showtimes for movie
-        /// are returned.
+        /// Returns movie showtimes for given cinema. 
         /// </summary>
         /// <param name="movieId"> Movie id </param>
-        /// <param name="cinemaId"> Cinema id. Optional. </param>
+        /// <param name="cinemaId"> Cinema id. </param>
         /// <param name="laterThan">
         /// Minimal movie show time. When not provided current time is used
         /// </param>
         /// <returns> Movie showtimes </returns>
         [ProducesResponseType(typeof(IEnumerable<MovieShowtime>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("{movieId}/cinemas/{cinemaId?}")]
-        public async Task<IActionResult> GetMovieShowtimesAsync(long movieId, long? cinemaId = null, [FromQuery]DateTime? laterThan = null)
+        [HttpGet("{movieId}/cinemas/{cinemaId}/showtimes")]
+        public async Task<IActionResult> GetMovieShowtimesAsync(long movieId, long cinemaId, [FromQuery]DateTime? laterThan = null)
         {
             try
             {
                 var minimalShowTime = laterThan ?? DateTime.Now;
 
-                if (cinemaId is null)
-                {
-                    var showtimes = await _movieShowtimeService.GetMovieShowtimesAsync(movieId, minimalShowTime);
+                var showtimes = await _movieShowtimeService.GetMovieShowtimesForCinemaAsync(movieId, cinemaId, minimalShowTime);
 
-                    return Ok(showtimes.Map<Models.MovieShowtime, MovieShowtime>(_mapper));
-                }
-                else
-                {
-                    var showtimes = await _movieShowtimeService.GetMovieShowtimesForCinemaAsync(movieId, cinemaId.Value, minimalShowTime);
+                var mappedShowtimes = showtimes
+                    .Map<Infrastructure.Models.Movies.MovieShowtime, MovieShowtime>(_mapper)
+                    .ToArray();
 
-                    return Ok(showtimes.Map<Models.MovieShowtime, MovieShowtime>(_mapper));
-                }
+                return Ok(mappedShowtimes);
             }
             catch (MovieShowtimeNotFoundException exception)
             {
@@ -179,7 +183,7 @@ namespace NaCoDoKina.Api.Controllers
         /// Returns detailed information about show 
         /// </summary>
         /// <param name="id"> Movie id </param>
-        /// <returns> Detailed informations about show </returns>
+        /// <returns> Detailed information about show </returns>
         [ProducesResponseType(typeof(MovieDetails), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}/details")]
@@ -197,21 +201,24 @@ namespace NaCoDoKina.Api.Controllers
             }
         }
 
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        /// <summary>
+        /// Sets user rating for movie 
+        /// </summary>
+        /// <param name="id"> Movie id </param>
+        /// <param name="rating"> User rating </param>
+        /// <returns> Set rating </returns>
+        [ProducesResponseType(typeof(double), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost("{id}/rating")]
+        [Authorize]
         public async Task<IActionResult> SetRatingForMovie(long id, [FromBody]double rating)
         {
-            try
-            {
-                await _ratingService.SetMovieRating(id, rating);
+            var result = await _ratingService.SetMovieRating(id, rating);
+
+            if (result.IsSuccess)
                 return CreatedAtAction(nameof(GetMovieDetailsAsync), id, rating);
-            }
-            catch (MovieNotFoundException movieNotFoundException)
-            {
-                _logger.LogWarning("Movie with id {id} not found by rating service", id);
-                return NotFound(movieNotFoundException.Message);
-            }
+
+            return NotFound(result.FailureReason);
         }
     }
 }

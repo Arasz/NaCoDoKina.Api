@@ -8,6 +8,16 @@ namespace NaCoDoKina.Api.DataContracts.Movies
     public class MovieShowtime
     {
         /// <summary>
+        /// Link to booking page 
+        /// </summary>
+        public string BookingLink { get; set; }
+
+        /// <summary>
+        /// Are tickets for showtime available 
+        /// </summary>
+        public bool Available { get; set; }
+
+        /// <summary>
         /// Movie show language and presentation type 
         /// </summary>
         public string Language { get; set; }
@@ -16,11 +26,6 @@ namespace NaCoDoKina.Api.DataContracts.Movies
         /// Type of the show, for example 2D, 3D, etc. 
         /// </summary>
         public string ShowType { get; set; }
-
-        /// <summary>
-        /// Cinema name 
-        /// </summary>
-        public string CinemaName { get; set; }
 
         /// <summary>
         /// Cinema in which the movie is played 
@@ -33,18 +38,13 @@ namespace NaCoDoKina.Api.DataContracts.Movies
         public long MovieId { get; set; }
 
         /// <summary>
-        /// Movie name 
-        /// </summary>
-        public string MovieName { get; set; }
-
-        /// <summary>
         /// Show times 
         /// </summary>
         public DateTime ShowTime { get; set; }
 
         public override string ToString()
         {
-            return $"{nameof(Language)}: {Language}, {nameof(ShowType)}: {ShowType}, {nameof(CinemaName)}: {CinemaName}, {nameof(CinemaId)}: {CinemaId}, {nameof(MovieId)}: {MovieId}, {nameof(MovieName)}: {MovieName}, {nameof(ShowTime)}: {ShowTime}";
+            return $"{nameof(Language)}: {Language}, {nameof(ShowType)}: {ShowType}, {nameof(CinemaId)}: {CinemaId}, {nameof(MovieId)}: {MovieId}, {nameof(ShowTime)}: {ShowTime}";
         }
     }
 }

@@ -1,12 +1,13 @@
 ﻿using Autofac;
 using FluentAssertions;
-using NaCoDoKina.Api.Infrastructure.Services.Recommendation;
-using NaCoDoKina.Api.Infrastructure.Services.Recommendation.DataContract;
-using NaCoDoKina.Api.Infrastructure.Services.Recommendation.Services;
-using NaCoDoKina.Api.Infrastructure.Settings;
+using Infrastructure.Services.Recommendation;
+using Infrastructure.Services.Recommendation.DataContract;
+using Infrastructure.Services.Recommendation.Services;
+using Infrastructure.Settings;
 using NaCoDoKina.Api.IntegrationTests.Modules;
 using Ploeh.AutoFixture;
 using System.Threading.Tasks;
+using Infrastructure.Settings.Recommendation;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Recommendation
@@ -69,7 +70,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Recommendation
             public async Task Should_return_failure_result_when_user_do_not_exist()
             {
                 //Arrange
-                var request = new RecommendationApiRequest(-55, 1);
+                var request = new RecommendationApiRequest(-9999999999, 1);
 
                 //Act
                 var result = await ServiceUnderTest.GetMovieRating(request);

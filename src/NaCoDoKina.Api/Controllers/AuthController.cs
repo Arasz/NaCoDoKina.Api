@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
+using Infrastructure.Models.Users;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NaCoDoKina.Api.DataContracts.Authentication;
-using NaCoDoKina.Api.Models;
-using NaCoDoKina.Api.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -31,7 +31,7 @@ namespace NaCoDoKina.Api.Controllers
         /// <summary>
         /// Authenticates user and returns token 
         /// </summary>
-        /// <param name="credentials"> RegisterUser login data </param>
+        /// <param name="credentials"> User login data </param>
         /// <returns> Authentication token </returns>
         [HttpPost("token")]
         [ProducesResponseType(typeof(JwtToken), StatusCodes.Status200OK)]

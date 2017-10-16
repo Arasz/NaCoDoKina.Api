@@ -1,7 +1,15 @@
-﻿using Autofac;
+﻿using ApplicationCore.Entities.Movies;
+using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
+using CacheManager.Core;
 using FluentValidation.AspNetCore;
+using Infrastructure.Data;
+using Infrastructure.Extensions;
+using Infrastructure.Identity;
+using Infrastructure.IoC;
+using Infrastructure.Settings.Jwt;
+using Infrastructure.Settings.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,11 +19,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
 using NaCoDoKina.Api.ActionFilters;
-using NaCoDoKina.Api.Data;
-using NaCoDoKina.Api.Infrastructure.Extensions;
-using NaCoDoKina.Api.Infrastructure.Identity;
-using NaCoDoKina.Api.Infrastructure.IoC;
-using NaCoDoKina.Api.Infrastructure.Settings;
 using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
@@ -27,10 +30,13 @@ namespace NaCoDoKina.Api
 {
     public class Startup
     {
+        private IHostingEnvironment Env { get; }
+
         public IContainer ApplicationContainer { get; private set; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
+            Env = env;
             Configuration = configuration;
 
             ConfigureLogger(configuration);
@@ -51,12 +57,28 @@ namespace NaCoDoKina.Api
 
             ConfigureAutoMapper(services);
 
+            ConfigureCache(services);
+
             var builder = new ContainerBuilder();
             builder.Populate(services);
             builder.RegisterModule(new ApplicationModule(Configuration));
             ApplicationContainer = builder.Build();
 
             return new AutofacServiceProvider(ApplicationContainer);
+        }
+
+        /// <summary>
+        /// Cache configuration 
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureCache(IServiceCollection services)
+        {
+            services.AddCacheManagerConfiguration(builder => builder
+                .WithMicrosoftLogging(factory => factory.AddSerilog())
+                .WithMicrosoftMemoryCacheHandle()
+                .WithExpiration(ExpirationMode.Sliding, TimeSpan.FromMinutes(5)));
+
+            services.AddCacheManager();
         }
 
         /// <summary>
@@ -68,7 +90,9 @@ namespace NaCoDoKina.Api
             services
                 .AddMvc(options =>
                 {
-                    options.Filters.Add<ValidationActionFilter>();
+                    //Important order
+                    options.Filters.Add<IdValidationActionFilter>();
+                    options.Filters.Add<InvalidModelActionFilter>();
                 })
                 .AddFluentValidation(cfg =>
                 {
@@ -83,7 +107,7 @@ namespace NaCoDoKina.Api
         /// <param name="services"></param>
         private void ConfigureAutoMapper(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(Movie), typeof(DataContracts.Movies.Movie), typeof(Infrastructure.Models.Movies.Movie));
         }
 
         /// <summary>
@@ -116,6 +140,7 @@ namespace NaCoDoKina.Api
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
+                        NameClaimType = JwtRegisteredClaimNames.UniqueName,
                         ValidIssuer = jwtSettings.Issuer,
                         ValidateAudience = false,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
@@ -127,10 +152,11 @@ namespace NaCoDoKina.Api
         /// Configure logger 
         /// </summary>
         /// <param name="configuration"> App configuration with logger config section </param>
-        private static void ConfigureLogger(IConfiguration configuration)
+        private void ConfigureLogger(IConfiguration configuration)
         {
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
+                .Destructure.ByTransforming<Type>(type => type.Name)
                 .CreateLogger();
         }
 
@@ -186,13 +212,8 @@ namespace NaCoDoKina.Api
             $"{Configuration["Database:Password"]};";
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {

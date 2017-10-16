@@ -13,7 +13,7 @@ namespace NaCoDoKina.Api.DataContracts.Movies
         /// <summary>
         /// Movie name 
         /// </summary>
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         /// <summary>
         /// Movie poster url 
@@ -22,7 +22,7 @@ namespace NaCoDoKina.Api.DataContracts.Movies
 
         public override string ToString()
         {
-            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}";
+            return $"{nameof(Id)}: {Id}, {nameof(Title)}: {Title}";
         }
     }
 }

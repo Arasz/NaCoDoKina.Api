@@ -1,54 +1,22 @@
-﻿using Autofac;
-using FluentAssertions;
-using NaCoDoKina.Api.IntegrationTests.Modules;
-using NaCoDoKina.Api.Models;
-using NaCoDoKina.Api.Services;
+﻿using FluentAssertions;
+using Infrastructure.Models.Travel;
+using Infrastructure.Services.Google.DataContract.Directions.Response;
+using Infrastructure.Services.Travel;
+using IntegrationTestsCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Directions.Response;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding;
-using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
-using NaCoDoKina.Api.Infrastructure.Settings;
 using Xunit;
-using Location = NaCoDoKina.Api.Models.Location;
+using Location = Infrastructure.Models.Location;
 
 namespace NaCoDoKina.Api.IntegrationTests.Services
 {
-    public class TravelServiceTest
+    public class TravelServiceTest : HttpTestBase<Startup>
     {
-        private readonly IContainer _container;
-
         public TravelServiceTest()
         {
-            var containerBuilder = new ContainerBuilder();
-
-            containerBuilder.RegisterAssemblyModules<BasicServiceDependenciesModule>(typeof(TravelServiceTest).Assembly);
-
-            containerBuilder.RegisterType<OnlyRequiredDirectionsRequestParser>()
-                .AsImplementedInterfaces();
-            containerBuilder.RegisterType<OnlyRequiredGeocodingRequestParser>()
-                .AsImplementedInterfaces();
-
-            containerBuilder.RegisterType<GoogleApiSettings>()
-                .AsSelf();
-
-            containerBuilder.RegisterGeneric(typeof(GoogleServiceDependencies<>))
-                .AsSelf();
-
-            containerBuilder.RegisterType<GoogleDirectionsService>()
-                .AsImplementedInterfaces();
-
-            containerBuilder.RegisterType<GoogleGeocodingService>()
-                .AsImplementedInterfaces();
-
-            containerBuilder.RegisterType<TravelService>()
-                .AsImplementedInterfaces();
-
-            _container = containerBuilder.Build();
-
-            ServiceUnderTest = _container.Resolve<ITravelService>();
+            ServiceUnderTest = Services.GetService<ITravelService>();
         }
 
         public ITravelService ServiceUnderTest { get; set; }
@@ -60,7 +28,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             {
                 //arrange
                 var testAddress = "Poronińska 3, 60-472 Poznań-Jeżyce, Polska";
-                var expectedLocation = new Location(16.882369, 52.4531839);
+                var expectedLocation = new Location(52.4531839, 16.882369);
 
                 //act
                 var location = await ServiceUnderTest.TranslateAddressToLocationAsync(testAddress);
@@ -96,7 +64,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
-                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
                 travelInformation.TravelPlan.Should().Be(travelPlan);
@@ -113,7 +81,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
-                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
                 travelInformation.TravelPlan.Should().Be(travelPlan);
@@ -122,7 +90,7 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
             }
 
             [Fact]
-            public async Task Should_return_null_and_log_when_api_returns_error()
+            public async Task Should_return_estimated_route_when_api_returns_errors()
             {
                 //arrange
                 var destination = new Location(-99999, -99999);
@@ -130,10 +98,12 @@ namespace NaCoDoKina.Api.IntegrationTests.Services
                 var travelPlan = new TravelPlan(origin, destination);
 
                 //act
-                var travelInformation = await ServiceUnderTest.CalculateInformationForTravelAsync(travelPlan);
+                var travelInformation = await ServiceUnderTest.GetInformationForTravelAsync(travelPlan);
 
                 //assert
-                travelInformation.Should().BeNull();
+                var estimator = Services.GetService<ITravelInformationEstimator>();
+                travelInformation
+                    .Distance.Should().Be(estimator.Estimate(travelPlan).Distance);
             }
         }
 

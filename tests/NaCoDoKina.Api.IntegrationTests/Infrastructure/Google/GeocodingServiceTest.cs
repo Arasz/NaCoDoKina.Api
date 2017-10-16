@@ -1,27 +1,18 @@
 ﻿using FluentAssertions;
+using Infrastructure.Services.Google.DataContract.Common;
+using Infrastructure.Services.Google.DataContract.Geocoding.Request;
+using Infrastructure.Services.Google.DataContract.Geocoding.Response;
+using Infrastructure.Services.Google.Exceptions;
+using Infrastructure.Services.Google.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using NaCoDoKina.Api.Infrastructure;
-using NaCoDoKina.Api.Infrastructure.Services;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Common;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Request;
-using NaCoDoKina.Api.Infrastructure.Services.Google.DataContract.Geocoding.Response;
-using NaCoDoKina.Api.Infrastructure.Services.Google.Exceptions;
-using NaCoDoKina.Api.Infrastructure.Services.Google.Services;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
 {
-    public class GeocodingServiceTest : GoogleServiceTestBase<IGoogleGeocodingService, GeocodingApiRequest>
+    public class GeocodingServiceTest : GoogleServiceTestBase<IGoogleGeocodingService>
     {
-        protected override IRequestParser<GeocodingApiRequest> RequestParser
-            => new OnlyRequiredGeocodingRequestParser();
-
-        protected override IGoogleGeocodingService CreateServiceUnderTest(GoogleServiceDependencies<GeocodingApiRequest> dependencies)
-            => new GoogleGeocodingService(dependencies);
-
         public class GeocodeAsync : GeocodingServiceTest
         {
             [Fact]
