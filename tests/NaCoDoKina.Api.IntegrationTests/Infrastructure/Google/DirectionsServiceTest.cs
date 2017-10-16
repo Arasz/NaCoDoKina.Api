@@ -1,6 +1,4 @@
 ﻿using FluentAssertions;
-using Infrastructure.Services;
-using Infrastructure.Services.Google.DataContract.Directions;
 using Infrastructure.Services.Google.DataContract.Directions.Request;
 using Infrastructure.Services.Google.Services;
 using System.Linq;
@@ -9,14 +7,8 @@ using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
 {
-    public class DirectionsServiceTest : GoogleServiceTestBase<IGoogleDirectionsService, DirectionsApiRequest>
+    public class DirectionsServiceTest : GoogleServiceTestBase<IGoogleDirectionsService>
     {
-        protected override IRequestParser<DirectionsApiRequest> RequestParser
-            => new OnlyRequiredDirectionsRequestParser();
-
-        protected override IGoogleDirectionsService CreateServiceUnderTest(GoogleServiceDependencies<DirectionsApiRequest> dependencies)
-            => new GoogleDirectionsService(dependencies);
-
         public class GetDirections : DirectionsServiceTest
         {
             [Fact]
