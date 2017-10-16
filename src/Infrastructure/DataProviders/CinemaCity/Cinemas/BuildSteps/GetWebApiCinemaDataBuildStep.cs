@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using ApplicationCore.Entities.Cinemas;
+﻿using ApplicationCore.Entities.Cinemas;
 using Infrastructure.DataProviders.CinemaCity.Cinemas.Requests;
 using Infrastructure.DataProviders.CinemaCity.Common;
 using Infrastructure.DataProviders.Client;
@@ -8,6 +6,8 @@ using Infrastructure.DataProviders.EntityBuilder.BuildSteps;
 using Infrastructure.DataProviders.EntityBuilder.Context;
 using Infrastructure.Services;
 using Microsoft.Extensions.Logging;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Infrastructure.DataProviders.CinemaCity.Cinemas.BuildSteps
 {
@@ -20,9 +20,9 @@ namespace Infrastructure.DataProviders.CinemaCity.Cinemas.BuildSteps
 
         public override string Name => "Fetch data from web service";
 
-        public GetWebApiCinemaDataBuildStep(IWebClient webClient, CinemasRequestData cinemasRequestData,
+        public GetWebApiCinemaDataBuildStep(IWebClient webClient, GetCinemaCityCinemasRequestData getCinemaCityCinemasRequestData,
             ISerializationService serializationService, ILogger<GetWebApiCinemaDataBuildStep> logger)
-            : base(webClient, cinemasRequestData, serializationService, logger)
+            : base(webClient, getCinemaCityCinemasRequestData, serializationService, logger)
         {
         }
 

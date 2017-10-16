@@ -50,11 +50,6 @@ namespace NaCoDoKina.Api.DataContracts.Movies
         public TimeSpan Length { get; set; }
 
         /// <summary>
-        /// Movie original language 
-        /// </summary>
-        public string Language { get; set; }
-
-        /// <summary>
         /// Movie age limit 
         /// </summary>
         public string AgeLimit { get; set; }

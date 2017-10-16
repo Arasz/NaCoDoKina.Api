@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ApplicationCore.Entities.Resources;
+using System;
 using System.Collections.Generic;
-using ApplicationCore.Entities.Resources;
 
 namespace ApplicationCore.Entities.Movies
 {
@@ -46,11 +46,6 @@ namespace ApplicationCore.Entities.Movies
         public TimeSpan Length { get; set; }
 
         /// <summary>
-        /// Movie original language 
-        /// </summary>
-        public string Language { get; set; }
-
-        /// <summary>
         /// Movie age limit 
         /// </summary>
         public string AgeLimit { get; set; }
@@ -77,7 +72,7 @@ namespace ApplicationCore.Entities.Movies
 
         public override string ToString()
         {
-            return $"{base.ToString()}, {nameof(Title)}: {Title}, {nameof(Genre)}: {Genre}, {nameof(Length)}: {Length}, {nameof(Language)}: {Language}, {nameof(AgeLimit)}: {AgeLimit}";
+            return $"{base.ToString()}, {nameof(Title)}: {Title}, {nameof(Genre)}: {Genre}, {nameof(Length)}: {Length}, {nameof(AgeLimit)}: {AgeLimit}";
         }
     }
 }

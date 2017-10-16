@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Infrastructure.Settings;
+using Infrastructure.Settings.CinemaNetwork;
 
 namespace Infrastructure.Mappings
 {

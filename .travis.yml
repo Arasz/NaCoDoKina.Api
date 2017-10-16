@@ -16,29 +16,28 @@ services:
 - postgresql
 env:
 - ASPNETCORE_ENVIRONMENT=${TRAVIS_BRANCH}
-addons:
-  ssh_known_hosts: 139.59.157.1
 before_script:
 - chmod a+x ./scripts/build.sh
 - chmod a+x ./scripts/run-unit-tests.sh
 - chmod a+x ./scripts/run-integration-tests.sh
 - chmod a+x ./scripts/migrations.sh
-- chmod a+x ./scripts/deploy.sh
 script:
 - "./scripts/build.sh"
 - "./scripts/run-unit-tests.sh"
 - "./scripts/run-integration-tests.sh"
 after_success:
 - "./scripts/migrations.sh"
-before_deploy:
-- openssl aes-256-cbc -K $encrypted_72404ae70bed_key -iv $encrypted_72404ae70bed_iv -in ./keys/travis_rsa.enc -out /tmp/travis_rsa -d
-- eval "$(ssh-agent -s)"
-- chmod 600 /tmp/travis_rsa
-- ssh-add /tmp/travis_rsa
 deploy:
   provider: azure_web_apps
-  site: nacodokina
-  skip_cleanup: false
+  site: nacodokinaapistaging
+  skip_cleanup: true
   verbose: true
   on:
-    branch: production
+    branch: staging
+deploy:
+  provider: azure_web_apps
+  site: nacodokinatasksstaging
+  skip_cleanup: true
+  verbose: true
+  on:
+    branch: staging

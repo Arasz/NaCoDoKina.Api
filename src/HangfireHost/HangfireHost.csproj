@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.0.1" />
+    <PackageReference Include="Collector.Serilog.Enrichers.AzureWebApps" Version="2.0.0" />
     <PackageReference Include="HangFire.Autofac" Version="2.3.1" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.6.17" />
     <PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0" />
@@ -20,6 +21,7 @@
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Serilog" Version="2.5.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="2.0.0" />
+    <PackageReference Include="Serilog.Enrichers.Context" Version="2.3.0" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.2" />
     <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.1" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="3.0.0" />

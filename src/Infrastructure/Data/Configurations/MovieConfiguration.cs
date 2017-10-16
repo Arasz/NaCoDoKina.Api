@@ -45,20 +45,15 @@ namespace Infrastructure.Data.Configurations
                 .HasMaxLength(80);
 
             builder.Property(movie => movie.OriginalTitle)
-                .IsRequired()
                 .IsUnicode()
                 .HasMaxLength(80);
 
             builder.Property(movie => movie.Description)
-                .IsRequired()
+                .HasDefaultValue("No description")
                 .IsUnicode();
 
             builder.Property(movie => movie.AgeLimit)
-                .HasDefaultValue()
-                .HasMaxLength(100);
-
-            builder.Property(movie => movie.Language)
-                .HasDefaultValue(string.Empty)
+                .HasDefaultValue("Unspecified")
                 .HasMaxLength(100);
 
             builder.Property(movie => movie.Genre)

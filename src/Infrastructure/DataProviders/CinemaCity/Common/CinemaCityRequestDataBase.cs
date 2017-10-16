@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Infrastructure.DataProviders.Requests;
+using Infrastructure.Settings.CinemaNetwork;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Infrastructure.DataProviders.Requests;
-using Infrastructure.Settings;
-using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.DataProviders.CinemaCity.Common
 {
@@ -36,8 +36,6 @@ namespace Infrastructure.DataProviders.CinemaCity.Common
         {
             using (Logger.BeginScope(nameof(Parse)))
             {
-                Logger.LogDebug("Parsing Cinema City request data {@RequestData} with parameters {@RequestParameters}", this, requestParameters);
-
                 var completeUrl = ResourcePattern;
                 foreach (var requestParameter in requestParameters.Concat(_defaultRequestParameters))
                 {
@@ -51,8 +49,6 @@ namespace Infrastructure.DataProviders.CinemaCity.Common
 
                     completeUrl = result.Value;
                 }
-
-                Logger.LogDebug("Parsing completed with url {Url}", completeUrl);
 
                 return new GetRequest(AbsoluteUrl(completeUrl));
             }

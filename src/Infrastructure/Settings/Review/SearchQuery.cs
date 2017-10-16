@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Infrastructure.Extensions;
+using Infrastructure.Settings.Common;
+using System;
 using System.Text;
-using Infrastructure.Extensions;
 
-namespace Infrastructure.Settings
+namespace Infrastructure.Settings.Review
 {
     /// <summary>
     /// Representation of search query in external service 

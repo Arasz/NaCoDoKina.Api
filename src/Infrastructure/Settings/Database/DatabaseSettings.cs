@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Settings
+﻿namespace Infrastructure.Settings.Database
 {
     public class DatabaseSettings
     {

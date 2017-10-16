@@ -1,30 +1,38 @@
-﻿using System;
-using System.Threading.Tasks;
-using ApplicationCore.Entities.Cinemas;
+﻿using ApplicationCore.Entities.Cinemas;
 using ApplicationCore.Repositories;
 using Infrastructure.DataProviders.EntityBuilder;
 using Infrastructure.DataProviders.EntityBuilder.Context;
 using Infrastructure.DataProviders.Tasks;
 using Infrastructure.Settings.Tasks;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Infrastructure.DataProviders.CinemaCity.Cinemas.Tasks
 {
-    public class LoadCinemaCityCinemasTask : TaskBase
+    public class LoadCinemaCityCinemasTask : EntitiesBuildTask<Cinema, EmptyContext>
     {
         private readonly ICinemaRepository _cinemaRepository;
-        private readonly IEntitiesBuilder<Cinema, EmptyContext> _entitiesBuilder;
 
-        public LoadCinemaCityCinemasTask(ICinemaRepository cinemaRepository, IEntitiesBuilder<Cinema, EmptyContext> entitiesBuilder, TasksSettings settings) : base(settings)
+        public LoadCinemaCityCinemasTask(ICinemaRepository cinemaRepository,
+            IEntitiesBuilder<Cinema, EmptyContext> entitiesBuilder,
+            TasksSettings settings,
+            ILogger<LoadCinemaCityCinemasTask> logger)
+            : base(entitiesBuilder, settings, logger)
         {
             _cinemaRepository = cinemaRepository ?? throw new ArgumentNullException(nameof(cinemaRepository));
-            _entitiesBuilder = entitiesBuilder ?? throw new ArgumentNullException(nameof(entitiesBuilder));
         }
 
-        public override async Task Execute()
+        protected override async Task BuildEntities()
         {
-            var cinemas = await _entitiesBuilder.BuildMany();
+            Results = (await EntitiesBuilder.BuildMany()).ToList();
+            Logger.LogDebug("Built {BuiltCinemasCount} cinemas, first {@Cinema}", Results.Count, Results.First());
+        }
 
-            await _cinemaRepository.CreateCinemasAsync(cinemas);
+        protected override async Task SaveResults()
+        {
+            await _cinemaRepository.CreateCinemasAsync(Results);
         }
     }
 }

@@ -46,5 +46,39 @@ namespace Infrastructure.Models.Cinemas
         /// Information about travel from user location to cinema 
         /// </summary>
         public TravelInformation CinemaTravelInformation { get; set; }
+
+        protected bool Equals(Cinema other)
+        {
+            return Id == other.Id &&
+                   string.Equals(Name, other.Name) &&
+                   string.Equals(City, other.City) &&
+                   string.Equals(Address, other.Address) &&
+                   string.Equals(CinemaUrl, other.CinemaUrl) &&
+                   string.Equals(NetworkName, other.NetworkName) &&
+                   Equals(Location, other.Location);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Cinema)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Id.GetHashCode();
+                hashCode = (hashCode * 397) ^ (Name != null ? Name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (City != null ? City.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Address != null ? Address.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (CinemaUrl != null ? CinemaUrl.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (NetworkName != null ? NetworkName.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Location != null ? Location.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
     }
 }

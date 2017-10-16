@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Infrastructure.Data;
 using Infrastructure.DataProviders.CinemaCity.Cinemas.Tasks;
-using Infrastructure.Settings;
+using Infrastructure.Settings.CinemaNetwork;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,8 +40,6 @@ namespace HangfireHost.Integration.Tests.DataProviders
             var newCount = context.Cinemas.Count();
 
             newCount.Should().BeGreaterThan(cinemasCount);
-
-            //var id = BackgroundJob.Enqueue(() => task.Execute());
         }
     }
 }

@@ -8,7 +8,8 @@ using Infrastructure.Data;
 using Infrastructure.Extensions;
 using Infrastructure.Identity;
 using Infrastructure.IoC;
-using Infrastructure.Settings;
+using Infrastructure.Settings.Jwt;
+using Infrastructure.Settings.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,6 +20,7 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
 using NaCoDoKina.Api.ActionFilters;
 using Serilog;
+using Serilog.Enrichers.AzureWebApps;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -156,6 +158,7 @@ namespace NaCoDoKina.Api
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
                 .Destructure.ByTransforming<Type>(type => type.Name)
+                .Enrich.With<AzureWebAppsNameEnricher>()
                 .CreateLogger();
         }
 
@@ -220,13 +223,6 @@ namespace NaCoDoKina.Api
                 options.RoutePrefix = "documentation";
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "NaCoDoKina.APi V1");
             });
-
-            // For reverse proxy authentication
-            //https://docs.microsoft.com/en-us/aspnet/core/publishing/linuxproduction?tabs=aspnetcore2x
-            //app.UseForwardedHeaders(new ForwardedHeadersOptions
-            //{
-            //    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            //});
 
             app.UseAuthentication();
             app.UseMvc();

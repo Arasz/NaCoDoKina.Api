@@ -41,5 +41,29 @@ namespace Infrastructure.Models
 
         public override string ToString() => $"{Latitude.ToString(CultureInfo.InvariantCulture)}," +
                                              $"{Longitude.ToString(CultureInfo.InvariantCulture)}";
+
+        protected bool Equals(Location other)
+        {
+            return Longitude.Equals(other.Longitude) && Latitude.Equals(other.Latitude);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != GetType())
+                return false;
+            return Equals((Location)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Longitude.GetHashCode() * 397) ^ Latitude.GetHashCode();
+            }
+        }
     }
 }

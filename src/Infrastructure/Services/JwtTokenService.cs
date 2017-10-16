@@ -7,6 +7,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Infrastructure.Settings.Jwt;
 
 namespace Infrastructure.Services
 {

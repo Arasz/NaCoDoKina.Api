@@ -1,4 +1,6 @@
 ﻿using Infrastructure.Settings.Tasks;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace Infrastructure.DataProviders.Tasks
@@ -10,9 +12,12 @@ namespace Infrastructure.DataProviders.Tasks
     {
         protected TasksSettings Settings { get; }
 
-        protected TaskBase(TasksSettings settings)
+        protected ILogger<TaskBase> Logger { get; }
+
+        protected TaskBase(TasksSettings settings, ILogger<TaskBase> logger)
         {
-            Settings = settings;
+            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             Id = GetType().FullName;
         }
 

@@ -46,6 +46,8 @@ namespace Infrastructure.Migrations.Application
 
                     b.HasIndex("CinemaNetworkId");
 
+                    b.HasIndex("ExternalId");
+
                     b.HasIndex("Name")
                         .IsUnique();
 
@@ -120,6 +122,8 @@ namespace Infrastructure.Migrations.Application
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Title");
+
                     b.ToTable("Movies");
                 });
 
@@ -129,7 +133,7 @@ namespace Infrastructure.Migrations.Application
 
                     b.Property<string>("AgeLimit")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValue(null)
+                        .HasDefaultValue("Unspecified")
                         .HasMaxLength(100);
 
                     b.Property<string>("CrewDescription")
@@ -137,7 +141,8 @@ namespace Infrastructure.Migrations.Application
                         .IsUnicode(true);
 
                     b.Property<string>("Description")
-                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("No description")
                         .IsUnicode(true);
 
                     b.Property<string>("Director")
@@ -147,15 +152,9 @@ namespace Infrastructure.Migrations.Application
                         .IsRequired()
                         .HasMaxLength(100);
 
-                    b.Property<string>("Language")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue("")
-                        .HasMaxLength(100);
-
                     b.Property<TimeSpan>("Length");
 
                     b.Property<string>("OriginalTitle")
-                        .IsRequired()
                         .HasMaxLength(80)
                         .IsUnicode(true);
 
