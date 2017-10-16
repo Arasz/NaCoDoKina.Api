@@ -1,16 +1,15 @@
-﻿using System.Collections.Generic;
-using Infrastructure.DataProviders.CinemaCity.Common;
+﻿using Infrastructure.DataProviders.CinemaCity.Common;
 using Infrastructure.DataProviders.CinemaCity.Showtimes.Requests;
 using Infrastructure.DataProviders.Requests;
-using Infrastructure.Settings;
 using Infrastructure.Settings.CinemaNetwork;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace Infrastructure.DataProviders.CinemaCity.Movies.Requests
 {
-    public class MovieRequestData : CinemaCityRequestDataBase
+    public class GetMoviesPlayedInCinemaCityRequestData : CinemaCityRequestDataBase
     {
-        public MovieRequestData(CinemaNetworksSettings cinemaNetworksSettings, IEnumerable<IRequestParameter> requestParameters, ILogger<GetMoviesPlayedInCinemaRequestData> logger)
+        public GetMoviesPlayedInCinemaCityRequestData(CinemaNetworksSettings cinemaNetworksSettings, IEnumerable<IRequestParameter> requestParameters, ILogger<GetMoviesPlayedInCinemaRequestData> logger)
             : base("films/until/{UntilDate}", requestParameters, cinemaNetworksSettings, logger)
         {
         }

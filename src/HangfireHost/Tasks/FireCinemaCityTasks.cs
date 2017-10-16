@@ -22,7 +22,7 @@ namespace HangfireHost.Tasks
                 .ContinueWith<LoadCinemaCityMoviesTask>(cinemasTaskId, task => task.Execute());
 
             BackgroundJob
-                .ContinueWith<CinemaCityShowtimesTask>(moviesTaskId, task => task.Execute());
+                .ContinueWith<LoadCinemaCityShowtimesTask>(moviesTaskId, task => task.Execute());
         }
     }
 }

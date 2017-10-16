@@ -4,27 +4,35 @@ using Infrastructure.DataProviders.EntityBuilder;
 using Infrastructure.DataProviders.EntityBuilder.Context;
 using Infrastructure.DataProviders.Tasks;
 using Infrastructure.Settings.Tasks;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Infrastructure.DataProviders.CinemaCity.Movies.Tasks
 {
-    public class LoadCinemaCityMoviesTask : TaskBase
+    public class LoadCinemaCityMoviesTask : EntitiesBuildTask<Movie, EmptyContext>
     {
         private readonly IMovieRepository _movieRepository;
-        private readonly IEntitiesBuilder<Movie, EmptyContext> _entitiesBuilder;
 
-        public LoadCinemaCityMoviesTask(IMovieRepository movieRepository, IEntitiesBuilder<Movie, EmptyContext> entitiesBuilder, TasksSettings settings) : base(settings)
+        public LoadCinemaCityMoviesTask(IMovieRepository movieRepository,
+            IEntitiesBuilder<Movie, EmptyContext> entitiesBuilder,
+            TasksSettings settings,
+            ILogger<LoadCinemaCityMoviesTask> logger)
+            : base(entitiesBuilder, settings, logger)
         {
             _movieRepository = movieRepository ?? throw new ArgumentNullException(nameof(movieRepository));
-            _entitiesBuilder = entitiesBuilder ?? throw new ArgumentNullException(nameof(entitiesBuilder));
         }
 
-        public override async Task Execute()
+        protected override async Task BuildEntities()
         {
-            var movies = await _entitiesBuilder.BuildMany();
+            Results = (await EntitiesBuilder.BuildMany()).ToList();
+            Logger.LogDebug("Built {BuiltMoviesCount} movies, first {@Movie}", Results.Count, Results.First());
+        }
 
-            await _movieRepository.CreateMoviesAsync(movies);
+        protected override async Task SaveResults()
+        {
+            await _movieRepository.CreateMoviesAsync(Results);
         }
     }
 }

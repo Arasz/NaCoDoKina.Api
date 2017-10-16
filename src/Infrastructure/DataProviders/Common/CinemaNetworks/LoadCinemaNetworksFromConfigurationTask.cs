@@ -2,6 +2,7 @@
 using Infrastructure.DataProviders.Tasks;
 using Infrastructure.Settings.CinemaNetwork;
 using Infrastructure.Settings.Tasks;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
@@ -15,25 +16,42 @@ namespace Infrastructure.DataProviders.Common.CinemaNetworks
 
         public override async Task Execute()
         {
-            var allNetworks = _cinemaNetworksSettings.GetAllElements();
-
-            foreach (var cinemaNetwork in allNetworks)
+            using (Logger.BeginScope(GetType().Name))
             {
-                var exist = await _cinemaNetworkRepository.ExistAsync(cinemaNetwork.Name);
-                if (!exist)
+                Logger.LogInformation("Start task execution");
+
+                var allNetworks = _cinemaNetworksSettings.GetAllElements();
+
+                foreach (var cinemaNetwork in allNetworks)
                 {
-                    var network = new CinemaNetwork
+                    var exist = await _cinemaNetworkRepository.ExistAsync(cinemaNetwork.Name);
+
+                    if (!exist)
                     {
-                        Name = cinemaNetwork.Name,
-                        CinemaNetworkUrl = cinemaNetwork.Url
-                    };
-                    await _cinemaNetworkRepository.CreateAsync(network);
+                        var network = new CinemaNetwork
+                        {
+                            Name = cinemaNetwork.Name,
+                            CinemaNetworkUrl = cinemaNetwork.Url
+                        };
+                        Logger.LogDebug("New cinema network in configuration {@CinemaNetwork}", network);
+                        var id = await _cinemaNetworkRepository.CreateAsync(network);
+                        Logger.LogDebug("Cinema network created with id {@CinemaNetworkId}", id);
+                    }
+                    else
+                    {
+                        Logger.LogDebug("Cinema network {@CinemaNetwork} exist", cinemaNetwork);
+                    }
                 }
+
+                Logger.LogInformation("Task executed successfully");
             }
         }
 
-        public LoadCinemaNetworksFromConfigurationTask(ICinemaNetworkRepository cinemaNetworkRepository, CinemaNetworksSettings cinemaNetworksSettings, TasksSettings settings)
-            : base(settings)
+        public LoadCinemaNetworksFromConfigurationTask(ICinemaNetworkRepository cinemaNetworkRepository,
+            CinemaNetworksSettings cinemaNetworksSettings,
+            TasksSettings settings,
+            ILogger<LoadCinemaNetworksFromConfigurationTask> logger)
+            : base(settings, logger)
         {
             _cinemaNetworksSettings = cinemaNetworksSettings ?? throw new ArgumentNullException(nameof(cinemaNetworksSettings));
             _cinemaNetworkRepository = cinemaNetworkRepository ?? throw new ArgumentNullException(nameof(cinemaNetworkRepository));

@@ -141,7 +141,7 @@ namespace Infrastructure.DataProviders.CinemaCity.Movies.BuildSteps
             }
         }
 
-        public GetWebApiMovieDataBuildStep(IWebClient webClient, MovieRequestData parsableRequestData, ISerializationService serializationService,
+        public GetWebApiMovieDataBuildStep(IWebClient webClient, GetMoviesPlayedInCinemaCityRequestData parsableRequestData, ISerializationService serializationService,
             ICinemaNetworkRepository cinemaNetworkRepository, CinemaNetworksSettings cinemaNetworksSettings,
             ILogger<GetWebApiMovieDataBuildStep> logger)
             : base(webClient, parsableRequestData, serializationService, logger)

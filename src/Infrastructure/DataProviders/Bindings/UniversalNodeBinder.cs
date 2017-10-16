@@ -1,11 +1,10 @@
 ﻿using AngleSharp.Dom;
 using ApplicationCore.Results;
 using Infrastructure.Extensions;
-using Infrastructure.Settings;
+using Infrastructure.Settings.Common;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
-using Infrastructure.Settings.Common;
 
 namespace Infrastructure.DataProviders.Bindings
 {
@@ -39,18 +38,23 @@ namespace Infrastructure.DataProviders.Bindings
                         continue;
                     }
 
-                    _logger.LogDebug("Select element with selector {selector} from page {Url}", selector, node.FirstElementChild?.BaseUri);
+                    _logger.LogDebug("Select property {PropertyName} with selector {selector} from page {Url}", propertyName, selector, node.FirstElementChild?.BaseUri);
 
                     var element = node.QuerySelector(selector);
 
                     if (element is null)
                     {
-                        _logger.LogWarning("Element specified by selector {Selector} can not be found", selector);
                         _bindingErrors.AddError(propertyName, $"Element specified by selector {selector} can not be found");
                         continue;
                     }
 
                     var value = GetValueFromElement(element, propertySelector);
+
+                    if (value is null)
+                    {
+                        _logger.LogWarning("Element {Tag} value selected by {@PropertySelector} from page {Url} is null", element.TagName, propertySelector, element.BaseUri);
+                        continue;
+                    }
 
                     _logger.LogDebug("{Tag} element value {Value} selected by {@PropertySelector} from page {Url}", element.TagName, value, propertySelector, element.BaseUri);
 

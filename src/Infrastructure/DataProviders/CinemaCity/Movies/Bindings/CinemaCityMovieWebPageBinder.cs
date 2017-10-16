@@ -2,10 +2,9 @@
 using ApplicationCore.Entities.Movies;
 using ApplicationCore.Results;
 using Infrastructure.DataProviders.Bindings;
-using Infrastructure.Settings;
+using Infrastructure.Settings.CinemaNetwork;
 using System;
 using System.Threading.Tasks;
-using Infrastructure.Settings.CinemaNetwork;
 
 namespace Infrastructure.DataProviders.CinemaCity.Movies.Bindings
 {

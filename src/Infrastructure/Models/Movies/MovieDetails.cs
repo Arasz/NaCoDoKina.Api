@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Infrastructure.Models.Resources;
+using System;
 using System.Collections.Generic;
-using Infrastructure.Models.Resources;
 
 namespace Infrastructure.Models.Movies
 {
@@ -48,11 +48,6 @@ namespace Infrastructure.Models.Movies
         /// Movie length 
         /// </summary>
         public TimeSpan Length { get; set; }
-
-        /// <summary>
-        /// Movie original language 
-        /// </summary>
-        public string Language { get; set; }
 
         /// <summary>
         /// Movie age limit 
