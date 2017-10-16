@@ -20,6 +20,7 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
 using NaCoDoKina.Api.ActionFilters;
 using Serilog;
+using Serilog.Enrichers.AzureWebApps;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -157,6 +158,7 @@ namespace NaCoDoKina.Api
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
                 .Destructure.ByTransforming<Type>(type => type.Name)
+                .Enrich.With<AzureWebAppsNameEnricher>()
                 .CreateLogger();
         }
 
