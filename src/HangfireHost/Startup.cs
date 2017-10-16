@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using Serilog.Enrichers.AzureWebApps;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -161,6 +162,7 @@ namespace HangfireHost
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
                 .Destructure.ByTransforming<Type>(type => type.Name)
+                .Enrich.With<AzureWebAppsNameEnricher>()
                 .CreateLogger();
         }
 
