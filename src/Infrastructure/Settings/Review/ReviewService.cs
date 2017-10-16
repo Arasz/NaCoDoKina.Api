@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.Settings
+﻿using Infrastructure.Settings.Common;
+
+namespace Infrastructure.Settings.Review
 {
     public class ReviewService
     {

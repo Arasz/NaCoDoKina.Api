@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Infrastructure.Settings;
+using Infrastructure.Settings.Review;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.DataProviders.Reviews

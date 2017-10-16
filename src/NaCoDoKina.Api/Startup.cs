@@ -8,7 +8,8 @@ using Infrastructure.Data;
 using Infrastructure.Extensions;
 using Infrastructure.Identity;
 using Infrastructure.IoC;
-using Infrastructure.Settings;
+using Infrastructure.Settings.Jwt;
+using Infrastructure.Settings.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -220,13 +221,6 @@ namespace NaCoDoKina.Api
                 options.RoutePrefix = "documentation";
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "NaCoDoKina.APi V1");
             });
-
-            // For reverse proxy authentication
-            //https://docs.microsoft.com/en-us/aspnet/core/publishing/linuxproduction?tabs=aspnetcore2x
-            //app.UseForwardedHeaders(new ForwardedHeadersOptions
-            //{
-            //    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            //});
 
             app.UseAuthentication();
             app.UseMvc();

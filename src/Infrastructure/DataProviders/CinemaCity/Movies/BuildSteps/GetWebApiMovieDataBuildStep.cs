@@ -13,6 +13,7 @@ using Infrastructure.DataProviders.EntityBuilder.Context;
 using Infrastructure.Extensions;
 using Infrastructure.Services;
 using Infrastructure.Settings;
+using Infrastructure.Settings.CinemaNetwork;
 using Microsoft.Extensions.Logging;
 using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 
@@ -140,7 +141,7 @@ namespace Infrastructure.DataProviders.CinemaCity.Movies.BuildSteps
             }
         }
 
-        public GetWebApiMovieDataBuildStep(IWebClient webClient, MovieRequestData parsableRequestData, ISerializationService serializationService,
+        public GetWebApiMovieDataBuildStep(IWebClient webClient, GetMoviesPlayedInCinemaCityRequestData parsableRequestData, ISerializationService serializationService,
             ICinemaNetworkRepository cinemaNetworkRepository, CinemaNetworksSettings cinemaNetworksSettings,
             ILogger<GetWebApiMovieDataBuildStep> logger)
             : base(webClient, parsableRequestData, serializationService, logger)

@@ -3,7 +3,7 @@ using Infrastructure.Data;
 using Infrastructure.DataProviders.CinemaCity.Cinemas.Tasks;
 using Infrastructure.DataProviders.CinemaCity.Movies.Tasks;
 using Infrastructure.DataProviders.CinemaCity.Showtimes.Tasks;
-using Infrastructure.Settings;
+using Infrastructure.Settings.CinemaNetwork;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +12,7 @@ using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 
 namespace HangfireHost.Integration.Tests.DataProviders
 {
-    public class CinemaCityShowtimesTaskTest : TaskTestBase<CinemaCityShowtimesTask>
+    public class CinemaCityShowtimesTaskTest : TaskTestBase<LoadCinemaCityShowtimesTask>
     {
         [Fact]
         public async Task Should_save_all_showtimes_for_cinema_city_cinemas_in_provided_time_period()

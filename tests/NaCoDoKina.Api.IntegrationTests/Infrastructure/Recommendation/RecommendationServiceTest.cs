@@ -7,6 +7,7 @@ using Infrastructure.Settings;
 using NaCoDoKina.Api.IntegrationTests.Modules;
 using Ploeh.AutoFixture;
 using System.Threading.Tasks;
+using Infrastructure.Settings.Recommendation;
 using Xunit;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Recommendation

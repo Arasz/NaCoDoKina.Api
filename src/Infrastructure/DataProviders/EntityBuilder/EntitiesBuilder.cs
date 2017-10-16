@@ -61,9 +61,7 @@ namespace Infrastructure.DataProviders.EntityBuilder
                     else
                     {
                         Successful = false;
-                        BuildFailure = new BuildFailure(result.FailureReason, CurrentStep);
-                        _logger.LogDebug("Build step {StepName} number {CurrentStep} on position {Position} failed with failure {@failure}",
-                            buildStep.Name, CurrentStep, buildStep.Position, result.FailureReason);
+                        BuildFailure = new BuildFailure(result.FailureReason, CurrentStep, BuildSteps.Count, buildStep.Name);
                         return entities;
                     }
                 }

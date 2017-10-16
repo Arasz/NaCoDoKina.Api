@@ -1,4 +1,4 @@
-using Infrastructure.Settings;
+using Infrastructure.Settings.Google;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 

@@ -7,6 +7,7 @@ using Infrastructure.DataProviders.Bindings;
 using Infrastructure.DataProviders.Reviews;
 using Infrastructure.Extensions;
 using Infrastructure.Settings;
+using Infrastructure.Settings.Review;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.DataProviders.Common.Movies.Reviews

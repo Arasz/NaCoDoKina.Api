@@ -4,7 +4,7 @@ using FluentAssertions;
 using Infrastructure.DataProviders.CinemaCity.Cinemas.Tasks;
 using Infrastructure.Services;
 using Infrastructure.Services.Identity;
-using Infrastructure.Settings;
+using Infrastructure.Settings.Google;
 using IntegrationTestsCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;

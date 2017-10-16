@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Settings
+﻿namespace Infrastructure.Settings.Common
 {
     /// <summary>
     /// Connects C# class property name to HTML element on web page with CSS selector 

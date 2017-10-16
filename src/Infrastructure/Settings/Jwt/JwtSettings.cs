@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Settings
+namespace Infrastructure.Settings.Jwt
 {
     /// <summary>
     /// JSON Web Tokens settings 

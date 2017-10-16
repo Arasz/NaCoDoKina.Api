@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Settings
+﻿namespace Infrastructure.Settings.Swagger
 {
     public class CreatorContact
     {

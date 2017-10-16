@@ -53,10 +53,7 @@ namespace IntegrationTestsCore
                 .UseContentRoot(contentRoot)
                 .ConfigureAppConfiguration((context, configurationBuilder) =>
                 {
-                    if (context.HostingEnvironment.IsProduction())
-                    {
-                        configurationBuilder.AddUserSecrets<TStartup>();
-                    }
+                    configurationBuilder.AddUserSecrets<TStartup>();
                 })
                 .ConfigureServices(ConfigureServices)
                 .UseSerilog()

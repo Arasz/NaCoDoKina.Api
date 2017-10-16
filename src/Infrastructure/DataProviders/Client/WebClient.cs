@@ -32,7 +32,7 @@ namespace Infrastructure.DataProviders.Client
         {
             using (_logger.BeginScope($"{GetType().Name} - {nameof(MakeRequestAsync)}"))
             {
-                _logger.LogDebug("Parsing requestData {@requestData}", requestData);
+                _logger.LogDebug("Parsing requestData {@RequestData}", requestData);
 
                 var request = requestData.Parse(requestParameters);
 
@@ -40,19 +40,19 @@ namespace Infrastructure.DataProviders.Client
                 switch (request)
                 {
                     case GetRequest getRequest:
-                        _logger.LogDebug("Request parsed {@request}", request);
+                        _logger.LogDebug("Request parsed {@Request}", request);
                         httpResponse = await _httpClient.GetAsync(getRequest.BuildUrl());
                         break;
 
                     case PostRequest postRequest:
-                        _logger.LogDebug("Request parsed {@request}", request);
+                        _logger.LogDebug("Request parsed {@Request}", request);
                         httpResponse = await _httpClient.PostAsync(postRequest.BuildUrl(), postRequest.Body);
                         break;
                 }
 
                 if (httpResponse is null)
                 {
-                    _logger.LogError("Request data {@requestData} parsed to unknown request type", requestData);
+                    _logger.LogError("Request data {@RequestData} parsed to unknown request type", requestData);
                     return Result.Failure<string>("Unknown request type");
                 }
 

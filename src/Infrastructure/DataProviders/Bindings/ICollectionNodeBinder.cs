@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using AngleSharp.Dom;
 using Infrastructure.Settings;
+using Infrastructure.Settings.Common;
 
 namespace Infrastructure.DataProviders.Bindings
 {

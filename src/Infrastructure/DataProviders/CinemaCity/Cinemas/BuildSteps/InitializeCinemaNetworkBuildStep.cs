@@ -6,6 +6,7 @@ using Infrastructure.DataProviders.EntityBuilder.Context;
 using Infrastructure.Settings;
 using System;
 using System.Threading.Tasks;
+using Infrastructure.Settings.CinemaNetwork;
 
 namespace Infrastructure.DataProviders.CinemaCity.Cinemas.BuildSteps
 {
