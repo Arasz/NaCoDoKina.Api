@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Infrastructure.Settings
+namespace Infrastructure.Settings.Common
 {
     public abstract class MultiElementSettingsBase<TElement>
     {

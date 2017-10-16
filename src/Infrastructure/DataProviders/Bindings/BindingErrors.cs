@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Infrastructure.Settings.Common;
 
 namespace Infrastructure.DataProviders.Bindings
 {

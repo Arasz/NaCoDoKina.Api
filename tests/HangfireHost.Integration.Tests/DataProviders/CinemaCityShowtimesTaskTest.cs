@@ -7,6 +7,7 @@ using Infrastructure.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using System.Threading.Tasks;
+using Infrastructure.Settings.CinemaNetwork;
 using Xunit;
 using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 

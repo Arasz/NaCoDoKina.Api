@@ -13,6 +13,7 @@ using Infrastructure.DataProviders.EntityBuilder.Context;
 using Infrastructure.Extensions;
 using Infrastructure.Services;
 using Infrastructure.Settings;
+using Infrastructure.Settings.CinemaNetwork;
 using Microsoft.Extensions.Logging;
 using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 

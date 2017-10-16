@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Infrastructure.Settings.Common;
 
 namespace Infrastructure.DataProviders.Bindings
 {

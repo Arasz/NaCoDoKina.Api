@@ -5,6 +5,7 @@ using Infrastructure.Settings;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
+using Infrastructure.Settings.Common;
 
 namespace Infrastructure.DataProviders.Bindings
 {

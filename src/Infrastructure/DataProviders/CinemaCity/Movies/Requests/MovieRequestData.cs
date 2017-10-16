@@ -3,6 +3,7 @@ using Infrastructure.DataProviders.CinemaCity.Common;
 using Infrastructure.DataProviders.CinemaCity.Showtimes.Requests;
 using Infrastructure.DataProviders.Requests;
 using Infrastructure.Settings;
+using Infrastructure.Settings.CinemaNetwork;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.DataProviders.CinemaCity.Movies.Requests

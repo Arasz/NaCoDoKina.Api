@@ -5,6 +5,7 @@ using Infrastructure.DataProviders.Bindings;
 using Infrastructure.Settings;
 using System;
 using System.Threading.Tasks;
+using Infrastructure.Settings.CinemaNetwork;
 
 namespace Infrastructure.DataProviders.CinemaCity.Movies.Bindings
 {

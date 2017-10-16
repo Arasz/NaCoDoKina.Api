@@ -7,6 +7,7 @@ using Infrastructure.Settings;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Infrastructure.Settings.Review;
 
 namespace Infrastructure.DataProviders.Common.Movies.Mappings
 {

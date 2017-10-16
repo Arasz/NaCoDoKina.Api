@@ -3,6 +3,7 @@ using Infrastructure.Services.Google.Services;
 using Infrastructure.Settings;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Net.Http;
+using Infrastructure.Settings.Google;
 
 namespace NaCoDoKina.Api.IntegrationTests.Infrastructure.Google
 {

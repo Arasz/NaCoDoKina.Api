@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Infrastructure.DataProviders.Requests;
 using Infrastructure.Settings;
+using Infrastructure.Settings.CinemaNetwork;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.DataProviders.CinemaCity.Common

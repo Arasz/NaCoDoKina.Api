@@ -1,6 +1,7 @@
 using Infrastructure.Settings;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
+using Infrastructure.Settings.Google;
 
 namespace Infrastructure.Services.Google.Services
 {

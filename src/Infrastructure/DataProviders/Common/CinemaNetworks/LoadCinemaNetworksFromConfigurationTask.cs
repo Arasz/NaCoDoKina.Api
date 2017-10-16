@@ -1,6 +1,6 @@
 ﻿using ApplicationCore.Repositories;
 using Infrastructure.DataProviders.Tasks;
-using Infrastructure.Settings;
+using Infrastructure.Settings.CinemaNetwork;
 using Infrastructure.Settings.Tasks;
 using System;
 using System.Threading.Tasks;
