@@ -38,17 +38,29 @@ namespace Infrastructure.Repositories
 
         public async Task CreateMovieShowtimesAsync(IEnumerable<MovieShowtime> showtimes)
         {
-            foreach (var movieShowtime in showtimes)
+            showtimes = showtimes as MovieShowtime[] ?? showtimes.ToArray();
+
+            var existingShowtimesHashes = _applicationContext.MovieShowtimes
+                .Select(showtime => showtime.HashId)
+                .ToHashSet();
+
+            var newShowtimesHashes = showtimes
+                .Select(showtime =>
+                {
+                    showtime.CalculateHashId();
+                    return showtime.HashId;
+                })
+                .ToHashSet();
+
+            newShowtimesHashes
+                .ExceptWith(existingShowtimesHashes);
+
+            var newShowtimesCandidates = showtimes
+                .Where(showtime => newShowtimesHashes.Contains(showtime.HashId))
+                .ToArray();
+
+            foreach (var movieShowtime in newShowtimesCandidates)
             {
-                var exist = await _applicationContext.MovieShowtimes
-                    .Where(s => Equals(s.Cinema, movieShowtime.Cinema))
-                    .Where(s => Equals(s.Movie, movieShowtime.Movie))
-                    .Where(s => s.ShowTime == movieShowtime.ShowTime)
-                    .AnyAsync();
-
-                if (exist)
-                    continue;
-
                 _applicationContext.TryAttach(movieShowtime.Cinema);
                 _applicationContext.TryAttach(movieShowtime.Movie);
 

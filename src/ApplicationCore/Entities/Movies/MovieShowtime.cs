@@ -1,5 +1,5 @@
-﻿using System;
-using ApplicationCore.Entities.Cinemas;
+﻿using ApplicationCore.Entities.Cinemas;
+using System;
 
 namespace ApplicationCore.Entities.Movies
 {
@@ -40,9 +40,34 @@ namespace ApplicationCore.Entities.Movies
         public bool Available { get; set; }
 
         /// <summary>
+        /// Hash of movie and cinema id with show time. Used for optimization 
+        /// </summary>
+        public int HashId { get; set; }
+
+        /// <summary>
         /// Played movie 
         /// </summary>
         public Movie Movie { get; set; }
+
+        /// <summary>
+        /// Calculates hash id for this showtime. 
+        /// </summary>
+        public void CalculateHashId()
+        {
+            if (Cinema is null)
+                throw new ArgumentNullException(nameof(Cinema));
+            if (Movie is null)
+                throw new ArgumentNullException(nameof(Movie));
+
+            unchecked
+            {
+                var hashCode = GetHashCode();
+                hashCode = (hashCode * 397) ^ ShowTime.GetHashCode();
+                hashCode = (hashCode * 397) ^ Cinema.Id.GetHashCode();
+                hashCode = (hashCode * 397) ^ Movie.Id.GetHashCode();
+                HashId = hashCode;
+            }
+        }
 
         public override string ToString()
         {

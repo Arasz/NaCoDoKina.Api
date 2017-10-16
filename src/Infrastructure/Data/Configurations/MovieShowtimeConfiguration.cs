@@ -32,6 +32,9 @@ namespace Infrastructure.Data.Configurations
                 .WithMany()
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder
+                .HasIndex(showtime => showtime.HashId);
         }
     }
 }
