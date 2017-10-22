@@ -22,16 +22,16 @@ namespace HangfireHost.Tasks
         public void Schedule()
         {
             RecurringJob
-                .AddOrUpdate<LoadCinemaNetworksFromConfigurationTask>(task => task.Execute(), () => _settings.CinemaNetworksTask.Cron);
+                .AddOrUpdate<LoadCinemaNetworksFromConfigurationTask>(task => task.ExecuteAsync(), () => _settings.CinemaNetworksTask.Cron);
 
             RecurringJob
-                .AddOrUpdate<LoadCinemaCityCinemasTask>(task => task.Execute(), () => _settings.CinemasTask.Cron);
+                .AddOrUpdate<LoadCinemaCityCinemasTask>(task => task.ExecuteAsync(), () => _settings.CinemasTask.Cron);
 
             RecurringJob
-                .AddOrUpdate<LoadCinemaCityMoviesTask>(task => task.Execute(), () => _settings.MoviesTask.Cron);
+                .AddOrUpdate<LoadCinemaCityMoviesTask>(task => task.ExecuteAsync(), () => _settings.MoviesTask.Cron);
 
             RecurringJob
-                .AddOrUpdate<LoadCinemaCityShowtimesTask>(task => task.Execute(), () => _settings.ShowtimesTask.Cron);
+                .AddOrUpdate<LoadCinemaCityShowtimesTask>(task => task.ExecuteAsync(), () => _settings.ShowtimesTask.Cron);
         }
     }
 }

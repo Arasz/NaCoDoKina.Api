@@ -19,7 +19,7 @@ namespace Infrastructure.DataProviders.CinemaCity.Cinemas.BuildSteps
 
         public bool Enabled => true;
 
-        public async Task<Result<Cinema[]>> BuildMany(Cinema[] entities, EmptyContext context)
+        public async Task<Result<Cinema[]>> BuildManyAsync(Cinema[] entities, EmptyContext context)
         {
             foreach (var cinema in entities)
             {

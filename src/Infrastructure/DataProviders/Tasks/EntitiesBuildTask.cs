@@ -35,7 +35,7 @@ namespace Infrastructure.DataProviders.Tasks
         /// <returns></returns>
         protected abstract Task SaveResults();
 
-        public override async Task Execute()
+        public override async Task ExecuteAsync()
         {
             using (Logger.BeginScope(GetType().Name))
             {
