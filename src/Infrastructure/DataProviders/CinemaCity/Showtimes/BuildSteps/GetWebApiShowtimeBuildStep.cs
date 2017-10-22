@@ -41,7 +41,7 @@ namespace Infrastructure.DataProviders.CinemaCity.Showtimes.BuildSteps
             return parameters;
         }
 
-        private class Body
+        public class Body
         {
             public class Movie
             {
@@ -103,7 +103,7 @@ namespace Infrastructure.DataProviders.CinemaCity.Showtimes.BuildSteps
             public Movie[] Films { get; set; }
         }
 
-        protected override async Task<MovieShowtime[]> ParseDataToEntities(string content, MovieShowtimesContext context)
+        protected override async Task<MovieShowtime[]> ParseDataToEntitiesAsync(string content, MovieShowtimesContext context)
         {
             var cinemaCityResponse = SerializationService.Deserialize<CinemaCityResponse<Body>>(content);
 

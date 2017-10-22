@@ -41,7 +41,7 @@ namespace Infrastructure.DataProviders.EntityBuilder.BuildSteps
         /// <param name="content"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected abstract Task<TEntity[]> ParseDataToEntities(string content, TContext context);
+        protected abstract Task<TEntity[]> ParseDataToEntitiesAsync(string content, TContext context);
 
         /// <summary>
         /// Creates dynamic request parameters 
@@ -54,9 +54,9 @@ namespace Infrastructure.DataProviders.EntityBuilder.BuildSteps
             return Array.Empty<IRequestParameter>();
         }
 
-        public virtual async Task<Result<TEntity[]>> BuildMany(TEntity[] entities, TContext context)
+        public virtual async Task<Result<TEntity[]>> BuildManyAsync(TEntity[] entities, TContext context)
         {
-            using (Logger.BeginScope(nameof(BuildMany)))
+            using (Logger.BeginScope(nameof(BuildManyAsync)))
             {
                 var requestParameters = CreateRequestParameters(entities, context);
 
@@ -74,7 +74,7 @@ namespace Infrastructure.DataProviders.EntityBuilder.BuildSteps
 
                 Logger.LogDebug("Request succeeded, parse received data to entities");
 
-                var parsedEntities = await ParseDataToEntities(result.Value, context);
+                var parsedEntities = await ParseDataToEntitiesAsync(result.Value, context);
 
                 Logger.LogDebug("Data parsed to {@ParsedEntitiesCount} entities", parsedEntities.Length);
 

@@ -36,7 +36,7 @@ namespace NaCoDoKina.Api.DataProviders.EntitiesBuilder
                     .ToArray();
 
                 Mock.Mock<IBuildStep<Movie, EmptyContext>>()
-                    .Setup(step => step.BuildMany(It.IsAny<Movie[]>(), It.IsAny<EmptyContext>()))
+                    .Setup(step => step.BuildManyAsync(It.IsAny<Movie[]>(), It.IsAny<EmptyContext>()))
                     .ReturnsAsync(Result<Movie[]>.CreateSucceeded(builtMovies));
 
                 // Act
@@ -88,7 +88,7 @@ namespace NaCoDoKina.Api.DataProviders.EntitiesBuilder
                 var stepMock = new Mock<IBuildStep<Movie, EmptyContext>>();
 
                 stepMock
-                    .Setup(step => step.BuildMany(It.IsAny<Movie[]>(), It.IsAny<EmptyContext>()))
+                    .Setup(step => step.BuildManyAsync(It.IsAny<Movie[]>(), It.IsAny<EmptyContext>()))
                     .ReturnsAsync(result);
                 stepMock
                     .SetupGet(step => step.Enabled)
