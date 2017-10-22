@@ -86,7 +86,9 @@ namespace HangfireHost.Integration.Tests.DataProviders
 
             var countAfterOneExecution = context.MovieShowtimes.Count();
 
-            await TaskUnderTest.ExecuteAsync();
+            var newCinemaCityShowtimesTaskInstance = Services.GetService<LoadCinemaCityShowtimesTask>();
+
+            await newCinemaCityShowtimesTaskInstance.ExecuteAsync();
 
             // Assert
 

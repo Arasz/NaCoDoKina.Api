@@ -11,6 +11,11 @@ namespace ApplicationCore.Entities.Movies
     public class MovieShowtime : Entity
     {
         /// <summary>
+        /// Showtime id in external service 
+        /// </summary>
+        public string ExternalId { get; set; }
+
+        /// <summary>
         /// Movie show language and presentation type 
         /// </summary>
         public string Language { get; set; }
@@ -50,7 +55,7 @@ namespace ApplicationCore.Entities.Movies
             return $"{base.ToString()}, {nameof(Language)}: {Language}, {nameof(ShowType)}: {ShowType}, {nameof(ShowTime)}: {ShowTime}, {nameof(Cinema)}: {Cinema}, {nameof(Movie)}: {Movie}";
         }
 
-        private sealed class PreCreateEqualityComparer : IEqualityComparer<MovieShowtime>
+        private sealed class ExternalIdEqualityComparer : IEqualityComparer<MovieShowtime>
         {
             public bool Equals(MovieShowtime x, MovieShowtime y)
             {
@@ -58,25 +63,15 @@ namespace ApplicationCore.Entities.Movies
                 if (ReferenceEquals(x, null)) return false;
                 if (ReferenceEquals(y, null)) return false;
                 if (x.GetType() != y.GetType()) return false;
-                return string.Equals(x.ShowType, y.ShowType) && x.ShowTime.Equals(y.ShowTime) && Equals(x.Cinema, y.Cinema) && Equals(x.Movie, y.Movie);
+                return string.Equals(x.ExternalId, y.ExternalId);
             }
 
             public int GetHashCode(MovieShowtime obj)
             {
-                unchecked
-                {
-                    var hashCode = (obj.ShowType != null ? obj.ShowType.GetHashCode() : 0);
-                    hashCode = (hashCode * 397) ^ obj.ShowTime.GetHashCode();
-                    hashCode = (hashCode * 397) ^ (obj.Cinema != null ? obj.Cinema.GetHashCode() : 0);
-                    hashCode = (hashCode * 397) ^ (obj.Movie != null ? obj.Movie.GetHashCode() : 0);
-                    return hashCode;
-                }
+                return (obj.ExternalId != null ? obj.ExternalId.GetHashCode() : 0);
             }
         }
 
-        /// <summary>
-        /// Equality comparer used to checking if MovieShowtime is not duplicated 
-        /// </summary>
-        public static IEqualityComparer<MovieShowtime> PreCreateComparer { get; } = new PreCreateEqualityComparer();
+        public static IEqualityComparer<MovieShowtime> ExternalIdComparer { get; } = new ExternalIdEqualityComparer();
     }
 }

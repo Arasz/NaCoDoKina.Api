@@ -120,6 +120,7 @@ namespace Infrastructure.DataProviders.CinemaCity.Showtimes.BuildSteps
 
                 var showtime = new MovieShowtime
                 {
+                    ExternalId = tuple.Event.Id,
                     Movie = movie,
                     Cinema = context.Cinema,
                     Available = !tuple.Event.SoldOut,

@@ -34,6 +34,8 @@ namespace Infrastructure.Data.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasIndex("CinemaId", "MovieId");
+
+            builder.HasIndex(showtime => showtime.ExternalId);
         }
     }
 }
