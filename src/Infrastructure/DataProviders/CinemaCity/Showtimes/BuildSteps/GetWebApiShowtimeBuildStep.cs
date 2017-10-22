@@ -100,7 +100,7 @@ namespace Infrastructure.DataProviders.CinemaCity.Showtimes.BuildSteps
 
             public Event[] Events { get; set; }
 
-            public Movie[] Movies { get; set; }
+            public Movie[] Films { get; set; }
         }
 
         protected override async Task<MovieShowtime[]> ParseDataToEntities(string content, MovieShowtimesContext context)
@@ -110,7 +110,7 @@ namespace Infrastructure.DataProviders.CinemaCity.Showtimes.BuildSteps
             var showtimes = new List<MovieShowtime>(cinemaCityResponse.Body.Events.Length);
 
             var moviesWithEvents = cinemaCityResponse.Body.Events
-                .Join(cinemaCityResponse.Body.Movies,
+                .Join(cinemaCityResponse.Body.Films,
                     e => e.FilmId, m => m.Id,
                     (e, m) => (Event: e, Movie: m));
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ApplicationCore.Entities.Movies;
+﻿using ApplicationCore.Entities.Movies;
 using ApplicationCore.Entities.Resources;
 using ApplicationCore.Repositories;
 using Infrastructure.DataProviders.CinemaCity.Common;
@@ -12,9 +8,12 @@ using Infrastructure.DataProviders.EntityBuilder.BuildSteps;
 using Infrastructure.DataProviders.EntityBuilder.Context;
 using Infrastructure.Extensions;
 using Infrastructure.Services;
-using Infrastructure.Settings;
 using Infrastructure.Settings.CinemaNetwork;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using CinemaNetwork = ApplicationCore.Entities.Cinemas.CinemaNetwork;
 
 namespace Infrastructure.DataProviders.CinemaCity.Movies.BuildSteps
