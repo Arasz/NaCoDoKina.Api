@@ -23,6 +23,6 @@ namespace Infrastructure.DataProviders.Tasks
 
         public string Id { get; }
 
-        public abstract Task Execute();
+        public abstract Task ExecuteAsync();
     }
 }

@@ -14,7 +14,7 @@ namespace Infrastructure.DataProviders.Common.CinemaNetworks
         private readonly CinemaNetworksSettings _cinemaNetworksSettings;
         private readonly ICinemaNetworkRepository _cinemaNetworkRepository;
 
-        public override async Task Execute()
+        public override async Task ExecuteAsync()
         {
             using (Logger.BeginScope(GetType().Name))
             {

@@ -13,6 +13,6 @@ namespace Infrastructure.DataProviders.Tasks
         /// Executes task 
         /// </summary>
         /// <returns></returns>
-        Task Execute();
+        Task ExecuteAsync();
     }
 }

@@ -38,20 +38,62 @@ namespace HangfireHost.Integration.Tests.DataProviders
 
             var getMoviesTask = Services.GetService<LoadCinemaCityMoviesTask>();
 
-            await getCinemasTask.Execute();
-            await getMoviesTask.Execute();
+            await getCinemasTask.ExecuteAsync();
+            await getMoviesTask.ExecuteAsync();
 
             var showtimesCount = context.MovieShowtimes.Count();
 
             // Act
 
-            await TaskUnderTest.Execute();
+            await TaskUnderTest.ExecuteAsync();
 
             // Assert
 
             var newShowtimesCount = context.MovieShowtimes.Count();
 
             newShowtimesCount.Should().BeGreaterThan(showtimesCount);
+        }
+
+        [Fact]
+        public async Task Should_save_all_showtimes_two_times_in_row()
+        {
+            // Arrange
+            var context = GetDbContext<ApplicationContext>();
+            var showtimesCount = context.MovieShowtimes.Count();
+
+            var networksSettings = Services.GetService<CinemaNetworksSettings>();
+            var cinemaCityNetwork = new CinemaNetwork
+            {
+                Name = networksSettings.CinemaCityNetwork.Name,
+                CinemaNetworkUrl = networksSettings.CinemaCityNetwork.Url
+            };
+
+            context.CinemaNetworks.Add(cinemaCityNetwork);
+
+            await context.SaveChangesAsync();
+
+            context.Cinemas.RemoveRange(context.Cinemas);
+            await context.SaveChangesAsync();
+
+            var getCinemasTask = Services.GetService<LoadCinemaCityCinemasTask>();
+
+            var getMoviesTask = Services.GetService<LoadCinemaCityMoviesTask>();
+
+            await getCinemasTask.ExecuteAsync();
+            await getMoviesTask.ExecuteAsync();
+
+            await TaskUnderTest.ExecuteAsync();
+
+            var countAfterOneExecution = context.MovieShowtimes.Count();
+
+            await TaskUnderTest.ExecuteAsync();
+
+            // Assert
+
+            var newShowtimesCount = context.MovieShowtimes.Count();
+
+            newShowtimesCount.Should().BeGreaterThan(showtimesCount);
+            newShowtimesCount.Should().Be(countAfterOneExecution);
         }
     }
 }

@@ -17,4 +17,8 @@
     <ProjectReference Include="..\..\src\NaCoDoKina.Api\NaCoDoKina.Api.csproj" />
     <ProjectReference Include="..\TestsCore\TestsCore.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DataProviders\EntitiesBuilder\" />
+  </ItemGroup>
 </Project>

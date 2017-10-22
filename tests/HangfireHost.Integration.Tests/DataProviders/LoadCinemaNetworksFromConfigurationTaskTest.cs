@@ -19,7 +19,7 @@ namespace HangfireHost.Integration.Tests.DataProviders
 
             // Act
 
-            await TaskUnderTest.Execute();
+            await TaskUnderTest.ExecuteAsync();
 
             // Assert
 
