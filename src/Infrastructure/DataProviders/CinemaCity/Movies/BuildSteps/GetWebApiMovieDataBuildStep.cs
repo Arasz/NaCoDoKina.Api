@@ -126,13 +126,13 @@ namespace Infrastructure.DataProviders.CinemaCity.Movies.BuildSteps
             };
         }
 
-        protected override async Task<Movie[]> ParseDataToEntities(string content, EmptyContext context)
+        protected override async Task<Movie[]> ParseDataToEntitiesAsync(string content, EmptyContext context)
         {
             var deserializedMovies = SerializationService.Deserialize<CinemaCityResponse<Body>>(content);
 
             var cinemaNetwork = await GetCinemaNetwork();
 
-            using (Logger.BeginScope(nameof(ParseDataToEntities)))
+            using (Logger.BeginScope(nameof(ParseDataToEntitiesAsync)))
             {
                 return deserializedMovies
                     .Body.Films

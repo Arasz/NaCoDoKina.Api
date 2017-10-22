@@ -67,25 +67,5 @@ namespace Infrastructure.DataProviders.Client
                 return Result.Success(content);
             }
         }
-
-        public async Task<Result<string>> MakeGetRequestAsync(string url)
-        {
-            using (_logger.BeginScope($"{GetType().Name} - {nameof(MakeGetRequestAsync)}"))
-            {
-                _logger.LogDebug("Making GET request to {url}", url);
-
-                var httpResponse = await _httpClient.GetAsync(url);
-
-                var content = await httpResponse.Content.ReadAsStringAsync();
-
-                if (httpResponse.StatusCode != HttpStatusCode.OK)
-                {
-                    _logger.LogError("Request to url {url} failed with status code {code} and content {content}", url, httpResponse.StatusCode, content);
-                    return Result.Failure<string>($"Request failed with code {httpResponse.StatusCode}");
-                }
-
-                return Result.Success(content);
-            }
-        }
     }
 }

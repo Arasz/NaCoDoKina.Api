@@ -41,35 +41,23 @@ namespace Infrastructure.Repositories
         {
             showtimes = showtimes as MovieShowtime[] ?? showtimes.ToArray();
 
-            var movies = showtimes
-                .Select(s => s.Movie.Id)
+            var externalIds = showtimes
+                .Select(showtime => showtime.ExternalId)
                 .ToHashSet();
 
-            var cinemas = showtimes
-                .Select(s => s.Cinema.Id)
-                .ToHashSet();
+            var existingShowtimes = await _applicationContext.MovieShowtimes
+                .Where(s => externalIds.Contains(s.ExternalId))
+                .ToListAsync();
 
-            _applicationContext.MovieShowtimes
-                .Where(s => movies.Contains(s.Movie.Id))
-                .Where(s => cinemas.Contains(s.Cinema.Id))
-                .Load();
+            var newShowtimes = showtimes
+                .Except(existingShowtimes, MovieShowtime.ExternalIdComparer)
+                .ToArray();
 
-            AttachRelatedEntities(showtimes, showtime => showtime.Movie);
+            AttachRelatedEntities(newShowtimes, showtime => showtime.Movie);
 
-            AttachRelatedEntities(showtimes, showtime => showtime.Cinema);
+            AttachRelatedEntities(newShowtimes, showtime => showtime.Cinema);
 
-            foreach (var showtime in showtimes)
-            {
-                var exist = await _applicationContext.MovieShowtimes
-                    .Where(s => s.Movie.Equals(showtime.Movie))
-                    .Where(s => s.Cinema.Equals(showtime.Cinema))
-                    .Where(s => s.ShowTime.Equals(showtime.ShowTime))
-                    .Where(s => s.ShowType.Equals(showtime.ShowType))
-                    .AnyAsync();
-
-                if (!exist)
-                    _applicationContext.MovieShowtimes.Add(showtime);
-            }
+            _applicationContext.MovieShowtimes.AddRange(newShowtimes);
 
             await _applicationContext.SaveChangesAsync();
         }

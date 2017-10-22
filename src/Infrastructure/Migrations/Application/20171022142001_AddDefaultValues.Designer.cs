@@ -12,9 +12,10 @@ using System;
 namespace Infrastructure.Migrations.Application
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20171022142001_AddDefaultValues")]
+    partial class AddDefaultValues
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,8 +191,6 @@ namespace Infrastructure.Migrations.Application
                     b.Property<long?>("CinemaId")
                         .IsRequired();
 
-                    b.Property<string>("ExternalId");
-
                     b.Property<string>("Language")
                         .IsRequired()
                         .HasMaxLength(100);
@@ -206,8 +205,6 @@ namespace Infrastructure.Migrations.Application
                         .HasMaxLength(100);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ExternalId");
 
                     b.HasIndex("MovieId");
 

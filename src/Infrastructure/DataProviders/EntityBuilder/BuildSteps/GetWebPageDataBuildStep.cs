@@ -20,9 +20,9 @@ namespace Infrastructure.DataProviders.EntityBuilder.BuildSteps
 
         public virtual bool Enabled => true;
 
-        public virtual async Task<Result<TEntity[]>> BuildMany(TEntity[] entities, TContext context)
+        public virtual async Task<Result<TEntity[]>> BuildManyAsync(TEntity[] entities, TContext context)
         {
-            using (Logger.BeginScope(nameof(BuildMany)))
+            using (Logger.BeginScope(nameof(BuildManyAsync)))
             using (Logger.BeginScope(WebPageBinder.GetType().Name))
             {
                 Logger.LogDebug("Start binding to web pages for {ElementsCount} elements of {EntityType}", entities.Length, typeof(TEntity));

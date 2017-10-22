@@ -49,21 +49,23 @@ namespace Infrastructure.Data.Configurations
                 .HasMaxLength(80);
 
             builder.Property(movie => movie.Description)
-                .HasDefaultValue("No description")
+                .HasDefaultValue("Brak opisu")
                 .IsUnicode();
 
             builder.Property(movie => movie.AgeLimit)
-                .HasDefaultValue("Unspecified")
+                .HasDefaultValue("Nieokreślono")
                 .HasMaxLength(100);
 
             builder.Property(movie => movie.Genre)
-                .IsRequired()
+                .HasDefaultValue("Brak danych")
                 .HasMaxLength(100);
 
             builder.Property(movie => movie.Director)
+                .HasDefaultValue("Brak danych")
                 .HasMaxLength(100);
 
             builder.Property(movie => movie.CrewDescription)
+                .HasDefaultValue("Brak danych")
                 .IsUnicode()
                 .HasMaxLength(300);
 

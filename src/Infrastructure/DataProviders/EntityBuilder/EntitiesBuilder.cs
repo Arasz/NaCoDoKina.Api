@@ -54,7 +54,7 @@ namespace Infrastructure.DataProviders.EntityBuilder
 
                     _logger.LogDebug("Build step {StepName} number {CurrentStep} on position {Position} will run", buildStep.Name, CurrentStep, buildStep.Position);
 
-                    var result = await buildStep.BuildMany(entities, parameters);
+                    var result = await buildStep.BuildManyAsync(entities, parameters);
 
                     if (result.IsSuccess)
                         entities = result.Value;

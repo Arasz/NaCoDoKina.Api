@@ -6,6 +6,7 @@ using Infrastructure.DataProviders.EntityBuilder;
 using Infrastructure.DataProviders.EntityBuilder.Context;
 using Infrastructure.DataProviders.Requests;
 using Infrastructure.DataProviders.Tasks;
+using Infrastructure.DataProviders.Timeline;
 using System.Reflection;
 using Module = Autofac.Module;
 
@@ -74,6 +75,16 @@ namespace Infrastructure.IoC.Modules
             builder
                 .RegisterAssemblyTypes(ThisAssembly)
                 .Where(type => type.Name.EndsWith("ReviewSearch"))
+                .AsImplementedInterfaces()
+                .AsSelf();
+
+            builder
+                .RegisterType<TimelineRange>()
+                .AsImplementedInterfaces();
+
+            builder
+                .RegisterAssemblyTypes(ThisAssembly)
+                .Where(type => type.IsAssignableTo<ITimeline>())
                 .AsImplementedInterfaces()
                 .AsSelf();
         }

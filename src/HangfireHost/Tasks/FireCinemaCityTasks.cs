@@ -13,16 +13,16 @@ namespace HangfireHost.Tasks
         public void Schedule()
         {
             var cinemaNetworksTaskId = BackgroundJob
-                .Enqueue<LoadCinemaNetworksFromConfigurationTask>(task => task.Execute());
+                .Enqueue<LoadCinemaNetworksFromConfigurationTask>(task => task.ExecuteAsync());
 
             var cinemasTaskId = BackgroundJob
-                .ContinueWith<LoadCinemaCityCinemasTask>(cinemaNetworksTaskId, task => task.Execute());
+                .ContinueWith<LoadCinemaCityCinemasTask>(cinemaNetworksTaskId, task => task.ExecuteAsync());
 
             var moviesTaskId = BackgroundJob
-                .ContinueWith<LoadCinemaCityMoviesTask>(cinemasTaskId, task => task.Execute());
+                .ContinueWith<LoadCinemaCityMoviesTask>(cinemasTaskId, task => task.ExecuteAsync());
 
             BackgroundJob
-                .ContinueWith<LoadCinemaCityShowtimesTask>(moviesTaskId, task => task.Execute());
+                .ContinueWith<LoadCinemaCityShowtimesTask>(moviesTaskId, task => task.ExecuteAsync());
         }
     }
 }

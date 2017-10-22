@@ -31,6 +31,6 @@ namespace Infrastructure.DataProviders.EntityBuilder.BuildSteps
         /// <param name="entities"> Partially built entities </param>
         /// <param name="buildContext"></param>
         /// <returns> Partially built entities </returns>
-        Task<Result<TEntity[]>> BuildMany(TEntity[] entities, TContext buildContext);
+        Task<Result<TEntity[]>> BuildManyAsync(TEntity[] entities, TContext buildContext);
     }
 }
