@@ -8,6 +8,8 @@ namespace ApplicationCore.Entities.Movies
     /// </summary>
     public class Movie : Entity
     {
+        public static IEqualityComparer<Movie> TitleComparer { get; } = new TitleEqualityComparer();
+
         /// <summary>
         /// Movie name (title) 
         /// </summary>
@@ -31,6 +33,23 @@ namespace ApplicationCore.Entities.Movies
         public override string ToString()
         {
             return $"{base.ToString()}, {nameof(Title)}: {Title}";
+        }
+
+        private sealed class TitleEqualityComparer : IEqualityComparer<Movie>
+        {
+            public bool Equals(Movie x, Movie y)
+            {
+                if (ReferenceEquals(x, y)) return true;
+                if (ReferenceEquals(x, null)) return false;
+                if (ReferenceEquals(y, null)) return false;
+                if (x.GetType() != y.GetType()) return false;
+                return string.Equals(x.Title, y.Title);
+            }
+
+            public int GetHashCode(Movie obj)
+            {
+                return (obj.Title != null ? obj.Title.GetHashCode() : 0);
+            }
         }
     }
 }

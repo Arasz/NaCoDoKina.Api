@@ -146,16 +146,20 @@ namespace Infrastructure.Repositories
 
         public async Task CreateMoviesAsync(IEnumerable<Movie> movies)
         {
-            foreach (var movie in movies)
-            {
-                var exist = await _applicationContext.Movies
-                    .Where(m => m.Title == movie.Title)
-                    .AnyAsync();
+            var newMoviesTitles = movies
+                .Select(m => m.Title)
+                .ToHashSet();
 
-                if (exist)
-                    continue;
-                _applicationContext.Movies.Add(movie);
-            }
+            var existingMovies = await _applicationContext.Movies
+                .Where(m => newMoviesTitles.Contains(m.Title))
+                .ToArrayAsync();
+
+            var newMovies = movies
+                .Except(existingMovies, Movie.TitleComparer)
+                .ToList();
+
+            _applicationContext.Movies.AddRange(newMovies);
+
             await _applicationContext.SaveChangesAsync();
         }
 
