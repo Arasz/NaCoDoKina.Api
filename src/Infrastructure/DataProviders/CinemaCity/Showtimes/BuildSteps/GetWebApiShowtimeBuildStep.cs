@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using ApplicationCore.Entities.Movies;
+﻿using ApplicationCore.Entities.Movies;
 using ApplicationCore.Repositories;
 using Infrastructure.DataProviders.CinemaCity.Common;
 using Infrastructure.DataProviders.CinemaCity.Showtimes.Context;
@@ -13,6 +9,11 @@ using Infrastructure.DataProviders.Requests;
 using Infrastructure.Extensions;
 using Infrastructure.Services;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Infrastructure.DataProviders.CinemaCity.Showtimes.BuildSteps
 {
@@ -99,7 +100,7 @@ namespace Infrastructure.DataProviders.CinemaCity.Showtimes.BuildSteps
 
             public Event[] Events { get; set; }
 
-            public Movie[] Movies { get; set; }
+            public Movie[] Films { get; set; }
         }
 
         protected override async Task<MovieShowtime[]> ParseDataToEntities(string content, MovieShowtimesContext context)
@@ -108,19 +109,24 @@ namespace Infrastructure.DataProviders.CinemaCity.Showtimes.BuildSteps
 
             var showtimes = new List<MovieShowtime>(cinemaCityResponse.Body.Events.Length);
 
-            foreach (var e in cinemaCityResponse.Body.Events)
+            var moviesWithEvents = cinemaCityResponse.Body.Events
+                .Join(cinemaCityResponse.Body.Films,
+                    e => e.FilmId, m => m.Id,
+                    (e, m) => (Event: e, Movie: m));
+
+            foreach (var tuple in moviesWithEvents)
             {
-                var movie = await _movieRepository.GetMovieByExternalIdAsync(e.FilmId);
+                var movie = await _movieRepository.GetMovieByTitleAsync(tuple.Movie.Name);
 
                 var showtime = new MovieShowtime
                 {
                     Movie = movie,
                     Cinema = context.Cinema,
-                    Available = !e.SoldOut,
-                    BookingLink = e.BookingLink,
+                    Available = !tuple.Event.SoldOut,
+                    BookingLink = tuple.Event.BookingLink,
                     Language = "",
-                    ShowTime = e.EventDateTime,
-                    ShowType = e.FormatAttributes()
+                    ShowTime = tuple.Event.EventDateTime,
+                    ShowType = tuple.Event.FormatAttributes()
                 };
                 showtimes.Add(showtime);
             }
